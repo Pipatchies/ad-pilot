@@ -180,3 +180,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+.scrollbar-none {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  display: none;
+}
