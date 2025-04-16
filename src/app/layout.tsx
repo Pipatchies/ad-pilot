@@ -61,24 +61,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body className={`${mont.variable} antialiased overflow-x-hidden`}>
-        <div className="relative flex flex-col min-h-screen justify-center font-mont">
-          <SidebarProvider>
-            <div className="flex flex-row min-h-screen w-full">
-              <MenuSidebar />
-              <div className="flex flex-col w-full">
-                <header className="border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
-                  <Topbar />
-                </header>
-                <main className="flex-1 px-6 py-8 overflow-y-auto">
-                  {children}
-                </main>
-                <footer className="mt-auto" />
-              </div>
-            </div>
-          </SidebarProvider>
-        </div>
+        <SidebarProvider>
+          <MenuSidebar />
+          <div className="relative flex flex-col min-h-screen font-mont">
+            <header className="border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
+              <Topbar />
+            </header>
+            <main className="px-6 py-8 overflow-y-auto">
+              {children}
+            </main>
+            <footer className="mt-auto" />
+          </div>
+        </SidebarProvider>
       </body>
     </html>
   );

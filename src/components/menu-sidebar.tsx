@@ -73,7 +73,7 @@ export default function MenuSidebar() {
   const isActive = (url: string) => pathname === url;
 
   return (
-    <Sidebar className="w-[30%] max-w-[320px]">
+    <Sidebar collapsible="icon">
       <SidebarHeader className="bg-sidebar px-4 my-3">
         <div className="flex items-center">
           <Image
@@ -96,9 +96,7 @@ export default function MenuSidebar() {
                 <SidebarMenuItem className="py-1">
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton className="flex items-center justify-between w-full bg-black/20 rounded-none p-8">
-                      <Typography variant="h5">
-                        {item.label}
-                      </Typography>
+                      <Typography variant="h5">{item.label}</Typography>
                       <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>

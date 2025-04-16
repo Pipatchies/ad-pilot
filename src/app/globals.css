@@ -193,16 +193,6 @@
   display: none;
 }
 
-.btn-primary:hover {
-  background-color: var(--primary);
-  color: white
-}
-
-.btn-primary {
-  background-color: white;
-  color: var(--primary);
-}
-
 .color-chevron {
   color: #A4AFB7;
 }

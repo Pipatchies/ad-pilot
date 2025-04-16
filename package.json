@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "icons:build": "npx @svgr/cli --typescript --out-dir src/components/icons public/icons",
+    "icons:watch": "npx @svgr/cli --typescript --out-dir src/components/icons public/icons --watch",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
@@ -27,13 +29,14 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
+    "@svgr/webpack": "^8.1.0",
+    "@tailwindcss/postcss": "^4.1.4",
+    "@types/node": "^20.17.30",
+    "@types/react": "^19.1.2",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.0",
-    "tailwindcss": "^4",
+    "tailwindcss": "^4.1.4",
     "typescript": "^5"
   },
   "packageManager": "pnpm@10.6.5+sha512.cdf928fca20832cd59ec53826492b7dc25dc524d4370b6b4adbf65803d32efaa6c1c88147c0ae4e8d579a6c9eec715757b50d4fa35eea179d868eada4ed043af"
