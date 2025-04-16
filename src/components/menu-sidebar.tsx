@@ -19,6 +19,7 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible";
+import Typography from "./typography";
 
 const menuItems = [
   {
@@ -66,7 +67,7 @@ const menuItems = [
   },
 ];
 
-export default function Menu() {
+export default function MenuSidebar() {
   const pathname = usePathname();
 
   const isActive = (url: string) => pathname === url;
@@ -95,9 +96,9 @@ export default function Menu() {
                 <SidebarMenuItem className="py-1">
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton className="flex items-center justify-between w-full bg-black/20 rounded-none p-8">
-                      <span className="rounded-none text-lg">
+                      <Typography variant="h5">
                         {item.label}
-                      </span>
+                      </Typography>
                       <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
@@ -123,7 +124,7 @@ export default function Menu() {
                                 width={16}
                                 height={16}
                               />
-                              <span className="text-base">{sub.label}</span>
+                              <Typography variant="h6">{sub.label}</Typography>
                             </a>
                           </SidebarMenuButton>
                         </SidebarMenuSubItem>
@@ -149,7 +150,7 @@ export default function Menu() {
                       width={16}
                       height={16}
                     />
-                    <span className="text-lg">{item.label}</span>
+                    <Typography variant="h5">{item.label}</Typography>
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
