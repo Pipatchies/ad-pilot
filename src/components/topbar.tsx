@@ -28,7 +28,7 @@ export default function Topbar() {
     <div className="w-full h-13.5 bg-white flex items-center justify-center gap-6 text-primary">
       <div className="flex items-center gap-2 w-full max-w-4xl py-2 border-b border-primary/40 ml-40">
         <Image
-          src="/icons/icon_search.svg"
+          src="/icons/icon-search.svg"
           alt="Search"
           width={16}
           height={16}
@@ -52,7 +52,7 @@ export default function Topbar() {
 
         <div className="inline-flex items-center justify-center relative w-5 h-5">
   <Image
-    src="/icons/Notification Icon.svg"
+    src="/icons/notification-icon.svg"
     alt="Notification"
     fill
     className="object-contain z-0"

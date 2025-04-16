@@ -27,7 +27,7 @@ const menuItems = [
     subItems: [
       { label: "La campagne", icon: "/icons/fusee.svg", url: "#" },
       { label: "Les cibles", icon: "/icons/profil.svg", url: "#" },
-      { label: "Bibliothèque", icon: "/icons/Image Small.svg", url: "#" },
+      { label: "Bibliothèque", icon: "/icons/image-small.svg", url: "#" },
       { label: "Analyse digitale", icon: "/icons/statistiques.svg", url: "#" },
       { label: "Factures", icon: "/icons/facture.svg", url: "#" },
       { label: "Documents", icon: "/icons/document.svg", url: "#" },
@@ -38,7 +38,7 @@ const menuItems = [
     subItems: [
       { label: "La campagne", icon: "/icons/fusee.svg", url: "#" },
       { label: "Les cibles", icon: "/icons/profil.svg", url: "#" },
-      { label: "Bibliothèque", icon: "/icons/Image Small.svg", url: "#" },
+      { label: "Bibliothèque", icon: "/icons/image-small.svg", url: "#" },
       { label: "Analyse digitale", icon: "/icons/statistiques.svg", url: "#" },
       { label: "Factures", icon: "/icons/facture.svg", url: "#" },
       { label: "Documents", icon: "/icons/document.svg", url: "#" },
@@ -49,7 +49,7 @@ const menuItems = [
     subItems: [
       { label: "La campagne", icon: "/icons/fusee.svg", url: "#" },
       { label: "Les cibles", icon: "/icons/profil.svg", url: "#" },
-      { label: "Bibliothèque", icon: "/icons/Image Small.svg", url: "#" },
+      { label: "Bibliothèque", icon: "/icons/image-small.svg", url: "#" },
       { label: "Analyse digitale", icon: "/icons/statistiques.svg", url: "#" },
       { label: "Factures", icon: "/icons/facture.svg", url: "#" },
       { label: "Documents", icon: "/icons/document.svg", url: "#" },
