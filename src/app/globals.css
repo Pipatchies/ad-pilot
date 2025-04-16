@@ -5,42 +5,64 @@
 
 @theme {
   --font-mont: var(--font-mont);
+
+  --text-xs: clamp(0.65rem, 1vw, 0.75rem);
+  --text-sm: clamp(0.75rem, 1.2vw, 0.875rem);
+  --text-base: clamp(0.85rem, 1.5vw, 1rem);  
+  --text-lg: clamp(1rem, 1.8vw, 1.125rem);
+  --text-xl: clamp(1.125rem, 2vw, 1.25rem);
+  --text-2xl: clamp(1.25rem, 2.5vw, 1.5rem);
+  --text-3xl: clamp(1.5rem, 3vw, 1.875rem);
+  --text-4xl: clamp(1.75rem, 3.5vw, 2.25rem);
+  --text-5xl: clamp(2rem, 4vw, 3rem);
+  --text-6xl: clamp(2.5rem, 5vw, 3.75rem);
+  --text-7xl: clamp(3rem, 6vw, 4.5rem);
+  --text-8xl: clamp(3.5rem, 7vw, 6rem);
+  --text-9xl: clamp(4.5rem, 8vw, 8rem);
 }
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: hsl(257,12%,89%);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: hsl(260, 32%, 26%);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: hsl(257,12%,89%);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: hsl(334,100%,50%);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: hsl(260, 32%, 26%);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+@utilities {
+  .text-xs {
+    font-size: var(--text-xs);
+  }
+  .text-sm {
+    font-size: var(--text-sm);
+  }
+  .text-base {
+    font-size: var(--text-base);
+  }
+  .text-lg {
+    font-size: var(--text-lg);
+  }
+  .text-xl {
+    font-size: var(--text-xl);
+  }
+  .text-2xl {
+    font-size: var(--text-2xl);
+  }
+  .text-3xl {
+    font-size: var(--text-3xl);
+  }
+  .text-4xl {
+    font-size: var(--text-4xl);
+  }
+  .text-5xl {
+    font-size: var(--text-5xl);
+  }
+  .text-6xl {
+    font-size: var(--text-6xl);
+  }
+  .text-7xl {
+    font-size: var(--text-7xl);
+  }
+  .text-8xl {
+    font-size: var(--text-8xl);
+  }
+  .text-9xl {
+    font-size: var(--text-9xl);
+  }
 }
+
 
 .dark {
   --background: oklch(0.145 0 0);
@@ -74,6 +96,41 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: hsl(257,12%,89%);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: hsl(260, 32%, 26%);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: hsl(257,12%,89%);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: hsl(334,100%,50%);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.8 0 0);
+  --sidebar-foreground: oklch(1 0 0);;
+  --sidebar-primary: hsl(260, 32%, 26%);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: hsla(0,0%,0%,0.4);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 @theme inline {
@@ -123,4 +180,29 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.scrollbar-none {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  display: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary);
+  color: white
+}
+
+.btn-primary {
+  background-color: white;
+  color: var(--primary);
+}
+
+.color-chevron {
+  color: #A4AFB7;
 }
