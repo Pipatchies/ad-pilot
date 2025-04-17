@@ -39,7 +39,7 @@ export default function CtaButton({ props, className, variant, userType, icon }:
         <Button
           variant="ghost"
           className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-md text-base font-medium transition btn-primary btn-primary:hover border border-primary",
+            "flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white",
             className
           )}
         >
@@ -60,13 +60,13 @@ export default function CtaButton({ props, className, variant, userType, icon }:
           variant="ghost"
           asChild
           className={cn(
-            "flex items-center gap-2 p-5 rounded-sm text-base font-medium transition btn-primary btn-primary:hover border border-primary",
+            "flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white",
             className
           )}
         >
           <Link {...linkProps}>
           {icon && <div className="mr-2">{icon}</div>}
-            <span className="block !leading-none font-[600]">
+            <span className="block !leading-none font-600">
               {text}
             </span>
           </Link>

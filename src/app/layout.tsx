@@ -65,7 +65,7 @@ export default function RootLayout({
       <body className={`${mont.variable} antialiased overflow-x-hidden`}>
         <SidebarProvider>
           <MenuSidebar />
-          <div className="relative flex flex-col min-h-screen font-mont">
+          <div className="flex flex-col min-h-screen w-full font-mont">
             <header className="border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
               <Topbar />
             </header>
