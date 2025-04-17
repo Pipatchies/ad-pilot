@@ -25,9 +25,9 @@ export default function Topbar() {
   }, [query]);
 
   return (
-    <div className="w-full h-13.5 bg-white flex items-center justify-center gap-6 text-primary">
+    <div className="h-13.5 bg-white flex items-center gap-6 text-primary">
       <SidebarTrigger />
-      <div className="flex items-center gap-2 w-full max-w-4xl py-2 border-b border-primary/40 ml-40">
+      <div className="flex items-center gap-2 w-210 py-2 border-b border-primary/40 ml-32">
         <SvgSearch className="w-5" />
         <input
           type="text"
@@ -38,32 +38,32 @@ export default function Topbar() {
         />
       </div>
 
-      <div className="flex items-center gap-6 ml-6">
+      <div className="flex items-center gap-6 ml-6 h-12">
         <CtaButton
           props={ctaProps}
           icon={<SvgCrayon />}
-          className="border transition flex gap-2 items-center"
+          className="border transition flex items-center gap-2 h-10"
           variant="ghost"
         />
 
-        <div className="relative inline-flex w-8 h-8">
-          <SvgNotification className="w-8 h-8" />
-          <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-destructive border border-white" />
+        <div className="relative flex items-center justify-center w-10 h-10">
+          <SvgNotification className="w-6 h-6" />
+          <span className="absolute top-0 right-2 h-3 w-3 rounded-full bg-destructive border border-white" />
         </div>
 
-        <div className="border-r h-8"></div>
+        <div className="border-r h-6" />
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 whitespace-nowrap h-12">
           <Collapsible defaultOpen className="group/collapsible">
             <CollapsibleTrigger asChild>
               <div className="flex items-center gap-2 cursor-pointer">
-                <span className="text-sm ">John Doe</span>
+                <span className="text-sm">John Doe</span>
                 <ChevronDown className="h-4 w-4 transition-transform group-data-[state=close]/collapsible:rotate-180 color-chevron" />
               </div>
             </CollapsibleTrigger>
-        </Collapsible>
-        <Avatar className="h-12 w-12">
-            <AvatarImage src="/logo-occitanie-2017.png" />
+          </Collapsible>
+
+          <Avatar className="h-10 w-10">
             <AvatarImage src="/logo-occitanie-2017.png" />
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
