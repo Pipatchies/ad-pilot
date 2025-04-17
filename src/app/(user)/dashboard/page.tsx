@@ -1,4 +1,3 @@
-import SvgLock from '@/components/icons/Lock'
 import DetailsCard from "@/components/details-card";
 import Typography from "@/components/typography";
 import React from "react";
@@ -128,10 +127,10 @@ const invoiceData = [
 
 export default function Dashboard() {
   return (
-    <div className="flex flex-col h-screen text-primary ml-46 mt-10">
+    <div className="flex flex-col min-h-screen text-primary ml-46 mt-10">
       <Typography variant="h1">Tableau de bord</Typography>
       <Typography variant="h2">Campagnes en cours</Typography>
-      <div className="flex flex-raw gap-x-10">
+      <div className="flex gap-x-10">
       {campaignData.map((data, index) => (
         <DetailsCard variant="campaign" key={index} {...data} />
       ))}
