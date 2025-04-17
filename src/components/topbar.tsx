@@ -64,6 +64,7 @@ export default function Topbar() {
         </Collapsible>
         <Avatar className="h-12 w-12">
             <AvatarImage src="/logo-occitanie-2017.png" />
+            <AvatarImage src="/logo-occitanie-2017.png" />
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
         </div>
