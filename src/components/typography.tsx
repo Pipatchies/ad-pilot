@@ -42,10 +42,10 @@ type TypographyProps = LinkTypographyProps | NonLinkTypographyProps;
 
 // Mapping des classes pour chaque variante
 const variantClasses = {
-  h1: "text-3xl font-[900] mb-8 font-mont",
-  h2: "text-2xl font-bold mb-8 font-mont",
-  h3: "text-xl font-bold mb-8 font-mont",
-  h4: "text-xl italic mb-8 font-mont",
+  h1: "text-3xl font-[900] mb-4 font-mont",
+  h2: "text-2xl font-bold mb-4 font-mont",
+  h3: "text-xl font-bold mb-4 font-mont",
+  h4: "text-xl italic mb-4 font-mont",
   h5: "text-lg font-mont",
   h6: "text-base font-mont",
   p: "lg:text-pretty",

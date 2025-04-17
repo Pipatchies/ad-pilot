@@ -128,7 +128,7 @@ const invoiceData = [
 export default function Dashboard() {
   return (
     <div>
-      <Typography variant="h1">Tableau de bord</Typography>
+      <Typography variant="h1" className="mb-10">Tableau de bord</Typography>
       <Typography variant="h2">Campagnes en cours</Typography>
       <div className="flex gap-x-10">
       {campaignData.map((data, index) => (
