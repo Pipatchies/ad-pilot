@@ -127,7 +127,7 @@ const invoiceData = [
 
 export default function Dashboard() {
   return (
-    <div className="flex flex-col min-h-screen text-primary ml-46 mt-10">
+    <div>
       <Typography variant="h1">Tableau de bord</Typography>
       <Typography variant="h2">Campagnes en cours</Typography>
       <div className="flex gap-x-10">
