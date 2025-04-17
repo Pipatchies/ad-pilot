@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import CtaButton from "./ctaButton";
 import { ChevronDown } from "lucide-react";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -62,9 +61,10 @@ export default function Topbar() {
                 <ChevronDown className="h-4 w-4 transition-transform group-data-[state=close]/collapsible:rotate-180 color-chevron" />
               </div>
             </CollapsibleTrigger>
-          </Collapsible>
-          <Avatar className="h-12 w-12">
-            <AvatarImage src="/Logo_Occitanie_2017.png" />
+        </Collapsible>
+        <Avatar className="h-12 w-12">
+            <AvatarImage src="/logo-occitanie-2017.png" />
+            <AvatarImage src="/logo-occitanie-2017.png" />
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
         </div>

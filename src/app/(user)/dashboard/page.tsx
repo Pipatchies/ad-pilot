@@ -1,11 +1,153 @@
 import SvgLock from '@/components/icons/Lock'
-import React from 'react'
+import DetailsCard from "@/components/details-card";
+import Typography from "@/components/typography";
+import React from "react";
 
-export default function page() {
+const campaignData = [
+  {
+  title: "Titre lorem ipsum",
+  description: "Campagne digitale",
+  startDate: new Date("2025-01-13"),
+  endDate: new Date("2025-03-30"),
+  status: "Brief",
+  icons: [ {
+    name: "panneau",
+    url: "/icons/panneau-daffichage.svg",
+    width: 15,
+    height: 26,
+  },
+  {
+    name: "radio",
+    url: "/icons/radio.svg",
+      width: 28,
+      height: 27,
+  },
+  {
+    name: "television",
+    url: "/icons/television.svg",
+      width: 26,
+      height: 20,
+  },
+],
+},
+{
+  title: "Titre lorem ipsum",
+  description: "Campagne digitale",
+  startDate: new Date("2025-01-13"),
+  endDate: new Date("2025-03-30"),
+  status: "Brief",
+  icons: [ {
+    name: "panneau",
+    url: "/icons/panneau-daffichage.svg",
+    width: 15,
+    height: 26,
+  },
+  {
+    name: "radio",
+    url: "/icons/radio.svg",
+      width: 28,
+      height: 27,
+  },
+  {
+    name: "television",
+    url: "/icons/television.svg",
+      width: 26,
+      height: 20,
+  },
+],
+},
+{
+  title: "Titre lorem ipsum",
+  description: "Campagne digitale",
+  startDate: new Date("2025-01-13"),
+  endDate: new Date("2025-03-30"),
+  status: "Brief",
+  icons: [ {
+    name: "panneau",
+    url: "/icons/panneau-daffichage.svg",
+    width: 15,
+    height: 26,
+  },
+  {
+    name: "radio",
+    url: "/icons/radio.svg",
+      width: 28,
+      height: 27,
+  },
+  {
+    name: "television",
+    url: "/icons/television.svg",
+      width: 26,
+      height: 20,
+  },
+],
+},
+]
+
+const docData = [
+  {
+    title: "Document lorem ipsum",
+    description: "Type de document",
+    startDate: new Date("2025-01-13"),
+    campaignTitle: "Titre lorem ipsumne",
+    },
+  {
+    title: "Document lorem ipsum",
+    description: "Type de document",
+    startDate: new Date("2025-01-13"),
+    campaignTitle: "Titre lorem ipsumne",
+    },    
+  {
+    title: "Document lorem ipsum",
+    description: "Type de document",
+    startDate: new Date("2025-01-13"),
+    campaignTitle: "Titre lorem ipsumne",
+    },
+]
+
+const invoiceData = [
+  {
+    title: "Facture N°123456789",
+    description: "Facture d'acompte",
+    startDate: new Date("2025-01-13"),
+    campaignTitle: "Titre lorem ipsumne",
+    },
+  {
+    title: "Facture N°123456789",
+    description: "Facture d'acompte",
+    startDate: new Date("2025-01-13"),
+    campaignTitle: "Titre lorem ipsumne",
+    },    
+  {
+    title: "Facture N°123456789",
+    description: "Facture d'acompte",
+    startDate: new Date("2025-01-13"),
+    campaignTitle: "Titre lorem ipsumne",    
+    },
+]
+
+export default function Dashboard() {
   return (
-    <div>
-      Hello Consectetur dolor sit magna ullamco elit dolore tempor veniam cillum in aute elit consequat sint. Esse est est aliqua aliqua quis sint laborum in incididunt tempor occaecat qui enim mollit. Id voluptate voluptate adipisicing dolor non mollit aute nisi sunt reprehenderit labore veniam. Minim occaecat proident incididunt culpa sint.
-      <div><SvgLock /></div>
+    <div className="flex flex-col h-screen text-primary ml-46 mt-10">
+      <Typography variant="h1">Tableau de bord</Typography>
+      <Typography variant="h2">Campagnes en cours</Typography>
+      <div className="flex flex-raw gap-x-10">
+      {campaignData.map((data, index) => (
+        <DetailsCard variant="campaign" key={index} {...data} />
+      ))}
+      </div>
+      <Typography variant="h2" className="mt-20">Les derniers documents</Typography>
+      <div className="flex flex-raw gap-x-10">
+      {docData.map((data, index) => (
+        <DetailsCard variant="default" key={index} {...data} />
+      ))}
+      </div>
+      <Typography variant="h2" className="mt-20">Les dernières factures</Typography>
+      <div className="flex flex-raw gap-x-10">
+      {invoiceData.map((data, index) => (
+        <DetailsCard variant="default" key={index} {...data} />
+      ))}
+      </div>
     </div>
-  )
-}
+  );
+}                               
