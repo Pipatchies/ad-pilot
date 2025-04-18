@@ -69,7 +69,7 @@ export default function RootLayout({
             <header className="border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
               <Topbar />
             </header>
-            <main className="px-6 py-8 overflow-y-auto">
+            <main className="flex flex-col min-h-screen text-primary ml-50 mt-16">
               {children}
             </main>
             <footer className="mt-auto" />

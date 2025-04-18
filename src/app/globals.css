@@ -196,3 +196,7 @@
 .color-chevron {
   color: #A4AFB7;
 }
+
+.shadow-around {
+  box-shadow: 0 0 20px #0000001A;
+}

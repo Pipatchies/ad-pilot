@@ -20,49 +20,58 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import Typography from "./typography";
+import SvgFusee from "./icons/Fusee";
+import { cn } from "@/lib/utils";
+import SvgProfil from "./icons/Profil";
+import SvgImageSmall from "./icons/ImageSmall";
+import SvgStatistiques from "./icons/Statistiques";
+import SvgFacture from "./icons/Facture";
+import SvgDocument from "./icons/Document";
+import Link from "next/link";
+import SvgPictoArchive from "./icons/PictoArchive";
 
 const menuItems = [
   {
     label: "Campagne titre 1",
     subItems: [
-      { label: "La campagne", icon: "/icons/fusee.svg", url: "#" },
-      { label: "Les cibles", icon: "/icons/profil.svg", url: "#" },
-      { label: "Bibliothèque", icon: "/icons/image-small.svg", url: "#" },
-      { label: "Analyse digitale", icon: "/icons/statistiques.svg", url: "#" },
-      { label: "Factures", icon: "/icons/facture.svg", url: "#" },
-      { label: "Documents", icon: "/icons/document.svg", url: "#" },
+      { label: "La campagne", icon: <SvgFusee />, url: "/campaign" },
+      { label: "Les cibles", icon: <SvgProfil />, url: "#" },
+      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
+      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
+      { label: "Factures", icon: <SvgFacture />, url: "#" },
+      { label: "Documents", icon: <SvgDocument />, url: "#" },
     ],
   },
   {
     label: "Campagne titre 2",
     subItems: [
-      { label: "La campagne", icon: "/icons/fusee.svg", url: "#" },
-      { label: "Les cibles", icon: "/icons/profil.svg", url: "#" },
-      { label: "Bibliothèque", icon: "/icons/image-small.svg", url: "#" },
-      { label: "Analyse digitale", icon: "/icons/statistiques.svg", url: "#" },
-      { label: "Factures", icon: "/icons/facture.svg", url: "#" },
-      { label: "Documents", icon: "/icons/document.svg", url: "#" },
+      { label: "La campagne", icon: <SvgFusee />, url: "#" },
+      { label: "Les cibles", icon: <SvgProfil />, url: "#" },
+      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
+      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
+      { label: "Factures", icon: <SvgFacture />, url: "#" },
+      { label: "Documents", icon: <SvgDocument />, url: "#" },
     ],
   },
   {
     label: "Campagne titre 3",
     subItems: [
-      { label: "La campagne", icon: "/icons/fusee.svg", url: "#" },
-      { label: "Les cibles", icon: "/icons/profil.svg", url: "#" },
-      { label: "Bibliothèque", icon: "/icons/image-small.svg", url: "#" },
-      { label: "Analyse digitale", icon: "/icons/statistiques.svg", url: "#" },
-      { label: "Factures", icon: "/icons/facture.svg", url: "#" },
-      { label: "Documents", icon: "/icons/document.svg", url: "#" },
+      { label: "La campagne", icon: <SvgFusee />, url: "#" },
+      { label: "Les cibles", icon: <SvgProfil />, url: "#" },
+      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
+      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
+      { label: "Factures", icon: <SvgFacture />, url: "#" },
+      { label: "Documents", icon: <SvgDocument />, url: "#" },
     ],
   },
   {
     label: "Campagne archivées",
-    icon: "/icons/picto-archive.svg",
+    icon: <SvgPictoArchive />,
     url: "#",
   },
   {
     label: "Facture",
-    icon: "/icons/facture.svg",
+    icon: <SvgFacture />,
     url: "#",
   },
 ];
@@ -71,6 +80,10 @@ export default function MenuSidebar() {
   const pathname = usePathname();
 
   const isActive = (url: string) => pathname === url;
+
+  const isGroupActive = (subItems: (typeof menuItems)[0]["subItems"]) => {
+    return subItems?.some((sub) => isActive(sub.url));
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -95,8 +108,19 @@ export default function MenuSidebar() {
               >
                 <SidebarMenuItem className="py-1">
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className="flex items-center justify-between w-full bg-black/20 rounded-none p-8">
-                      <Typography variant="h5">{item.label}</Typography>
+                    <SidebarMenuButton
+                      className={cn(
+                        "flex items-center justify-between w-full rounded-none p-8 bg-black/20 transition-all",
+                        isGroupActive(item.subItems) &&
+                          "bg-black/40 border-l-4 border-destructive"
+                      )}
+                    >
+                      <Typography
+                        variant="h5"
+                        className="transition-all duration-200"
+                      >
+                        {item.label}
+                      </Typography>
                       <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
@@ -108,22 +132,27 @@ export default function MenuSidebar() {
                             asChild
                             className={
                               isActive(sub.url)
-                                ? "bg-black/40 border-l-4 border[--destructive]"
+                                ? "bg-black/40 rounded-none p-8"
                                 : "bg-black/20 rounded-none p-8"
                             }
                           >
-                            <a
+                            <Link
                               href={sub.url}
                               className="flex items-center gap-2"
                             >
-                              <Image
-                                src={sub.icon}
-                                alt={sub.label}
-                                width={16}
-                                height={16}
-                              />
+                              {sub.icon && (
+                                <span
+                                  className={cn(
+                                    isActive(sub.url)
+                                      ? "fill-destructive"
+                                      : "fill-[#A5A4BF]"
+                                  )}
+                                >
+                                  {sub.icon}
+                                </span>
+                              )}
                               <Typography variant="h6">{sub.label}</Typography>
-                            </a>
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuSubItem>
                       ))}
@@ -135,21 +164,27 @@ export default function MenuSidebar() {
               <SidebarMenuItem key={index} className="py-1">
                 <SidebarMenuButton
                   asChild
-                  className={
+                  className={cn(
+                    "whitespace-nowrap p-8",
                     isActive(item.url)
-                      ? "bg-black/40 border-l-4 border[--destructive]"
-                      : "bg-black/20 p-8"
-                  }
+                      ? "bg-black/40 border-l-4 border-destructive"
+                      : "bg-black/20"
+                  )}
                 >
-                  <a href={item.url} className="flex items-center gap-2">
-                    <Image
-                      src={item.icon}
-                      alt={item.label}
-                      width={16}
-                      height={16}
-                    />
+                  <Link href={item.url} className="flex items-center gap-3">
+                    {item.icon && (
+                      <span
+                        className={cn(
+                          isActive(item.url)
+                            ? "fill-destructive"
+                            : "fill-[#A5A4BF]"
+                        )}
+                      >
+                        {item.icon}
+                      </span>
+                    )}
                     <Typography variant="h5">{item.label}</Typography>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             )

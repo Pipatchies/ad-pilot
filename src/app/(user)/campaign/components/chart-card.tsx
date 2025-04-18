@@ -1,0 +1,71 @@
+"use client";
+import Typography from "@/components/typography";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import React from "react";
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+
+interface MediaItem {
+  name: string;
+  budget: number;
+  color: string;
+}
+
+interface ChartCardProps {
+  mediaData: MediaItem[];
+  className?: string;
+}
+
+export default function ChartCard({ mediaData }: ChartCardProps) {
+
+  return (
+    <Card className="w-full h-[244px] rounded-sm shadow-around bg-white border-none text-primary px-8 py-6 gap-0">
+      <CardHeader className="p-0">
+        <Typography variant="h3" className="mb-0">Médias / Budget</Typography>
+      </CardHeader>
+
+      <CardContent className="p-0 h-full">
+        <div className="flex h-full items-center justify-between gap-6">
+
+          <div className="space-y-3 w-1/2">
+          {mediaData.map(({ name, budget, color }, index) => (
+              <div key={index} className="flex items-center">
+                <div
+                  className="w-3 h-3 rounded-full mr-2 bg-white border-2"
+                  style={{
+                    borderColor: color,
+                  }}
+                />
+                <span>{name}</span>
+                <span className="ml-auto font-bold">
+                  {budget}€
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="w-1/2 h-[160px] flex items-center justify-center">
+            <ResponsiveContainer width={200} height={200}>
+              <PieChart>
+                <Pie
+                  data={mediaData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={45}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="budget"
+                >
+                  {mediaData.map(({ color }, index) => (
+                    <Cell key={index} fill={color} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+
