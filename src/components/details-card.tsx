@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/card";
 import Typography from "./typography";
 import Image from "next/image";
+import SvgImageSmall from "./icons/ImageSmall";
+import { cn } from "@/lib/utils";
 
 type IconType = {
   name: string;
@@ -24,7 +26,7 @@ type DetailsCardProps = {
   endDate?: Date;
   status?: string;
   icons?: IconType[];
-  variant: "default" | "campaign";
+  variant: "default" | "campaign" | "media";
 };
 
 export default function DetailsCard({
@@ -39,14 +41,36 @@ export default function DetailsCard({
 }: DetailsCardProps) {
   return (
     <div>
-      <Card className="text-primary py-10 pr-10 bg-card/50 shadow-none border-none gap-y-4">
+      <Card
+        className={cn(
+          "text-primary py-10 pr-10 bg-card/50 shadow-none border-none gap-y-4",
+          variant === "media" && "w-[366px]"
+        )}
+      >
         <CardHeader>
-          <Typography variant="h3" className="mb-0">
-            {title}
-          </Typography>
-          <CardDescription className="italic text-primary">
-            {description}
-          </CardDescription>
+          {variant === "media" && (
+            <>
+              <div className="bg-primary flex items-center justify-center h-16 w-16">
+                <SvgImageSmall />
+              </div>
+              <Typography variant="h3" className="mb-0">
+                {title}
+              </Typography>
+              <CardDescription className="italic text-primary">
+                {description}
+              </CardDescription>
+            </>
+          )}
+          {(variant === "campaign" || variant === "default") && (
+            <>
+              <Typography variant="h3" className="mb-0">
+                {title}
+              </Typography>
+              <CardDescription className="italic text-primary">
+                {description}
+              </CardDescription>
+            </>
+          )}
         </CardHeader>
         <CardContent>
           {variant === "campaign" && (
@@ -69,15 +93,27 @@ export default function DetailsCard({
             <>
               {campaignTitle && (
                 <ul className="space-y-1">
-                    <li>
-                  <span className="underline">Campagne</span> : {campaignTitle}
+                  <li>
+                    <span className="underline">Campagne</span> :{" "}
+                    {campaignTitle}
                   </li>
                   <li>
-                  <span className="underline">Date</span> :{" "}
-                {startDate.toLocaleDateString()}
-                </li>
+                    <span className="underline">Date</span> :{" "}
+                    {startDate.toLocaleDateString()}
+                  </li>
                 </ul>
               )}
+            </>
+          )}
+
+          {variant === "media" && (
+            <>
+                <ul className="space-y-1">
+                  <li>
+                    <span className="underline">Date</span> :{" "}
+                    {startDate.toLocaleDateString()}
+                  </li>
+                </ul>
             </>
           )}
         </CardContent>
