@@ -89,12 +89,14 @@ export default function MenuSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="bg-sidebar px-4 my-3">
         <div className="flex items-center">
+        <Link href="/dashboard">
           <Image
             src="/logo-ad-pilot.png"
             alt="ADPILOT"
             width={163}
             height={46}
           />
+          </Link>
         </div>
       </SidebarHeader>
       <SidebarContent className="bg-sidebar-primary overflow-y-auto scrollbar-none">
