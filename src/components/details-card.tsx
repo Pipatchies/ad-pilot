@@ -41,12 +41,11 @@ export default function DetailsCard({
 }: DetailsCardProps) {
   return (
     <div>
-      <Card
-        className={cn(
-          "text-primary py-10 pr-10 bg-card/50 shadow-none border-none gap-y-4",
-          variant === "media" && "w-[366px] py-6 px-2"
-        )}
-      >
+      <Card className={cn(
+        "text-primary py-10 pr-10 bg-card/50 shadow-none border-none gap-y-4 w-[366px]",
+      variant === "media" && "w-[366px] py-6 px-2"
+    )}
+    >
         <CardHeader>
           {variant === "media" && (
             <>
@@ -90,30 +89,27 @@ export default function DetailsCard({
           )}
 
           {variant === "default" && (
-            <>
+            <ul className="space-y-1">
               {campaignTitle && (
-                <ul className="space-y-1">
-                  <li>
-                    <span className="underline">Campagne</span> :{" "}
-                    {campaignTitle}
-                  </li>
-                  <li>
-                    <span className="underline">Date</span> :{" "}
-                    {startDate.toLocaleDateString()}
-                  </li>
-                </ul>
+                <li>
+                  <span className="underline">Campagne</span> : {campaignTitle}
+                </li>
               )}
-            </>
+              <li>
+                <span className="underline">Date</span> :{" "}
+                {startDate.toLocaleDateString()}
+              </li>
+            </ul>
           )}
 
           {variant === "media" && (
             <>
-                <ul className="space-y-1">
-                  <li>
-                    <span className="underline">Date</span> :{" "}
-                    {startDate.toLocaleDateString()}
-                  </li>
-                </ul>
+              <ul className="space-y-1">
+                <li>
+                  <span className="underline">Date</span> :{" "}
+                  {startDate.toLocaleDateString()}
+                </li>
+              </ul>
             </>
           )}
         </CardContent>
