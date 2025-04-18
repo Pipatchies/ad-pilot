@@ -44,7 +44,7 @@ export default function DetailsCard({
       <Card
         className={cn(
           "text-primary py-10 pr-10 bg-card/50 shadow-none border-none gap-y-4",
-          variant === "media" && "w-[366px]"
+          variant === "media" && "w-[366px] py-6 px-2"
         )}
       >
         <CardHeader>
