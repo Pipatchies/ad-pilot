@@ -28,7 +28,7 @@ import SvgStatistiques from "./icons/Statistiques";
 import SvgFacture from "./icons/Facture";
 import SvgDocument from "./icons/Document";
 import Link from "next/link";
-import { Fusee } from "./icons";
+import SvgPictoArchive from "./icons/PictoArchive";
 
 const menuItems = [
   {
@@ -45,7 +45,7 @@ const menuItems = [
   {
     label: "Campagne titre 2",
     subItems: [
-      { label: "La campagne", icon: <SvgFusee />, url: "/campaign" },
+      { label: "La campagne", icon: <SvgFusee />, url: "#" },
       { label: "Les cibles", icon: <SvgProfil />, url: "#" },
       { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
       { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
@@ -56,7 +56,7 @@ const menuItems = [
   {
     label: "Campagne titre 3",
     subItems: [
-      { label: "La campagne", icon: <SvgFusee />, url: "/campaign" },
+      { label: "La campagne", icon: <SvgFusee />, url: "#" },
       { label: "Les cibles", icon: <SvgProfil />, url: "#" },
       { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
       { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
@@ -66,12 +66,12 @@ const menuItems = [
   },
   {
     label: "Campagne archivées",
-    icon: "/icons/picto-archive.svg",
+    icon: <SvgPictoArchive />,
     url: "#",
   },
   {
     label: "Facture",
-    icon: "/icons/facture.svg",
+    icon: <SvgFacture />,
     url: "#",
   },
 ];
@@ -80,6 +80,10 @@ export default function MenuSidebar() {
   const pathname = usePathname();
 
   const isActive = (url: string) => pathname === url;
+
+  const isGroupActive = (subItems: (typeof menuItems)[0]["subItems"]) => {
+    return subItems?.some((sub) => isActive(sub.url));
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -104,9 +108,20 @@ export default function MenuSidebar() {
               >
                 <SidebarMenuItem className="py-1">
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className="flex items-center justify-between w-full bg-black/20 rounded-none p-8">
-                      <Typography variant="h5">{item.label}</Typography>
-                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    <SidebarMenuButton
+                      className={cn(
+                        "group/sidebar-item flex items-center justify-between w-full rounded-none p-8 bg-black/20 transition-all data-[collapsed=true]:justify-center",
+                        isGroupActive(item.subItems) &&
+                          "bg-black/40 border-l-4 border-destructive"
+                      )}
+                    >
+                      <Typography
+                        variant="h5"
+                        className="transition-all duration-200 data-[collapsed=true]:hidden"
+                      >
+                        {item.label}
+                      </Typography>
+                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180 data-[collapsed=true]:hidden" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
@@ -117,7 +132,7 @@ export default function MenuSidebar() {
                             asChild
                             className={
                               isActive(sub.url)
-                                ? "bg-black/40 border-l-4 rounded-none p-8 border-destructive"
+                                ? "bg-black/40 rounded-none p-8"
                                 : "bg-black/20 rounded-none p-8"
                             }
                           >
@@ -149,21 +164,27 @@ export default function MenuSidebar() {
               <SidebarMenuItem key={index} className="py-1">
                 <SidebarMenuButton
                   asChild
-                  className={
+                  className={cn(
+                    "whitespace-nowrap p-8",
                     isActive(item.url)
-                      ? "bg-black/40 border-l-4 border[--destructive]"
-                      : "bg-black/20 p-8"
-                  }
+                      ? "bg-black/40 border-l-4 border-destructive"
+                      : "bg-black/20"
+                  )}
                 >
-                  <a href={item.url} className="flex items-center gap-2">
-                    <Image
-                      src={item.icon}
-                      alt={item.label}
-                      width={16}
-                      height={16}
-                    />
+                  <Link href={item.url} className="flex items-center gap-3">
+                    {item.icon && (
+                      <span
+                        className={cn(
+                          isActive(item.url)
+                            ? "fill-destructive"
+                            : "fill-[#A5A4BF]"
+                        )}
+                      >
+                        {item.icon}
+                      </span>
+                    )}
                     <Typography variant="h5">{item.label}</Typography>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             )
