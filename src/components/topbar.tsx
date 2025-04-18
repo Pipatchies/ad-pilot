@@ -25,24 +25,30 @@ export default function Topbar() {
   }, [query]);
 
   return (
-    <div className="h-13.5 bg-white flex items-center gap-6 text-primary">
-      <SidebarTrigger />
-      <div className="flex items-center gap-2 w-210 py-2 border-b border-primary/40 ml-32">
-        <SvgSearch className="w-5 fill-primary" />
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Rechercher"
-          className="w-full bg-transparent outline-none placeholder:text-primary text-sm font-[400]"
-        />
+    <div className="h-14 bg-white flex flex-wrap md:flex-nowrap items-center justify-between gap-4 px-4 md:px-6 text-primary w-full">
+      {/* SidebarTrigger + Search */}
+      <div className="flex items-center gap-4 flex-1 min-w-[200px]">
+        <SidebarTrigger />
+        <div className="flex items-center gap-2 flex-1 border-b border-primary/40">
+          <SvgSearch className="w-5 fill-primary shrink-0" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Rechercher"
+            className="w-full bg-transparent outline-none placeholder:text-primary text-sm font-[400]"
+          />
+        </div>
       </div>
 
-      <div className="flex items-center gap-6 ml-6 h-12">
+      {/* Right section */}
+      <div className="flex items-center gap-4">
         <CtaButton
           props={ctaProps}
-          icon={<SvgCrayon className="text-primary group-hover:text-white transition-colors"/>}
-          className="border transition flex items-center gap-2 h-10"
+          icon={
+            <SvgCrayon className="text-primary group-hover:text-white transition-colors" />
+          }
+          className="border transition flex items-center gap-2 h-10 whitespace-nowrap"
           variant="default"
         />
 
@@ -51,14 +57,14 @@ export default function Topbar() {
           <span className="absolute top-0 right-2 h-3 w-3 rounded-full bg-destructive border border-white" />
         </div>
 
-        <div className="border-r h-6" />
+        <div className="border-r h-6 hidden sm:block" />
 
-        <div className="flex items-center gap-3 whitespace-nowrap h-12">
+        <div className="flex items-center gap-3">
           <Collapsible defaultOpen className="group/collapsible">
             <CollapsibleTrigger asChild>
               <div className="flex items-center gap-2 cursor-pointer">
-                <span className="text-sm">John Doe</span>
-                <ChevronDown className="h-4 w-4 transition-transform group-data-[state=close]/collapsible:rotate-180 color-chevron" />
+                <span className="text-sm hidden md:inline">John Doe</span>
+                <ChevronDown className="h-4 w-4 transition-transform group-data-[state=close]/collapsible:rotate-180" />
               </div>
             </CollapsibleTrigger>
           </Collapsible>
@@ -72,3 +78,4 @@ export default function Topbar() {
     </div>
   );
 }
+
