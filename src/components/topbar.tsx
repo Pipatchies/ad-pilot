@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import CtaButton from "./ctaButton";
+import CtaButton from "./cta-button";
 import { ChevronDown } from "lucide-react";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";

@@ -1,4 +1,4 @@
-import CtaButton from "@/components/ctaButton";
+import CtaButton from "@/components/cta-button";
 import DetailsCard from "@/components/details-card";
 import Typography from "@/components/typography";
 import React from "react";
