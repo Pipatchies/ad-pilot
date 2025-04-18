@@ -5,9 +5,10 @@ const SvgFusee = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     width={21.27}
     height={21.301}
+    // viewBox="0 0 13.062 13.062"
     {...props}
   >
-    <g fill="#a5a4bf" data-name="Groupe 1411">
+    <g data-name="Groupe 1411">
       <path
         d="M5.525 13.511c-.325-.325-.448-.162-.52-.089-1.874 1.874-3.538 6.4-2.659 5.955 3.2-1.608 3.736-1.129 5.61-3 .072-.072.239-.192-.1-.527Z"
         data-name="Trac\xE9 691"

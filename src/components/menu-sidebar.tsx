@@ -20,39 +20,48 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import Typography from "./typography";
+import SvgFusee from "./icons/Fusee";
+import { cn } from "@/lib/utils";
+import SvgProfil from "./icons/Profil";
+import SvgImageSmall from "./icons/ImageSmall";
+import SvgStatistiques from "./icons/Statistiques";
+import SvgFacture from "./icons/Facture";
+import SvgDocument from "./icons/Document";
+import Link from "next/link";
+import { Fusee } from "./icons";
 
 const menuItems = [
   {
     label: "Campagne titre 1",
     subItems: [
-      { label: "La campagne", icon: "/icons/fusee.svg", url: "#" },
-      { label: "Les cibles", icon: "/icons/profil.svg", url: "#" },
-      { label: "Bibliothèque", icon: "/icons/image-small.svg", url: "#" },
-      { label: "Analyse digitale", icon: "/icons/statistiques.svg", url: "#" },
-      { label: "Factures", icon: "/icons/facture.svg", url: "#" },
-      { label: "Documents", icon: "/icons/document.svg", url: "#" },
+      { label: "La campagne", icon: <SvgFusee />, url: "/campaign" },
+      { label: "Les cibles", icon: <SvgProfil />, url: "#" },
+      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
+      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
+      { label: "Factures", icon: <SvgFacture />, url: "#" },
+      { label: "Documents", icon: <SvgDocument />, url: "#" },
     ],
   },
   {
     label: "Campagne titre 2",
     subItems: [
-      { label: "La campagne", icon: "/icons/fusee.svg", url: "#" },
-      { label: "Les cibles", icon: "/icons/profil.svg", url: "#" },
-      { label: "Bibliothèque", icon: "/icons/image-small.svg", url: "#" },
-      { label: "Analyse digitale", icon: "/icons/statistiques.svg", url: "#" },
-      { label: "Factures", icon: "/icons/facture.svg", url: "#" },
-      { label: "Documents", icon: "/icons/document.svg", url: "#" },
+      { label: "La campagne", icon: <SvgFusee />, url: "/campaign" },
+      { label: "Les cibles", icon: <SvgProfil />, url: "#" },
+      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
+      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
+      { label: "Factures", icon: <SvgFacture />, url: "#" },
+      { label: "Documents", icon: <SvgDocument />, url: "#" },
     ],
   },
   {
     label: "Campagne titre 3",
     subItems: [
-      { label: "La campagne", icon: "/icons/fusee.svg", url: "#" },
-      { label: "Les cibles", icon: "/icons/profil.svg", url: "#" },
-      { label: "Bibliothèque", icon: "/icons/image-small.svg", url: "#" },
-      { label: "Analyse digitale", icon: "/icons/statistiques.svg", url: "#" },
-      { label: "Factures", icon: "/icons/facture.svg", url: "#" },
-      { label: "Documents", icon: "/icons/document.svg", url: "#" },
+      { label: "La campagne", icon: <SvgFusee />, url: "/campaign" },
+      { label: "Les cibles", icon: <SvgProfil />, url: "#" },
+      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
+      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
+      { label: "Factures", icon: <SvgFacture />, url: "#" },
+      { label: "Documents", icon: <SvgDocument />, url: "#" },
     ],
   },
   {
@@ -108,22 +117,27 @@ export default function MenuSidebar() {
                             asChild
                             className={
                               isActive(sub.url)
-                                ? "bg-black/40 border-l-4 border[--destructive]"
+                                ? "bg-black/40 border-l-4 rounded-none p-8 border-destructive"
                                 : "bg-black/20 rounded-none p-8"
                             }
                           >
-                            <a
+                            <Link
                               href={sub.url}
                               className="flex items-center gap-2"
                             >
-                              <Image
-                                src={sub.icon}
-                                alt={sub.label}
-                                width={16}
-                                height={16}
-                              />
+                              {sub.icon && (
+                                <span
+                                  className={cn(
+                                    isActive(sub.url)
+                                      ? "fill-destructive"
+                                      : "fill-[#A5A4BF]"
+                                  )}
+                                >
+                                  {sub.icon}
+                                </span>
+                              )}
                               <Typography variant="h6">{sub.label}</Typography>
-                            </a>
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuSubItem>
                       ))}
