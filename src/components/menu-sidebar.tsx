@@ -72,7 +72,7 @@ const menuItems = [
   {
     label: "Facture",
     icon: <SvgFacture />,
-    url: "#",
+    url: "/invoices",
   },
 ];
 
@@ -167,8 +167,8 @@ export default function MenuSidebar() {
                   className={cn(
                     "whitespace-nowrap p-8",
                     isActive(item.url)
-                      ? "bg-black/40 border-l-4 border-destructive"
-                      : "bg-black/20"
+                      ? "bg-black/40 border-l-4 rounded-none border-destructive"
+                      : "bg-black/20 rounded-none"
                   )}
                 >
                   <Link href={item.url} className="flex items-center gap-3">
