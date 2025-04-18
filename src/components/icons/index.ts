@@ -30,6 +30,7 @@ export { default as PictoArchive } from "./PictoArchive";
 export { default as Plus } from "./Plus";
 export { default as Profil } from "./Profil";
 export { default as Radio } from "./Radio";
+export { default as Sablier } from "./Sablier";
 export { default as Search } from "./Search";
 export { default as SilhouetteDutilisateursMultiples } from "./SilhouetteDutilisateursMultiples";
 export { default as SmallDown } from "./SmallDown";
