@@ -103,7 +103,6 @@ export default function MenuSidebar() {
             item.subItems ? (
               <Collapsible
                 key={index}
-                defaultOpen
                 className="group/collapsible"
               >
                 <SidebarMenuItem className="py-1">
