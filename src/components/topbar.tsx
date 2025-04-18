@@ -25,11 +25,11 @@ export default function Topbar() {
   }, [query]);
 
   return (
-    <div className="h-14 bg-white flex flex-wrap md:flex-nowrap items-center justify-between gap-4 px-4 md:px-6 text-primary w-full">
+    <div className="h-14 bg-white flex flex-wrap md:flex-nowrap items-center justify-between gap-20 px-4 md:px-6 text-primary w-full">
       {/* SidebarTrigger + Search */}
-      <div className="flex items-center gap-4 flex-1 min-w-[200px]">
+      <div className="flex items-center gap-30 flex-1 min-w-[200px]">
         <SidebarTrigger />
-        <div className="flex items-center gap-2 flex-1 border-b border-primary/40">
+        <div className="flex items-center gap-2 flex-1 border-b border-primary/40 p-3">
           <SvgSearch className="w-5 fill-primary shrink-0" />
           <input
             type="text"
