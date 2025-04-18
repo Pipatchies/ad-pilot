@@ -40,7 +40,7 @@ export default function InvoicesTable({ invoices }: InvoiceTableProps) {
       <TableBody>
         {invoices.map((invoice, index) => (
           <TableRow className="text-lg h-15" key={index}>
-            <TableCell className="">{invoice.name}</TableCell>
+            <TableCell className="pr-10">{invoice.name}</TableCell>
             <TableCell className="font-bold underline">{invoice.campagne}</TableCell>
             <TableCell>{invoice.htprice.toLocaleString("fr-FR")} €</TableCell>
             <TableCell>{invoice.ttcprice.toLocaleString("fr-FR")} €</TableCell>
