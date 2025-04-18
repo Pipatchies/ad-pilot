@@ -129,18 +129,21 @@ const invoicesData = [
 
 export default function Invoice() {
   return (
-    <div>
-      <Typography variant="h1">
+    <div className="px-4 md:px-8">
+      <Typography variant="h1" className="mb-6">
         Les factures
       </Typography>
-      <div className="flex flex-wrap items-center gap-10 justify-between">
-      <Typography variant = "h2" className='mb-0'>
-        Factures agence
-      </Typography>
-      <SearchBar/>
 
-      <InvoicesTable invoices={invoicesData}/>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <Typography variant="h2" className="mb-0">
+          Factures agence
+        </Typography>
+        <SearchBar />
+      </div>
+      
+      <div className="overflow-x-auto">
+        <InvoicesTable invoices={invoicesData} />
       </div>
     </div>
-  )
+  );
 }
