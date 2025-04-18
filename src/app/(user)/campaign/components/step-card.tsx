@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 type StepStatus = "completed" | "current" | "upcoming";
 
-interface Step {
+export interface Step {
   id: number;
   label: string;
   status: StepStatus;

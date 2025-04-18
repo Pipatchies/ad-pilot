@@ -1,10 +1,10 @@
 import React from 'react'
 import { Domaine, Television } from '@/components/icons'
 import Typography from '@/components/typography'
-import StepCard from './components/step-card'
+import StepCard, { Step } from './components/step-card'
 import BudgetCard from './components/budget-card'
 
-const stepCardData = [
+const stepCardData: Step[] = [
   {
     id: 1,
     label: "Brief",
