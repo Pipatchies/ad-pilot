@@ -28,7 +28,7 @@ export default function Topbar() {
     <div className="h-13.5 bg-white flex items-center gap-6 text-primary">
       <SidebarTrigger />
       <div className="flex items-center gap-2 w-210 py-2 border-b border-primary/40 ml-32">
-        <SvgSearch className="w-5" />
+        <SvgSearch className="w-5 fill-primary" />
         <input
           type="text"
           value={query}
