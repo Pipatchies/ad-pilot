@@ -16,50 +16,47 @@ interface ChartCardProps {
 }
 
 export default function ChartCard({ mediaData }: ChartCardProps) {
-  const chartData = mediaData.map((item) => ({
-    name: item.name,
-    value: item.budget,
-    color: item.color,
-  }));
 
   return (
-    <Card className="w-full h-auto rounded-sm shadow-around bg-white border-none text-primary px-8 py-6">
-      <CardHeader className="p-0 pb-4">
-        <Typography variant="h3">Médias / Budget</Typography>
+    <Card className="w-full h-[244px] rounded-sm shadow-around bg-white border-none text-primary px-8 py-6 gap-0">
+      <CardHeader className="p-0">
+        <Typography variant="h3" className="mb-0">Médias / Budget</Typography>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
-          {/* Liste à gauche */}
-          <div className="w-full md:w-1/2 space-y-2">
-            {mediaData.map((item, index) => (
+
+      <CardContent className="p-0 h-full">
+        <div className="flex h-full items-center justify-between gap-6">
+
+          <div className="space-y-3 w-1/2">
+          {mediaData.map(({ name, budget, color }, index) => (
               <div key={index} className="flex items-center">
                 <div
-                  className="w-3 h-3 rounded-full mr-2"
-                  style={{ backgroundColor: item.color }}
+                  className="w-3 h-3 rounded-full mr-2 bg-white border-2"
+                  style={{
+                    borderColor: color,
+                  }}
                 />
-                <span className="text-sm text-gray-700">{item.name}</span>
-                <span className="ml-auto text-sm font-semibold">
-                  {item.budget}€
+                <span>{name}</span>
+                <span className="ml-auto font-bold">
+                  {budget}€
                 </span>
               </div>
             ))}
           </div>
 
-          {/* Camembert à droite */}
-          <div className="w-full md:w-1/2 h-[200px] flex items-center justify-center">
+          <div className="w-1/2 h-[160px] flex items-center justify-center">
             <ResponsiveContainer width={200} height={200}>
               <PieChart>
                 <Pie
-                  data={chartData}
+                  data={mediaData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
+                  innerRadius={45}
                   outerRadius={80}
                   paddingAngle={2}
-                  dataKey="value"
+                  dataKey="budget"
                 >
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  {mediaData.map(({ color }, index) => (
+                    <Cell key={index} fill={color} />
                   ))}
                 </Pie>
               </PieChart>
@@ -70,4 +67,5 @@ export default function ChartCard({ mediaData }: ChartCardProps) {
     </Card>
   );
 }
+
 
