@@ -70,7 +70,7 @@ const menuItems = [
     url: "#",
   },
   {
-    label: "Facture",
+    label: "Factures",
     icon: <SvgFacture />,
     url: "/invoices",
   },
