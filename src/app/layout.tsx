@@ -66,10 +66,10 @@ export default function RootLayout({
         <SidebarProvider>
           <MenuSidebar />
           <div className="flex flex-col min-h-screen w-full font-mont">
-            <header className="border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
+            <header className="sticky top-0 z-50 border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
               <Topbar />
             </header>
-            <main className="flex flex-col min-h-screen text-primary ml-50 mt-16">
+            <main className="flex flex-col min-h-screen text-primary md:my-16 md:px-50 px-4">
               {children}
             </main>
             <footer className="mt-auto" />
