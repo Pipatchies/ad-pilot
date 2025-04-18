@@ -52,6 +52,26 @@ export default function CtaButton({ props, className, variant, userType, icon }:
         </Button>
       );
 
+      case "noIcon":
+      if (!props?.url || !props?.text) return null;
+
+      return (
+        <Button
+          variant="ghost"
+          asChild
+          className={cn(
+            "group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border hover:border-primary hover:text-primary bg-primary text-white",
+            className
+          )}
+        >
+          <Link {...linkProps}>
+            <span className="block !leading-none font-600">
+              {text}
+            </span>
+          </Link>
+        </Button>
+      );
+
     default:
       if (!props?.url || !props?.text) return null;
 

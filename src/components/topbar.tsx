@@ -43,7 +43,7 @@ export default function Topbar() {
           props={ctaProps}
           icon={<SvgCrayon className="text-primary group-hover:text-white transition-colors"/>}
           className="border transition flex items-center gap-2 h-10"
-          variant="ghost"
+          variant="default"
         />
 
         <div className="relative flex items-center justify-center w-10 h-10">
