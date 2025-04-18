@@ -110,18 +110,18 @@ export default function MenuSidebar() {
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
                       className={cn(
-                        "group/sidebar-item flex items-center justify-between w-full rounded-none p-8 bg-black/20 transition-all data-[collapsed=true]:justify-center",
+                        "flex items-center justify-between w-full rounded-none p-8 bg-black/20 transition-all",
                         isGroupActive(item.subItems) &&
                           "bg-black/40 border-l-4 border-destructive"
                       )}
                     >
                       <Typography
                         variant="h5"
-                        className="transition-all duration-200 data-[collapsed=true]:hidden"
+                        className="transition-all duration-200"
                       >
                         {item.label}
                       </Typography>
-                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180 data-[collapsed=true]:hidden" />
+                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
