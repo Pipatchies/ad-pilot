@@ -69,7 +69,7 @@ export default function RootLayout({
             <header className="border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
               <Topbar />
             </header>
-            <main className="flex flex-col min-h-screen text-primary mt-16 md:pl-50 md:pr-50 px-4">
+            <main className="flex flex-col min-h-screen text-primary md:my-16 md:px-50 px-4">
               {children}
             </main>
             <footer className="mt-auto" />
