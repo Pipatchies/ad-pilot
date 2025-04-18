@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Typography from "@/components/typography";
 import SvgCheckRose from "@/components/icons/CheckRose";
 import SvgEnCours from "@/components/icons/EnCours";
@@ -20,9 +20,11 @@ interface StepCardProps {
 export default function StepCard({ steps }: StepCardProps) {
   return (
     <Card className="w-full h-[207] rounded-sm shadow-around bg-white border-none text-primary px-8 py-9">
+        <CardHeader>
       <Typography variant="h3">Etape du projet</Typography>
-
-      <div className="flex justify-between items-start w-full">
+      </CardHeader>
+      <CardContent>
+      <div className="flex justify-between w-full">
         {steps.map((step, index) => {
           const isLast = index === steps.length - 1;
           const isCompleted = step.status === "completed";
@@ -75,6 +77,7 @@ export default function StepCard({ steps }: StepCardProps) {
           );
         })}
       </div>
+      </CardContent>
     </Card>
   );
 }
