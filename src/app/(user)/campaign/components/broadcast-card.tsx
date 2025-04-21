@@ -17,7 +17,6 @@ export default function BroadcastCard({
   progress,
 }: DiffusionCardProps) {
   return (
-    <div>
       <Card className="w-full h-[244] rounded-sm shadow-around bg-white border-none text-primary px-8 py-9">
         <CardHeader className="flex items-center justify-between">
           <Typography variant="h3">Diffusion</Typography>
@@ -46,6 +45,5 @@ export default function BroadcastCard({
           </div>
         </CardContent>
       </Card>
-    </div>
   );
 }

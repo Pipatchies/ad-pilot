@@ -16,7 +16,7 @@ export default function BudgetCard({price}: BudgetCardProps) {
       <CardContent>
       <div className="flex flex-wrap items-center gap-x-3 mt-0 mb-10">
         <SvgMoneyBag />
-        <span className="text-5xl font-[800]">{price} €</span>
+        <span className="text-5xl font-extrabold">{price} €</span>
       </div>
       </CardContent>
     </Card>
