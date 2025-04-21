@@ -5,9 +5,9 @@ import SpaceFiles from './_sections/spaceFiles'
 
 export default function Campaign() {
   return (
-    <div>
+    <>
       <SpaceRecap/>
       <SpaceFiles/>
-    </div>
+    </>
   )
 }

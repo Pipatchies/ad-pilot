@@ -77,7 +77,7 @@ const ctaProps = [
 
 export default function SpaceFiles() {
   return (
-    <div className="mt-26 mr-60 flex flex-col gap-y-6">
+    <section className="mt-26 mr-60 flex flex-col gap-y-6">
       <div className="flex flex-wrap items-center justify-between">
       <Typography variant="h2" className="mb-0">Les dernières ressources médias</Typography>
       <CtaButton
@@ -117,6 +117,6 @@ export default function SpaceFiles() {
         <DetailsCard variant="default" key={index} {...data} />
       ))}
       </div>
-    </div>
+    </section>
   );
 }
