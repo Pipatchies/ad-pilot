@@ -7,7 +7,7 @@ const SvgOpenFolder = (props: SVGProps<SVGSVGElement>) => (
     height={45.574}
     {...props}
   >
-    <g fill="#3b2d57" data-name="Open Folder">
+    <g data-name="Open Folder">
       <path
         d="M57.113 16.238a3.58 3.58 0 0 0-3.145-1.846H19.876a5.31 5.31 0 0 0-5.1 3.825L8.028 41.353a5.86 5.86 0 0 1-5.629 4.221h42.873a5.865 5.865 0 0 0 5.627-4.222l6.481-22.21a3.77 3.77 0 0 0-.267-2.904"
         data-name="Trac\xE9 738"

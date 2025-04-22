@@ -33,6 +33,7 @@ import SvgPictoArchive from "./icons/PictoArchive";
 const menuItems = [
   {
     label: "Campagne titre 1",
+    icon: <SvgDocument />,
     subItems: [
       { label: "La campagne", icon: <SvgFusee />, url: "/campaign" },
       { label: "Les cibles", icon: <SvgProfil />, url: "#" },
@@ -44,6 +45,7 @@ const menuItems = [
   },
   {
     label: "Campagne titre 2",
+    icon: <SvgDocument />,
     subItems: [
       { label: "La campagne", icon: <SvgFusee />, url: "#" },
       { label: "Les cibles", icon: <SvgProfil />, url: "#" },
@@ -55,6 +57,7 @@ const menuItems = [
   },
   {
     label: "Campagne titre 3",
+    icon: <SvgDocument />,
     subItems: [
       { label: "La campagne", icon: <SvgFusee />, url: "#" },
       { label: "Les cibles", icon: <SvgProfil />, url: "#" },
@@ -87,15 +90,15 @@ export default function MenuSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="bg-sidebar px-4 my-3">
+      <SidebarHeader className="bg-sidebar px-4 my-2">
         <div className="flex items-center">
-        <Link href="/dashboard">
-          <Image
-            src="/logo-ad-pilot.png"
-            alt="ADPILOT"
-            width={163}
-            height={46}
-          />
+          <Link href="/dashboard">
+            <Image
+              src="/logo-ad-pilot.png"
+              alt="ADPILOT"
+              width={163}
+              height={46}
+            />
           </Link>
         </div>
       </SidebarHeader>
@@ -103,10 +106,7 @@ export default function MenuSidebar() {
         <SidebarMenu className="py-2">
           {menuItems.map((item, index) =>
             item.subItems ? (
-              <Collapsible
-                key={index}
-                className="group/collapsible"
-              >
+              <Collapsible key={index} className="group/collapsible">
                 <SidebarMenuItem className="py-1">
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
@@ -116,12 +116,25 @@ export default function MenuSidebar() {
                           "bg-black/40 border-l-4 border-destructive"
                       )}
                     >
-                      <Typography
-                        variant="h5"
-                        className="transition-all duration-200"
-                      >
-                        {item.label}
-                      </Typography>
+                      <div className="flex items-center gap-2">
+                        {item.icon && (
+                          <span
+                            className={cn(
+                              isActive(item.subItems[0].url)
+                                ? "fill-destructive"
+                                : "fill-[#A5A4BF]",
+                            )}
+                          >
+                            {item.icon}
+                          </span>
+                        )}
+                        <Typography
+                          variant="h5"
+                          className="transition-all duration-200"
+                        >
+                          {item.label}
+                        </Typography>
+                      </div>
                       <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
