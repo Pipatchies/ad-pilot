@@ -64,12 +64,12 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${mont.variable} antialiased overflow-x-hidden`}>
         <SidebarProvider>
-          {/* <MenuSidebar /> */}
+          <MenuSidebar />
           <div className="flex flex-col min-h-screen w-full font-mont">
             <header className="sticky top-0 z-50 border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
               <Topbar />
             </header>
-            <main className="space-y-6 py-10 px-5 @container max-w-7xl mx-auto w-full">
+            <main className="space-y-20 py-10 px-5 @container max-w-7xl mx-auto w-full">
               {children}
             </main>
             <footer className="mt-auto" />

@@ -60,7 +60,7 @@ export default function SpaceRecap() {
       <div className="flex flex-wrap gap-x-3 items-center">
         <Domaine />
         <Television />
-        <Typography variant="h4">Campagne digitale et télé</Typography>
+        <Typography className="m-0" variant="h4">Campagne digitale et télé</Typography>
       </div>
 
       <Typography variant="h2">Récap de la campagne</Typography>
