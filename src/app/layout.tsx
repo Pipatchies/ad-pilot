@@ -7,49 +7,50 @@ import Topbar from "@/components/topbar";
 const mont = localFont({
   src: [
     {
-      path: "./fonts/Fontfabric - Mont Black.otf",
-      weight: "900",
-      style: "normal",
-    },
-    {
-      path: "./fonts/Fontfabric - Mont Bold.otf",
-      weight: "700",
-      style: "normal",
-    },
-    {
-      path: "./fonts/Fontfabric - Mont Heavy.otf",
-      weight: "800",
-      style: "normal",
-    },
-    {
-      path: "./fonts/Fontfabric - Mont Book.otf",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "./fonts/Fontfabric - Mont Light.otf",
-      weight: "300",
-      style: "normal",
-    },
-    {
-      path: "./fonts/Fontfabric - Mont ExtraLight.otf",
-      weight: "200",
-      style: "normal",
-    },
-    {
-      path: "./fonts/Fontfabric - Mont Thin.otf",
+      path: "./fonts/montblack/Fontfabric - Mont Thin.otf",
       weight: "100",
       style: "normal",
     },
     {
-      path: "./fonts/Fontfabric - Mont Regular.otf",
-      weight: "normal",
+      path: "./fonts/montblack/Fontfabric - Mont Light.otf",
+      weight: "300",
       style: "normal",
     },
     {
-      path: "./fonts/Fontfabric - Mont SemiBold.otf",
-      weight: "600",
+      path: "./fonts/montblack/Fontfabric - Mont Regular.otf",
+      weight: "400",
       style: "normal",
+    },
+    {
+      path: "./fonts/montblack/Fontfabric - Mont Bold.otf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "./fonts/montblack/Fontfabric - Mont Black.otf",
+      weight: "900",
+      style: "normal",
+    },
+    // Italic variants
+    {
+      path: "./fonts/montblack/Fontfabric - Mont Thin Italic.otf",
+      weight: "100",
+      style: "italic",
+    },
+    {
+      path: "./fonts/montblack/Fontfabric - Mont Regular Italic.otf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "./fonts/montblack/Fontfabric - Mont Bold Italic.otf",
+      weight: "700",
+      style: "italic",
+    },
+    {
+      path: "./fonts/montblack/Fontfabric - Mont Black Italic.otf",
+      weight: "900",
+      style: "italic",
     },
   ],
   variable: "--font-mont",
