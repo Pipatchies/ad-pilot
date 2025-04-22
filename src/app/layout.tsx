@@ -3,6 +3,7 @@ import "./globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import MenuSidebar from "@/components/menu-sidebar";
 import Topbar from "@/components/topbar";
+import { Toaster } from "@/components/ui/sonner";
 
 const mont = localFont({
   src: [
@@ -64,18 +65,10 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${mont.variable} antialiased overflow-x-hidden`}>
-        <SidebarProvider>
-          <MenuSidebar />
-          <div className="flex flex-col min-h-screen w-full font-mont">
-            <header className="sticky top-0 z-50 border-b border-gray-200 bg-white sm:px-6 py-4 shadow-sm">
-              <Topbar />
-            </header>
-            <main className="py-10 px-5 @container max-w-7xl mx-auto w-full">
-              {children}
-            </main>
-            <footer className="mt-auto" />
-          </div>
-        </SidebarProvider>
+        <div className="font-mont">
+          <Toaster />
+          {children}
+        </div>
       </body>
     </html>
   );
