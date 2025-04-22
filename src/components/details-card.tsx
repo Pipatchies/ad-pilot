@@ -40,10 +40,9 @@ export default function DetailsCard({
   variant,
 }: DetailsCardProps) {
   return (
-    <div>
       <Card className={cn(
-        "text-primary py-10 pr-10 bg-card/50 shadow-none border-none gap-y-4 w-[366px]",
-      variant === "media" && "w-[366px] py-6 px-2"
+        "text-primary bg-card/50 h-[250px] shadow-none border-none gap-y-4 w-full",
+      variant === "media" && ""
     )}
     >
         <CardHeader>
@@ -129,6 +128,5 @@ export default function DetailsCard({
           </CardFooter>
         )}
       </Card>
-    </div>
   );
 }

@@ -54,28 +54,38 @@ const BroadcastData = {
 
 export default function SpaceRecap() {
   return (
-    <div>
+    <section className="space-y-6">
       <Typography variant="h1">Titre de la campagne</Typography>
-      <div className="flex flex-wrap gap-x-3 mt-0 mb-10">
+
+      <div className="flex flex-wrap gap-x-3 items-center">
         <Domaine />
         <Television />
-        <Typography variant="h4">Campagne digitale et télé</Typography>
+        <Typography className="m-0" variant="h4">Campagne digitale et télé</Typography>
       </div>
+
       <Typography variant="h2">Récap de la campagne</Typography>
-      <div className="grid grid-cols-1 md:grid-cols-7 gap-10 mr-50">
-        <div className="md:col-span-5">
-          <StepCard steps={stepCardData} />
+
+      <div className="flex flex-col space-y-6">
+        {/* Étapes + Budget */}
+        <div className="flex flex-wrap gap-3 w-full">
+          <div className="grow">
+            <StepCard steps={stepCardData} />
+          </div>
+          <div className="basis-1/3 grow max-w-fit">
+            <BudgetCard price={budgetCardData.price} />
+          </div>
         </div>
-        <div className="md:col-span-2">
-          <BudgetCard price={budgetCardData.price} />
-        </div>
-        <div className="md:col-span-3">
-          <ChartCard mediaData={MediaData} />
-        </div>
-        <div className="md:col-span-4">
-          <BroadcastCard {...BroadcastData} />
+
+        {/* Graphique + Diffusion */}
+        <div className="flex flex-wrap gap-3 w-full">
+          <div className="basis-1/3 grow max-w-fit">
+            <ChartCard mediaData={MediaData} />
+          </div>
+          <div className="grow">
+            <BroadcastCard {...BroadcastData} />
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
