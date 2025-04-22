@@ -25,57 +25,59 @@ export default function Topbar() {
   }, [query]);
 
   return (
-    <div className="h-14 bg-white flex flex-wrap md:flex-nowrap items-center justify-between gap-20 px-4 md:px-6 text-primary w-full">
-      {/* SidebarTrigger + Search */}
-      <div className="flex items-center gap-30 flex-1 min-w-[200px]">
+    <div className="bg-white flex items-end sm:items-center justify-between px-4 md:px-6 w-full text-primary gap-6">
+      {/* Bloc gauche */}
+      <div className="flex items-center gap-4 flex-1">
         <SidebarTrigger />
-        <div className="flex items-center gap-2 flex-1 border-b border-primary/40 p-3">
-          <SvgSearch className="w-5 fill-primary shrink-0" />
+        <div className="flex items-center gap-2 border-b border-primary/40 px-3 py-2 w-full">
+          <SvgSearch className="w-5 fill-primary" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Rechercher"
-            className="w-full bg-transparent outline-none placeholder:text-primary text-sm font-[400]"
+            className="w-full bg-transparent outline-none placeholder:text-primary text-sm"
           />
         </div>
       </div>
 
-      {/* Right section */}
-      <div className="flex items-center gap-4">
+      {/* Bloc droit */}
+      <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-4 items-end sm:items-center text-sm">
         <CtaButton
           props={ctaProps}
-          icon={
-            <SvgCrayon className="text-primary group-hover:text-white transition-colors" />
-          }
-          className="border transition flex items-center gap-2 h-10 whitespace-nowrap"
+          icon={<SvgCrayon className="text-primary group-hover:text-white transition-colors w-4 h-4" />}
+          className="flex items-center gap-1 h-9 border px-3 py-1 text-xs sm:text-sm"
           variant="default"
         />
 
-        <div className="relative flex items-center justify-center w-10 h-10">
-          <SvgNotification className="w-6 h-6" />
-          <span className="absolute top-0 right-2 h-3 w-3 rounded-full bg-destructive border border-white" />
-        </div>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="relative flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10">
+            <SvgNotification className="w-5 h-5 sm:w-6 sm:h-6" />
+            <span className="absolute top-0 right-1 h-2.5 w-2.5 rounded-full bg-destructive border border-white" />
+          </div>
 
-        <div className="border-r h-6 hidden sm:block" />
+          <div className="border-r h-5 hidden sm:block" />
 
-        <div className="flex items-center gap-3">
-          <Collapsible defaultOpen className="group/collapsible">
-            <CollapsibleTrigger asChild>
-              <div className="flex items-center gap-2 cursor-pointer">
-                <span className="text-sm hidden md:inline">John Doe</span>
-                <ChevronDown className="h-4 w-4 transition-transform group-data-[state=close]/collapsible:rotate-180" />
-              </div>
-            </CollapsibleTrigger>
-          </Collapsible>
+          <div className="flex items-center gap-2">
+            <Collapsible defaultOpen className="group/collapsible">
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center gap-1 cursor-pointer">
+                  <span className="hidden md:inline text-sm">John Doe</span>
+                  <ChevronDown className="w-4 h-4 transition-transform group-data-[state=close]/collapsible:rotate-180" />
+                </div>
+              </CollapsibleTrigger>
+            </Collapsible>
 
-          <Avatar className="h-10 w-10">
-            <AvatarImage src="/logo-occitanie-2017.png" />
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar>
+            <Avatar className="w-8 h-8 sm:w-10 sm:h-10">
+              <AvatarImage src="/logo-occitanie-2017.png" />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+
 
