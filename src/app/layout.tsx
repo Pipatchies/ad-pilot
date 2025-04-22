@@ -1,8 +1,5 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import MenuSidebar from "@/components/menu-sidebar";
-import Topbar from "@/components/topbar";
 import { Toaster } from "@/components/ui/sonner";
 
 const mont = localFont({
