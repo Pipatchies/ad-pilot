@@ -1,6 +1,7 @@
 import DetailsCard from "@/components/details-card";
 import Typography from "@/components/typography";
 import React from "react";
+import LatestFiles from "../campaign/components/latest-files";
 
 const campaignData = [
   {
@@ -130,34 +131,29 @@ const invoiceData = [
 
 export default function Dashboard() {
   return (
-    <div>
+    <section className="flex flex-col gap-10">
       <Typography variant="h1" className="mb-10">
         Tableau de bord
       </Typography>
-      <Typography variant="h2">Campagnes en cours</Typography>
-      <div className="flex flex-wrap justify-center gap-6">
-        {campaignData.map((data, index) => (
-          <DetailsCard variant="campaign" key={index} {...data} />
-        ))}
-      </div>
-
-      <Typography variant="h2" className="mt-20">
-        Les derniers documents
-      </Typography>
-      <div className="flex flex-wrap justify-center gap-6">
-        {docData.map((data, index) => (
-          <DetailsCard variant="default" key={index} {...data} />
-        ))}
-      </div>
-
-      <Typography variant="h2" className="mt-20">
-        Les dernières factures
-      </Typography>
-      <div className="flex flex-wrap justify-center gap-6">
-        {invoiceData.map((data, index) => (
-          <DetailsCard variant="default" key={index} {...data} />
-        ))}
-      </div>
-    </div>
+      <LatestFiles
+        title="Les dernières ressources médias"
+        // cta={ctaProps[0]}
+        data={campaignData}
+        variant="campaign"
+      />
+      <LatestFiles
+        title="Les derniers documents"
+        // cta={ctaProps[1]}
+        data={docData}
+        variant="default"
+      />
+      <LatestFiles
+        title="Les dernières factures"
+        // cta={ctaProps[2]}
+        data={invoiceData}
+        variant="default"
+        className="mb-10"
+      />
+    </section>
   );
 }

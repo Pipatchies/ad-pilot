@@ -4,7 +4,7 @@ import DetailsCard from "@/components/details-card";
 
 type Props = {
   title: string;
-  cta: {
+  cta?: {
     text: string;
     url: string;
     target: string;
@@ -14,7 +14,7 @@ type Props = {
     description: string;
     startDate: Date;
   }[];
-  variant: "media" | "default";
+  variant: "media" | "default" | "campaign";
   className?: string;
 };
 
@@ -31,15 +31,17 @@ export default function LatestFiles({
         <Typography variant="h2" className="mb-0">
           {title}
         </Typography>
+        {cta && (
         <CtaButton
           props={cta}
           className="border transition h-10"
           variant="noIcon"
         />
+        )}
       </div>
       <div className="flex gap-5 flex-wrap w-full">
         {data.map((item, index) => (
-          <div key={index} className="grow">
+          <div key={index} className="w-full xl:basis-1/4 grow">
             <DetailsCard variant={variant} {...item} />
           </div>
         ))}

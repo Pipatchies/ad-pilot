@@ -69,7 +69,7 @@ export default function RootLayout({
             <header className="sticky top-0 z-50 border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
               <Topbar />
             </header>
-            <main className="space-y-20 py-10 px-5 @container max-w-7xl mx-auto w-full">
+            <main className="py-10 px-5 @container max-w-7xl mx-auto w-full">
               {children}
             </main>
             <footer className="mt-auto" />

@@ -27,8 +27,8 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-6 w-170 py-2">
-      <div className="flex items-center gap-2 flex-1 border-b border-[#A5A4BF] pb-2">
+    <div className="flex flex-col md:flex-row items-center gap-6 py-2 w-full max-w-2xl">
+      <div className="flex items-center gap-2 flex-1 border-b border-[#A5A4BF] pb-2 grow">
         <SvgSearch className="w-5 fill-[#BCBCCB]" />
         <input
           type="text"

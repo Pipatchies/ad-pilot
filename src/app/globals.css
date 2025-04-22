@@ -101,7 +101,7 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: hsl(260, 32%, 26%);
   --card: hsl(257,12%,89%);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
