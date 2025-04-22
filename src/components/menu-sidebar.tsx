@@ -87,7 +87,7 @@ export default function MenuSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="bg-sidebar px-4 my-3">
+      <SidebarHeader className="bg-sidebar px-4 my-2">
         <div className="flex items-center">
         <Link href="/dashboard">
           <Image
