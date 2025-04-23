@@ -25,12 +25,12 @@ export default function Topbar() {
   }, [query]);
 
   return (
-    <div className="bg-white flex items-end sm:items-center justify-between px-4 md:px-6 w-full text-primary gap-6">
+    <div className="flex items-end sm:items-center justify-between px-4 md:px-6 w-full text-primary gap-6">
       {/* Bloc gauche */}
-      <div className="flex items-center gap-4 flex-1">
+      <div className="flex items-center gap-6 2xl:gap-52 flex-1 ">
         <SidebarTrigger />
-        <div className="flex items-center gap-2 border-b border-primary/40 px-3 py-2 w-full">
-          <SvgSearch className="w-5 fill-primary" />
+        <div className="flex items-center border-b border-primary/40 px-3 py-2 flex-grow max-w-5xl">
+          <SvgSearch className="w-8 fill-primary" />
           <input
             type="text"
             value={query}
@@ -53,7 +53,7 @@ export default function Topbar() {
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="relative flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10">
             <SvgNotification className="w-5 h-5 sm:w-6 sm:h-6" />
-            <span className="absolute top-0 right-1 h-2.5 w-2.5 rounded-full bg-destructive border border-white" />
+            <span className="absolute top-1 lg:right-3 right-1 h-2.5 w-2.5 rounded-full bg-destructive border border-white" />
           </div>
 
           <div className="border-r h-5 hidden sm:block" />
