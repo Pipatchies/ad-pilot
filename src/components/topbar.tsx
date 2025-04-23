@@ -27,9 +27,9 @@ export default function Topbar() {
   return (
     <div className="flex items-end sm:items-center justify-between px-4 md:px-6 w-full text-primary gap-6">
       {/* Bloc gauche */}
-      <div className="flex items-center gap-6 2xl:gap-52 flex-1 ">
+      <div className="flex items-center gap-6 2xl:gap-28 flex-1 ">
         <SidebarTrigger />
-        <div className="flex items-center border-b border-primary/40 px-3 py-2 flex-grow max-w-5xl">
+        <div className="flex items-center border-b border-primary/40 px-3 py-2 flex-grow max-w-4xl">
           <SvgSearch className="w-8 fill-primary" />
           <input
             type="text"
