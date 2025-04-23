@@ -54,7 +54,7 @@ const BroadcastData = {
 
 export default function SpaceRecap() {
   return (
-    <section className="space-y-6">
+    <section className="space-y-15">
       <Typography variant="h1">Titre de la campagne</Typography>
 
       <div className="flex flex-wrap gap-x-3 items-center">
