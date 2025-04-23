@@ -41,7 +41,7 @@ export default function DetailsCard({
 }: DetailsCardProps) {
   return (
       <Card className={cn(
-        "text-primary bg-card/50 h-[250px] shadow-none border-none gap-y-4 w-full",
+        "text-primary bg-card/50 h-[250px] shadow-none border-none gap-y-4 w-full flex justify-center",
       variant === "media" && ""
     )}
     >
