@@ -12,7 +12,7 @@ export default function ClientLayout({
       <SidebarProvider>
         <MenuSidebar />
         <div className="flex flex-col min-h-screen w-full">
-          <header className="sticky top-0 z-50 border-b border-gray-200 bg-white sm:px-6 py-4 shadow-sm">
+          <header className="sticky top-0 z-50 border-b border-gray-200 sm:px-6 py-4 shadow-topbar bg-white ">
             <Topbar />
           </header>
           <main className="py-10 px-5 @container max-w-7xl mx-auto w-full">

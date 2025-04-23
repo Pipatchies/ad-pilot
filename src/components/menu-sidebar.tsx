@@ -90,8 +90,8 @@ export default function MenuSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="bg-sidebar px-4 my-2">
-        <div className="flex items-center">
+      <SidebarHeader className="bg-sidebar px-4 py-3.25">
+        <div>
           <Link href="/dashboard">
             <Image
               src="/logo-ad-pilot.png"
@@ -122,7 +122,7 @@ export default function MenuSidebar() {
                             className={cn(
                               isActive(item.subItems[0].url)
                                 ? "fill-destructive"
-                                : "fill-[#A5A4BF]",
+                                : "fill-[#A5A4BF]"
                             )}
                           >
                             {item.icon}
@@ -150,10 +150,7 @@ export default function MenuSidebar() {
                                 : "bg-black/20 rounded-none p-8"
                             }
                           >
-                            <Link
-                              href={sub.url}
-                              className="flex items-center gap-2"
-                            >
+                            <Link href={sub.url}>
                               {sub.icon && (
                                 <span
                                   className={cn(
@@ -185,7 +182,7 @@ export default function MenuSidebar() {
                       : "bg-black/20 rounded-none"
                   )}
                 >
-                  <Link href={item.url} className="flex items-center gap-3">
+                  <Link href={item.url}>
                     {item.icon && (
                       <span
                         className={cn(
