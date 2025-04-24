@@ -1,7 +1,7 @@
 import DetailsCard from "@/components/details-card";
 import Typography from "@/components/typography";
 import React from "react";
-import LatestFiles from "../campaign/components/latest-files";
+import LatestFiles from "../../../components/latest-files";
 
 const campaignData = [
   {
