@@ -11,10 +11,12 @@ type Props = {
   };
   data: {
     title: string;
-    description: string;
-    startDate: Date;
+    description?: string;
+    startDate?: Date;
+    age?: string;
+    subject?: string;
   }[];
-  variant: "media" | "default" | "campaign";
+  variant: "media" | "default" | "campaign" | "target";
   className?: string;
 };
 

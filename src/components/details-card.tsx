@@ -20,13 +20,15 @@ type IconType = {
 
 type DetailsCardProps = {
   title: string;
-  description: string;
+  description?: string;
   campaignTitle?: string;
-  startDate: Date;
+  startDate?: Date;
   endDate?: Date;
   status?: string;
   icons?: IconType[];
-  variant: "default" | "campaign" | "media";
+  age?: string;
+  subject?: string;
+  variant: "default" | "campaign" | "media" | "target";
 };
 
 export default function DetailsCard({
@@ -37,11 +39,13 @@ export default function DetailsCard({
   endDate,
   status,
   icons,
+  age,
+  subject,
   variant,
 }: DetailsCardProps) {
   return (
       <Card className={cn(
-        "text-primary bg-card/50 h-[250px] shadow-none border-none gap-y-4 w-full flex justify-center",
+        "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center",
       variant === "media" && ""
     )}
     >
@@ -69,13 +73,20 @@ export default function DetailsCard({
               </CardDescription>
             </>
           )}
+          {( variant === "target") && (
+            <>
+              <Typography variant="h3" className="mb-0">
+                {title}
+              </Typography>
+            </>
+          )}
         </CardHeader>
         <CardContent>
           {variant === "campaign" && (
             <ul className="space-y-1">
               <li>
                 <span className="underline">Date de lancement :</span>{" "}
-                {startDate.toLocaleDateString()}
+                {startDate?.toLocaleDateString()}
               </li>
               <li>
                 <span className="underline">Date de fin :</span>{" "}
@@ -96,7 +107,7 @@ export default function DetailsCard({
               )}
               <li>
                 <span className="underline">Date</span> :{" "}
-                {startDate.toLocaleDateString()}
+                {startDate?.toLocaleDateString()}
               </li>
             </ul>
           )}
@@ -106,7 +117,20 @@ export default function DetailsCard({
               <ul className="space-y-1">
                 <li>
                   <span className="underline">Date</span> :{" "}
-                  {startDate.toLocaleDateString()}
+                  {startDate?.toLocaleDateString()}
+                </li>
+              </ul>
+            </>
+          )}
+
+          {variant === "target" && (
+            <>
+              <ul className="space-y-1">
+                <li>
+                  <span className="underline">Tranche d'âge</span> : {age}
+                </li>
+                <li>
+                  <span className="underline">Sujet</span> : {subject}
                 </li>
               </ul>
             </>
