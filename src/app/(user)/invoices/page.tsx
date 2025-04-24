@@ -19,7 +19,7 @@ const invoicesCardData = [
 export default function page() {
   return (
     <section>
-        <Typography variant="h1" className='lg:mb-20 mt-10'> Les factures</Typography>
+        <Typography variant="h1" className='lg:mb-20'> Les factures</Typography>
     <div className="flex flex-wrap sm:items-center sm:justify-between gap-6 mb-6">
         {invoicesCardData.map((data, index) => (
         <InvoicesCard
