@@ -1,149 +1,35 @@
-"use client";
-import InvoicesTable from '@/components/invoices-table';
-import SearchBar from '@/components/search-bar';
-import Typography from '@/components/typography'
 import React from 'react'
+import InvoicesCard from '../../../components/invoices-card'
+import Typography from '@/components/typography'
+import SvgVerywell from '@/components/icons/Verywell';
+import { url } from 'inspector';
 
-const invoicesData = [
+const invoicesCardData = [
   {
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-{
-  name: "Facture N°123456789",
-  campagne: "Titre de la campagne",
-  htprice: 20000,
-  ttcprice: 24000,
-  date: new Date("2025-01-13"),
-  dueDate: new Date("2025-03-30"),
-},
-]
+    title: "Facture agence",
+    icon: <SvgVerywell />,
+    url: "/invoices/agency"
+  },
+  {
+    title: "Facture régie",
+    url: "/invoices/regie"
+  },
+];
 
-export default function Invoice() {
+export default function page() {
   return (
-    <div className="px-4 md:px-8">
-      <Typography variant="h1" className="mb-6">
-        Les factures
-      </Typography>
-
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <Typography variant="h2" className="mb-0">
-          Factures agence
-        </Typography>
-        <SearchBar />
+    <section>
+        <Typography variant="h1" className='lg:mb-20'> Les factures</Typography>
+    <div className="flex flex-wrap sm:items-center sm:justify-between gap-6 mb-6">
+        {invoicesCardData.map((data, index) => (
+        <InvoicesCard
+          key={index}
+          title={data.title}
+          icon={data.icon}
+          url={data.url}
+        />
+      ))}
       </div>
-      
-      <div className="overflow-x-auto">
-        <InvoicesTable invoices={invoicesData} />
-      </div>
-    </div>
-  );
+    </section>
+  )
 }

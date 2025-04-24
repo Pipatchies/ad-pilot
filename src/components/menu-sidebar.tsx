@@ -82,7 +82,9 @@ const menuItems = [
 export default function MenuSidebar() {
   const pathname = usePathname();
 
-  const isActive = (url: string) => pathname === url;
+  const isActive = (url: string) => {
+    return pathname === url || pathname.startsWith(url);
+  };
 
   const isGroupActive = (subItems: (typeof menuItems)[0]["subItems"]) => {
     return subItems?.some((sub) => isActive(sub.url));
