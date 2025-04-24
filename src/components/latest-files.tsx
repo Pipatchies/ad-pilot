@@ -11,10 +11,12 @@ type Props = {
   };
   data: {
     title: string;
-    description: string;
-    startDate: Date;
+    description?: string;
+    startDate?: Date;
+    age?: string;
+    subject?: string;
   }[];
-  variant: "media" | "default" | "campaign";
+  variant: "media" | "default" | "campaign" | "target";
   className?: string;
 };
 
@@ -28,7 +30,7 @@ export default function LatestFiles({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex flex-wrap items-center justify-between">
-        <Typography variant="h2" className="mb-0">
+        <Typography variant={variant === "target" ? "h1" : "h2"} className={variant === "target" ? "font-bold pb-10" : "mb-0"}>
           {title}
         </Typography>
         {cta && (

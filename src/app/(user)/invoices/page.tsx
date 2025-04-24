@@ -2,7 +2,6 @@ import React from 'react'
 import InvoicesCard from '../../../components/invoices-card'
 import Typography from '@/components/typography'
 import SvgVerywell from '@/components/icons/Verywell';
-import { url } from 'inspector';
 
 const invoicesCardData = [
   {

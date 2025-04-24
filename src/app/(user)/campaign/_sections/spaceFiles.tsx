@@ -1,5 +1,5 @@
 import React from "react";
-import LatestFiles from "../../../../components/latest-files";
+import LatestFiles from "@/components/latest-files";
 
 const mediaData = [
   {

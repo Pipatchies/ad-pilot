@@ -36,7 +36,7 @@ const menuItems = [
     icon: <SvgDocument />,
     subItems: [
       { label: "La campagne", icon: <SvgFusee />, url: "/campaign" },
-      { label: "Les cibles", icon: <SvgProfil />, url: "#" },
+      { label: "Les cibles", icon: <SvgProfil />, url: "/targets" },
       { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
       { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
       { label: "Factures", icon: <SvgFacture />, url: "#" },
@@ -122,7 +122,7 @@ export default function MenuSidebar() {
                         {item.icon && (
                           <span
                             className={cn(
-                              isActive(item.subItems[0].url)
+                              isGroupActive(item.subItems)
                                 ? "fill-destructive"
                                 : "fill-[#A5A4BF]"
                             )}
