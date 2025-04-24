@@ -55,7 +55,7 @@ export default function InvoicesTable({ invoices, variant }: InvoiceTableProps) 
                 <TableCell>{invoice.agencyInvoice}</TableCell>
                 )}
                 {variant === "regie" && (
-                <TableCell className="px-10">{invoice.regieName}</TableCell>
+                <TableCell className="px-10 font-bold underline">{invoice.regieName}</TableCell>
                 )}
                 <TableCell className="font-bold underline pr-10">{invoice.campagne}</TableCell>
                 <TableCell>{invoice.htprice.toLocaleString("fr-FR")} €</TableCell>
