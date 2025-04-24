@@ -6,17 +6,17 @@ const targetData = [
   {
     title: "Titre de la cible",
     age: "15 - 20 ans",
-    subject: "Sujet : Lorem ipsum",
+    subject: "Lorem ipsum",
   },
   {
     title: "Titre de la cible",
     age: "30 - 50 ans",
-    subject: "Sujet : Lorem ipsum",
+    subject: "Lorem ipsum",
   },
   {
     title: "Titre de la cible",
     age: "50 - 60 ans",
-    subject: "Sujet : Lorem ipsum",
+    subject: "Lorem ipsum",
   },
 ];
 
