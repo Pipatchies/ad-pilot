@@ -75,7 +75,7 @@ const targetData = [
   },
 ];
 
-export default function Target1() {
+export default function Target2() {
   return (
     <section>
       <Typography variant="h1">Titre de la campagne</Typography>
