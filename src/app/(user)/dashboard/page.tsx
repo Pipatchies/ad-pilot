@@ -131,7 +131,7 @@ const invoiceData = [
 export default function Dashboard() {
   return (
     <section className="flex flex-col gap-10">
-      <Typography variant="h1" className="mb-10">
+      <Typography variant="h1">
         Tableau de bord
       </Typography>
       <LatestFiles
