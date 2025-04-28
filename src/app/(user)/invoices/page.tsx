@@ -1,5 +1,5 @@
 import React from 'react'
-import InvoicesCard from '../../../components/invoices-card'
+import FolderCard from '../../../components/folder-card'
 import Typography from '@/components/typography'
 import SvgVerywell from '@/components/icons/Verywell';
 
@@ -21,7 +21,7 @@ export default function page() {
         <Typography variant="h1" className='lg:mb-20'> Les factures</Typography>
     <div className="flex flex-wrap sm:items-center sm:justify-between gap-6 mb-6">
         {invoicesCardData.map((data, index) => (
-        <InvoicesCard
+        <FolderCard
           key={index}
           title={data.title}
           icon={data.icon}
