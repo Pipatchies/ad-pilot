@@ -39,7 +39,7 @@ const menuItems = [
       { label: "Les cibles", icon: <SvgProfil />, url: "/targets" },
       { label: "Bibliothèque", icon: <SvgImageSmall />, url: "/librairy" },
       { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
-      { label: "Factures", icon: <SvgFacture />, url: "#" },
+      { label: "Factures", icon: <SvgFacture />, url: "/invoices" },
       { label: "Documents", icon: <SvgDocument />, url: "#" },
     ],
   },
