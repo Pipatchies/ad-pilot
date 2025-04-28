@@ -1,28 +1,21 @@
 import Typography from "@/components/typography";
-import CtaButton from "@/components/cta-button";
 import DetailsCard from "@/components/details-card";
+import Link from "next/link";
 
 type Props = {
   title: string;
-  cta?: {
-    text: string;
-    url: string;
-    target: string;
-  };
   data: {
     title: string;
-    description?: string;
-    startDate?: Date;
-    age?: string;
-    subject?: string;
+    age: string;
+    subject: string;
+    slug: string;
   }[];
-  variant: "media" | "default" | "campaign";
   className?: string;
+  variant: "target";
 };
 
-export default function LatestFiles({
+export default function TargetCards({
   title,
-  cta,
   data,
   variant,
   className = "",
@@ -30,21 +23,16 @@ export default function LatestFiles({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex flex-wrap items-center justify-between">
-        <Typography variant="h2" className="mb-0">
+        <Typography variant="h1" className="font-bold pb-10">
           {title}
         </Typography>
-        {cta && (
-        <CtaButton
-          props={cta}
-          className="border transition h-10"
-          variant="noIcon"
-        />
-        )}
       </div>
       <div className="flex gap-5 flex-wrap w-full">
         {data.map((item, index) => (
           <div key={index} className="w-full xl:basis-1/4 grow">
+            <Link href={`/targets/${item.slug}`} className="block h-full">
             <DetailsCard variant={variant} {...item} />
+            </Link>
           </div>
         ))}
       </div>
