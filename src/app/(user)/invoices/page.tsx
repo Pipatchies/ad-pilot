@@ -3,7 +3,7 @@ import FolderCard from '../../../components/folder-card'
 import Typography from '@/components/typography'
 import SvgVerywell from '@/components/icons/Verywell';
 
-const invoicesCardData = [
+const folderCardData = [
   {
     title: "Facture agence",
     icon: <SvgVerywell />,
@@ -20,7 +20,7 @@ export default function page() {
     <section>
         <Typography variant="h1" className='lg:mb-20'> Les factures</Typography>
     <div className="flex flex-wrap sm:items-center sm:justify-between gap-6 mb-6">
-        {invoicesCardData.map((data, index) => (
+        {folderCardData.map((data, index) => (
         <FolderCard
           key={index}
           title={data.title}
