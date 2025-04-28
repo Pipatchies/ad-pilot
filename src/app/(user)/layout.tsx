@@ -22,8 +22,8 @@ export default function ClientLayout({
             <Topbar />
           </header>
           {showBackButton ? (
-          <main className="lg:py-20 lg:px-22 px-5 py-10 @container max-w-8xl mx-auto w-full">
-            <div className="flex flex-wrap items-start gap-10">
+          <main className="lg:py-20 lg:px-15 px-5 py-10 @container max-w-[1400px] w-full">
+            <div className="flex flex-wrap lg:flex-nowrap items-start gap-10 mb-10">
               <BackButton />
             {children}
             </div>
