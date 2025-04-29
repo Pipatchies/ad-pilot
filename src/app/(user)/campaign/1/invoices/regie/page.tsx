@@ -157,16 +157,16 @@ const invoicesData = [
   },
 ];
 
-export default function RegieInvoice() {
+export default function CampaignRegieInvoice() {
   return (
     <div>
-      <Typography variant="h1" className="mb-6">
+      <Typography variant="h1">Titre de la campagne</Typography>
+      <Typography variant="h1" className="font-bold">
         Les factures
       </Typography>
-
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <Typography variant="h2" className="mb-0">
-          Factures régie
+        <Typography variant="h2" className="mb-0 font-[800] text-[28px]">
+          Factures régies
         </Typography>
         <SearchBar />
       </div>
@@ -175,7 +175,7 @@ export default function RegieInvoice() {
         <InvoicesTable
           invoices={invoicesData}
           variant="regie"
-          showCampaign={true}
+          showCampaign={false}
         />
       </div>
     </div>

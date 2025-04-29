@@ -35,12 +35,12 @@ const menuItems = [
     label: "Campagne titre 1",
     icon: <SvgDocument />,
     subItems: [
-      { label: "La campagne", icon: <SvgFusee />, url: "/campaign" },
-      { label: "Les cibles", icon: <SvgProfil />, url: "/targets" },
-      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "/librairy" },
-      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "/digital" },
-      { label: "Factures", icon: <SvgFacture />, url: "/invoices" },
-      { label: "Documents", icon: <SvgDocument />, url: "/documents" },
+      { label: "La campagne", icon: <SvgFusee />, url: "/campaign/1/campaign-details" },
+      { label: "Les cibles", icon: <SvgProfil />, url: "/campaign/1/targets" },
+      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "/campaign/1/librairy" },
+      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "/campaign/1/digital" },
+      { label: "Factures", icon: <SvgFacture />, url: "/campaign/1/invoices" },
+      { label: "Documents", icon: <SvgDocument />, url: "/campaign/1/documents" },
     ],
   },
   {

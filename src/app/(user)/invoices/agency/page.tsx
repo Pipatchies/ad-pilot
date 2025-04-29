@@ -127,7 +127,7 @@ const invoicesData = [
 },
 ]
 
-export default function Invoice() {
+export default function AgencyInvoice() {
   return (
     <div>
       <Typography variant="h1" className="mb-6">
@@ -144,7 +144,8 @@ export default function Invoice() {
       <div className="overflow-x-auto">
         <InvoicesTable 
         invoices={invoicesData}
-        variant="agency" />
+        variant="agency"
+        showCampaign={true}/>
       </div>
     </div>
   );

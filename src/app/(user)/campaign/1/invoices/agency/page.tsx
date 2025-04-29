@@ -7,8 +7,6 @@ import React from "react";
 const invoicesData = [
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -17,8 +15,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -27,8 +23,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -37,8 +31,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -47,8 +39,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -57,8 +47,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -67,8 +55,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -77,8 +63,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -87,8 +71,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -97,8 +79,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -107,8 +87,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -117,8 +95,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -127,8 +103,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -137,8 +111,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -147,8 +119,6 @@ const invoicesData = [
   },
   {
     name: "Facture N°123456789",
-    agencyInvoice: "N° Verywell-123456789",
-    regieName: "Meta",
     campagne: "Titre de la campagne",
     htprice: 20000,
     ttcprice: 24000,
@@ -157,26 +127,22 @@ const invoicesData = [
   },
 ];
 
-export default function RegieInvoice() {
+export default function CampaignAgencyInvoice() {
   return (
     <div>
-      <Typography variant="h1" className="mb-6">
+      <Typography variant="h1">Titre de la campagne</Typography>
+      <Typography variant="h1" className="font-bold">
         Les factures
       </Typography>
-
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <Typography variant="h2" className="mb-0">
-          Factures régie
+        <Typography variant="h2" className="mb-0 font-[800] text-[28px]">
+          Factures agence
         </Typography>
         <SearchBar />
       </div>
 
       <div className="overflow-x-auto">
-        <InvoicesTable
-          invoices={invoicesData}
-          variant="regie"
-          showCampaign={true}
-        />
+        <InvoicesTable invoices={invoicesData} variant="agency" showCampaign={false} />
       </div>
     </div>
   );
