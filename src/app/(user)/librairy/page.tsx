@@ -21,7 +21,7 @@ const folderCardData = [
   },
 ];
 
-export default function Librairy() {
+export default function Web() {
   return (
     <section>
         <Typography variant="h1"> Titre de la campagne </Typography>
