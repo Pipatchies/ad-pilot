@@ -3,11 +3,11 @@ import type { SVGProps } from "react";
 const SvgUploder = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={22.015}
-    height={20.319}
+    viewBox="0 0 22 20"
+    fill="currentColor"
     {...props}
   >
-    <g fill="#3b2d57" data-name="Groupe 4">
+    <g data-name="Groupe 4">
       <path
         d="M21.167 13.548h-1.7a.8.8 0 0 0-.842.848v2.117a.4.4 0 0 1-.427.421H3.808a.4.4 0 0 1-.427-.421v-2.117a.8.8 0 0 0-.848-.848H.843a.8.8 0 0 0-.848.848v5.076a.8.8 0 0 0 .848.848h20.319a.8.8 0 0 0 .848-.848v-5.076a.8.8 0 0 0-.848-.848Zm0 0"
         data-name="Trac\xE9 4"

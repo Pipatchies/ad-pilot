@@ -45,8 +45,8 @@ export default function Topbar() {
       <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-4 items-end sm:items-center text-sm">
         <CtaButton
           props={ctaProps}
-          icon={<SvgCrayon className="text-primary group-hover:text-white transition-colors w-4 h-4" />}
-          className="flex items-center gap-1 h-9 border px-3 py-1 text-xs sm:text-sm"
+          icon={<SvgCrayon />}
+          className="flex items-center border px-3 py-1 text-xs sm:text-sm"
           variant="default"
         />
 

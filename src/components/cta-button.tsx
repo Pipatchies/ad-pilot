@@ -43,12 +43,10 @@ export default function CtaButton({ props, className, variant, userType, icon }:
             className
           )}
         >
-          <div className="flex items-center justify-between w-fit space-x-5">
           {icon && <div className="mr-2">{icon}</div>}
-            <span className="block !leading-none relative top-[3px] font-[600]">
+            <span className="block !leading-none relative font-[600] cursor-pointer">
               {text}
             </span>
-          </div>
         </Button>
       );
 

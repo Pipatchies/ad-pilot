@@ -51,7 +51,7 @@ const visualsCardData: DetailsCardProps[] = [
   },
 ];
 
-export default function Posters() {
+export default function TV() {
   return (
     <section>
       <Typography variant="h1">Titre de la campagne</Typography>

@@ -38,7 +38,7 @@ const menuItems = [
       { label: "La campagne", icon: <SvgFusee />, url: "/campaign" },
       { label: "Les cibles", icon: <SvgProfil />, url: "/targets" },
       { label: "Bibliothèque", icon: <SvgImageSmall />, url: "/librairy" },
-      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
+      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "/digital" },
       { label: "Factures", icon: <SvgFacture />, url: "/invoices" },
       { label: "Documents", icon: <SvgDocument />, url: "#" },
     ],
