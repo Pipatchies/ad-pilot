@@ -70,7 +70,7 @@ const menuItems = [
   {
     label: "Campagne archivées",
     icon: <SvgPictoArchive />,
-    url: "#",
+    url: "/archived",
   },
   {
     label: "Factures",
