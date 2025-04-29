@@ -5,13 +5,13 @@ import SvgOpenFolder from "./icons/OpenFolder";
 import Typography from "./typography";
 import Link from "next/link";
 
-interface InvoicesCardProps {
+interface FolderCardProps {
   title: string;
   icon?: React.ReactNode;
   url: string;
 }
 
-export default function InvoicesCard({ title, icon, url }: InvoicesCardProps) {
+export default function FolderCard({ title, icon, url }: FolderCardProps) {
   return (
     <Link href={url} className="w-full basis-1/4 grow">
       <Card

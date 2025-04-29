@@ -9,11 +9,11 @@ const SvgGroupe6 = (props: SVGProps<SVGSVGElement>) => (
   >
     <defs>
       <clipPath id="groupe6_svg__a">
-        <path fill="#fff" d="M0 0h37.009v37.099H0z" data-name="Rectangle 222" />
+        <path d="M0 0h37.009v37.099H0z" data-name="Rectangle 222" />
       </clipPath>
     </defs>
     <g data-name="Groupe 6">
-      <g fill="#fff" clipPath="url(#groupe6_svg__a)" data-name="Groupe 535">
+      <g clipPath="url(#groupe6_svg__a)" data-name="Groupe 535">
         <path
           d="M32.77 4.971a1.57 1.57 0 0 0-2.176-.317 1.52 1.52 0 0 0-.317 2.145c4.9 6.489 4.9 17.043 0 23.532a1.5 1.5 0 0 0 .317 2.145 1.68 1.68 0 0 0 2.176-.317c5.658-7.486 5.658-19.687 0-27.188"
           data-name="Trac\xE9 404"
