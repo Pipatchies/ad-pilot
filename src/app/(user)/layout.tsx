@@ -12,7 +12,7 @@ export default function ClientLayout({
 }>) {
 
   const pathname = usePathname();
-    const showBackButton = /^\/(targets|librairy)\/[^\/]+$/.test(pathname);
+    const showBackButton = /^\/(targets|librairy|archived)\/[^\/]+$/.test(pathname);
   return (
     <>
       <SidebarProvider>
@@ -25,7 +25,7 @@ export default function ClientLayout({
           <main className="lg:py-20 lg:px-15 px-5 py-10 @container max-w-[1400px] w-full">
             <div className="flex flex-wrap lg:flex-nowrap items-start gap-15 mb-10">
               <BackButton />
-            {children}
+              <div className="flex-1">{children}</div>
             </div>
             </main>
             ) : (
