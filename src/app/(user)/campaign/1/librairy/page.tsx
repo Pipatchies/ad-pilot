@@ -2,22 +2,24 @@ import React from 'react'
 import FolderCard from '../../../../../components/folder-card'
 import Typography from '@/components/typography'
 
+const campaignId = 1;
+
 const folderCardData = [
   {
     title: "Visuels Affiches",
-    url: "/librairy/posters"
+    url: `/campaign/${campaignId}/librairy/posters`
   },
   {
     title: "Visuels TV",
-    url: "/librairy/tv"
+    url: `/campaign/${campaignId}/librairy/tv`
   },
   {
     title: "Visuels Web",
-    url: "/librairy/web"
+    url: `/campaign/${campaignId}/librairy/web`
   },
   {
     title: "Visuels Panneaux",
-    url: "/librairy/billboard"
+    url: `/campaign/${campaignId}/librairy/billboard`
   },
 ];
 
