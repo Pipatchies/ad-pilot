@@ -1,10 +1,10 @@
 import React from "react";
 import { Domaine, Television } from "@/components/icons";
 import Typography from "@/components/typography";
-import StepCard, { Step } from "../components/step-card";
-import BudgetCard from "../components/budget-card";
-import ChartCard from "../components/chart-card";
-import BroadcastCard from "../components/broadcast-card";
+import StepCard, { Step } from "@/components/step-card";
+import BudgetCard from "@/components//budget-card";
+import ChartCard from "@/components/chart-card";
+import BroadcastCard from "@/components/broadcast-card";
 
 const stepCardData: Step[] = [
   {
