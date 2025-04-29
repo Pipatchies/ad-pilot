@@ -58,30 +58,26 @@ export default function Posters() {
       <Typography variant="h1" className="font-bold">
         La bibliothèque de médias
       </Typography>
-      <div className="flex flex-wrap xl:gap-100">
-        <div className="w-full md:w-auto">
-          <Typography variant="h2" className="mb-0 font-[800] text-[28px]">
-            Visuels Affiches
-          </Typography>
-        </div>
-        <div className="w-full md:flex-1">
-          <SearchBar />
-        </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <Typography variant="h2" className="mb-0 font-[800] text-[28px]">
+          Visuels Affiches
+        </Typography>
+        <SearchBar />
       </div>
       <div className="flex flex-wrap gap-10">
-      {visualsCardData.map((item, index) => (
+        {visualsCardData.map((item, index) => (
           <div key={index} className="w-full xl:basis-1/4 grow">
-          <VisualsCard
-            key={index}
-            title={item.title}
-            type={item.type}
-            date={item.date}
-            icon={item.icon}
-            variant={item.variant}
-          />
+            <VisualsCard
+              key={index}
+              title={item.title}
+              type={item.type}
+              date={item.date}
+              icon={item.icon}
+              variant={item.variant}
+            />
           </div>
-              ))}
-              </div>
+        ))}
+      </div>
     </section>
   );
 }
