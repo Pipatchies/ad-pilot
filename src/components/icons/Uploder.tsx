@@ -3,6 +3,8 @@ import type { SVGProps } from "react";
 const SvgUploder = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    width={22.015}
+    height={20.319}
     viewBox="0 0 22 20"
     fill="currentColor"
     {...props}

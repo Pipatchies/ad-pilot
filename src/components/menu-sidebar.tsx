@@ -40,7 +40,7 @@ const menuItems = [
       { label: "Bibliothèque", icon: <SvgImageSmall />, url: "/librairy" },
       { label: "Analyse digitale", icon: <SvgStatistiques />, url: "/digital" },
       { label: "Factures", icon: <SvgFacture />, url: "/invoices" },
-      { label: "Documents", icon: <SvgDocument />, url: "#" },
+      { label: "Documents", icon: <SvgDocument />, url: "/documents" },
     ],
   },
   {
