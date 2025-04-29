@@ -1,5 +1,5 @@
 import React from 'react'
-import FolderCard from '../../../components/folder-card'
+import FolderCard from '../../../../../components/folder-card'
 import Typography from '@/components/typography'
 
 const folderCardData = [

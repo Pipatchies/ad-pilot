@@ -15,7 +15,7 @@ const folderCardData = [
   },
 ];
 
-export default function page() {
+export default function Invoices() {
   return (
     <section>
         <Typography variant="h1" className='lg:mb-20'> Les factures</Typography>
