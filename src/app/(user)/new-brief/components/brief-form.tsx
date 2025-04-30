@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function brief-form() {
+export default function BriefForm() {
   return (
     <div>
       
