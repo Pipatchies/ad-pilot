@@ -37,7 +37,7 @@ export default function DocumentsTable({ documents }: DocumentsTableProps) {
               <TableRow className="text-lg h-15 border-[#A5A4BF]" key={index}>
                 <TableCell className="pr-10">{documents.name}</TableCell>
                 <TableCell>{documents.type}</TableCell>
-                <TableCell>{documents.date.toLocaleDateString()} €</TableCell>
+                <TableCell>{documents.date.toLocaleDateString()}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-4">
                     <SvgEyeIcon />
