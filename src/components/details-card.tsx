@@ -57,13 +57,13 @@ export default function DetailsCard({
       <CardHeader>
         {variant === "media" && (
           <>
-            <div className="bg-primary flex items-center justify-center h-16 w-16">
+            <div className="bg-primary flex items-center justify-center h-17 w-17 fill-white">
               <SvgImageSmall />
             </div>
             <Typography variant="h3" className="mb-0">
               {title}
             </Typography>
-            <CardDescription className="italic text-primary">
+            <CardDescription className="italic text-primary ">
               {description}
             </CardDescription>
           </>
