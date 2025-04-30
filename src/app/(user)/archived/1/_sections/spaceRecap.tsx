@@ -1,5 +1,4 @@
 import React from "react";
-import { Domaine, Television } from "@/components/icons";
 import Typography from "@/components/typography";
 import StepCard, { Step } from "@/components/step-card";
 import BudgetCard from "@/components//budget-card";
@@ -25,12 +24,12 @@ const stepCardData: Step[] = [
   {
     id: 4,
     label: "Diffusion en cours",
-    status: "current",
+    status: "completed",
   },
   {
     id: 5,
     label: "Bilan",
-    status: "upcoming",
+    status: "completed",
   },
 ];
 
@@ -46,23 +45,15 @@ const MediaData = [
 ];
 
 const BroadcastData = {
-  daysRemaining: 10,
+  daysRemaining: 0,
   startDate: "13/01/2025",
   endDate: "30/03/2025",
-  progress: 50,
+  progress: 100,
 };
 
 export default function SpaceRecap() {
   return (
     <section className="space-y-15">
-      <Typography variant="h1">Titre de la campagne</Typography>
-
-      <div className="flex flex-wrap gap-x-3 items-center">
-        <Domaine />
-        <Television />
-        <Typography className="m-0" variant="h4">Campagne digitale et télé</Typography>
-      </div>
-
       <Typography variant="h2">Récap de la campagne</Typography>
 
       <div className="flex flex-col space-y-6">

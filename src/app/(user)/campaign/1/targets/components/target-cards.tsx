@@ -30,7 +30,7 @@ export default function TargetCards({
       <div className="flex gap-5 flex-wrap w-full">
         {data.map((item, index) => (
           <div key={index} className="w-full xl:basis-1/4 grow">
-            <Link href={`/targets/${item.slug}`} className="block h-full">
+            <Link href={`/campaign/1/targets/${item.slug}`} className="block h-full">
             <DetailsCard variant={variant} {...item} />
             </Link>
           </div>

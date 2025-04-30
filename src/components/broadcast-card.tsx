@@ -22,7 +22,7 @@ export default function BroadcastCard({
           <Typography variant="h3">Diffusion</Typography>
           <div className="flex items-center gap-2 font-bold mb-4">
             <SvgSablier className="h-4 w-4" />
-            <span>{daysRemaining} jours restants</span>
+            <span>{progress === 100 ? "Terminée" : `${daysRemaining} jours restants`}</span>
           </div>
         </CardHeader>
         <CardContent>

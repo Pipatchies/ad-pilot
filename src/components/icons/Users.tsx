@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { SVGProps } from "react";
-const SvgSilhouetteDutilisateursMultiples = (
+const SvgUsers = (
   props: SVGProps<SVGSVGElement>
 ) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={57} height={47.968} {...props}>
@@ -11,4 +11,4 @@ const SvgSilhouetteDutilisateursMultiples = (
     />
   </svg>
 );
-export default SvgSilhouetteDutilisateursMultiples;
+export default SvgUsers;
