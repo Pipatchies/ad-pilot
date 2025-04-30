@@ -7,7 +7,7 @@ const SvgPictoArchive = (props: SVGProps<SVGSVGElement>) => (
     height={21.091}
     {...props}
   >
-    <g fill="#a5a4bf" data-name="Groupe 1454">
+    <g data-name="Groupe 1454">
       <path
         d="M1.535 6.222v14.061a.763.763 0 0 0 .808.808h17.94a.763.763 0 0 0 .808-.808V6.222Zm13.01 5.172H8.081a.808.808 0 0 1 0-1.616h6.464a.808.808 0 0 1 0 1.616"
         data-name="Trac\xE9 722"

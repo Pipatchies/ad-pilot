@@ -48,7 +48,7 @@ const variantClasses = {
   h4: "text-xl italic mb-4 font-mont",
   h5: "text-lg font-mont",
   h6: "text-base font-mont",
-  p: "lg:text-pretty",
+  p: "text-lg font-[500]",
   blockquote: "mt-6 border-l-2 pl-6 italic",
   ul: "ml-6 w-full xl:w-auto list-disc text-sm",
   table: "w-full",
