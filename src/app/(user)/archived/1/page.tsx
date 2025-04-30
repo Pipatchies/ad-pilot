@@ -2,6 +2,7 @@ import React from "react";
 import SpaceRecap from "./_sections/spaceRecap";
 import Typography from "@/components/typography";
 import SpaceReport from "./_sections/spaceReport";
+import SpaceInvoices from "./_sections/spaceInvoices";
 
 
 export default function ArchivedCampaign() {
@@ -16,6 +17,7 @@ export default function ArchivedCampaign() {
       <div className="space-y-20">
       <SpaceReport />
       <SpaceRecap />
+      <SpaceInvoices />
       </div>
     </section>
   );
