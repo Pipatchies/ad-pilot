@@ -11,7 +11,7 @@ import SvgCrayon from "./icons/Crayon";
 
 const ctaProps = {
   text: "Déposer un brief",
-  url: "#",
+  url: "/new-brief",
   target: "self",
 };
 
