@@ -23,7 +23,7 @@ export default function SpaceReport() {
         </Typography>
         <CtaButton
           props={ctaButtonData}
-          className="border transition h-10 hover:border-primary hover:text-primary bg-primary text-white"
+          className="border transition h-10 hover:border-primary hover:bg-white hover:text-primary bg-primary text-white"
           variant="openModal"
         />
         </div>
