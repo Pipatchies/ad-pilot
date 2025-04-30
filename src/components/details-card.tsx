@@ -25,11 +25,12 @@ type DetailsCardProps = {
   startDate?: Date;
   endDate?: Date;
   archivedDate?: Date;
+  sendBy?: string;
   status?: string;
   icons?: IconType[];
   age?: string;
   subject?: string;
-  variant: "default" | "campaign" | "media" | "target" | "archived";
+  variant: "default" | "campaign" | "media" | "target" | "archived" | "invoice";
 };
 
 export default function DetailsCard({
@@ -39,6 +40,7 @@ export default function DetailsCard({
   startDate,
   endDate,
   archivedDate,
+  sendBy,
   status,
   icons,
   age,
@@ -68,7 +70,8 @@ export default function DetailsCard({
         )}
         {(variant === "campaign" ||
           variant === "default" ||
-          variant === "archived") && (
+          variant === "archived" ||
+        variant === "invoice") && (
           <>
             <Typography variant="h3" className="mb-0">
               {title}
@@ -150,6 +153,19 @@ export default function DetailsCard({
             <li>
               <span className="underline">Date d'archivage' :</span>{" "}
               {archivedDate?.toLocaleDateString()}
+            </li>
+          </ul>
+        )}
+
+        {variant === "invoice" && (
+          <ul className="space-y-1">
+            <li>
+              <span className="underline">Date :</span>{" "}
+              {startDate?.toLocaleDateString()}
+            </li>
+            <li>
+              <span className="underline">Emmetteur :</span>{" "}
+              {sendBy}
             </li>
           </ul>
         )}
