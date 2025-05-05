@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -78,8 +78,8 @@ const formSchema = z
   .object({
     periode: z
       .object({
-        from: z.date().optional(), 
-        to: z.date().optional(),
+        from: z.date(),
+        to: z.date(),
       })
       .refine((data) => data.from && data.to, {
         message: "Veuillez sélectionner une période",
