@@ -223,58 +223,52 @@ export default function BriefForm() {
                       <FormLabel className="text-lg font-semibold">
                         Période
                       </FormLabel>
-                      <div
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        className={cn(
-                          "w-full border border-[#A5A4BF] rounded-sm py-2 px-5 flex items-center justify-between",
-                          !field.value ? "text-primary" : "text-primary/50"
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            "text-base italic",
-                            field.value?.from && field.value?.to
-                              ? "text-primary"
-                              : "text-primary/50"
-                          )}
-                        >
-                          {field.value?.from && !field.value?.to
-                            ? `${format(field.value.from, "dd/MM/yyyy", {
-                                locale: fr,
-                              })} – ...`
-                            : field.value?.from && field.value?.to
-                            ? `${format(field.value.from, "dd/MM/yyyy", {
-                                locale: fr,
-                              })} - ${format(field.value.to, "dd/MM/yyyy", {
-                                locale: fr,
-                              })}`
-                            : "Sélectionner la période"}
-                        </span>
-                        <SvgCalendrier />
-                      </div>
 
-                      {calendarOpen && (
-                        <div
-                          className="absolute top-full z-50 mt-2 bg-white rounded-sm shadow border"
-                          onMouseEnter={handleMouseEnter}
-                          onMouseLeave={handleMouseLeave}
-                        >
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <div
+                            className={cn(
+                              "w-full border border-[#A5A4BF] rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
+                              !field.value ? "text-primary" : "text-primary/50"
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "text-base italic",
+                                field.value?.from && field.value?.to
+                                  ? "text-primary"
+                                  : "text-primary/50"
+                              )}
+                            >
+                              {field.value?.from && !field.value?.to
+                                ? `${format(field.value.from, "dd/MM/yyyy", {
+                                    locale: fr,
+                                  })} – ...`
+                                : field.value?.from && field.value?.to
+                                ? `${format(field.value.from, "dd/MM/yyyy", {
+                                    locale: fr,
+                                  })} - ${format(field.value.to, "dd/MM/yyyy", {
+                                    locale: fr,
+                                  })}`
+                                : "Sélectionner la période"}
+                            </span>
+                            <SvgCalendrier />
+                          </div>
+                        </PopoverTrigger>
+
+                        <PopoverContent className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]" align="start">
                           <Calendar
                             mode="range"
                             selected={field.value}
                             onSelect={(range) => {
                               field.onChange(range);
-                              if (range?.from && range?.to) {
-                                setCalendarOpen(false);
-                              }
                             }}
                             disabled={(date) => date < new Date("1900-01-01")}
                             initialFocus
                             locale={fr}
                           />
-                        </div>
-                      )}
+                        </PopoverContent>
+                      </Popover>
 
                       <FormMessage />
                     </FormItem>
