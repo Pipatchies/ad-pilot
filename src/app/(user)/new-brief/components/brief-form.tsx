@@ -10,7 +10,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -65,6 +65,8 @@ const diffusionRadios = [
     }),
     territoire: z.string({
       required_error: "Veuillez sélectionner un type de territoire",
+    }).min(1, {
+      message: "Veuillez sélectionner un type de territoire",
     }),
     villes: z.string().min(2, {
       message: "Veuillez inscrire au moins une ville",
