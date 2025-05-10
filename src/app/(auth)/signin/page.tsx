@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { useRouter } from "next/navigation"
+import { useSignIn, useUser } from "@clerk/nextjs"
 
 const formSchema = z.object({
   login: z.string().min(2, { message: "Le login est requis." }),
@@ -28,8 +29,9 @@ type FormValues = z.infer<typeof formSchema>
 export default function SignInPage() {
   const router = useRouter()
   
-  const [signedIn, setSignedIn] = useState(false)
-  const [error, setError] = useState("")
+  const { isLoaded, signIn, setActive } = useSignIn();
+  const { isSignedIn, user } = useUser();
+  const [error, setError] = useState("");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -39,19 +41,24 @@ export default function SignInPage() {
     },
   })
 
-  const onSubmit = (values: FormValues) => {
-    setError("")
-    const { login, password } = values
+  const onSubmit = async (values: FormValues) => {
+    setError("");
+    if (!isLoaded) return;
 
-    if (login === "admin" && password === "verywell") {
-      setSignedIn(true)
-      router.push("/dashboard")
-    } else {
-      setError("Identifiants incorrects.")
+    try {
+      const result = await signIn.create({
+        identifier: values.login,
+        password: values.password,
+      });
+
+      await setActive({ session: result.createdSessionId });
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError("Identifiants incorrects ou compte inexistant.");
     }
-  }
+  };
 
-  if (signedIn) {
+  if (isSignedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 text-center">
         <div className="space-y-6">
