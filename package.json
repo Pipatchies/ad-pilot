@@ -5,7 +5,7 @@
   "scripts": {
     "icons:build": "npx @svgr/cli --typescript --out-dir src/components/icons public/icons",
     "icons:watch": "npx @svgr/cli --typescript --out-dir src/components/icons public/icons --watch",
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
