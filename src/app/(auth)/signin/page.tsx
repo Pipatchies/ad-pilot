@@ -30,7 +30,7 @@ export default function SignInPage() {
   const router = useRouter()
   
   const { isLoaded, signIn, setActive } = useSignIn();
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn } = useUser();
   const [error, setError] = useState("");
 
   const form = useForm<FormValues>({
