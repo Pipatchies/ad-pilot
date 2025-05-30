@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ConvexClientProvider } from "./ConvexClientProvider";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const mont = localFont({
   src: [
@@ -66,7 +67,9 @@ export default function RootLayout({
       <body className={`${mont.variable} antialiased overflow-x-hidden`}>
         <div className="font-mont">
           <Toaster />
-          <ConvexClientProvider>{children}</ConvexClientProvider>
+          <ClerkProvider>
+            <ConvexClientProvider>{children}</ConvexClientProvider>
+          </ClerkProvider>
         </div>
       </body>
     </html>
