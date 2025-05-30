@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<!-- This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
@@ -35,4 +35,157 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-update
+update -->
+
+# 🚀 ad-pilot
+
+**ad-pilot** est une plateforme interne développée pour faciliter la communication entre notre agence et les partenaires médias. Elle centralise le suivi des campagnes de communication, la gestion des factures, des documents, et d'autres éléments liés à la relation client-média.
+
+---
+
+## 🔧 Stack technique
+
+- **Next.js** (App Router)
+- **TypeScript**
+- **Clerk** : gestion de l'authentification (connexion uniquement à ce stade)
+- **Convex** : backend en place (setup réalisé, pas encore utilisé)
+- **Tailwind CSS** 
+- **React Hook Form + Zod** : gestion de formulaires
+
+---
+
+## ✨ Fonctionnalités actuelles
+
+- Authentification sécurisée avec Clerk
+- Interface client prête côté frontend
+- Backend Convex configuré (intégration prochaine)
+
+---
+
+## 🚀 Lancer le projet en local
+
+### 1. Cloner le dépôt
+
+```bash
+git clone https://github.com/Verywell-Digital/ad-pilot.app.git
+```
+
+### 2. Installer les dépendances
+
+```bash
+pnpm install
+```
+
+### 3. Configurer l’environnement
+
+Créez un fichier `.env.local` à la racine du projet et ajoutez les variables d’environnement suivantes :
+
+```bash
+CONVEX_DEPLOYMENT=... # team: pipatchies, project: ad-pilot-com
+
+NEXT_PUBLIC_CONVEX_URL=...
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_..."
+```
+🔑 La clé Clerk est disponible sur https://dashboard.clerk.com
+🌐 L’URL Convex est fournie lors du setup via npx convex init
+
+### 4. Lancer l'application
+
+```bash
+pnpm run dev
+```
+
+## 🔐 Authentification Clerk
+
+L’authentification utilisateur repose sur Clerk, uniquement pour la connexion (sign-in).
+Les identifiants et mots de passe se trouvent sur https://dashboard.clerk.com.
+
+## 🧱 Backend Convex (setup en place)
+
+Convex est prêt à être utilisé pour stocker et synchroniser en temps réel :
+
+- campagnes
+
+- factures
+
+- documents
+
+- medias
+
+- cibles
+
+- permissions utilisateurs
+
+- ect...
+
+Convex permet de gérer les données métier côté serveur avec des fonctions query ou mutation en TypeScript.
+
+➡️ Pour lancer Convex localement :
+
+```bash
+npx convex dev
+```
+
+➡️ Pour créer un schéma (table de données) :
+
+```bash	
+// convex/schema.ts
+import { defineSchema, defineTable } from "convex/server"
+import { v } from "convex/values"
+
+export default defineSchema({
+  campaigns: defineTable({
+    name: v.string(),
+    startDate: v.string(),
+    status: v.string(),
+  }),
+})
+```
+
+➡️ Pour ajouter une fonction (exemple : créer une campagne) :
+
+```bash
+import { mutation } from "convex/server"
+import { v } from "convex/values"
+
+export const createCampaign = mutation({
+  args: {
+    name: v.string(),
+    startDate: v.string(),
+    status: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("campaigns", {
+      name: args.name,
+      startDate: args.startDate,
+      status: args.status,
+    })
+  },
+})
+```
+➡️ Pour appeler une fonction côté front :
+
+```bash
+"use client"
+import { useMutation } from "convex/react"
+import { api } from "../convex/_generated/api"
+
+export function CreateCampaignButton() {
+  const createCampaign = useMutation(api.createCampaign)
+
+  return (
+    <button onClick={() => createCampaign({ name: "TV 2025", startDate: "2025-09-01", status: "draft" })}>
+      Créer une campagne
+    </button>
+  )
+}
+```
+
+
+## 📌 À venir
+
+- Intégration des données avec Convex
+
+- Interface dashboard admin
+
