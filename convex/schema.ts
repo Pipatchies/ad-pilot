@@ -3,17 +3,25 @@ import { v } from "convex/values";
 
 export default defineSchema({
   briefs: defineTable({
-    periodeFrom: v.string(),
-    periodeTo: v.string(),
-    cible: v.string(),
-    territoire: v.string(),
-    villes: v.string(),
+    periodFrom: v.string(),
+    periodTo: v.string(),
+    target: v.string(),
+    territory: v.string(),
+    cities: v.string(),
     budget: v.string(),
-    objectifs: v.array(v.string()),
-    mediaType: v.array(v.string()),
-    diffusionTV: v.optional(v.array(v.string())),
-    typeAffichage: v.optional(v.string()),
-    diffusionRadio: v.optional(v.array(v.string())),
+    objectives: v.array(v.string()),
+    mediaTypes: v.array(v.string()),
+    tvTypes: v.optional(v.array(v.string())),
+    displayTypes: v.optional(v.string()),
+    radioTypes: v.optional(v.array(v.string())),
     brief: v.string(),
   }),
+  users: defineTable({
+    email: v.string(),
+    password: v.string(),
+    prénom: v.string(),
+    nom: v.string(),
+    role: v.string(),
+  }),
 });
+
