@@ -156,6 +156,10 @@ export default function BriefForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      periode: {
+        from: undefined,
+        to: undefined,
+      },
       cible: "",
       territoire: "",
       villes: "",
@@ -211,8 +215,12 @@ export default function BriefForm() {
                         <PopoverTrigger asChild>
                           <div
                             className={cn(
-                              "w-full border border-[#A5A4BF] rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
-                              !field.value ? "text-primary" : "text-primary/50"
+                              "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
+                              "border",
+                              !field.value ? "text-primary" : "text-primary/50",
+                              form.formState.errors.periode
+                                ? "border-destructive"
+                                : "border-[#A5A4BF]"
                             )}
                           >
                             <span
