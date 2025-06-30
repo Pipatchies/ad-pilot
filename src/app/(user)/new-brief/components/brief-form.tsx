@@ -43,6 +43,8 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SvgCalendrier from "@/components/icons/Calendrier";
 import SvgSmallDown from "@/components/icons/SmallDown";
+import { useMutation } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 
 const objectifs = [
   { label: "Notoriété", value: "notoriete" },
@@ -97,9 +99,12 @@ const formSchema = z
     cities: z.string().min(2, {
       message: "Veuillez inscrire au moins une ville",
     }),
-    budget: z.string().min(1, {
-      message: "Veuillez préciser votre budget",
-    }),
+    budget: z
+      .number({
+        required_error: "Veuillez préciser votre budget",
+        invalid_type_error: "Le budget doit être un nombre valide",
+      })
+      .positive("Le budget doit être supérieur à 0"),
     objectives: z.array(z.string()).min(1, {
       message: "Veuillez sélectionner au moins un objectif",
     }),
@@ -163,7 +168,7 @@ export default function BriefForm() {
       target: "",
       territory: "",
       cities: "",
-      budget: "",
+      budget: undefined,
       objectives: [],
       mediaTypes: [],
       tvTypes: [],
@@ -173,6 +178,7 @@ export default function BriefForm() {
     },
   });
 
+  const createBrief = useMutation(api.mutations.users.createBrief);
   const [objectifsOpen, setObjectifsOpen] = useState(false);
   const [mediaTypeOpen, setMediaTypeOpen] = useState(false);
   const [diffusionTVOpen, setDiffusionTVOpen] = useState(false);
@@ -180,17 +186,32 @@ export default function BriefForm() {
 
   const selectedMediaTypes = form.watch("mediaTypes") || [];
 
-  function onSubmit(values: FormValues) {
+  async function onSubmit(values: FormValues) {
+    try {
+    await createBrief({
+      periodFrom: values.period.from.toISOString(),
+      periodTo: values.period.to.toISOString(),
+      target: values.target,
+      territory: values.territory,
+      cities: values.cities,
+      budget: values.budget,
+      objectives: values.objectives,
+      mediaTypes: values.mediaTypes,
+      tvTypes: values.tvTypes?.length ? values.tvTypes : undefined,
+      displayTypes: values.displayTypes || undefined,
+      radioTypes: values.radioTypes?.length ? values.radioTypes : undefined,
+      brief: values.brief,
+    });
+
     toast.success("Succès", {
       description: "Le formulaire a été envoyé correctement.",
     });
-  }
-
-  function onInvalid(errors: any) {
-    toast.error("Erreur", {
+  } catch {
+      toast.error("Erreur", {
       description: "Veuillez remplir tous les champs du formulaire.",
     });
   }
+}
 
   return (
     <section>
@@ -198,7 +219,7 @@ export default function BriefForm() {
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit, onInvalid)}
+              onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-6"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -357,9 +378,17 @@ export default function BriefForm() {
                       </FormLabel>
                       <FormControl>
                         <Input
+                          type="number"
                           placeholder="Précisez votre budget"
                           className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value === ""
+                                ? undefined
+                                : Number(e.target.value)
+                            )
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -611,9 +640,8 @@ export default function BriefForm() {
                                           className="bg-primary text-white rounded-sm px-2 py-1 text-sm"
                                         >
                                           {
-                                            tvTypes.find(
-                                              (o) => o.value === val
-                                            )?.label
+                                            tvTypes.find((o) => o.value === val)
+                                              ?.label
                                           }
                                         </Badge>
                                       ))}
