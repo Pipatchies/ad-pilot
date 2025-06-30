@@ -9,13 +9,12 @@ export default defineSchema({
     surname: v.string(),
     phone: v.optional(v.string()),
     role: v.array(v.string()),
+    clientBusinessId: v.id("clientBusinesses"),
   }),
 
   clientBusinesses: defineTable({
     name: v.string(),
     logo: v.string(),
-    userId: v.id("users"),
-    campaignId: v.id("campaigns"),
   }),
 
   briefs: defineTable({
@@ -98,8 +97,8 @@ export default defineSchema({
       ),
     }),
     clientBusinessId: v.id("clientBusinesses"),
-  }),
-
+  }).index("by_clientBusinessId", ["clientBusinessId"]),
+  
   medias: defineTable({
     title: v.string(),
     type: v.union(
