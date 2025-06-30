@@ -5,57 +5,57 @@ import DocumentsTable from './components/documents-table'
 
 const documentsData = [
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },
   {
-    name: "Justificatif de diffusion",
+    title: "Justificatif de diffusion",
     type: "PDF",
     date: new Date("2025-01-13"),
   },

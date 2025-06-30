@@ -11,10 +11,10 @@ import SvgEyeIcon from "./icons/EyeIcon";
 import SvgUploder from "./icons/Uploder";
 
 type Invoice = {
-  name: string;
+  title: string;
   agencyInvoice?: string;
-  regieName?: string;
-  campagne?: string;
+  vendorName?: string;
+  campaign?: string;
   htprice: number;
   ttcprice: number;
   date: Date;
@@ -23,7 +23,7 @@ type Invoice = {
 
 interface InvoiceTableProps {
   invoices: Invoice[];
-  variant: "agency" | "regie";
+  variant: "agency" | "vendor";
   showCampaign?: boolean;
 }
 
@@ -40,12 +40,12 @@ export default function InvoicesTable({
             <TableHead className="w-[100px] text-base font-bold text-primary">
               N°de facture
             </TableHead>
-            {variant === "regie" && (
+            {variant === "vendor" && (
               <TableHead className="text-base font-bold text-primary">
                 Facture agence rattachée
               </TableHead>
             )}
-            {variant === "regie" && (
+            {variant === "vendor" && (
               <TableHead className="text-base font-bold text-primary px-10">
                 Régie
               </TableHead>
@@ -73,18 +73,18 @@ export default function InvoicesTable({
         <TableBody>
           {invoices.map((invoice, index) => (
             <TableRow className="text-lg h-15 border-[#A5A4BF]" key={index}>
-              <TableCell className="pr-20">{invoice.name}</TableCell>
-              {variant === "regie" && (
+              <TableCell className="pr-20">{invoice.title}</TableCell>
+              {variant === "vendor" && (
                 <TableCell>{invoice.agencyInvoice}</TableCell>
               )}
-              {variant === "regie" && (
+              {variant === "vendor" && (
                 <TableCell className="px-10 font-bold underline">
-                  {invoice.regieName}
+                  {invoice.vendorName}
                 </TableCell>
               )}
               {showCampaign && (
                 <TableCell className="font-bold underline pr-10">
-                  {invoice.campagne}
+                  {invoice.campaign}
                 </TableCell>
               )}
               <TableCell>{invoice.htprice.toLocaleString("fr-FR")} €</TableCell>

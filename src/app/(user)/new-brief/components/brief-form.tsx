@@ -61,14 +61,14 @@ const mediaTypes = [
   { label: "Presse", value: "presse" },
 ];
 
-const diffusionTVs = [
+const tvTypes = [
   { label: "TV classique", value: "tv-classique" },
   { label: "Parrainage TV", value: "parrainage-tv" },
   { label: "TV ségmentée", value: "tv-segmentee" },
   { label: "Streaming", value: "streaming" },
 ];
 
-const diffusionRadios = [
+const radioTypes = [
   { label: "Radio classique", value: "radio-classique" },
   { label: "Parrainage radio", value: "parrainage-radio" },
   { label: "Audio digital", value: "audio-digital" },
@@ -76,7 +76,7 @@ const diffusionRadios = [
 
 const formSchema = z
   .object({
-    periode: z
+    period: z
       .object({
         from: z.date(),
         to: z.date(),
@@ -84,69 +84,69 @@ const formSchema = z
       .refine((data) => data.from && data.to, {
         message: "Veuillez sélectionner une période",
       }),
-    cible: z.string().min(2, {
+    target: z.string().min(2, {
       message: "Le choix d'une cible est requis",
     }),
-    territoire: z
+    territory: z
       .string({
         required_error: "Veuillez sélectionner un type de territoire",
       })
       .min(1, {
         message: "Veuillez sélectionner un type de territoire",
       }),
-    villes: z.string().min(2, {
+    cities: z.string().min(2, {
       message: "Veuillez inscrire au moins une ville",
     }),
     budget: z.string().min(1, {
       message: "Veuillez préciser votre budget",
     }),
-    objectifs: z.array(z.string()).min(1, {
+    objectives: z.array(z.string()).min(1, {
       message: "Veuillez sélectionner au moins un objectif",
     }),
-    mediaType: z.array(z.string()).min(1, {
+    mediaTypes: z.array(z.string()).min(1, {
       message: "Veuillez sélectionner au moins un type de média",
     }),
-    diffusionTV: z.array(z.string()).optional(),
-    typeAffichage: z.string().optional(),
-    diffusionRadio: z.array(z.string()).optional(),
+    tvTypes: z.array(z.string()).optional(),
+    displayTypes: z.string().optional(),
+    radioTypes: z.array(z.string()).optional(),
     brief: z.string().min(10, {
       message: "Votre brief doit contenir au moins 10 caractères",
     }),
   })
   .refine(
     (data) => {
-      if (data.mediaType.includes("tv")) {
-        return data.diffusionTV && data.diffusionTV.length > 0;
+      if (data.mediaTypes.includes("tv")) {
+        return data.tvTypes && data.tvTypes.length > 0;
       }
       return true;
     },
     {
       message: "Veuillez sélectionner au moins un type de diffusion TV",
-      path: ["diffusionTV"],
+      path: ["tvTypes"],
     }
   )
   .refine(
     (data) => {
-      if (data.mediaType.includes("affichage")) {
-        return !!data.typeAffichage;
+      if (data.mediaTypes.includes("affichage")) {
+        return !!data.displayTypes;
       }
       return true;
     },
     {
       message: "Veuillez selectionner un type d'affichage",
-      path: ["typeAffichage"],
+      path: ["displayTypes"],
     }
   )
   .refine(
     (data) => {
-      if (data.mediaType.includes("radio")) {
-        return data.diffusionRadio && data.diffusionRadio.length > 0;
+      if (data.mediaTypes.includes("radio")) {
+        return data.radioTypes && data.radioTypes.length > 0;
       }
       return true;
     },
     {
       message: "Veuillez sélectionner au moins un type de diffusion Radio",
-      path: ["diffusionRadio"],
+      path: ["radioTypes"],
     }
   );
 
@@ -156,15 +156,19 @@ export default function BriefForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      cible: "",
-      territoire: "",
-      villes: "",
+      period: {
+        from: undefined,
+        to: undefined,
+      },
+      target: "",
+      territory: "",
+      cities: "",
       budget: "",
-      objectifs: [],
-      mediaType: [],
-      diffusionTV: [],
-      typeAffichage: "",
-      diffusionRadio: [],
+      objectives: [],
+      mediaTypes: [],
+      tvTypes: [],
+      displayTypes: "",
+      radioTypes: [],
       brief: "",
     },
   });
@@ -174,7 +178,7 @@ export default function BriefForm() {
   const [diffusionTVOpen, setDiffusionTVOpen] = useState(false);
   const [diffusionRadioOpen, setDiffusionRadioOpen] = useState(false);
 
-  const selectedMediaTypes = form.watch("mediaType") || [];
+  const selectedMediaTypes = form.watch("mediaTypes") || [];
 
   function onSubmit(values: FormValues) {
     toast.success("Succès", {
@@ -200,7 +204,7 @@ export default function BriefForm() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
-                  name="periode"
+                  name="period"
                   render={({ field }) => (
                     <FormItem className="flex flex-col relative">
                       <FormLabel className="text-lg font-semibold">
@@ -211,8 +215,12 @@ export default function BriefForm() {
                         <PopoverTrigger asChild>
                           <div
                             className={cn(
-                              "w-full border border-[#A5A4BF] rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
-                              !field.value ? "text-primary" : "text-primary/50"
+                              "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
+                              "border",
+                              !field.value ? "text-primary" : "text-primary/50",
+                              form.formState.errors.period
+                                ? "border-destructive"
+                                : "border-[#A5A4BF]"
                             )}
                           >
                             <span
@@ -264,7 +272,7 @@ export default function BriefForm() {
                 {/* Cible */}
                 <FormField
                   control={form.control}
-                  name="cible"
+                  name="target"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-semibold">
@@ -285,7 +293,7 @@ export default function BriefForm() {
                 {/* Territoire */}
                 <FormField
                   control={form.control}
-                  name="territoire"
+                  name="territory"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-semibold">
@@ -320,7 +328,7 @@ export default function BriefForm() {
                 {/* Villes */}
                 <FormField
                   control={form.control}
-                  name="villes"
+                  name="cities"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg font-semibold">
@@ -362,7 +370,7 @@ export default function BriefForm() {
                 {/* Objectifs avec liste déroulante et cases à cocher */}
                 <FormField
                   control={form.control}
-                  name="objectifs"
+                  name="objectives"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel className="text-lg font-semibold">
@@ -469,7 +477,7 @@ export default function BriefForm() {
                 {/* Type de média */}
                 <FormField
                   control={form.control}
-                  name="mediaType"
+                  name="mediaTypes"
                   render={({ field }) => (
                     <FormItem>
                       <Popover
@@ -569,7 +577,7 @@ export default function BriefForm() {
                 {selectedMediaTypes.includes("tv") && (
                   <FormField
                     control={form.control}
-                    name="diffusionTV"
+                    name="tvTypes"
                     render={({ field }) => (
                       <FormItem>
                         <Popover
@@ -603,7 +611,7 @@ export default function BriefForm() {
                                           className="bg-primary text-white rounded-sm px-2 py-1 text-sm"
                                         >
                                           {
-                                            diffusionTVs.find(
+                                            tvTypes.find(
                                               (o) => o.value === val
                                             )?.label
                                           }
@@ -628,7 +636,7 @@ export default function BriefForm() {
                               </CommandEmpty>
                               <CommandList>
                                 <CommandGroup>
-                                  {diffusionTVs.map((option) => {
+                                  {tvTypes.map((option) => {
                                     const isSelected = field.value?.includes(
                                       option.value
                                     );
@@ -672,7 +680,7 @@ export default function BriefForm() {
                 {selectedMediaTypes.includes("affichage") && (
                   <FormField
                     control={form.control}
-                    name="typeAffichage"
+                    name="displayTypes"
                     render={({ field }) => (
                       <FormItem>
                         <Select
@@ -708,7 +716,7 @@ export default function BriefForm() {
                 {selectedMediaTypes.includes("radio") && (
                   <FormField
                     control={form.control}
-                    name="diffusionRadio"
+                    name="radioTypes"
                     render={({ field }) => (
                       <FormItem>
                         <Popover
@@ -742,7 +750,7 @@ export default function BriefForm() {
                                           className="bg-primary text-white rounded-sm px-2 py-1 text-sm"
                                         >
                                           {
-                                            diffusionRadios.find(
+                                            radioTypes.find(
                                               (o) => o.value === val
                                             )?.label
                                           }
@@ -767,7 +775,7 @@ export default function BriefForm() {
                               </CommandEmpty>
                               <CommandList>
                                 <CommandGroup>
-                                  {diffusionRadios.map((option) => {
+                                  {radioTypes.map((option) => {
                                     const isSelected = field.value?.includes(
                                       option.value
                                     );
