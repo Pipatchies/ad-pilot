@@ -11,7 +11,7 @@ import SvgEyeIcon from "@/components/icons/EyeIcon";
 import SvgUploder from "@/components/icons/Uploder";
 
 type Documents = {
-  name: string;
+  title: string;
   type: string;
   date: Date;
 };
@@ -35,7 +35,7 @@ export default function DocumentsTable({ documents }: DocumentsTableProps) {
           <TableBody>
             {documents.map((documents, index) => (
               <TableRow className="text-lg h-15 border-[#A5A4BF]" key={index}>
-                <TableCell className="pr-10">{documents.name}</TableCell>
+                <TableCell className="pr-10">{documents.title}</TableCell>
                 <TableCell>{documents.type}</TableCell>
                 <TableCell>{documents.date.toLocaleDateString()}</TableCell>
                 <TableCell className="text-right">

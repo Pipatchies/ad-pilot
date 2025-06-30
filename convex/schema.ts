@@ -115,7 +115,7 @@ export default defineSchema({
   }),
 
   documents: defineTable({
-    name: v.string(),
+    title: v.string(),
     type: v.string(),
     date: v.string(),
     url: v.string(),
@@ -123,7 +123,7 @@ export default defineSchema({
   }),
 
   invoices: defineTable({
-    name: v.string(),
+    title: v.string(),
     agencyInvoice: v.optional(v.string()),
     vendorName: v.optional(v.string()),
     htprice: v.number(),
