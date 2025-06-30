@@ -14,3 +14,13 @@ export const readCampaigns = query({
       .collect();
   },
 });
+
+export const readDetailsCampaign = query({
+  args: {
+    campaignId: v.id("campaigns"),
+  },
+  handler: async (ctx, { campaignId }) => {
+    const campaign = await ctx.db.get(campaignId);
+    return campaign;
+  },
+});
