@@ -24,8 +24,8 @@ function getColorFromMedia(type: string): string {
 }
 
 interface MediaItem {
-  name: string;
-  budget: number;
+  type: string;
+  amount: number;
 }
 
 interface ChartCardProps {
@@ -37,7 +37,7 @@ export default function ChartCard({ mediaData }: ChartCardProps) {
 
    const enrichedMediaData = mediaData.map((item) => ({
     ...item,
-    color: getColorFromMedia(item.name),
+    color: getColorFromMedia(item.type),
   }));
 
 
@@ -51,7 +51,7 @@ export default function ChartCard({ mediaData }: ChartCardProps) {
         <div className="flex h-full items-center justify-between gap-6">
 
           <div className="space-y-3 w-1/2">
-          {enrichedMediaData.map(({ name, budget, color }, index) => (
+          {enrichedMediaData.map(({ type, amount, color }, index) => (
               <div key={index} className="flex items-center">
                 <div
                   className="w-3 h-3 rounded-full mr-2 bg-white border-2"
@@ -59,9 +59,9 @@ export default function ChartCard({ mediaData }: ChartCardProps) {
                     borderColor: color,
                   }}
                 />
-                <span>{name}</span>
+                <span>{type}</span>
                 <span className="ml-auto font-bold">
-                  {budget}€
+                  {amount}€
                 </span>
               </div>
             ))}
