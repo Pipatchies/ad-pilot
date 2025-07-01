@@ -77,7 +77,7 @@ export default function ChartCard({ mediaData }: ChartCardProps) {
                   innerRadius={45}
                   outerRadius={80}
                   paddingAngle={2}
-                  dataKey="budget"
+                  dataKey="amount"
                 >
                   {enrichedMediaData.map(({ color }, index) => (
                     <Cell key={index} fill={color} />
