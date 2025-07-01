@@ -11,12 +11,40 @@ import Image from "next/image";
 import SvgImageSmall from "./icons/ImageSmall";
 import { cn } from "@/lib/utils";
 
-type IconType = {
-  name: string;
-  url: string;
-  width?: number;
-  height?: number;
-};
+function getIconFromType(type: string) {
+  switch (type) {
+    case "tv":
+      return {
+        name: "television",
+        url: "/icons/television.svg",
+        width: 26,
+        height: 20,
+      };
+    case "radio":
+      return {
+        name: "radio",
+        url: "/icons/radio.svg",
+        width: 28,
+        height: 27,
+      };
+    case "digital":
+      return {
+        name: "digital",
+        url: "/icons/screen.svg",
+        width: 26,
+        height: 26,
+      };
+    case "affichage":
+      return {
+        name: "panneau",
+        url: "/icons/panneau-daffichage.svg",
+        width: 15,
+        height: 26,
+      };
+    default:
+      return null;
+  }
+}
 
 type DetailsCardProps = {
   title: string;
@@ -27,7 +55,7 @@ type DetailsCardProps = {
   archivedDate?: Date;
   sendBy?: string;
   status?: string;
-  icons?: IconType[];
+  mediaTypes?: string[];
   age?: string;
   subject?: string;
   variant: "default" | "campaign" | "media" | "target" | "archived" | "invoice";
@@ -42,7 +70,7 @@ export default function DetailsCard({
   archivedDate,
   sendBy,
   status,
-  icons,
+  mediaTypes,
   age,
   subject,
   variant,
@@ -171,18 +199,23 @@ export default function DetailsCard({
         )}
       </CardContent>
 
-      {variant === "campaign" && icons && icons.length > 0 && (
+      {variant === "campaign" && mediaTypes && mediaTypes.length > 0 && (
         <CardFooter className="flex items-end gap-x-2">
           <span className="underline">Médias :</span>
-          {icons.map((icon, index) => (
-            <Image
-              key={index}
-              src={icon.url}
-              alt={icon.name}
-              width={icon.width}
-              height={icon.height}
-            />
-          ))}
+          {mediaTypes.map((type, index) => {
+            const icon = getIconFromType(type);
+            return (
+              icon && (
+                <Image
+                  key={index}
+                  src={icon.url}
+                  alt={icon.name}
+                  width={icon.width}
+                  height={icon.height}
+                />
+              )
+            );
+          })}
         </CardFooter>
       )}
     </Card>

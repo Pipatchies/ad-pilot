@@ -9,13 +9,12 @@ export default defineSchema({
     surname: v.string(),
     phone: v.optional(v.string()),
     role: v.array(v.string()),
+    clientBusinessId: v.id("clientBusinesses"),
   }),
 
   clientBusinesses: defineTable({
     name: v.string(),
     logo: v.string(),
-    userId: v.id("users"),
-    campaignId: v.id("campaigns"),
   }),
 
   briefs: defineTable({
@@ -41,7 +40,9 @@ export default defineSchema({
         v.literal("tv"),
         v.literal("radio"),
         v.literal("digital"),
-        v.literal("affichage")
+        v.literal("affichage"),
+        v.literal("cinema"),
+        v.literal("presse")
       )
     ),
     startDate: v.string(),
@@ -53,26 +54,21 @@ export default defineSchema({
           v.literal("Affichage"),
           v.literal("TV"),
           v.literal("Radio"),
-          v.literal("Digital")
+          v.literal("Digital"),
+          v.literal("Cinema"),
+          v.literal("Presse")
         ),
         amount: v.number(),
         pourcent: v.union(v.number(), v.string()),
         startDate: v.optional(v.string()),
         title: v.optional(v.string()),
         details: v.optional(v.string()),
-        color: v.string(),
       })
     ),
     status: v.array(
       v.object({
         id: v.number(),
-        label: v.union(
-          v.literal("Brief"),
-          v.literal("Création"),
-          v.literal("Validation"),
-          v.literal("Diffusion en cours"),
-          v.literal("Bilan")
-        ),
+        label: v.string(),
         state: v.union(
           v.literal("completed"),
           v.literal("current"),
@@ -98,8 +94,8 @@ export default defineSchema({
       ),
     }),
     clientBusinessId: v.id("clientBusinesses"),
-  }),
-
+  }).index("by_clientBusinessId", ["clientBusinessId"]),
+  
   medias: defineTable({
     title: v.string(),
     type: v.union(

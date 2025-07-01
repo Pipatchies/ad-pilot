@@ -1,90 +1,12 @@
+"use client"
 import Typography from "@/components/typography";
 import React from "react";
 import LatestFiles from "@/components/latest-files";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { Doc, Id } from "../../../../convex/_generated/dataModel";
 
-const campaignData = [
-  {
-    title: "Titre lorem ipsum",
-    description: "Campagne digitale",
-    startDate: new Date("2025-01-13"),
-    endDate: new Date("2025-03-30"),
-    status: "Brief",
-    icons: [
-      {
-        name: "panneau",
-        url: "/icons/panneau-daffichage.svg",
-        width: 15,
-        height: 26,
-      },
-      {
-        name: "radio",
-        url: "/icons/radio.svg",
-        width: 28,
-        height: 27,
-      },
-      {
-        name: "television",
-        url: "/icons/television.svg",
-        width: 26,
-        height: 20,
-      },
-    ],
-  },
-  {
-    title: "Titre lorem ipsum",
-    description: "Campagne digitale",
-    startDate: new Date("2025-01-13"),
-    endDate: new Date("2025-03-30"),
-    status: "Brief",
-    icons: [
-      {
-        name: "panneau",
-        url: "/icons/panneau-daffichage.svg",
-        width: 15,
-        height: 26,
-      },
-      {
-        name: "radio",
-        url: "/icons/radio.svg",
-        width: 28,
-        height: 27,
-      },
-      {
-        name: "television",
-        url: "/icons/television.svg",
-        width: 26,
-        height: 20,
-      },
-    ],
-  },
-  {
-    title: "Titre lorem ipsum",
-    description: "Campagne digitale",
-    startDate: new Date("2025-01-13"),
-    endDate: new Date("2025-03-30"),
-    status: "Brief",
-    icons: [
-      {
-        name: "panneau",
-        url: "/icons/panneau-daffichage.svg",
-        width: 15,
-        height: 26,
-      },
-      {
-        name: "radio",
-        url: "/icons/radio.svg",
-        width: 28,
-        height: 27,
-      },
-      {
-        name: "television",
-        url: "/icons/television.svg",
-        width: 26,
-        height: 20,
-      },
-    ],
-  },
-];
+const clientBusinessId: Id<"clientBusinesses"> = "k979mgpmypy7r4nrnbgpfmyep17jtkqc" as Id<"clientBusinesses">;
 
 const docData = [
   {
@@ -129,13 +51,27 @@ const invoiceData = [
 ];
 
 export default function Dashboard() {
-  return (
+  const campaigns = useQuery(api.queries.users.readCampaigns, {
+    clientBusinessId,
+  });
+
+  const campaignData =
+    campaigns?.map((campaign: Doc<"campaigns">) => ({
+      title: campaign.title,
+      description: campaign.subtitle,
+      startDate: new Date(campaign.startDate),
+      endDate: new Date(campaign.endDate),
+      status: campaign.status?.[0]?.label || "Inconnue",
+      mediaTypes: campaign.mediaTypes,
+    })) ?? [];
+
+    return (
     <section className="flex flex-col gap-10">
       <Typography variant="h1">
         Tableau de bord
       </Typography>
       <LatestFiles
-        title="Les dernières ressources médias"
+        title="Campagnes en cours"
         // cta={ctaProps[0]}
         data={campaignData}
         variant="campaign"
@@ -154,5 +90,5 @@ export default function Dashboard() {
         className="mb-10"
       />
     </section>
-  );
+    )
 }
