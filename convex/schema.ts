@@ -40,7 +40,9 @@ export default defineSchema({
         v.literal("tv"),
         v.literal("radio"),
         v.literal("digital"),
-        v.literal("affichage")
+        v.literal("affichage"),
+        v.literal("cinema"),
+        v.literal("presse")
       )
     ),
     startDate: v.string(),
@@ -52,7 +54,9 @@ export default defineSchema({
           v.literal("Affichage"),
           v.literal("TV"),
           v.literal("Radio"),
-          v.literal("Digital")
+          v.literal("Digital"),
+          v.literal("Cinema"),
+          v.literal("Presse")
         ),
         amount: v.number(),
         pourcent: v.union(v.number(), v.string()),
