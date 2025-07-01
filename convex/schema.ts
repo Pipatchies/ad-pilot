@@ -63,7 +63,6 @@ export default defineSchema({
         startDate: v.optional(v.string()),
         title: v.optional(v.string()),
         details: v.optional(v.string()),
-        color: v.string(),
       })
     ),
     status: v.array(
