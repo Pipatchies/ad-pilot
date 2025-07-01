@@ -71,7 +71,7 @@ export default function Dashboard() {
         Tableau de bord
       </Typography>
       <LatestFiles
-        title="Les dernières ressources médias"
+        title="Campagnes en cours"
         // cta={ctaProps[0]}
         data={campaignData}
         variant="campaign"
