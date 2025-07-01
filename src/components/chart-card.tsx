@@ -4,10 +4,24 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
+function getColorFromMedia(type: string): string {
+  switch (type.toLowerCase()) {
+    case "affichage":
+      return "#5ECEF9";
+    case "tv":
+      return "#FF7A6B";
+    case "radio":
+      return "#FFD572";
+    case "digital":
+      return "#A78BFA";
+    default:
+      return "#CCCCCC";
+  }
+}
+
 interface MediaItem {
   name: string;
   budget: number;
-  color: string;
 }
 
 interface ChartCardProps {
@@ -16,6 +30,12 @@ interface ChartCardProps {
 }
 
 export default function ChartCard({ mediaData }: ChartCardProps) {
+
+   const enrichedMediaData = mediaData.map((item) => ({
+    ...item,
+    color: getColorFromMedia(item.name),
+  }));
+
 
   return (
     <Card className="w-full h-[244px] rounded-sm shadow-around bg-white border-none text-primary px-8 py-6 gap-0">
@@ -27,7 +47,7 @@ export default function ChartCard({ mediaData }: ChartCardProps) {
         <div className="flex h-full items-center justify-between gap-6">
 
           <div className="space-y-3 w-1/2">
-          {mediaData.map(({ name, budget, color }, index) => (
+          {enrichedMediaData.map(({ name, budget, color }, index) => (
               <div key={index} className="flex items-center">
                 <div
                   className="w-3 h-3 rounded-full mr-2 bg-white border-2"
@@ -55,7 +75,7 @@ export default function ChartCard({ mediaData }: ChartCardProps) {
                   paddingAngle={2}
                   dataKey="budget"
                 >
-                  {mediaData.map(({ color }, index) => (
+                  {enrichedMediaData.map(({ color }, index) => (
                     <Cell key={index} fill={color} />
                   ))}
                 </Pie>
