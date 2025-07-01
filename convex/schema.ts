@@ -68,13 +68,7 @@ export default defineSchema({
     status: v.array(
       v.object({
         id: v.number(),
-        label: v.union(
-          v.literal("Brief"),
-          v.literal("Création"),
-          v.literal("Validation"),
-          v.literal("Diffusion en cours"),
-          v.literal("Bilan")
-        ),
+        label: v.string(),
         state: v.union(
           v.literal("completed"),
           v.literal("current"),
