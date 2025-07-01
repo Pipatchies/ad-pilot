@@ -4,10 +4,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import React from "react";
 
 interface BudgetCardProps {
-  price: number;
+  totalBudget: number;
 }
 
-export default function BudgetCard({price}: BudgetCardProps) {
+export default function BudgetCard({totalBudget}: BudgetCardProps) {
   return (
     <Card className="w-full h-[207] rounded-sm shadow-around bg-white border-none text-primary px-8 py-9">
         <CardHeader>
@@ -16,7 +16,7 @@ export default function BudgetCard({price}: BudgetCardProps) {
       <CardContent>
       <div className="flex flex-wrap items-center gap-x-3 mt-0 mb-10">
         <SvgMoneyBag />
-        <span className="text-5xl font-extrabold">{price} €</span>
+        <span className="text-5xl font-extrabold">{totalBudget} €</span>
       </div>
       </CardContent>
     </Card>
