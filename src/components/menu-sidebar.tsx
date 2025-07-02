@@ -29,64 +29,84 @@ import SvgFacture from "./icons/Facture";
 import SvgDocument from "./icons/Document";
 import Link from "next/link";
 import SvgPictoArchive from "./icons/PictoArchive";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import { Id } from "../../convex/_generated/dataModel";
 
-const menuItems = [
-  {
-    label: "Campagne titre 1",
-    icon: <SvgDocument />,
-    subItems: [
-      { label: "La campagne", icon: <SvgFusee />, url: "/campaign/1/campaign-details" },
-      { label: "Les cibles", icon: <SvgProfil />, url: "/campaign/1/targets" },
-      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "/campaign/1/librairy" },
-      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "/campaign/1/digital" },
-      { label: "Factures", icon: <SvgFacture />, url: "/campaign/1/invoices" },
-      { label: "Documents", icon: <SvgDocument />, url: "/campaign/1/documents" },
-    ],
-  },
-  {
-    label: "Campagne titre 2",
-    icon: <SvgDocument />,
-    subItems: [
-      { label: "La campagne", icon: <SvgFusee />, url: "#" },
-      { label: "Les cibles", icon: <SvgProfil />, url: "#" },
-      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
-      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
-      { label: "Factures", icon: <SvgFacture />, url: "#" },
-      { label: "Documents", icon: <SvgDocument />, url: "#" },
-    ],
-  },
-  {
-    label: "Campagne titre 3",
-    icon: <SvgDocument />,
-    subItems: [
-      { label: "La campagne", icon: <SvgFusee />, url: "#" },
-      { label: "Les cibles", icon: <SvgProfil />, url: "#" },
-      { label: "Bibliothèque", icon: <SvgImageSmall />, url: "#" },
-      { label: "Analyse digitale", icon: <SvgStatistiques />, url: "#" },
-      { label: "Factures", icon: <SvgFacture />, url: "#" },
-      { label: "Documents", icon: <SvgDocument />, url: "#" },
-    ],
-  },
-  {
-    label: "Campagne archivées",
-    icon: <SvgPictoArchive />,
-    url: "/archived",
-  },
-  {
-    label: "Factures",
-    icon: <SvgFacture />,
-    url: "/invoices",
-  },
-];
+const clientBusinessId: Id<"clientBusinesses"> =
+  "k979mgpmypy7r4nrnbgpfmyep17jtkqc" as Id<"clientBusinesses">;
+
+type SubItem = {
+  label: string;
+  icon: React.ReactNode;
+  url: string;
+};
 
 export default function MenuSidebar() {
+  const campaigns = useQuery(api.queries.users.readCampaigns, {
+    clientBusinessId,
+  });
+
+  const staticItems = [
+    {
+      label: "Campagnes archivées",
+      icon: <SvgPictoArchive />,
+      url: "/archived",
+    },
+    {
+      label: "Factures",
+      icon: <SvgFacture />,
+      url: "/invoices",
+    },
+  ];
+
+  const menuItems = [
+    ...(campaigns?.map((campaign) => ({
+      label: campaign.title,
+      icon: <SvgDocument />,
+      subItems: [
+        {
+          label: "La campagne",
+          icon: <SvgFusee />,
+          url: `/campaign/${campaign._id}/campaign-details`,
+        },
+        {
+          label: "Les cibles",
+          icon: <SvgProfil />,
+          url: `/campaign/${campaign._id}/targets`,
+        },
+        {
+          label: "Bibliothèque",
+          icon: <SvgImageSmall />,
+          url: `/campaign/${campaign._id}/librairy`,
+        },
+        {
+          label: "Analyse digitale",
+          icon: <SvgStatistiques />,
+          url: `/campaign/${campaign._id}/digital`,
+        },
+        {
+          label: "Factures",
+          icon: <SvgFacture />,
+          url: `/campaign/${campaign._id}/invoices`,
+        },
+        {
+          label: "Documents",
+          icon: <SvgDocument />,
+          url: `/campaign/${campaign._id}/documents`,
+        },
+      ],
+    })) ?? []),
+    ...staticItems,
+  ];
+
   const pathname = usePathname();
 
   const isActive = (url: string) => {
     return pathname === url || pathname.startsWith(url);
   };
 
-  const isGroupActive = (subItems: (typeof menuItems)[0]["subItems"]) => {
+  const isGroupActive = (subItems: SubItem[]) => {
     return subItems?.some((sub) => isActive(sub.url));
   };
 
@@ -107,7 +127,7 @@ export default function MenuSidebar() {
       <SidebarContent className="bg-sidebar-primary overflow-y-auto scrollbar-none">
         <SidebarMenu className="py-2">
           {menuItems.map((item, index) =>
-            item.subItems ? (
+            "subItems" in item ? (
               <Collapsible key={index} className="group/collapsible">
                 <SidebarMenuItem className="py-1">
                   <CollapsibleTrigger asChild>
