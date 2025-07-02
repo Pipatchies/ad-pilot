@@ -14,7 +14,7 @@ function getColorFromMedia(type: string): string {
       return "#FFD572";
     case "digital":
       return "#A78BFA";
-    case "cinéma":
+    case "cinema":
       return "#B4E197";
     case "presse": 
       return "#FFC785";
