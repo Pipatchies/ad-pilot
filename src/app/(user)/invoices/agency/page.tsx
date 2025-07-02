@@ -134,7 +134,7 @@ const clientBusinessId: Id<"clientBusinesses"> = "k979mgpmypy7r4nrnbgpfmyep17jtk
 
 export default function AgencyInvoice() {
 
-  const invoices = useQuery(api.queries.users.readInvoices, {
+  const invoices = useQuery(api.queries.users.readAgencyInvoices, {
   clientBusinessId,
 });
 

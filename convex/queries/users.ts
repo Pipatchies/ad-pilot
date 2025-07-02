@@ -25,7 +25,7 @@ export const readDetailsCampaign = query({
   },
 });
 
-export const readInvoices = query({
+export const readAgencyInvoices = query({
   args: {
     clientBusinessId: v.id("clientBusinesses"),
   },
@@ -37,8 +37,10 @@ export const readInvoices = query({
       )
       .collect();
 
-      const enriched = await Promise.all(
-      invoices.map(async (invoice) => {
+    const agencyInvoices = invoices.filter((invoice) => !invoice.vendorName);
+
+    const enriched = await Promise.all(
+      agencyInvoices.map(async (invoice) => {
         const campaign = await ctx.db.get(invoice.campaignId);
         return {
           ...invoice,
