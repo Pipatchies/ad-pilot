@@ -10,10 +10,12 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../../convex/_generated/dataModel";
 import { calculateBroadcastProgress } from "@/lib/utils";
-
-const campaignId: Id<"campaigns"> = "jn7cedad56bmbav5fnk28ys6zn7jtrgf" as Id<"campaigns">;
+import { useParams } from "next/navigation";
 
 export default function SpaceRecap() {
+
+  const params = useParams();
+  const campaignId = params?.id as Id<"campaigns">;
 
   const campaign = useQuery(api.queries.users.readDetailsCampaign, {
   campaignId,
