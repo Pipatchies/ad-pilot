@@ -81,14 +81,34 @@ export const readVendorInvoices = query({
   },
 });
 
-export const readInvoicesByCampaign = query({
+export const readAgencyInvoicesByCampaign = query({
   args: {
     campaignId: v.id("campaigns"),
   },
   handler: async (ctx, { campaignId }) => {
-    return await ctx.db
+    const invoices = await ctx.db
       .query("invoices")
       .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
       .collect();
+
+      const agencyInvoices = invoices.filter((invoice) => !invoice.vendorName);
+
+      return agencyInvoices;
+  },
+});
+
+export const readVendorInvoicesByCampaign = query({
+  args: {
+    campaignId: v.id("campaigns"),
+  },
+  handler: async (ctx, { campaignId }) => {
+    const invoices = await ctx.db
+      .query("invoices")
+      .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
+      .collect();
+
+      const vendorInvoices = invoices.filter((invoice) => invoice.vendorName);
+
+      return vendorInvoices;
   },
 });
