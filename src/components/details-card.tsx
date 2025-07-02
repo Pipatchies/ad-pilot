@@ -30,7 +30,7 @@ function getIconFromType(type: string) {
     case "digital":
       return {
         name: "digital",
-        url: "/icons/screen.svg",
+        url: "/icons/domaine.svg",
         width: 26,
         height: 26,
       };
