@@ -9,6 +9,7 @@ import BroadcastCard from "@/components/broadcast-card";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../../convex/_generated/dataModel";
+import { calculateBroadcastProgress } from "@/lib/utils";
 
 const campaignId: Id<"campaigns"> = "jn7cedad56bmbav5fnk28ys6zn7jtrgf" as Id<"campaigns">;
 
@@ -83,11 +84,13 @@ const stepCardData =
       amount: media.amount,
     })) ?? [];
 
+    const { progress, daysRemaining } = calculateBroadcastProgress(campaign.startDate, campaign.endDate);
+
   const broadcastData = {
-    daysRemaining: 10, 
+    daysRemaining,
     startDate: new Date(campaign.startDate).toLocaleDateString("fr-FR"),
     endDate: new Date(campaign.endDate).toLocaleDateString("fr-FR"),
-    progress: 50, 
+    progress,
   };
 
   return (
