@@ -93,6 +93,7 @@ export default defineSchema({
         })
       ),
     }),
+    archived: v.boolean(),
     clientBusinessId: v.id("clientBusinesses"),
   }).index("by_clientBusinessId", ["clientBusinessId"]),
   
