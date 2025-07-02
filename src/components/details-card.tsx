@@ -10,41 +10,7 @@ import Typography from "./typography";
 import Image from "next/image";
 import SvgImageSmall from "./icons/ImageSmall";
 import { cn } from "@/lib/utils";
-
-function getIconFromType(type: string) {
-  switch (type) {
-    case "tv":
-      return {
-        name: "television",
-        url: "/icons/television.svg",
-        width: 26,
-        height: 20,
-      };
-    case "radio":
-      return {
-        name: "radio",
-        url: "/icons/radio.svg",
-        width: 28,
-        height: 27,
-      };
-    case "digital":
-      return {
-        name: "digital",
-        url: "/icons/domaine.svg",
-        width: 26,
-        height: 26,
-      };
-    case "affichage":
-      return {
-        name: "panneau",
-        url: "/icons/panneau-daffichage.svg",
-        width: 15,
-        height: 26,
-      };
-    default:
-      return null;
-  }
-}
+import { getIconFromType } from "@/lib/utils";
 
 type DetailsCardProps = {
   title: string;

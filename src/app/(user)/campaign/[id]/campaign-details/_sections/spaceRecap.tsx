@@ -1,6 +1,5 @@
-"use client"
+"use client";
 import React from "react";
-import { Domaine, Television } from "@/components/icons";
 import Typography from "@/components/typography";
 import StepCard from "@/components/step-card";
 import BudgetCard from "@/components//budget-card";
@@ -11,21 +10,22 @@ import { api } from "../../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../../convex/_generated/dataModel";
 import { calculateBroadcastProgress } from "@/lib/utils";
 import { useParams } from "next/navigation";
+import { getIconFromType } from "@/lib/utils";
+import Image from "next/image";
 
 export default function SpaceRecap() {
-
   const params = useParams();
   const campaignId = params?.id as Id<"campaigns">;
 
   const campaign = useQuery(api.queries.users.readDetailsCampaign, {
-  campaignId,
-});
+    campaignId,
+  });
 
-if (!campaign) {
-  return <div>Chargement...</div>;
-}
+  if (!campaign) {
+    return <div>Chargement...</div>;
+  }
 
-const stepCardData =
+  const stepCardData =
     campaign.status?.map((step) => ({
       id: step.id,
       label: step.label,
@@ -40,7 +40,10 @@ const stepCardData =
       amount: media.amount,
     })) ?? [];
 
-    const { progress, daysRemaining } = calculateBroadcastProgress(campaign.startDate, campaign.endDate);
+  const { progress, daysRemaining } = calculateBroadcastProgress(
+    campaign.startDate,
+    campaign.endDate
+  );
 
   const broadcastData = {
     daysRemaining,
@@ -54,9 +57,23 @@ const stepCardData =
       <Typography variant="h1">{campaign.title}</Typography>
 
       <div className="flex flex-wrap gap-x-3 items-center">
-        <Domaine />
-        <Television />
-        <Typography className="m-0" variant="h4">{campaign.subtitle}</Typography>
+        {campaign.mediaTypes?.map((type, index) => {
+          const icon = getIconFromType(type);
+          return (
+            icon && (
+              <Image
+                key={index}
+                src={icon.url}
+                alt={icon.name}
+                width={icon.width}
+                height={icon.height}
+              />
+            )
+          );
+        })}
+        <Typography className="m-0" variant="h4">
+          {campaign.subtitle}
+        </Typography>
       </div>
 
       <Typography variant="h2">Récap de la campagne</Typography>
