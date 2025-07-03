@@ -133,6 +133,7 @@ export default defineSchema({
 
   invoices: defineTable({
     title: v.string(),
+    type: v.string(),
     agencyInvoice: v.optional(v.string()),
     vendorName: v.optional(v.string()),
     htprice: v.number(),

@@ -25,6 +25,33 @@ export const readDetailsCampaign = query({
   },
 });
 
+export const readInvoices = query({
+  args: {
+    clientBusinessId: v.id("clientBusinesses"),
+  },
+  handler: async (ctx, { clientBusinessId }) => {
+    const invoices = await ctx.db
+      .query("invoices")
+      .withIndex("by_clientBusinessId", (q) =>
+        q.eq("clientBusinessId", clientBusinessId)
+      )
+      .collect();
+    
+      const enriched = await Promise.all(
+        invoices.map(async (invoice) => {
+          const campaign = await ctx.db.get(invoice.campaignId);
+          return {
+            ...invoice,
+            campaignTitle: campaign?.title ?? "Campagne inconnue",
+          };
+        })
+      );
+
+    return enriched;
+
+  },
+});
+
 export const readAgencyInvoices = query({
   args: {
     clientBusinessId: v.id("clientBusinesses"),
