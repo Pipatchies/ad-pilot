@@ -133,12 +133,12 @@ export default defineSchema({
 
   invoices: defineTable({
     title: v.string(),
-    type: v.string(),
+    description: v.string(),
     agencyInvoice: v.optional(v.string()),
     vendorName: v.optional(v.string()),
     htprice: v.number(),
     ttcprice: v.number(),
-    date: v.string(),
+    startDate: v.string(),
     dueDate: v.string(),
     url: v.optional(v.string()),
     campaignId: v.id("campaigns"),
