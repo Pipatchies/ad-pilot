@@ -9,8 +9,8 @@ import {
 import Typography from "./typography";
 import Image from "next/image";
 import SvgImageSmall from "./icons/ImageSmall";
-import { cn } from "@/lib/utils";
-import { getIconFromType } from "@/lib/utils";
+import { cn, getIconFromType } from "@/lib/utils";
+
 
 type DetailsCardProps = {
   title: string;
