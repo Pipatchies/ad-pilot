@@ -3,131 +3,29 @@ import InvoicesTable from "@/components/invoices-table";
 import SearchBar from "@/components/search-bar";
 import Typography from "@/components/typography";
 import React from "react";
-
-const invoicesData = [
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-  {
-    title: "Facture N°123456789",
-    campaign: "Titre de la campagne",
-    htprice: 20000,
-    ttcprice: 24000,
-    date: new Date("2025-01-13"),
-    dueDate: new Date("2025-03-30"),
-  },
-];
+import { useQuery } from "convex/react";
+import { api } from "../../../../../../../convex/_generated/api";
+import { Id } from "../../../../../../../convex/_generated/dataModel";
+import { useParams } from "next/navigation";
 
 export default function CampaignAgencyInvoice() {
+
+  const params = useParams();
+  const campaignId = params?.id as Id<"campaigns">;
+
+  const invoices = useQuery(api.queries.users.readAgencyInvoicesByCampaign, {
+    campaignId,
+  });
+
+  const invoicesData =
+    invoices?.map((invoice) => ({
+      title: invoice.title,
+      htprice: invoice.htprice,
+      ttcprice: invoice.ttcprice,
+      date: new Date(invoice.date),
+      dueDate: new Date(invoice.dueDate),
+    })) ?? [];
+
   return (
     <div>
       <Typography variant="h1">Titre de la campagne</Typography>
@@ -142,7 +40,11 @@ export default function CampaignAgencyInvoice() {
       </div>
 
       <div className="overflow-x-auto">
-        <InvoicesTable invoices={invoicesData} variant="agency" showCampaign={false} />
+        <InvoicesTable
+          invoices={invoicesData}
+          variant="agency"
+          showCampaign={false}
+        />
       </div>
     </div>
   );

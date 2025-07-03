@@ -127,9 +127,11 @@ export default defineSchema({
     ttcprice: v.number(),
     date: v.string(),
     dueDate: v.string(),
-    url: v.string(),
+    url: v.optional(v.string()),
     campaignId: v.id("campaigns"),
-  }),
+    clientBusinessId: v.id("clientBusinesses"),
+  }).index("by_clientBusinessId", ["clientBusinessId"])
+  .index("by_campaignId", ["campaignId"]),
 
   vendors: defineTable({
     name: v.string(),
