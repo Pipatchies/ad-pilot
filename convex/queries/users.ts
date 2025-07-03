@@ -112,3 +112,18 @@ export const readVendorInvoicesByCampaign = query({
       return vendorInvoices;
   },
 });
+
+
+export const readMediaFiles = query({
+  args: {
+    campaignId: v.id("campaigns"),
+  },
+  handler: async (ctx, { campaignId }) => {
+    const medias = await ctx.db
+      .query("medias")
+      .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
+      .collect();
+
+      return medias;
+  },
+});
