@@ -99,6 +99,16 @@ export default defineSchema({
   
   medias: defineTable({
     title: v.string(),
+    mediaTypes: v.array(
+      v.union(
+        v.literal("tv"),
+        v.literal("radio"),
+        v.literal("digital"),
+        v.literal("affichage"),
+        v.literal("cinema"),
+        v.literal("presse")
+      )
+    ),
     type: v.union(
       v.literal("PNG"),
       v.literal("JPG"),
@@ -107,9 +117,8 @@ export default defineSchema({
       v.literal("PDF")
     ),
     url: v.string(),
-    date: v.string(),
     campaignId: v.id("campaigns"),
-  }),
+  }).index("by_campaignId", ["campaignId"]),
 
   documents: defineTable({
     title: v.string(),
