@@ -1,57 +1,77 @@
-import SvgGroupe6 from "@/components/icons/Groupe6";
+"use client"
 import SvgImageSmall from "@/components/icons/ImageSmall";
-import SvgSliderVideo from "@/components/icons/SliderVideo";
 import SearchBar from "@/components/search-bar";
 import Typography from "@/components/typography";
 import React from "react";
-import VisualsCard, { DetailsCardProps } from "../components/visuals-card";
+import VisualsCard from "../components/visuals-card";
+import { useParams } from "next/navigation";
+import { Id } from "../../../../../../../convex/_generated/dataModel";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../../../convex/_generated/api";
 
-const visualsCardData: DetailsCardProps[] = [
-  {
-    title: "Titre du média",
-    type: "PNG",
-    date: new Date("2025-01-13"),
-    icon: <SvgImageSmall />,
-    variant: "landscape",
-  },
-  {
-    title: "Titre du média",
-    type: "JPG",
-    date: new Date("2025-01-13"),
-    icon: <SvgImageSmall />,
-    variant: "portrait",
-  },
-  {
-    title: "Titre du média",
-    type: "MP3",
-    date: new Date("2025-01-13"),
-    icon: <SvgGroupe6 />,
-    variant: "default",
-  },
-  {
-    title: "Titre du média",
-    type: "MP4",
-    date: new Date("2025-01-13"),
-    icon: <SvgSliderVideo />,
-    variant: "landscape",
-  },
-  {
-    title: "Titre du média",
-    type: "PDF",
-    date: new Date("2025-01-13"),
-    icon: <SvgImageSmall />,
-    variant: "portrait",
-  },
-  {
-    title: "Titre du média",
-    type: "Type de média",
-    date: new Date("2025-01-13"),
-    icon: <SvgImageSmall />,
-    variant: "default",
-  },
-];
+// const visualsCardData: DetailsCardProps[] = [
+//   {
+//     title: "Titre du média",
+//     type: "PNG",
+//     date: new Date("2025-01-13"),
+//     icon: <SvgImageSmall />,
+//     variant: "landscape",
+//   },
+//   {
+//     title: "Titre du média",
+//     type: "JPG",
+//     date: new Date("2025-01-13"),
+//     icon: <SvgImageSmall />,
+//     variant: "portrait",
+//   },
+//   {
+//     title: "Titre du média",
+//     type: "MP3",
+//     date: new Date("2025-01-13"),
+//     icon: <SvgGroupe6 />,
+//     variant: "default",
+//   },
+//   {
+//     title: "Titre du média",
+//     type: "MP4",
+//     date: new Date("2025-01-13"),
+//     icon: <SvgSliderVideo />,
+//     variant: "landscape",
+//   },
+//   {
+//     title: "Titre du média",
+//     type: "PDF",
+//     date: new Date("2025-01-13"),
+//     icon: <SvgImageSmall />,
+//     variant: "portrait",
+//   },
+//   {
+//     title: "Titre du média",
+//     type: "Type de média",
+//     date: new Date("2025-01-13"),
+//     icon: <SvgImageSmall />,
+//     variant: "default",
+//   },
+// ];
 
 export default function TV() {
+
+  const params = useParams();
+    const campaignId = params?.id as Id<"campaigns">;
+  
+    const medias = useQuery(api.queries.users.readMediaFiles, {
+      campaignId,
+    });
+  
+    const visualsCardData =
+      medias?.map((media) => ({
+        title: media.title,
+        type: media.type,
+        date: new Date(media._creationTime),
+        icon: <SvgImageSmall  />,
+        variant: media.variant
+      })) ?? [];
+  
   return (
     <section>
       <Typography variant="h1">Titre de la campagne</Typography>

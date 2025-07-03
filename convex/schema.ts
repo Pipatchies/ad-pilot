@@ -96,17 +96,15 @@ export default defineSchema({
     archived: v.boolean(),
     clientBusinessId: v.id("clientBusinesses"),
   }).index("by_clientBusinessId", ["clientBusinessId"]),
-  
+
   medias: defineTable({
     title: v.string(),
     mediaTypes: v.array(
       v.union(
         v.literal("tv"),
-        v.literal("radio"),
-        v.literal("digital"),
-        v.literal("affichage"),
-        v.literal("cinema"),
-        v.literal("presse")
+        v.literal("web"),
+        v.literal("affiches"),
+        v.literal("panneaux"),
       )
     ),
     type: v.union(
@@ -117,6 +115,11 @@ export default defineSchema({
       v.literal("PDF")
     ),
     url: v.string(),
+    variant: v.union(
+      v.literal("portrait"),
+      v.literal("landscape"),
+      v.literal("default")
+    ),
     campaignId: v.id("campaigns"),
   }).index("by_campaignId", ["campaignId"]),
 
@@ -139,8 +142,9 @@ export default defineSchema({
     url: v.optional(v.string()),
     campaignId: v.id("campaigns"),
     clientBusinessId: v.id("clientBusinesses"),
-  }).index("by_clientBusinessId", ["clientBusinessId"])
-  .index("by_campaignId", ["campaignId"]),
+  })
+    .index("by_clientBusinessId", ["clientBusinessId"])
+    .index("by_campaignId", ["campaignId"]),
 
   vendors: defineTable({
     name: v.string(),
@@ -168,9 +172,8 @@ export default defineSchema({
   }),
 
   campaignTargets: defineTable({
-  campaignId: v.id("campaigns"),
-  targetId: v.id("targets"),
-  fileUrl: v.optional(v.string()),
-}),
-
+    campaignId: v.id("campaigns"),
+    targetId: v.id("targets"),
+    fileUrl: v.optional(v.string()),
+  }),
 });
