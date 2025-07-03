@@ -17,7 +17,7 @@ type Invoice = {
   campaign?: string;
   htprice: number;
   ttcprice: number;
-  date: Date;
+  startDate: Date;
   dueDate: Date;
 };
 
@@ -91,7 +91,7 @@ export default function InvoicesTable({
               <TableCell className="px-5">
                 {invoice.ttcprice.toLocaleString("fr-FR")} €
               </TableCell>
-              <TableCell>{invoice.date.toLocaleDateString()}</TableCell>
+              <TableCell>{invoice.startDate.toLocaleDateString()}</TableCell>
               <TableCell>{invoice.dueDate.toLocaleDateString()}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-4">

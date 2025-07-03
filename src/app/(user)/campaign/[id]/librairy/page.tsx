@@ -1,10 +1,18 @@
+"use client"
 import React from 'react'
 import FolderCard from '../../../../../components/folder-card'
 import Typography from '@/components/typography'
+import { useParams } from 'next/navigation';
+import { Id } from '../../../../../../convex/_generated/dataModel';
 
-const campaignId = 1;
+export default function Web() {
 
-const folderCardData = [
+   const params = useParams();
+    const campaignId = params?.id
+    ? (params.id as Id<"campaigns">)
+    : undefined;
+
+    const folderCardData = [
   {
     title: "Visuels Affiches",
     url: `/campaign/${campaignId}/librairy/posters`
@@ -23,7 +31,6 @@ const folderCardData = [
   },
 ];
 
-export default function Web() {
   return (
     <section>
         <Typography variant="h1"> Titre de la campagne </Typography>

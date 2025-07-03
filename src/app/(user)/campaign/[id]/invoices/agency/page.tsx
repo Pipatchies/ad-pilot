@@ -22,7 +22,7 @@ export default function CampaignAgencyInvoice() {
       title: invoice.title,
       htprice: invoice.htprice,
       ttcprice: invoice.ttcprice,
-      date: new Date(invoice.date),
+      startDate: new Date(invoice.startDate),
       dueDate: new Date(invoice.dueDate),
     })) ?? [];
 
