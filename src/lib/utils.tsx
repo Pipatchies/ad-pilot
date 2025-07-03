@@ -1,5 +1,8 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import SvgImageSmall from "@/components/icons/ImageSmall";
+import SvgSliderVideo from "@/components/icons/SliderVideo";
+import SvgGroupe6 from "@/components/icons/Groupe6";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -56,5 +59,20 @@ export function getIconFromType(type: string) {
       };
     default:
       return null;
+  }
+}
+
+export function getIconFromMediaFilesType(type: string) {
+  switch (type) {
+    case "PNG":
+    case "JPG":
+    case "PDF":
+      return <SvgImageSmall />;
+    case "MP3":
+      return <SvgGroupe6 />;
+    case "MP4":
+      return <SvgSliderVideo />;
+    default:
+      return <SvgImageSmall />;
   }
 }
