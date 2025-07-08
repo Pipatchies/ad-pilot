@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -32,6 +32,7 @@ export default function SignInPage() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const { isSignedIn } = useUser();
   const [error, setError] = useState("");
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -40,6 +41,7 @@ export default function SignInPage() {
       password: "",
     },
   })
+
 
   const onSubmit = async (values: FormValues) => {
     setError("");
@@ -52,11 +54,26 @@ export default function SignInPage() {
       });
 
       await setActive({ session: result.createdSessionId });
-      router.push("/dashboard");
-    } catch (err: any) {
+    } catch {
       setError("Identifiants incorrects ou compte inexistant.");
     }
   };
+
+  useEffect (() => {
+    if (isSignedIn) {
+      const timer = setTimeout(() => {
+        setShouldRedirect(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isSignedIn]);
+
+  useEffect(() => {
+    if (shouldRedirect) {
+      router.push("/dashboard");
+    }
+  }, [shouldRedirect, router]);
 
   if (isSignedIn) {
     return (
@@ -72,7 +89,7 @@ export default function SignInPage() {
           />
           <h1 className="text-2xl font-bold">Bienvenue, admin ! 🎉</h1>
           <p className="text-gray-500">
-            Vous êtes connecté. D'autres fonctionnalités arrivent très bientôt !
+            Vous êtes connecté.
           </p>
         </div>
       </div>
