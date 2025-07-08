@@ -178,7 +178,7 @@ export default function BriefForm() {
     },
   });
 
-  const createBrief = useMutation(api.mutations.users.createBrief);
+  const createBrief = useMutation(api.mutations.briefs.createBrief);
   const sendEmail = useAction(api.actions.sendEmail.sendEmail);
   const [objectifsOpen, setObjectifsOpen] = useState(false);
   const [mediaTypeOpen, setMediaTypeOpen] = useState(false);
