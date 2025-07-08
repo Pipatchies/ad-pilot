@@ -168,7 +168,7 @@ export default function BriefForm() {
       target: "",
       territory: "",
       cities: "",
-      budget: undefined,
+      budget: 0,
       objectives: [],
       mediaTypes: [],
       tvTypes: [],
@@ -178,7 +178,7 @@ export default function BriefForm() {
     },
   });
 
-  const createBrief = useMutation(api.mutations.users.createBrief);
+  const createBrief = useMutation(api.mutations.briefs.createBrief);
   const [objectifsOpen, setObjectifsOpen] = useState(false);
   const [mediaTypeOpen, setMediaTypeOpen] = useState(false);
   const [diffusionTVOpen, setDiffusionTVOpen] = useState(false);
@@ -188,40 +188,37 @@ export default function BriefForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-    await createBrief({
-      periodFrom: values.period.from.toISOString(),
-      periodTo: values.period.to.toISOString(),
-      target: values.target,
-      territory: values.territory,
-      cities: values.cities,
-      budget: values.budget,
-      objectives: values.objectives,
-      mediaTypes: values.mediaTypes,
-      tvTypes: values.tvTypes?.length ? values.tvTypes : undefined,
-      displayTypes: values.displayTypes || undefined,
-      radioTypes: values.radioTypes?.length ? values.radioTypes : undefined,
-      brief: values.brief,
-    });
+      await createBrief({
+        periodFrom: values.period.from.toISOString(),
+        periodTo: values.period.to.toISOString(),
+        target: values.target,
+        territory: values.territory,
+        cities: values.cities,
+        budget: values.budget,
+        objectives: values.objectives,
+        mediaTypes: values.mediaTypes,
+        tvTypes: values.tvTypes?.length ? values.tvTypes : undefined,
+        displayTypes: values.displayTypes || undefined,
+        radioTypes: values.radioTypes?.length ? values.radioTypes : undefined,
+        brief: values.brief,
+      });
 
-    toast.success("Succès", {
-      description: "Le formulaire a été envoyé correctement.",
-    });
-  } catch {
+      toast.success("Succès", {
+        description: "Le formulaire a été envoyé correctement.",
+      });
+    } catch {
       toast.error("Erreur", {
-      description: "Veuillez remplir tous les champs du formulaire.",
-    });
+        description: "Veuillez remplir tous les champs du formulaire.",
+      });
+    }
   }
-}
 
   return (
     <section>
       <Card className="w-full h-auto rounded-sm shadow-around bg-white border-none text-primary py-20 px-10">
         <CardContent>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
