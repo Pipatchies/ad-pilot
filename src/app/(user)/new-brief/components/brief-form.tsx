@@ -43,7 +43,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SvgCalendrier from "@/components/icons/Calendrier";
 import SvgSmallDown from "@/components/icons/SmallDown";
-import { useAction, useMutation } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 
 const objectifs = [
@@ -179,7 +179,6 @@ export default function BriefForm() {
   });
 
   const createBrief = useMutation(api.mutations.briefs.createBrief);
-  const sendEmail = useAction(api.actions.sendEmail.sendEmail);
   const [objectifsOpen, setObjectifsOpen] = useState(false);
   const [mediaTypeOpen, setMediaTypeOpen] = useState(false);
   const [diffusionTVOpen, setDiffusionTVOpen] = useState(false);
@@ -202,28 +201,6 @@ export default function BriefForm() {
         displayTypes: values.displayTypes || undefined,
         radioTypes: values.radioTypes?.length ? values.radioTypes : undefined,
         brief: values.brief,
-      });
-
-      await sendEmail({
-        to: "arianeb@verywell.fr",
-        subject: "Nouveau brief client",
-        text: `
-Un nouveau brief a été soumis :
-
-Période : ${format(values.period.from, "dd/MM/yyyy")} au ${format(
-          values.period.to,
-          "dd/MM/yyyy"
-        )}
-Cible : ${values.target}
-Territoire : ${values.territory}
-Villes : ${values.cities}
-Budget : ${values.budget}€
-Objectifs : ${values.objectives.join(", ")}
-Médias : ${values.mediaTypes.join(", ")}
-
-Brief :
-${values.brief}
-      `,
       });
 
       toast.success("Succès", {

@@ -1,5 +1,6 @@
 import { mutation } from "../_generated/server";
 import { v } from "convex/values";
+import { internal } from "../_generated/api";
 
 export const createBrief = mutation({
   args: {
@@ -17,9 +18,14 @@ export const createBrief = mutation({
     brief: v.string(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("briefs", {
+    const briefId = await ctx.db.insert("briefs", {
       ...args,
     });
+
+    await ctx.scheduler.runAfter(0, internal.actions.sendEmail.sendEmail, {
+      ...args,
+    });
+
+    return briefId;
   },
 });
-
