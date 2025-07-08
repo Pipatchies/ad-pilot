@@ -2,6 +2,7 @@
 import { v } from "convex/values";
 import { internalAction } from "../_generated/server";
 import nodemailer from "nodemailer";
+import { formatDateFR } from "../../src/lib/utils";
 
 export const sendEmail = internalAction({
   args: {
@@ -32,7 +33,7 @@ export const sendEmail = internalAction({
     const text = `
 Un nouveau brief a été soumis :
 
-Période : ${args.periodFrom} au ${args.periodTo}
+Période : ${formatDateFR(args.periodFrom)} au ${formatDateFR(args.periodTo)}
 Cible : ${args.target}
 Territoire : ${args.territory}
 Villes : ${args.cities}
@@ -57,3 +58,4 @@ ${args.brief}
       return { success: true, messageId: info.messageId };
   },
 });
+
