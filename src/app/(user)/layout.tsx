@@ -1,7 +1,7 @@
 "use client";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import MenuSidebar from "@/components/menu-sidebar";
-import UserTopbar from "@/components/user-topbar";
+import Topbar from "@/components/topbar";
 import { usePathname } from "next/navigation";
 import BackButton from "@/components/back-button";
 
@@ -19,7 +19,7 @@ export default function ClientLayout({
         <MenuSidebar variant="user" />  
         <div className="flex flex-col min-h-screen w-full">
           <header className="sticky top-0 z-50 border-b border-gray-200 sm:px-6 py-4 shadow-topbar bg-white ">
-            <UserTopbar />
+            <Topbar variant="user" />
           </header>
           {showBackButton ? (
           <main className="lg:py-20 lg:px-15 px-5 py-10 @container max-w-[1400px] w-full">
