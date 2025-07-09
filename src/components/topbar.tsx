@@ -9,14 +9,31 @@ import SvgSearch from "./icons/Search";
 import SvgNotification from "./icons/Notification";
 import SvgCrayon from "./icons/Crayon";
 
-const ctaProps = {
-  text: "Déposer un brief",
-  url: "/new-brief",
-  target: "self",
+type UserRole = "admin" | "user";
+
+
+const CtaData = {
+  user: {
+    text: "Déposer un brief",
+    url: "/new-brief",
+    target: "self",
+  },
+  admin: {
+    text: "Créer une campagne",
+    url: "/new-campaign",
+    target: "self",
+  }
 };
 
-export default function Topbar() {
+interface TopbarProps {
+  variant: UserRole;
+}
+
+
+export default function Topbar({ variant }: TopbarProps) {
   const [query, setQuery] = useState("");
+  const isUser = variant === "user";
+  const ctaProps = CtaData[variant];
 
   useEffect(() => {
     if (query.length > 2) {
@@ -51,10 +68,12 @@ export default function Topbar() {
         />
 
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="relative flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10">
-            <SvgNotification className="w-5 h-5 sm:w-6 sm:h-6" />
-            <span className="absolute top-1 lg:right-3 right-1 h-2.5 w-2.5 rounded-full bg-destructive border border-white" />
-          </div>
+          {isUser && (
+            <div className="relative flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10">
+              <SvgNotification className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="absolute top-1 lg:right-3 right-1 h-2.5 w-2.5 rounded-full bg-destructive border border-white" />
+            </div>
+          )}
 
           <div className="border-r h-5 hidden sm:block" />
 

@@ -43,7 +43,9 @@ export default function CtaButton({ props, className, variant, userType, icon }:
             className
           )}
         >
-          {icon && <div className="mr-2">{icon}</div>}
+          {icon && <div className={cn("mr-2",
+           className
+           )}>{icon}</div>}
             <span className="block !leading-none relative font-[600] cursor-pointer">
               {text}
             </span>

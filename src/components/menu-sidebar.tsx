@@ -32,22 +32,65 @@ import SvgPictoArchive from "./icons/PictoArchive";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
+import SvgConfiguration from "./icons/Configuration";
 
 const clientBusinessId: Id<"clientBusinesses"> =
   "k979mgpmypy7r4nrnbgpfmyep17jtkqc" as Id<"clientBusinesses">;
 
-type SubItem = {
+type UserRole = "admin" | "user";
+
+interface MenuItem {
+  label: string;
+  icon: React.ReactNode;
+  url: string;
+  subItems?: SubItem[];
+}
+
+interface SubItem {
   label: string;
   icon: React.ReactNode;
   url: string;
 };
 
-export default function MenuSidebar() {
+interface SidebarProps {
+  variant: UserRole;
+}
+
+export default function MenuSidebar({ variant }: SidebarProps) {
   const campaigns = useQuery(api.queries.users.readCampaigns, {
     clientBusinessId,
   });
 
-  const staticItems = [
+  const adminMenuItemsTop: MenuItem[] = [
+    {
+      label: "Clients",
+      icon: <SvgProfil />,
+      url: "/clients",
+    },
+    {
+      label: "Campagnes",
+      icon: <SvgFusee />,
+      url: "/adminCampaigns",
+    },
+    {
+      label: "Factures",
+      icon: <SvgFacture />,
+      url: "/adminInvoices",
+    },
+    {
+      label: "Documents",
+      icon: <SvgDocument />,
+      url: "/adminDocuments",
+    },
+  ];
+
+  const adminMenuItemsBottom: MenuItem = {
+    label: "Comptes",
+    icon: <SvgConfiguration />,
+    url: "/accounts",
+  };
+
+  const userStaticItems: MenuItem[] = [
     {
       label: "Campagnes archivées",
       icon: <SvgPictoArchive />,
@@ -60,10 +103,11 @@ export default function MenuSidebar() {
     },
   ];
 
-  const menuItems = [
+  const userMenuItems: MenuItem[] = [
     ...(campaigns?.map((campaign) => ({
       label: campaign.title,
       icon: <SvgDocument />,
+      url: `/campaign/${campaign._id}`,
       subItems: [
         {
           label: "La campagne",
@@ -96,9 +140,23 @@ export default function MenuSidebar() {
           url: `/campaign/${campaign._id}/documents`,
         },
       ],
-    })) ?? []),
-    ...staticItems,
+    } as MenuItem)) ?? []),
+    ...userStaticItems,
   ];
+
+  const getDashboardUrl = (variant: UserRole): string => {
+  return variant === 'admin' ? '/adminDashboard' : '/dashboard';
+};
+
+const getBottomMenuItem = (variant: UserRole): MenuItem | null => {
+    return variant === 'admin' ? adminMenuItemsBottom : null;
+  };
+
+const menuItems = variant === 'admin' 
+    ? adminMenuItemsTop : userMenuItems;
+  
+  const bottomMenuItem = getBottomMenuItem(variant);
+  const dashboardUrl = getDashboardUrl(variant);
 
   const pathname = usePathname();
 
@@ -114,7 +172,7 @@ export default function MenuSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="bg-sidebar px-4 py-3.25">
         <div>
-          <Link href="/dashboard">
+          <Link href={dashboardUrl}>
             <Image
               src="/logo-ad-pilot.png"
               alt="ADPILOT"
@@ -127,7 +185,7 @@ export default function MenuSidebar() {
       <SidebarContent className="bg-sidebar-primary overflow-y-auto scrollbar-none">
         <SidebarMenu className="py-2">
           {menuItems.map((item, index) =>
-            "subItems" in item ? (
+            item.subItems ? (
               <Collapsible key={index} className="group/collapsible">
                 <SidebarMenuItem className="py-1">
                   <CollapsibleTrigger asChild>
@@ -222,7 +280,37 @@ export default function MenuSidebar() {
               </SidebarMenuItem>
             )
           )}
+          
         </SidebarMenu>
+
+        {bottomMenuItem && (
+          <SidebarMenu className="py-2 border-t border-white/20 mt-auto">
+                    <SidebarMenuItem className="py-1">
+                      <SidebarMenuButton
+                        asChild
+                        className={cn(
+                          "whitespace-nowrap p-8",
+                          isActive(bottomMenuItem.url)
+                            ? "bg-black/40 border-l-4 border-destructive rounded-none"
+                            : "bg-black/20 rounded-none"
+                        )}
+                      >
+                        <Link href={bottomMenuItem.url}>
+                          <span
+                            className={cn(
+                              isActive(bottomMenuItem.url)
+                                ? "fill-destructive"
+                                : "fill-[#A5A4BF]"
+                            )}
+                          >
+                            {bottomMenuItem.icon}
+                          </span>
+                          <Typography variant="h5">{bottomMenuItem.label}</Typography>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+        )}
       </SidebarContent>
     </Sidebar>
   );

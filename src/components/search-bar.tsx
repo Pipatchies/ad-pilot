@@ -10,7 +10,11 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-export default function SearchBar() {
+type SearchBarProps = {
+  variant?: "minimal" | "full";
+};
+
+export default function SearchBar({ variant = "full" }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [sortOrder, setSortOrder] = useState("Du plus récent au plus ancien");
@@ -39,6 +43,7 @@ export default function SearchBar() {
         />
       </div>
 
+      {variant === "full" && (
       <div className="w-full md:w-72">
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CollapsibleTrigger asChild>
@@ -65,6 +70,7 @@ export default function SearchBar() {
           </CollapsibleContent>
         </Collapsible>
       </div>
+      )}
     </div>
   );
 }
