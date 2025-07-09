@@ -5,9 +5,11 @@ const SvgPlus = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     width={22.071}
     height={22.071}
+    viewBox="0 0 22.071 22.071"
+    fill="currentColor"
     {...props}
   >
-    <g fill="#3b2d57" data-name="Groupe 1">
+    <g data-name="Groupe 1">
       <path
         d="m20.287 12.895-.036-3.604H9.29v10.96l3.604.036-.035-7.428Z"
         data-name="Line Arrow Left"
