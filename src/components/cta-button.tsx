@@ -32,7 +32,7 @@ export default function CtaButton({ props, className, variant, userType, icon }:
       : props.text;
 
   switch (variant) {
-    case "openModal":
+    case "submit":
       if (!props?.text) return null;
 
       return (
@@ -43,9 +43,6 @@ export default function CtaButton({ props, className, variant, userType, icon }:
             className
           )}
         >
-          {icon && <div className={cn("mr-2",
-           className
-           )}>{icon}</div>}
             <span className="block !leading-none relative font-[600] cursor-pointer">
               {text}
             </span>
