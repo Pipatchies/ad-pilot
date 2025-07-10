@@ -42,9 +42,9 @@ export default function Modal({ cta, data }: ModalProps) {
             </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-full max-w-2xl">
+      <DialogContent className="w-full max-w-2xl flex flex-col items-center gap-4 py-10">
         <DialogHeader>
-          <DialogTitle>{data.title}</DialogTitle>
+          <DialogTitle className="font-bold text-2xl">{data.title}</DialogTitle>
           <DialogDescription>{data.description}</DialogDescription>
         </DialogHeader>
         <div className="mt-4">{data.children}</div>
