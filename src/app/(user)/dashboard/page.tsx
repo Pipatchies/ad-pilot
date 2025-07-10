@@ -6,7 +6,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 
-const clientBusinessId: Id<"clientBusinesses"> = "k979mgpmypy7r4nrnbgpfmyep17jtkqc" as Id<"clientBusinesses">;
+const organizationId: Id<"organizations"> = "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" as Id<"organizations">;
 
 const docData = [
   {
@@ -32,11 +32,11 @@ const docData = [
 
 export default function Dashboard() {
   const campaigns = useQuery(api.queries.users.readCampaigns, {
-    clientBusinessId,
+    organizationId,
   });
 
   const invoices = useQuery(api.queries.users.readInvoices, {
-    clientBusinessId,
+    organizationId,
   });
 
   const campaignData =

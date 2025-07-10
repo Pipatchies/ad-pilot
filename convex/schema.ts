@@ -8,13 +8,19 @@ export default defineSchema({
     name: v.string(),
     surname: v.string(),
     phone: v.optional(v.string()),
-    role: v.array(v.string()),
-    clientBusinessId: v.id("clientBusinesses"),
+    roleId: v.id("roles"),
+    organizationId: v.id("organizations"),
   }),
 
-  clientBusinesses: defineTable({
+  organizations: defineTable({
     name: v.string(),
     logo: v.string(),
+  }),
+
+  roles: defineTable({
+    name: v.string(),
+    label: v.string(),
+    description: v.optional(v.string()),
   }),
 
   briefs: defineTable({
@@ -94,8 +100,8 @@ export default defineSchema({
       ),
     }),
     archived: v.boolean(),
-    clientBusinessId: v.id("clientBusinesses"),
-  }).index("by_clientBusinessId", ["clientBusinessId"]),
+    organizationId: v.id("organizations"),
+  }).index("by_organizationId", ["organizationId"]),
 
   medias: defineTable({
     title: v.string(),
@@ -104,7 +110,7 @@ export default defineSchema({
         v.literal("tv"),
         v.literal("web"),
         v.literal("affiches"),
-        v.literal("panneaux"),
+        v.literal("panneaux")
       )
     ),
     type: v.union(
@@ -142,9 +148,9 @@ export default defineSchema({
     dueDate: v.string(),
     url: v.optional(v.string()),
     campaignId: v.id("campaigns"),
-    clientBusinessId: v.id("clientBusinesses"),
+    organizationId: v.id("organizations"),
   })
-    .index("by_clientBusinessId", ["clientBusinessId"])
+    .index("by_organizationId", ["organizationId"])
     .index("by_campaignId", ["campaignId"]),
 
   vendors: defineTable({

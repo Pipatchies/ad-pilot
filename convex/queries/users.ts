@@ -3,13 +3,13 @@ import { v } from "convex/values";
 
 export const readCampaigns = query({
   args: {
-    clientBusinessId: v.id("clientBusinesses"),
+    organizationId: v.id("organizations"),
   },
-  handler: async (ctx, { clientBusinessId }) => {
+  handler: async (ctx, { organizationId }) => {
     return await ctx.db
       .query("campaigns")
-      .withIndex("by_clientBusinessId", (q) =>
-        q.eq("clientBusinessId", clientBusinessId)
+      .withIndex("by_organizationId", (q) =>
+        q.eq("organizationId", organizationId)
       )
       .collect();
   },
@@ -27,13 +27,13 @@ export const readDetailsCampaign = query({
 
 export const readInvoices = query({
   args: {
-    clientBusinessId: v.id("clientBusinesses"),
+    organizationId: v.id("organizations"),
   },
-  handler: async (ctx, { clientBusinessId }) => {
+  handler: async (ctx, { organizationId }) => {
     const invoices = await ctx.db
       .query("invoices")
-      .withIndex("by_clientBusinessId", (q) =>
-        q.eq("clientBusinessId", clientBusinessId)
+      .withIndex("by_organizationId", (q) =>
+        q.eq("organizationId", organizationId)
       )
       .collect();
     
@@ -54,13 +54,13 @@ export const readInvoices = query({
 
 export const readAgencyInvoices = query({
   args: {
-    clientBusinessId: v.id("clientBusinesses"),
+    organizationId: v.id("organizations"),
   },
-  handler: async (ctx, { clientBusinessId }) => {
+  handler: async (ctx, { organizationId }) => {
     const invoices = await ctx.db
       .query("invoices")
-      .withIndex("by_clientBusinessId", (q) =>
-        q.eq("clientBusinessId", clientBusinessId)
+      .withIndex("by_organizationId", (q) =>
+        q.eq("organizationId", organizationId)
       )
       .collect();
 
@@ -82,13 +82,13 @@ export const readAgencyInvoices = query({
 
 export const readVendorInvoices = query({
   args: {
-    clientBusinessId: v.id("clientBusinesses"),
+    organizationId: v.id("organizations"),
   },
-  handler: async (ctx, { clientBusinessId }) => {
+  handler: async (ctx, { organizationId }) => {
     const invoices = await ctx.db
       .query("invoices")
-      .withIndex("by_clientBusinessId", (q) =>
-        q.eq("clientBusinessId", clientBusinessId)
+      .withIndex("by_organizationId", (q) =>
+        q.eq("organizationId", organizationId)
       )
       .collect();
 
