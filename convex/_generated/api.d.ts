@@ -15,7 +15,9 @@ import type {
 } from "convex/server";
 import type * as actions_sendEmail from "../actions/sendEmail.js";
 import type * as mutations_briefs from "../mutations/briefs.js";
-import type * as queries_users from "../queries/users.js";
+import type * as queries_campaigns from "../queries/campaigns.js";
+import type * as queries_invoices from "../queries/invoices.js";
+import type * as queries_medias from "../queries/medias.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -28,7 +30,9 @@ import type * as queries_users from "../queries/users.js";
 declare const fullApi: ApiFromModules<{
   "actions/sendEmail": typeof actions_sendEmail;
   "mutations/briefs": typeof mutations_briefs;
-  "queries/users": typeof queries_users;
+  "queries/campaigns": typeof queries_campaigns;
+  "queries/invoices": typeof queries_invoices;
+  "queries/medias": typeof queries_medias;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
