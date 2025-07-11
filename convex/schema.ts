@@ -3,13 +3,13 @@ import { v } from "convex/values";
 
 export default defineSchema({
   users: defineTable({
+    clerkUserId: v.string(),
     email: v.string(),
-    password: v.string(),
-    name: v.string(),
-    surname: v.string(),
+    lastname: v.string(),
+    firstname: v.string(),
     phone: v.optional(v.string()),
     roleId: v.id("roles"),
-    organizationId: v.id("organizations"),
+    organizationId: v.optional(v.id("organizations")),
   }),
 
   organizations: defineTable({
