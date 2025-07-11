@@ -7,12 +7,12 @@ import { useQuery } from "convex/react";
 import { api } from '../../../../../convex/_generated/api'; 
 import { Id } from '../../../../../convex/_generated/dataModel';
 
-const clientBusinessId: Id<"clientBusinesses"> = "k979mgpmypy7r4nrnbgpfmyep17jtkqc" as Id<"clientBusinesses">;
+const organizationId: Id<"organizations"> = "k979mgpmypy7r4nrnbgpfmyep17jtkqc" as Id<"organizations">;
 
 export default function AgencyInvoice() {
 
-  const invoices = useQuery(api.queries.users.readAgencyInvoices, {
-  clientBusinessId,
+  const invoices = useQuery(api.queries.invoices.readAgencyInvoices, {
+  organizationId,
 });
 
 const invoicesData = invoices?.map((invoice) => ({

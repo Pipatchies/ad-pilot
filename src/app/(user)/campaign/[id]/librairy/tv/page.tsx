@@ -9,57 +9,12 @@ import { Id } from "../../../../../../../convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../../../convex/_generated/api";
 
-// const visualsCardData: DetailsCardProps[] = [
-//   {
-//     title: "Titre du média",
-//     type: "PNG",
-//     date: new Date("2025-01-13"),
-//     icon: <SvgImageSmall />,
-//     variant: "landscape",
-//   },
-//   {
-//     title: "Titre du média",
-//     type: "JPG",
-//     date: new Date("2025-01-13"),
-//     icon: <SvgImageSmall />,
-//     variant: "portrait",
-//   },
-//   {
-//     title: "Titre du média",
-//     type: "MP3",
-//     date: new Date("2025-01-13"),
-//     icon: <SvgGroupe6 />,
-//     variant: "default",
-//   },
-//   {
-//     title: "Titre du média",
-//     type: "MP4",
-//     date: new Date("2025-01-13"),
-//     icon: <SvgSliderVideo />,
-//     variant: "landscape",
-//   },
-//   {
-//     title: "Titre du média",
-//     type: "PDF",
-//     date: new Date("2025-01-13"),
-//     icon: <SvgImageSmall />,
-//     variant: "portrait",
-//   },
-//   {
-//     title: "Titre du média",
-//     type: "Type de média",
-//     date: new Date("2025-01-13"),
-//     icon: <SvgImageSmall />,
-//     variant: "default",
-//   },
-// ];
-
 export default function TV() {
 
   const params = useParams();
     const campaignId = params?.id as Id<"campaigns">;
   
-    const medias = useQuery(api.queries.users.readMediaFiles, {
+    const medias = useQuery(api.queries.medias.readMediaFiles, {
       campaignId,
     });
   
