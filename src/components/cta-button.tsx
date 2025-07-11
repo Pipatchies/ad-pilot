@@ -37,6 +37,8 @@ export default function CtaButton({ props, className, variant, userType, icon }:
 
       return (
         <Button
+          type="submit"
+          onClick={props?.onClick}
           variant="ghost"
           className={cn(
             "group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white",

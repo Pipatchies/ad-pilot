@@ -20,118 +20,161 @@ import { Input } from "@/components/ui/input";
 import SvgProfil from "@/components/icons/Profil";
 import SvgMail from "@/components/icons/Mail";
 import SvgLock from "@/components/icons/Lock";
+import { useAction } from "convex/react";
+import { api } from "@/../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 const ctaProps = {
   text: "Ajouter un compte",
   icon: <SvgPlus />,
 };
 
-
-
 export default function AccountModal() {
+  const createUserWithClerk = useAction(api.actions.createUserWithClerk.createUserWithClerk);
+
+  const roleId = "m17c9swbwzta4w8egtc1cjn2pd7keycy" as Id<"roles"> ;
+
   const formSchema = z.object({
-  firstname: z.string().min(1, "Le prénom est requis"),
-  lastname: z.string().min(1, "Le nom est requis"),
-  email: z.string().email("Email invalide"),
-  password: z.string().min(6, "Au moins 6 caractères"),
-});
+    firstname: z.string().min(1, "Le prénom est requis"),
+    lastname: z.string().min(1, "Le nom est requis"),
+    email: z.string().email("Email invalide"),
+    password: z.string().min(6, "Au moins 6 caractères"),
+  });
 
-type FormValues = z.infer<typeof formSchema>;
-const form = useForm<FormValues>({
-  resolver: zodResolver(formSchema),
-  defaultValues: {
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: "",
-  },
-});
+  type FormValues = z.infer<typeof formSchema>;
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+    },
+  });
 
-async function onSubmit(values: FormValues) {
-  try {
-    console.log("Form data:", values);
-    toast.success("Succès", {
-      description: "Le formulaire a été envoyé correctement.",
-    });
-  } catch {
-    toast.error("Erreur", {
-      description: "Veuillez remplir tous les champs du formulaire.",
-    });
+  async function onSubmit(values: FormValues) {
+    try {
+      await createUserWithClerk({
+        email: values.email,
+        password: values.password,
+        firstname: values.firstname,
+        lastname: values.lastname,
+        roleId,
+      });
+
+      toast.success("Compte administrateur créé !");
+      form.reset();
+    } catch {
+      toast.error("Erreur", {
+        description: "Veuillez remplir tous les champs du formulaire.",
+      });
+    }
   }
-}
 
-const userFormData = {
-  title: "Créer un compte administrateur",
-  children: (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="flex gap-4">
+  const userFormData = {
+    title: "Créer un compte administrateur",
+    children: (
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="flex gap-4">
+            <FormField
+              control={form.control}
+              name="firstname"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel className="text-lg font-semibold">
+                    {" "}
+                    <SvgProfil className="fill-primary" />
+                    Prénom
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Votre prénom"
+                      className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastname"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel className="text-lg font-semibold">
+                    {" "}
+                    <SvgProfil className="fill-primary" />
+                    Nom
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Votre nom"
+                      className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
-            name="firstname"
+            name="email"
             render={({ field }) => (
-              <FormItem className="w-1/2">
-                <FormLabel className="text-lg font-semibold"> <SvgProfil className="fill-primary"/>Prénom</FormLabel>
+              <FormItem>
+                <FormLabel className="text-lg font-semibold">
+                  <SvgMail className="fill-primary" />
+                  Email
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Votre prénom" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5" {...field} />
+                  <Input
+                    placeholder="Renseignez votre email"
+                    className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="lastname"
+            name="password"
             render={({ field }) => (
-              <FormItem className="w-1/2">
-                <FormLabel className="text-lg font-semibold"> <SvgProfil className="fill-primary"/>Nom</FormLabel>
+              <FormItem>
+                <FormLabel className="text-lg font-semibold">
+                  <SvgLock className="fill-primary" />
+                  Mot de passe
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Votre nom" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        </div>
-
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg font-semibold"><SvgMail className="fill-primary"/>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="Renseignez votre email" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg font-semibold"><SvgLock className="fill-primary"/>Mot de passe</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="••••••••" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </form>
-    </Form>
-  ),
-  footer: (
-    <CtaButton
-      props={{
-        text: "Enregistrer",
-      }}
-      variant="submit"
-    />
-  ),
-};
+        </form>
+      </Form>
+    ),
+    footer: (
+      <CtaButton
+        props={{
+          text: "Enregistrer",
+          onClick: form.handleSubmit(onSubmit),
+        }}
+        variant="submit"
+      />
+    ),
+  };
   return <Modal cta={ctaProps} data={userFormData} />;
 }
