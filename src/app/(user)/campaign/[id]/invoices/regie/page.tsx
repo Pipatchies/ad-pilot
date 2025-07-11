@@ -13,7 +13,7 @@ export default function CampaignRegieInvoice() {
   const params = useParams();
     const campaignId = params?.id as Id<"campaigns">;
 
-    const invoices = useQuery(api.queries.users.readVendorInvoicesByCampaign, {
+    const invoices = useQuery(api.queries.invoices.readVendorInvoicesByCampaign, {
       campaignId,
     });
     
