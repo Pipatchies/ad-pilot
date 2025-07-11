@@ -57,7 +57,7 @@ interface SidebarProps {
 }
 
 export default function MenuSidebar({ variant }: SidebarProps) {
-  const campaigns = useQuery(api.queries.users.readCampaigns, {
+  const campaigns = useQuery(api.queries.campaigns.readCampaigns, {
     organizationId,
   });
 
