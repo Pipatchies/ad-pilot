@@ -59,7 +59,7 @@ export default function Billboard() {
   const params = useParams();
   const campaignId = params?.id as Id<"campaigns">;
 
-  const medias = useQuery(api.queries.users.readMediaFiles, {
+  const medias = useQuery(api.queries.medias.readMediaFiles, {
     campaignId,
   });
 
