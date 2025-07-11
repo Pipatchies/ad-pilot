@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as actions_createUserWithClerk from "../actions/createUserWithClerk.js";
 import type * as actions_sendEmail from "../actions/sendEmail.js";
 import type * as mutations_briefs from "../mutations/briefs.js";
 import type * as mutations_users from "../mutations/users.js";
@@ -29,6 +30,7 @@ import type * as queries_medias from "../queries/medias.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  "actions/createUserWithClerk": typeof actions_createUserWithClerk;
   "actions/sendEmail": typeof actions_sendEmail;
   "mutations/briefs": typeof mutations_briefs;
   "mutations/users": typeof mutations_users;
