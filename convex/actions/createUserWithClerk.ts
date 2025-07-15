@@ -15,6 +15,10 @@ export const createUserWithClerk = action({
     organizationId: v.optional(v.id("organizations")),
   },
   handler: async (ctx, args) => {
+    const role = await ctx.runQuery(internal.queries.roles.getById, {
+      roleId: args.roleId,
+    });
+
     const response = await fetch("https://api.clerk.com/v1/users", {
       method: "POST",
       headers: {
@@ -27,6 +31,9 @@ export const createUserWithClerk = action({
         first_name: args.firstname,
         last_name: args.lastname,
         phone_number: args.phone,
+        public_metadata: {
+          role: role.name, //
+        },
       }),
     });
 
@@ -36,15 +43,18 @@ export const createUserWithClerk = action({
       throw new Error(`Clerk error: ${clerkUser.errors?.[0]?.message}`);
     }
 
-    const userId: Id<"users"> = await ctx.runMutation(internal.mutations.users.createUser, {
-      clerkUserId: clerkUser.id,
-      email: args.email,
-      firstname: args.firstname,
-      lastname: args.lastname,
-      phone: args.phone,
-      roleId: args.roleId,
-      organizationId: args.organizationId,
-    });
+    const userId: Id<"users"> = await ctx.runMutation(
+      internal.mutations.users.createUser,
+      {
+        clerkUserId: clerkUser.id,
+        email: args.email,
+        firstname: args.firstname,
+        lastname: args.lastname,
+        phone: args.phone,
+        roleId: args.roleId,
+        organizationId: args.organizationId,
+      }
+    );
 
     return userId;
   },
