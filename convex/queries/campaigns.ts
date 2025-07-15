@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
 
-export const readCampaigns = query({
+export const getCampaignsByOrganization = query({
   args: {
     organizationId: v.id("organizations"),
   },
@@ -15,7 +15,7 @@ export const readCampaigns = query({
   },
 });
 
-export const readDetailsCampaign = query({
+export const getCampaignbyId = query({
   args: {
     campaignId: v.id("campaigns"),
   },

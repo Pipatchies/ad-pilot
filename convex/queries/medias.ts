@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
 
-export const readMediaFiles = query({
+export const getMediaFilesByCampaign = query({
   args: {
     campaignId: v.id("campaigns"),
   },

@@ -15,7 +15,7 @@ export const createUserWithClerk = action({
     organizationId: v.optional(v.id("organizations")),
   },
   handler: async (ctx, args) => {
-    const role = await ctx.runQuery(internal.queries.roles.getById, {
+    const role = await ctx.runQuery(internal.queries.roles.getRoleById, {
       roleId: args.roleId,
     });
 
@@ -59,3 +59,48 @@ export const createUserWithClerk = action({
     return userId;
   },
 });
+
+export const updateUserInClerk = action({
+  args: {
+    userId: v.id("users"), // Convex ID
+    firstname: v.optional(v.string()),
+    lastname: v.optional(v.string()),
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.queries.users.getById, {
+      userId: args.userId,
+    });
+
+    if (!user || !user.clerkUserId) {
+      throw new Error("User not found or missing Clerk ID");
+    }
+
+    const updatePayload: Record<string, any> = {};
+    if (args.firstname) updatePayload.first_name = args.firstname;
+    if (args.lastname) updatePayload.last_name = args.lastname;
+    if (args.email) updatePayload.email_address = [args.email];
+    if (args.phone) updatePayload.phone_number = args.phone;
+
+    const response = await fetch(
+      `https://api.clerk.com/v1/users/${user.clerkUserId}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatePayload),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Clerk update error: ${error.errors?.[0]?.message}`);
+    }
+
+    return { success: true };
+  },
+});
+

@@ -15,7 +15,7 @@ export default function Web() {
   const params = useParams();
   const campaignId = params?.id as Id<"campaigns">;
 
-  const medias = useQuery(api.queries.medias.readMediaFiles, {
+  const medias = useQuery(api.queries.medias.getMediaFilesByCampaign, {
     campaignId,
   });
 

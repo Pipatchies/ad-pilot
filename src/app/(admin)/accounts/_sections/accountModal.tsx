@@ -33,7 +33,7 @@ const ctaProps = {
 
 export default function AccountModal() {
   const createUserWithClerk = useAction(
-    api.actions.createUserWithClerk.createUserWithClerk
+    api.actions.users.createUserWithClerk
   );
 
   const roleId = "m17c9swbwzta4w8egtc1cjn2pd7keycy" as Id<"roles">;

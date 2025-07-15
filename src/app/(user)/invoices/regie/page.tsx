@@ -11,7 +11,7 @@ const organizationId: Id<"organizations"> = "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" a
 
 export default function RegieInvoice() {
 
-  const invoices = useQuery(api.queries.invoices.readVendorInvoices, {
+  const invoices = useQuery(api.queries.invoices.getVendorInvoicesByOrganization, {
   organizationId,
 });
 

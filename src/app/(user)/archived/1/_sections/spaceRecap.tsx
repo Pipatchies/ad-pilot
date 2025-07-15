@@ -15,7 +15,7 @@ const campaignId: Id<"campaigns"> = "jn7cedad56bmbav5fnk28ys6zn7jtrgf" as Id<"ca
 
 export default function SpaceRecap() {
 
-  const campaign = useQuery(api.queries.campaigns.readDetailsCampaign, {
+  const campaign = useQuery(api.queries.campaigns.getCampaignbyId, {
   campaignId,
 });
 
