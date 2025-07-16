@@ -21,8 +21,8 @@ import SvgProfil from "@/components/icons/Profil";
 import SvgMail from "@/components/icons/Mail";
 import SvgLock from "@/components/icons/Lock";
 import { useAction } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
-import { Id } from "../../../../../convex/_generated/dataModel";
 import zxcvbn from "zxcvbn";
 import { getPasswordCriteria } from "@/lib/utils";
 
@@ -32,11 +32,10 @@ const ctaProps = {
 };
 
 export default function AccountModal() {
-  const createUserWithClerk = useAction(
-    api.actions.users.createUserWithClerk
-  );
+  const createUserWithClerk = useAction(api.actions.users.createUserWithClerk);
+  const roles = useQuery(api.queries.roles.getAllRoles);
+  const adminRoleId = roles?.find((r) => r.name === "admin")?._id;
 
-  const roleId = "m17c9swbwzta4w8egtc1cjn2pd7keycy" as Id<"roles">;
   const [passwordStrength, setPasswordStrength] = React.useState(0);
 
   const formSchema = z.object({
@@ -73,13 +72,18 @@ export default function AccountModal() {
       return;
     }
 
+    if (!adminRoleId) {
+      toast.error("Impossible de créer le compte : rôle admin introuvable.");
+      return;
+    }
+
     try {
       await createUserWithClerk({
         email: values.email,
         password: values.password,
         firstname: values.firstname,
         lastname: values.lastname,
-        roleId,
+        roleId: adminRoleId,
       });
 
       toast.success("Compte administrateur créé !");
@@ -193,8 +197,8 @@ export default function AccountModal() {
                         passwordStrength < 2
                           ? "#dc2626"
                           : passwordStrength === 2
-                          ? "#facc15" 
-                          : "#16a34a", 
+                          ? "#facc15"
+                          : "#16a34a",
                     }}
                   />
                 </div>

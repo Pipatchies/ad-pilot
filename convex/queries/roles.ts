@@ -1,4 +1,4 @@
-import { internalQuery} from "../_generated/server";
+import { internalQuery, query} from "../_generated/server";
 import { v } from "convex/values";
 
 export const getRoleById = internalQuery({
@@ -13,3 +13,11 @@ export const getRoleById = internalQuery({
     return role;
   },
 });
+
+export const getAllRoles = query({
+  args: {},
+  handler: async (ctx) => {
+    const roles = await ctx.db.query("roles").collect();
+    return roles;
+  },
+}); 
