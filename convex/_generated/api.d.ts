@@ -21,6 +21,7 @@ import type * as queries_campaigns from "../queries/campaigns.js";
 import type * as queries_invoices from "../queries/invoices.js";
 import type * as queries_medias from "../queries/medias.js";
 import type * as queries_roles from "../queries/roles.js";
+import type * as queries_users from "../queries/users.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   "queries/invoices": typeof queries_invoices;
   "queries/medias": typeof queries_medias;
   "queries/roles": typeof queries_roles;
+  "queries/users": typeof queries_users;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

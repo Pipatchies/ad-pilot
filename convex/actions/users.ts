@@ -60,16 +60,23 @@ export const createUserWithClerk = action({
   },
 });
 
+type ClerkUserUpdatePayload = {
+  first_name?: string;
+  last_name?: string;
+  email_address?: string[];
+  phone_number?: string;
+};
+
 export const updateUserInClerk = action({
   args: {
-    userId: v.id("users"), // Convex ID
+    userId: v.id("users"),
     firstname: v.optional(v.string()),
     lastname: v.optional(v.string()),
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.runQuery(internal.queries.users.getById, {
+    const user = await ctx.runQuery(internal.queries.users.getUserById, {
       userId: args.userId,
     });
 
@@ -77,7 +84,7 @@ export const updateUserInClerk = action({
       throw new Error("User not found or missing Clerk ID");
     }
 
-    const updatePayload: Record<string, any> = {};
+    const updatePayload: ClerkUserUpdatePayload = {};
     if (args.firstname) updatePayload.first_name = args.firstname;
     if (args.lastname) updatePayload.last_name = args.lastname;
     if (args.email) updatePayload.email_address = [args.email];
