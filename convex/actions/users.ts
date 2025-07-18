@@ -107,6 +107,14 @@ export const updateUserInClerk = action({
       throw new Error(`Clerk update error: ${error.errors?.[0]?.message}`);
     }
 
+    await ctx.runMutation(internal.mutations.users.updateUser, {
+      userId: args.userId,
+      firstname: args.firstname,
+      lastname: args.lastname,
+      email: args.email,
+      phone: args.phone,
+    });
+
     return { success: true };
   },
 });

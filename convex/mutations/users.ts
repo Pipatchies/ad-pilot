@@ -19,3 +19,20 @@ export const createUser = internalMutation({
     return userId;
   },
 });
+
+export const updateUser = internalMutation({
+  args: {
+    userId: v.id("users"),
+    clerkUserId: v.optional(v.string()),
+    email: v.optional(v.string()),
+    firstname: v.optional(v.string()),
+    lastname: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    roleId: v.optional(v.id("roles")),
+    organizationId: v.optional(v.id("organizations")),
+  },
+  handler: async (ctx, args) => {
+    const { userId, ...fieldsToUpdate } = args;
+    await ctx.db.patch(userId, fieldsToUpdate);
+  },
+});
