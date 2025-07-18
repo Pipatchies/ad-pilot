@@ -119,3 +119,39 @@ export const updateUserInClerk = action({
   },
 });
 
+export const deleteUserWithClerk = action({
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.queries.users.getUserById, {
+      userId: args.userId,
+    });
+
+    if (!user || !user.clerkUserId) {
+      throw new Error("User not found or missing Clerk ID");
+    }
+
+    const response = await fetch(
+      `https://api.clerk.com/v1/users/${user.clerkUserId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Clerk delete error: ${error.errors?.[0]?.message}`);
+    }
+
+    await ctx.runMutation(internal.mutations.users.deleteUser, {
+      userId: args.userId,
+    });
+
+    return { success: true };
+  },
+});
+
