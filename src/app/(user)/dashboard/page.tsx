@@ -31,11 +31,11 @@ const docData = [
 
 
 export default function Dashboard() {
-  const campaigns = useQuery(api.queries.campaigns.readCampaigns, {
+  const campaigns = useQuery(api.queries.campaigns.getCampaignsByOrganization, {
     organizationId,
   });
 
-  const invoices = useQuery(api.queries.invoices.readInvoices, {
+  const invoices = useQuery(api.queries.invoices.getInvoicesByOrganization, {
     organizationId,
   });
 

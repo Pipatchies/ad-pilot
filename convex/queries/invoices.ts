@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
 
-export const readInvoices = query({
+export const getInvoicesByOrganization = query({
   args: {
     organizationId: v.id("organizations"),
   },
@@ -28,7 +28,7 @@ export const readInvoices = query({
   },
 });
 
-export const readAgencyInvoices = query({
+export const getAgencyInvoicesByOrganization = query({
   args: {
     organizationId: v.id("organizations"),
   },
@@ -56,7 +56,7 @@ export const readAgencyInvoices = query({
   },
 });
 
-export const readVendorInvoices = query({
+export const getVendorInvoicesByOrganization = query({
   args: {
     organizationId: v.id("organizations"),
   },
@@ -84,7 +84,7 @@ export const readVendorInvoices = query({
   },
 });
 
-export const readAgencyInvoicesByCampaign = query({
+export const getAgencyInvoicesByCampaign = query({
   args: {
     campaignId: v.id("campaigns"),
   },
@@ -100,7 +100,7 @@ export const readAgencyInvoicesByCampaign = query({
   },
 });
 
-export const readVendorInvoicesByCampaign = query({
+export const getVendorInvoicesByCampaign = query({
   args: {
     campaignId: v.id("campaigns"),
   },

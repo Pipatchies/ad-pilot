@@ -21,8 +21,10 @@ import SvgProfil from "@/components/icons/Profil";
 import SvgMail from "@/components/icons/Mail";
 import SvgLock from "@/components/icons/Lock";
 import { useAction } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
-import { Id } from "../../../../../convex/_generated/dataModel";
+import zxcvbn from "zxcvbn";
+import { getPasswordCriteria } from "@/lib/utils";
 
 const ctaProps = {
   text: "Ajouter un compte",
@@ -30,15 +32,23 @@ const ctaProps = {
 };
 
 export default function AccountModal() {
-  const createUserWithClerk = useAction(api.actions.createUserWithClerk.createUserWithClerk);
+  const createUserWithClerk = useAction(api.actions.users.createUserWithClerk);
+  const roles = useQuery(api.queries.roles.getAllRoles);
+  const adminRoleId = roles?.find((r) => r.name === "admin")?._id;
 
-  const roleId = "m17c9swbwzta4w8egtc1cjn2pd7keycy" as Id<"roles"> ;
+  const [passwordStrength, setPasswordStrength] = React.useState(0);
 
   const formSchema = z.object({
     firstname: z.string().min(1, "Le prénom est requis"),
     lastname: z.string().min(1, "Le nom est requis"),
     email: z.string().email("Email invalide"),
-    password: z.string().min(6, "Au moins 6 caractères"),
+    password: z
+      .string()
+      .min(6, "Au moins 6 caractères")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/,
+        "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial"
+      ),
   });
 
   type FormValues = z.infer<typeof formSchema>;
@@ -53,13 +63,27 @@ export default function AccountModal() {
   });
 
   async function onSubmit(values: FormValues) {
+    const strength = zxcvbn(values.password).score;
+
+    if (strength < 3) {
+      toast.error("Mot de passe trop faible", {
+        description: "Veuillez choisir un mot de passe plus sécurisé.",
+      });
+      return;
+    }
+
+    if (!adminRoleId) {
+      toast.error("Impossible de créer le compte : rôle admin introuvable.");
+      return;
+    }
+
     try {
       await createUserWithClerk({
         email: values.email,
         password: values.password,
         firstname: values.firstname,
         lastname: values.lastname,
-        roleId,
+        roleId: adminRoleId,
       });
 
       toast.success("Compte administrateur créé !");
@@ -157,8 +181,78 @@ export default function AccountModal() {
                     placeholder="••••••••"
                     className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                     {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      const strength = zxcvbn(e.target.value).score;
+                      setPasswordStrength(strength);
+                    }}
                   />
                 </FormControl>
+                <div className="h-2 w-full bg-gray-200 rounded mt-3">
+                  <div
+                    className={`h-full rounded transition-all`}
+                    style={{
+                      width: `${(passwordStrength / 4) * 100}%`,
+                      backgroundColor:
+                        passwordStrength < 2
+                          ? "#dc2626"
+                          : passwordStrength === 2
+                          ? "#facc15"
+                          : "#16a34a",
+                    }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Force :{" "}
+                  {
+                    ["Très faible", "Faible", "Moyenne", "Forte", "Très forte"][
+                      passwordStrength
+                    ]
+                  }
+                </p>
+
+                {(() => {
+                  const criteria = getPasswordCriteria(form.watch("password"));
+                  return (
+                    <ul className="mt-2 text-sm space-y-1">
+                      <li
+                        className={
+                          criteria.hasLowercase
+                            ? "text-green-600"
+                            : "text-red-500"
+                        }
+                      >
+                        {criteria.hasLowercase ? "✅" : "❌"} Une minuscule
+                      </li>
+                      <li
+                        className={
+                          criteria.hasUppercase
+                            ? "text-green-600"
+                            : "text-red-500"
+                        }
+                      >
+                        {criteria.hasUppercase ? "✅" : "❌"} Une majuscule
+                      </li>
+                      <li
+                        className={
+                          criteria.hasNumber ? "text-green-600" : "text-red-500"
+                        }
+                      >
+                        {criteria.hasNumber ? "✅" : "❌"} Un chiffre
+                      </li>
+                      <li
+                        className={
+                          criteria.hasSpecialChar
+                            ? "text-green-600"
+                            : "text-red-500"
+                        }
+                      >
+                        {criteria.hasSpecialChar ? "✅" : "❌"} Un caractère
+                        spécial
+                      </li>
+                    </ul>
+                  );
+                })()}
                 <FormMessage />
               </FormItem>
             )}

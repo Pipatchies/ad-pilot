@@ -11,7 +11,7 @@ const organizationId: Id<"organizations"> = "k979mgpmypy7r4nrnbgpfmyep17jtkqc" a
 
 export default function AgencyInvoice() {
 
-  const invoices = useQuery(api.queries.invoices.readAgencyInvoices, {
+  const invoices = useQuery(api.queries.invoices.getAgencyInvoicesByOrganization, {
   organizationId,
 });
 

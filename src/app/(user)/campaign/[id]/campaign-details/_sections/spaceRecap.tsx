@@ -17,7 +17,7 @@ export default function SpaceRecap() {
   const params = useParams();
   const campaignId = params?.id as Id<"campaigns">;
 
-  const campaign = useQuery(api.queries.campaigns.readDetailsCampaign, {
+  const campaign = useQuery(api.queries.campaigns.getCampaignbyId, {
     campaignId,
   });
 

@@ -66,3 +66,12 @@ export function formatDateFR(isoDate: string): string {
     day: "numeric",
   });
 }
+
+export function getPasswordCriteria(password: string) {
+  return {
+    hasLowercase: /[a-z]/.test(password),
+    hasUppercase: /[A-Z]/.test(password),
+    hasNumber: /\d/.test(password),
+    hasSpecialChar: /[\W_]/.test(password),
+  };
+}
