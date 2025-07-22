@@ -11,7 +11,7 @@ export default function Accounts() {
         <Typography variant="h1" className="mb-0">Comptes</Typography>
         <AccountModal />
         </div>
-      <p>6 comptes</p>
+      <p className="text-primary/80">6 comptes</p>
       <div className="flex justify-end">
       <SearchBar variant="minimal" />
       </div>
