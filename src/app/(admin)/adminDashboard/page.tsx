@@ -83,7 +83,7 @@ const campaignData = [
 },
 ]
 
-export default function Dashboard() {
+export default function AdminDashboard() {
   return (
     <section className="flex flex-col gap-10">
       <Typography variant="h1">
