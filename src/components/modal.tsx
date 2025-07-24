@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { ReactNode } from "react";
 import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 type ModalProps = {
   cta: {
@@ -24,6 +25,7 @@ type ModalProps = {
     children: ReactNode;
     footer?: ReactNode;
     subject?: string;
+    className?: string;
   };
 };
 
@@ -33,26 +35,28 @@ export default function Modal({ cta, data }: ModalProps) {
       <DialogTrigger asChild>
         <Button
           variant="ghost"
-          className=
-            "group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white"
+          className="group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white"
         >
           <div className="mr-2">{cta.icon}</div>
-            <span className="block !leading-none relative font-[600] cursor-pointer">
-              {cta.text}
-            </span>
+          <span className="block !leading-none relative font-[600] cursor-pointer">
+            {cta.text}
+          </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-full max-w-2xl flex flex-col items-center gap-4 py-10">
+      <DialogContent
+        className={cn(
+          "w-full !max-w-4xl flex flex-col items-center py-15",
+          data.className
+        )}
+      >
         <DialogHeader>
           <DialogTitle className="font-bold text-2xl">{data.title}</DialogTitle>
           <DialogDescription>{data.description}</DialogDescription>
         </DialogHeader>
-        <div className="mt-4">{data.children}</div>
+        <div className="mt-4 w-full max-w-2xl">{data.children}</div>
         <DialogFooter className="mt-6">
-            <DialogClose asChild>
-              {data.footer}
-            </DialogClose>
-          </DialogFooter>
+          <DialogClose asChild>{data.footer}</DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
