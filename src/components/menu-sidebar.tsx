@@ -65,29 +65,29 @@ export default function MenuSidebar({ variant }: SidebarProps) {
     {
       label: "Clients",
       icon: <SvgProfil />,
-      url: "/clients",
+      url: "/admin/clients",
     },
     {
       label: "Campagnes",
       icon: <SvgFusee />,
-      url: "/adminCampaigns",
+      url: "/admin/campaigns",
     },
     {
       label: "Factures",
       icon: <SvgFacture />,
-      url: "/adminInvoices",
+      url: "/admin/invoices",
     },
     {
       label: "Documents",
       icon: <SvgDocument />,
-      url: "/adminDocuments",
+      url: "/admin/documents",
     },
   ];
 
   const adminMenuItemsBottom: MenuItem = {
     label: "Comptes",
     icon: <SvgConfiguration />,
-    url: "/accounts",
+    url: "/admin/accounts",
   };
 
   const userStaticItems: MenuItem[] = [
