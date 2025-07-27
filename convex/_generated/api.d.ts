@@ -15,6 +15,8 @@ import type {
 } from "convex/server";
 import type * as actions_sendEmail from "../actions/sendEmail.js";
 import type * as actions_users from "../actions/users.js";
+import type * as auth from "../auth.js";
+import type * as http from "../http.js";
 import type * as mutations_briefs from "../mutations/briefs.js";
 import type * as mutations_users from "../mutations/users.js";
 import type * as queries_campaigns from "../queries/campaigns.js";
@@ -34,6 +36,8 @@ import type * as queries_users from "../queries/users.js";
 declare const fullApi: ApiFromModules<{
   "actions/sendEmail": typeof actions_sendEmail;
   "actions/users": typeof actions_users;
+  auth: typeof auth;
+  http: typeof http;
   "mutations/briefs": typeof mutations_briefs;
   "mutations/users": typeof mutations_users;
   "queries/campaigns": typeof queries_campaigns;
