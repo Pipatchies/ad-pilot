@@ -17,7 +17,11 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { useRouter } from "next/navigation"
-import { useSignIn, useUser } from "@clerk/nextjs"
+import { useAuthActions } from "@convex-dev/auth/react";
+import { ConvexError } from "convex/values";
+import { INVALID_PASSWORD } from "../../../../convex/error"
+import { api } from "../../../../convex/_generated/api"
+import { useQuery } from "convex/react"
 
 const formSchema = z.object({
   login: z.string().min(2, { message: "Le login est requis." }),
@@ -28,11 +32,12 @@ type FormValues = z.infer<typeof formSchema>
 
 export default function SignInPage() {
   const router = useRouter()
-  
-  const { isLoaded, signIn, setActive } = useSignIn();
-  const { isSignedIn } = useUser();
+  const { signIn } = useAuthActions()
+
   const [error, setError] = useState("");
-  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const user = useQuery(api.queries.users.getUserWithRole)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -42,40 +47,37 @@ export default function SignInPage() {
     },
   })
 
+  useEffect(() => {
+    if (user?.role) {
+      const redirectTo = user.role === "admin" ? "/admin/dashboard" : "/dashboard"
+      router.push(redirectTo)
+    }
+  }, [user, router])
+
 
   const onSubmit = async (values: FormValues) => {
-    setError("");
-    if (!isLoaded) return;
+    setError("")
+    setSubmitting(true)
+      const formData = new FormData();
+      formData.set("identifier", values.login);
+      formData.set("password", values.password);
+      formData.set("flow", "signIn");
 
-    try {
-      const result = await signIn.create({
-        identifier: values.login,
-        password: values.password,
-      });
-
-      await setActive({ session: result.createdSessionId });
-    } catch {
+      try {
+    await signIn("password", formData);
+    } catch (err) {
+      if (err instanceof ConvexError && err.data === INVALID_PASSWORD) {
+        setError("Mot de passe invalide.");
+      } else {
       setError("Identifiants incorrects ou compte inexistant.");
+      }
+    } finally {
+      setSubmitting(false)
     }
   };
 
-  useEffect (() => {
-    if (isSignedIn) {
-      const timer = setTimeout(() => {
-        setShouldRedirect(true);
-      }, 3000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [isSignedIn]);
-
-  useEffect(() => {
-    if (shouldRedirect) {
-      router.push("/dashboard");
-    }
-  }, [shouldRedirect, router]);
-
-  if (isSignedIn) {
+  if (user?.role) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 text-center">
         <div className="space-y-6">
@@ -87,7 +89,7 @@ export default function SignInPage() {
             height={200}
             priority
           />
-          <h1 className="text-2xl font-bold">Bienvenue, admin ! 🎉</h1>
+          <h1 className="text-2xl font-bold">Bienvenue, {user.role} ! 🎉</h1>
           <p className="text-gray-500">
             Vous êtes connecté.
           </p>
