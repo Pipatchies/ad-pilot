@@ -1,17 +1,37 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import {
+  convexAuthNextjsMiddleware,
+  createRouteMatcher,
+  nextjsMiddlewareRedirect,
+} from "@convex-dev/auth/nextjs/server";
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  
-  if (pathname === "/") {
-    // return NextResponse.redirect(new URL("/dashboard", request.url));
-    return NextResponse.redirect(new URL("/signin", request.url));
+const isRoot = createRouteMatcher(["/"]);
+const isSignIn = createRouteMatcher(["/signin"]);
+const isProtectedRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/admin(.*)",
+
+]);
+
+export default convexAuthNextjsMiddleware(async (req, { convexAuth }) => {
+  const isLoggedIn = await convexAuth.isAuthenticated();
+
+  if (isRoot(req)) {
+    return nextjsMiddlewareRedirect(req, "/signin");
   }
 
+  // if (isProtectedRoute(req) && !isLoggedIn) {
+  //   return nextjsMiddlewareRedirect(req, "/signin");
+  // }
+
+  // if (isSignIn(req) && isLoggedIn) {
+  //   return nextjsMiddlewareRedirect(req, "/dashboard");
+  // }
+
   return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ["/"],
+  matcher: ["/((?!.*\\..*|_next).*)"],
 };
+

@@ -17,7 +17,11 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { useRouter } from "next/navigation"
-import { useSignIn, useUser } from "@clerk/nextjs"
+import { useAuthActions } from "@convex-dev/auth/react";
+import { ConvexError } from "convex/values";
+import { INVALID_PASSWORD } from "../../../../convex/error"
+import { api } from "../../../../convex/_generated/api"
+import { useQuery } from "convex/react"
 
 const formSchema = z.object({
   login: z.string().min(2, { message: "Le login est requis." }),
@@ -28,11 +32,14 @@ type FormValues = z.infer<typeof formSchema>
 
 export default function SignInPage() {
   const router = useRouter()
-  
-  const { isLoaded, signIn, setActive } = useSignIn();
-  const { isSignedIn } = useUser();
+  const { signIn } = useAuthActions();
+
   const [error, setError] = useState("");
-  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [justSignedIn, setJustSignedIn] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  const user = useQuery(api.queries.users.getUserWithRole)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -43,39 +50,46 @@ export default function SignInPage() {
   })
 
 
+useEffect(() => {
+    if (!justSignedIn) return;            
+    if (user === undefined) return;       
+    if (user === null) return;          
+    if (!user.role) return;               
+
+    setShowWelcome(true);
+    const to = user.role === "admin" ? "/admin/dashboard" : "/dashboard";
+    const t = setTimeout(() => {
+      router.replace(to);
+    }, 3000);
+
+    return () => clearTimeout(t);
+  }, [justSignedIn, user, router]);
+
   const onSubmit = async (values: FormValues) => {
-    setError("");
-    if (!isLoaded) return;
+    setError("")
+    setSubmitting(true)
+      const formData = new FormData();
+      formData.set("email", values.login);
+      formData.set("password", values.password);
+      formData.set("flow", "signIn");
 
-    try {
-      const result = await signIn.create({
-        identifier: values.login,
-        password: values.password,
-      });
-
-      await setActive({ session: result.createdSessionId });
-    } catch {
+      try {
+    await signIn("password", formData);
+    await new Promise(r => setTimeout(r, 100));
+    setJustSignedIn(true);
+    } catch (err) {
+      if (err instanceof ConvexError && err.data === INVALID_PASSWORD) {
+        setError("Mot de passe invalide.");
+      } else {
       setError("Identifiants incorrects ou compte inexistant.");
+      }
+    } finally {
+      setSubmitting(false)
     }
   };
 
-  useEffect (() => {
-    if (isSignedIn) {
-      const timer = setTimeout(() => {
-        setShouldRedirect(true);
-      }, 3000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [isSignedIn]);
-
-  useEffect(() => {
-    if (shouldRedirect) {
-      router.push("/dashboard");
-    }
-  }, [shouldRedirect, router]);
-
-  if (isSignedIn) {
+  if (showWelcome && user?.role) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 text-center">
         <div className="space-y-6">
@@ -87,7 +101,7 @@ export default function SignInPage() {
             height={200}
             priority
           />
-          <h1 className="text-2xl font-bold">Bienvenue, admin ! 🎉</h1>
+          <h1 className="text-2xl font-bold">Bienvenue, {user.role} ! 🎉</h1>
           <p className="text-gray-500">
             Vous êtes connecté.
           </p>
@@ -158,6 +172,7 @@ export default function SignInPage() {
 
             <Button
               type="submit"
+              disabled={submitting}
               className="w-full h-12 mt-4 bg-gradient-to-r from-blue-600 via-pink-500 to-orange-400 hover:opacity-90 text-white font-extrabold text-lg"
             >
               Se connecter
