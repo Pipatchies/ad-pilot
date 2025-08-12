@@ -32,10 +32,12 @@ type FormValues = z.infer<typeof formSchema>
 
 export default function SignInPage() {
   const router = useRouter()
-  const { signIn } = useAuthActions()
+  const { signIn } = useAuthActions();
 
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [justSignedIn, setJustSignedIn] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   const user = useQuery(api.queries.users.getUserWithRole)
 
@@ -47,24 +49,34 @@ export default function SignInPage() {
     },
   })
 
-  useEffect(() => {
-    if (user?.role) {
-      const redirectTo = user.role === "admin" ? "/admin/dashboard" : "/dashboard"
-      router.push(redirectTo)
-    }
-  }, [user, router])
 
+useEffect(() => {
+    if (!justSignedIn) return;            
+    if (user === undefined) return;       
+    if (user === null) return;          
+    if (!user.role) return;               
+
+    setShowWelcome(true);
+    const to = user.role === "admin" ? "/admin/dashboard" : "/dashboard";
+    const t = setTimeout(() => {
+      router.replace(to);
+    }, 3000);
+
+    return () => clearTimeout(t);
+  }, [justSignedIn, user, router]);
 
   const onSubmit = async (values: FormValues) => {
     setError("")
     setSubmitting(true)
       const formData = new FormData();
-      formData.set("identifier", values.login);
+      formData.set("email", values.login);
       formData.set("password", values.password);
       formData.set("flow", "signIn");
 
       try {
     await signIn("password", formData);
+    await new Promise(r => setTimeout(r, 100));
+    setJustSignedIn(true);
     } catch (err) {
       if (err instanceof ConvexError && err.data === INVALID_PASSWORD) {
         setError("Mot de passe invalide.");
@@ -77,7 +89,7 @@ export default function SignInPage() {
   };
 
 
-  if (user?.role) {
+  if (showWelcome && user?.role) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 text-center">
         <div className="space-y-6">
@@ -160,6 +172,7 @@ export default function SignInPage() {
 
             <Button
               type="submit"
+              disabled={submitting}
               className="w-full h-12 mt-4 bg-gradient-to-r from-blue-600 via-pink-500 to-orange-400 hover:opacity-90 text-white font-extrabold text-lg"
             >
               Se connecter

@@ -8,9 +8,9 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         return {
           email: params.email as string,
           lastname: params.lastname as string,
-          phone: params.phone as string || null,
+          phone: params.phone as string,
           roleId: params.roleId as string,
-          organizationId: params.organizationId as string || null,
+          organizationId: params.organizationId as string,
           image: params.image as string,
           name: params.name as string,
         };
