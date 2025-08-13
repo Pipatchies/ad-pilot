@@ -173,12 +173,21 @@ useEffect(() => {
             <Button
               type="submit"
               disabled={submitting}
-              className="w-full h-12 mt-4 bg-gradient-to-r from-blue-600 via-pink-500 to-orange-400 hover:opacity-90 text-white font-extrabold text-lg"
+              className="cursor-pointer w-full h-12 mt-4 bg-gradient-to-r from-blue-600 via-pink-500 to-orange-400 hover:opacity-90 text-white font-extrabold text-lg"
             >
               Se connecter
             </Button>
           </form>
         </Form>
+        <p className="text-center text-sm text-gray-500">
+                  <Button
+                    variant="link"
+                    onClick={() => router.replace("/resetPassword")}
+                    className="cursor-pointer p-0 h-auto font-medium underline underline-offset-4"
+                  >
+                    Mot de passe oublié ?
+                  </Button>
+                </p>
       </div>
     </div>
   )
