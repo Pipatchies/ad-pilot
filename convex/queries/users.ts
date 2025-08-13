@@ -1,4 +1,4 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthSessionId, getAuthUserId } from "@convex-dev/auth/server";
 import { internalQuery } from "../_generated/server";
 import { query } from "../_generated/server";
 import { v } from "convex/values";
@@ -33,3 +33,17 @@ export const getUserWithRole = query({
     };
   },
 });
+
+
+export const me = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) return null;
+
+    const user = await ctx.db.get(userId);
+    const sessionId = await getAuthSessionId(ctx);
+    return { user, sessionId };
+  },
+});
+
