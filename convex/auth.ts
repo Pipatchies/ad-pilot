@@ -1,10 +1,11 @@
 import { convexAuth } from "@convex-dev/auth/server";
 import { Password } from "@convex-dev/auth/providers/Password";
+import { ResendOTPPasswordReset } from "./ResendOTPPasswordReset";
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [
     Password({
-      profile(params) {
+      profile(params, _ctx) {
         return {
           email: params.email as string,
           lastname: params.lastname as string,
@@ -15,6 +16,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           name: params.name as string,
         };
       },
+      reset: ResendOTPPasswordReset,
     }),
   ],
 });
