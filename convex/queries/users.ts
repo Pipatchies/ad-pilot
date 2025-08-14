@@ -34,6 +34,40 @@ export const getUserWithRole = query({
   },
 });
 
+export const getAdmin = query({
+  args:{},
+  handler: async (ctx) => {
+    const users = await ctx.db.query("users").collect();
+
+    const adminAccounts = [];
+
+
+    for (const user of users) {
+      if (!user.roleId) continue;
+
+      const role = await ctx.db.get(user.roleId);
+      if (!role) continue;
+
+      if (role.name === "admin") {
+        const name = user.name ?? "";
+        const lastname = user.lastname ?? "";
+        const id =
+          name.trim().toLowerCase() + (lastname.trim()[0]?.toLowerCase() ?? "");
+
+        adminAccounts.push({
+          name,
+          lastname,
+          email: user.email ?? "",
+          role: role.label,
+          id
+        });
+      }
+    }
+
+    return adminAccounts;
+  },
+});
+
 
 export const me = query({
   args: {},

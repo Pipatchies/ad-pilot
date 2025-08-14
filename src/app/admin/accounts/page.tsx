@@ -2,6 +2,8 @@ import SearchBar from "@/components/search-bar";
 import Typography from "@/components/typography";
 import React from "react";
 import AccountModal from "./_sections/accountModal";
+import SpaceAccountsTable from "./_sections/spaceAccountsTable";
+
 
 
 export default function Accounts() {
@@ -14,6 +16,9 @@ export default function Accounts() {
       <p className="text-primary/80">6 comptes</p>
       <div className="flex justify-end">
       <SearchBar variant="minimal" />
+      </div>
+      <div>
+        <SpaceAccountsTable/>
       </div>
     </section>
   );
