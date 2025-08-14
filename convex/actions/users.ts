@@ -1,13 +1,12 @@
 "use node";
 import { action } from "../_generated/server";
-import { v } from "convex/values";
-import { ConvexError } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import {
   getAuthUserId,
   createAccount,
-  retrieveAccount,
 } from "@convex-dev/auth/server";
-import { api } from "../_generated/api";
+import { api, internal } from "../_generated/api";
+import { Id } from "../_generated/dataModel";
 
 export const adminCreateAdmin = action({
   args: {
@@ -42,5 +41,57 @@ export const adminCreateAdmin = action({
     });
 
     return { userId: user._id };
+  },
+});
+
+
+export const adminCreateClient = action({
+  args: {
+    organizationName: v.string(),
+    logo: v.string(),
+    firstname: v.string(),
+    lastname: v.string(),
+    email: v.string(),
+    password: v.string(),
+    roleId: v.id("roles"),
+    sendEmail: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+
+    const adminId = await getAuthUserId(ctx);
+    if (!adminId) throw new ConvexError("UNAUTHENTICATED");
+
+    const me = await ctx.runQuery(api.queries.users.getUserWithRole, {});
+    if (!me || me.role !== "admin") throw new ConvexError("FORBIDDEN");
+
+    const organizationId: Id<"organizations"> = await ctx.runMutation(
+      internal.mutations.organizations.createOrganization,
+      { name: args.organizationName, logo: args.logo }
+    );
+
+    let userId: string;
+      const { user } = await createAccount(ctx, {
+        provider: "password",
+        account: { 
+            id: args.email, 
+            secret: args.password },
+        profile: {
+          email: args.email,
+          name: args.firstname,
+          lastname: args.lastname,
+          roleId: args.roleId,
+          organizationId,
+        } as any,
+      });
+      userId = user._id;
+
+    if (args.sendEmail) {
+      await ctx.runAction(internal.actions.sendEmail.sendAccountCreatedEmail, {
+        to: args.email,
+        clientName: args.organizationName,
+      });
+    }
+
+    return { userId, organizationId };
   },
 });

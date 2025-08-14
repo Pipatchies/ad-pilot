@@ -1,6 +1,6 @@
 "use node";
 import { v } from "convex/values";
-import { internalAction, action } from "../_generated/server";
+import { internalAction } from "../_generated/server";
 import nodemailer from "nodemailer";
 import { formatDateFR } from "../../src/lib/utils";
 
@@ -60,7 +60,7 @@ ${args.brief}
 });
 
 
-export const sendAccountCreatedEmail = action({
+export const sendAccountCreatedEmail = internalAction({
 args: {
     to: v.string(),
     clientName: v.string(),

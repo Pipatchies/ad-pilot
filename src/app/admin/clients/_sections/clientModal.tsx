@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import SvgProfil from "@/components/icons/Profil";
 import SvgMail from "@/components/icons/Mail";
 import { useAction, useMutation, useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
+import { api, internal } from "@/../convex/_generated/api";
 import SvgCrayon from "@/components/icons/Crayon";
 import SvgUploder from "@/components/icons/Uploder";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -37,13 +37,7 @@ const ctaProps = {
 export default function ClientModal() {
   const roles = useQuery(api.queries.roles.getAllRoles);
   const clientRoleId = roles?.find((r) => r.name === "client")?._id;
-  const { signIn } = useAuthActions();
-  const createOrganization = useMutation(
-    api.mutations.organizations.createOrganization
-  );
-  const sendAccountCreatedEmail = useAction(
-    api.actions.sendEmail.sendAccountCreatedEmail
-  );
+  const adminCreateClient = useAction(api.actions.users.adminCreateClient);
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);
 
@@ -93,37 +87,20 @@ export default function ClientModal() {
     }
 
     try {
-      const orgId = await createOrganization({
-        name: values.organizationName,
+      await adminCreateClient({
+        organizationName: values.organizationName,
         logo: values.logo,
+        firstname: values.firstname,
+        lastname: values.lastname,
+        email: values.email,
+        password: values.password,
+        roleId: clientRoleId,
+        sendEmail: values.sendEmail ?? false,
       });
-
-      const formData = new FormData();
-      formData.set("email", values.email);
-      formData.set("password", values.password);
-      formData.set("flow", "signUp");
-
-      formData.set("name", values.firstname);
-      formData.set("lastname", values.lastname);
-      formData.set("roleId", clientRoleId);
-      formData.set("organizationId", orgId);
-
-      await signIn("password", formData);
-
-      if (values.sendEmail) {
-        await sendAccountCreatedEmail({
-          to: values.email,
-          clientName: values.organizationName,
-        });
-        toast.message("Email envoyé", {
-          description: "Le client va recevoir votre notification.",
-        });
-      }
 
       toast.success("Client créé !");
       form.reset();
     } catch (e) {
-      console.error(e);
       toast.error("Erreur", {
         description:
           "Échec de la création. Vérifiez l'email (doublon ?) ou les champs requis.",
