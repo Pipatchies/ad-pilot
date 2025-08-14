@@ -1,157 +1,97 @@
-// "use node";
-// import { action } from "../_generated/server";
-// import { v } from "convex/values";
-// import { internal } from "../_generated/api";
-// import { Id } from "../_generated/dataModel";
+"use node";
+import { action } from "../_generated/server";
+import { v, ConvexError } from "convex/values";
+import {
+  getAuthUserId,
+  createAccount,
+} from "@convex-dev/auth/server";
+import { api, internal } from "../_generated/api";
+import { Id } from "../_generated/dataModel";
 
-// export const createUserWithClerk = action({
-//   args: {
-//     email: v.string(),
-//     password: v.string(),
-//     firstname: v.string(),
-//     lastname: v.string(),
-//     phone: v.optional(v.string()),
-//     roleId: v.id("roles"),
-//     organizationId: v.optional(v.id("organizations")),
-//   },
-//   handler: async (ctx, args) => {
-//     const role = await ctx.runQuery(internal.queries.roles.getRoleById, {
-//       roleId: args.roleId,
-//     });
+export const adminCreateAdmin = action({
+  args: {
+    email: v.string(),
+    firstname: v.string(),
+    lastname: v.string(),
+    password: v.string(),
+    roleId: v.id("roles"),
+    organizationId: v.optional(v.id("organizations")),
+  },
+  handler: async (ctx, args) => {
+    
+    const adminId = await getAuthUserId(ctx);
+    if (!adminId) throw new ConvexError("UNAUTHENTICATED");
 
-//     const response = await fetch("https://api.clerk.com/v1/users", {
-//       method: "POST",
-//       headers: {
-//         Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         email_address: [args.email],
-//         password: args.password,
-//         first_name: args.firstname,
-//         last_name: args.lastname,
-//         phone_number: args.phone,
-//         public_metadata: {
-//           role: role.name, //
-//         },
-//       }),
-//     });
+    const me = await ctx.runQuery(api.queries.users.getUserWithRole, {});
+    if (!me || me.role !== "admin") throw new ConvexError("FORBIDDEN");
 
-//     const clerkUser = await response.json();
 
-//     if (!response.ok) {
-//       throw new Error(`Clerk error: ${clerkUser.errors?.[0]?.message}`);
-//     }
+    const { user } = await createAccount(ctx, {
+      provider: "password",
+      account: {
+        id: args.email,
+        secret: args.password,
+      },
+      profile: {
+        email: args.email,
+        name: args.firstname,
+        lastname: args.lastname,
+        roleId: args.roleId,
+      } as any,
+    });
 
-//     const userId: Id<"users"> = await ctx.runMutation(
-//       internal.mutations.users.createUser,
-//       {
-//         clerkUserId: clerkUser.id,
-//         email: args.email,
-//         firstname: args.firstname,
-//         lastname: args.lastname,
-//         phone: args.phone,
-//         roleId: args.roleId,
-//         organizationId: args.organizationId,
-//       }
-//     );
+    return { userId: user._id };
+  },
+});
 
-//     return userId;
-//   },
-// });
 
-// type ClerkUserUpdatePayload = {
-//   first_name?: string;
-//   last_name?: string;
-//   email_address?: string[];
-//   phone_number?: string;
-// };
+export const adminCreateClient = action({
+  args: {
+    organizationName: v.string(),
+    logo: v.string(),
+    firstname: v.string(),
+    lastname: v.string(),
+    email: v.string(),
+    password: v.string(),
+    roleId: v.id("roles"),
+    sendEmail: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
 
-// export const updateUserInClerk = action({
-//   args: {
-//     userId: v.id("users"),
-//     firstname: v.optional(v.string()),
-//     lastname: v.optional(v.string()),
-//     email: v.optional(v.string()),
-//     phone: v.optional(v.string()),
-//   },
-//   handler: async (ctx, args) => {
-//     const user = await ctx.runQuery(internal.queries.users.getUserById, {
-//       userId: args.userId,
-//     });
+    const adminId = await getAuthUserId(ctx);
+    if (!adminId) throw new ConvexError("UNAUTHENTICATED");
 
-//     if (!user || !user.clerkUserId) {
-//       throw new Error("User not found or missing Clerk ID");
-//     }
+    const me = await ctx.runQuery(api.queries.users.getUserWithRole, {});
+    if (!me || me.role !== "admin") throw new ConvexError("FORBIDDEN");
 
-//     const updatePayload: ClerkUserUpdatePayload = {};
-//     if (args.firstname) updatePayload.first_name = args.firstname;
-//     if (args.lastname) updatePayload.last_name = args.lastname;
-//     if (args.email) updatePayload.email_address = [args.email];
-//     if (args.phone) updatePayload.phone_number = args.phone;
+    const organizationId: Id<"organizations"> = await ctx.runMutation(
+      internal.mutations.organizations.createOrganization,
+      { name: args.organizationName, logo: args.logo }
+    );
 
-//     const response = await fetch(
-//       `https://api.clerk.com/v1/users/${user.clerkUserId}`,
-//       {
-//         method: "PATCH",
-//         headers: {
-//           Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(updatePayload),
-//       }
-//     );
+    let userId: string;
+      const { user } = await createAccount(ctx, {
+        provider: "password",
+        account: { 
+            id: args.email, 
+            secret: args.password },
+        profile: {
+          email: args.email,
+          name: args.firstname,
+          lastname: args.lastname,
+          roleId: args.roleId,
+          organizationId,
+        } as any,
+      });
+      userId = user._id;
 
-//     if (!response.ok) {
-//       const error = await response.json();
-//       throw new Error(`Clerk update error: ${error.errors?.[0]?.message}`);
-//     }
+    if (args.sendEmail) {
+      await ctx.runAction(internal.actions.sendEmail.sendAccountCreatedEmail, {
+        to: args.email,
+        clientName: args.organizationName,
+      });
+    }
 
-//     await ctx.runMutation(internal.mutations.users.updateUser, {
-//       userId: args.userId,
-//       firstname: args.firstname,
-//       lastname: args.lastname,
-//       email: args.email,
-//       phone: args.phone,
-//     });
-
-//     return { success: true };
-//   },
-// });
-
-// export const deleteUserWithClerk = action({
-//   args: {
-//     userId: v.id("users"),
-//   },
-//   handler: async (ctx, args) => {
-//     const user = await ctx.runQuery(internal.queries.users.getUserById, {
-//       userId: args.userId,
-//     });
-
-//     if (!user || !user.clerkUserId) {
-//       throw new Error("User not found or missing Clerk ID");
-//     }
-
-//     const response = await fetch(
-//       `https://api.clerk.com/v1/users/${user.clerkUserId}`,
-//       {
-//         method: "DELETE",
-//         headers: {
-//           Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
-//         },
-//       }
-//     );
-
-//     if (!response.ok) {
-//       const error = await response.json();
-//       throw new Error(`Clerk delete error: ${error.errors?.[0]?.message}`);
-//     }
-
-//     await ctx.runMutation(internal.mutations.users.deleteUser, {
-//       userId: args.userId,
-//     });
-
-//     return { success: true };
-//   },
-// });
-
+    return { userId, organizationId };
+  },
+});

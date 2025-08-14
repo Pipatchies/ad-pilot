@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import SvgProfil from "@/components/icons/Profil";
 import SvgMail from "@/components/icons/Mail";
 import SvgLock from "@/components/icons/Lock";
-import { useQuery } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import zxcvbn from "zxcvbn";
 import { getPasswordCriteria } from "@/lib/utils";
@@ -34,7 +34,8 @@ const ctaProps = {
 export default function AccountModal() {
   const roles = useQuery(api.queries.roles.getAllRoles);
   const adminRoleId = roles?.find((r) => r.name === "admin")?._id;
-  const { signIn } = useAuthActions();
+  const adminCreateUser = useAction(api.actions.users.adminCreateAdmin);
+
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);
 
@@ -78,25 +79,23 @@ export default function AccountModal() {
     }
 
     try {
-      const formData = new FormData();
-      formData.set("email", values.email);
-      formData.set("password", values.password);
-      formData.set("flow", "signUp");
-
-      formData.set("name", values.firstname);
-      formData.set("lastname", values.lastname);
-      formData.set("roleId", adminRoleId);
-
-      await signIn("password", formData);
+      await adminCreateUser({
+        email: values.email,
+        firstname: values.firstname,
+        lastname: values.lastname,
+        password: values.password,
+        roleId: adminRoleId,
+      });
 
       toast.success("Compte administrateur créé !");
       form.reset();
-    } catch (e) {
-      console.error(e);
-      toast.error("Erreur", {
-        description:
-          "Échec de la création. Vérifiez l'email (doublon ?) ou les champs requis.",
-      });
+    } catch (e: any) {
+      const msg =
+        e?.data === "EMAIL_TAKEN" ? "Email déjà utilisé." :
+        e?.data === "FORBIDDEN" ? "Accès refusé." :
+        e?.data === "UNAUTHENTICATED" ? "Vous devez être connecté." :
+        "Échec de la création.";
+      toast.error("Erreur", { description: msg });
     }
   }
 

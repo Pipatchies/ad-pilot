@@ -1,8 +1,8 @@
 // convex/organizations.ts
-import { mutation } from "../_generated/server";
+import { internalMutation } from "../_generated/server";
 import { v } from "convex/values";
 
-export const createOrganization = mutation({
+export const createOrganization = internalMutation({
   args: { 
     name: v.string(), 
     logo: v.string() },
