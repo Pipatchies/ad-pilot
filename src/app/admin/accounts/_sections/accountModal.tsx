@@ -34,7 +34,7 @@ const ctaProps = {
 export default function AccountModal() {
   const roles = useQuery(api.queries.roles.getAllRoles);
   const adminRoleId = roles?.find((r) => r.name === "admin")?._id;
-  const adminCreateUser = useAction(api.actions.users.adminCreateUser);
+  const adminCreateUser = useAction(api.actions.users.adminCreateAdmin);
 
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);

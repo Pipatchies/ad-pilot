@@ -9,7 +9,7 @@ import {
 } from "@convex-dev/auth/server";
 import { api } from "../_generated/api";
 
-export const adminCreateUser = action({
+export const adminCreateAdmin = action({
   args: {
     email: v.string(),
     firstname: v.string(),
