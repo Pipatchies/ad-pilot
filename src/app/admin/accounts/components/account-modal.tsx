@@ -25,7 +25,7 @@ import { api } from "@/../convex/_generated/api";
 import zxcvbn from "zxcvbn";
 import { getPasswordCriteria } from "@/lib/utils";
 
-const ctaProps = {
+const CtaProps = {
   text: "Ajouter un compte",
   icon: <SvgPlus />,
 };
@@ -99,7 +99,7 @@ export default function AccountModal() {
   }
 
 
-  const userFormData = {
+  const UserFormData = {
     title: "Créer un compte administrateur",
     children: (
       <Form {...form}>
@@ -274,5 +274,5 @@ export default function AccountModal() {
       />
     ),
   };
-  return <Modal cta={ctaProps} data={userFormData} />;
+  return <Modal cta={CtaProps} data={UserFormData} />;
 }

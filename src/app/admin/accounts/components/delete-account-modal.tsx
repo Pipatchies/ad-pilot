@@ -9,7 +9,7 @@ import { Id } from "@/../convex/_generated/dataModel";
 import CtaButton from "@/components/cta-button";
 import { toast } from "sonner";
 
-type deletedModalProps = {
+type DeletedModalProps = {
   userId: Id<"users">;
   fullName: string;
 };
@@ -17,7 +17,7 @@ type deletedModalProps = {
 export default function DeleteAccountModal({
   userId,
   fullName,
-}: deletedModalProps) {
+}: DeletedModalProps) {
   const deleteUser = useMutation(api.mutations.users.deleteUser);
 
   async function onDelete() {

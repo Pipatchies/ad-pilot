@@ -24,7 +24,7 @@ import { Id } from "../../../../../convex/_generated/dataModel";
 import DeleteAccountModal from "./delete-account-modal";
 import UpdateAccountModal from "./update-account-modal";
 
-type adminAccount = {
+type AdminAccount = {
   userId: Id<"users">;
   name: string;
   lastname: string;
@@ -34,7 +34,7 @@ type adminAccount = {
 };
 
 interface AdminAccountsProps {
-  adminAccounts: adminAccount[];
+  adminAccounts: AdminAccount[];
   globalFilter?: string;
 }
 
@@ -55,7 +55,7 @@ export default function AdminAccountsTable({
 }: AdminAccountsProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columns: ColumnDef<adminAccount>[] = [
+  const columns: ColumnDef<AdminAccount>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => (

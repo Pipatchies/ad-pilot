@@ -29,7 +29,7 @@ const formSchema = z.object({
   email: z.string().email("Email invalide"),
 });
 
-type updateModalProps = {
+type UpdateModalProps = {
   userId: Id<"users">;
   firstname: string;
   lastname: string;
@@ -41,7 +41,7 @@ export default function UpdateAccountModal({
   firstname,
   lastname,
   email,
-}: updateModalProps) {
+}: UpdateModalProps) {
   const updateUser = useMutation(api.mutations.users.updateUser);
 
   const form = useForm<z.infer<typeof formSchema>>({
