@@ -19,7 +19,8 @@ export default function SpaceAccountsTable({
   return (
     <section>
       <AdminAccountsTable adminAccounts={adminAccounts}
-      globalFilter={globalFilter} />
+      globalFilter={globalFilter}
+ />
     </section>
   );
 }

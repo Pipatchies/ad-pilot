@@ -1,4 +1,3 @@
-"use client"
 import Typography from "@/components/typography";
 import React, { useState } from "react";
 import AccountModal from "../components/accountModal";
@@ -6,12 +5,15 @@ import SearchBar from "@/components/search-bar";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 
-export default function SpaceAccountsHeader() {
-  const adminAccounts = useQuery(api.queries.users.getAdmin);
-  const count = adminAccounts?.length ?? 0;
+type accountsHeaderProps = {
+  onQueryChange: (q: string) => void;
+};
 
-  const [globalFilter, setGlobalFilter] = useState("");
-
+export default function SpaceAccountsHeader({
+  onQueryChange,
+}: accountsHeaderProps) {
+      const adminAccounts = useQuery(api.queries.users.getAdmin) ?? [];
+      const count = adminAccounts.length;
   return (
     <section>
       <div className="flex flex-wrap items-center justify-between">
@@ -21,10 +23,10 @@ export default function SpaceAccountsHeader() {
         <AccountModal />
       </div>
       <p className="text-primary/80">
-        {adminAccounts ? `${count} comptes` : "Chargement..."}
+        {`${count} comptes`}
       </p>
       <div className="flex justify-end">
-        <SearchBar variant="minimal" onQueryChange={setGlobalFilter} />
+        <SearchBar variant="minimal" onQueryChange={onQueryChange} />
       </div>
     </section>
   );

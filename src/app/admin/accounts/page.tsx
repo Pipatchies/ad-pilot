@@ -1,20 +1,6 @@
-"use client";
-import React, { useState } from "react";
-import SpaceAccountsTable from "./_sections/spaceAccountsTable";
-import SpaceAccountsHeader from "./_sections/spaceAccountsHeader";
+import SpaceAccounts from "./_sections/spaceAccounts";
 
-export default function Accounts() {
-
-  const [globalFilter, setGlobalFilter] = useState("");
-
-  return (
-    <section className="flex flex-col gap-2">
-      <SpaceAccountsHeader />
-      <div>
-        <SpaceAccountsTable
-          globalFilter={globalFilter}
-        />
-      </div>
-    </section>
-  );
+export default function AccountsPage() {
+  return <SpaceAccounts />;
 }
+
