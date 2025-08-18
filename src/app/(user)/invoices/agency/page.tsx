@@ -1,48 +1,10 @@
-"use client";
-import InvoicesTable from '@/components/invoices-table';
-import SearchBar from '@/components/search-bar';
-import Typography from '@/components/typography'
-import React from 'react'
-import { useQuery } from "convex/react";
-import { api } from '../../../../../convex/_generated/api'; 
-import { Id } from '../../../../../convex/_generated/dataModel';
+import React from "react";
+import SpaceAgencyInvoices from "./_sections/spaceAgencyInvoices";
 
-const organizationId: Id<"organizations"> = "k979mgpmypy7r4nrnbgpfmyep17jtkqc" as Id<"organizations">;
 
 export default function AgencyInvoice() {
 
-  const invoices = useQuery(api.queries.invoices.getAgencyInvoicesByOrganization, {
-  organizationId,
-});
-
-const invoicesData = invoices?.map((invoice) => ({
-  title: invoice.title,
-  campaign: invoice.campaignTitle,
-  htprice: invoice.htprice,
-  ttcprice: invoice.ttcprice,
-  startDate: new Date(invoice.startDate),
-  dueDate: new Date(invoice.dueDate),
-})) ?? [];
-
-  return (
-    <div>
-      <Typography variant="h1" className="mb-6">
-        Les factures
-      </Typography>
-
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <Typography variant="h2" className="mb-0">
-          Factures agence
-        </Typography>
-        <SearchBar />
-      </div>
-      
-      <div className="overflow-x-auto">
-        <InvoicesTable 
-        invoices={invoicesData}
-        variant="agency"
-        showCampaign={true}/>
-      </div>
-    </div>
-  );
+  return <section>
+    <SpaceAgencyInvoices/>
+  </section>;
 }
