@@ -1,6 +1,10 @@
+import React from "react";
 import SpaceAccounts from "./_sections/spaceAccounts";
 
 export default function AccountsPage() {
-  return <SpaceAccounts />;
+  return 
+  <section>
+    <SpaceAccounts />
+  </section>;
 }
 
