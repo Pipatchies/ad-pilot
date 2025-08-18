@@ -1,3 +1,4 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation } from "../_generated/server";
 import { v } from "convex/values";
 
@@ -29,3 +30,15 @@ export const deleteUser = mutation({
   },
 });
 
+export const markLastConnection = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const authUserId = await getAuthUserId(ctx);
+    if (!authUserId) return;
+
+    const user = await ctx.db.get(authUserId);
+    if (!user) return;
+
+    await ctx.db.patch(user._id, { lastConnectionTime: Date.now() });
+  },
+});

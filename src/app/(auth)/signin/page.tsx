@@ -21,7 +21,7 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { ConvexError } from "convex/values";
 import { INVALID_PASSWORD } from "../../../../convex/error"
 import { api } from "../../../../convex/_generated/api"
-import { useQuery } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 
 const formSchema = z.object({
   login: z.string().min(2, { message: "Le login est requis." }),
@@ -40,6 +40,7 @@ export default function SignInPage() {
   const [showWelcome, setShowWelcome] = useState(false);
 
   const user = useQuery(api.queries.users.getUserWithRole)
+  const markLastConnection = useMutation(api.mutations.users.markLastConnection);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -76,6 +77,7 @@ useEffect(() => {
       try {
     await signIn("password", formData);
     await new Promise(r => setTimeout(r, 100));
+    await markLastConnection();
     setJustSignedIn(true);
     } catch (err) {
       if (err instanceof ConvexError && err.data === INVALID_PASSWORD) {

@@ -15,12 +15,15 @@ export default defineSchema({
     lastname: v.optional(v.string()),
     roleId: v.optional(v.id("roles")),
     organizationId: v.optional(v.id("organizations")),
+    lastConnectionTime: v.optional(v.number()),
   }).index("email", ["email"])
-  .index("phone", ["phone"]),
+  .index("phone", ["phone"])
+  .index("by_organizationId", ["organizationId"]),
 
   organizations: defineTable({
     name: v.string(),
     logo: v.string(),
+    step: v.optional(v.string()),
   }),
 
   roles: defineTable({
