@@ -24,7 +24,6 @@ import { useAction, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import zxcvbn from "zxcvbn";
 import { getPasswordCriteria } from "@/lib/utils";
-import { useAuthActions } from "@convex-dev/auth/react";
 
 const ctaProps = {
   text: "Ajouter un compte",
