@@ -27,7 +27,6 @@ import zxcvbn from "zxcvbn";
 import SvgEyeIcon from "@/components/icons/EyeIcon";
 import { getPasswordCriteria } from "@/lib/utils";
 import SvgLock from "@/components/icons/Lock";
-import { useAuthActions } from "@convex-dev/auth/react";
 
 const ctaProps = {
   text: "Créer un client",

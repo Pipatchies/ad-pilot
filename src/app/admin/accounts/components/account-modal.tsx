@@ -24,9 +24,8 @@ import { useAction, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import zxcvbn from "zxcvbn";
 import { getPasswordCriteria } from "@/lib/utils";
-import { useAuthActions } from "@convex-dev/auth/react";
 
-const ctaProps = {
+const CtaProps = {
   text: "Ajouter un compte",
   icon: <SvgPlus />,
 };
@@ -100,7 +99,7 @@ export default function AccountModal() {
   }
 
 
-  const userFormData = {
+  const UserFormData = {
     title: "Créer un compte administrateur",
     children: (
       <Form {...form}>
@@ -119,7 +118,7 @@ export default function AccountModal() {
                   <FormControl>
                     <Input
                       placeholder="Votre prénom"
-                      className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                       {...field}
                     />
                   </FormControl>
@@ -140,7 +139,7 @@ export default function AccountModal() {
                   <FormControl>
                     <Input
                       placeholder="Votre nom"
-                      className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                       {...field}
                     />
                   </FormControl>
@@ -162,7 +161,7 @@ export default function AccountModal() {
                 <FormControl>
                   <Input
                     placeholder="Renseignez votre email"
-                    className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                    className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                     {...field}
                   />
                 </FormControl>
@@ -184,7 +183,7 @@ export default function AccountModal() {
                   <Input
                     type="password"
                     placeholder="••••••••"
-                    className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                    className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
@@ -275,5 +274,5 @@ export default function AccountModal() {
       />
     ),
   };
-  return <Modal cta={ctaProps} data={userFormData} />;
+  return <Modal cta={CtaProps} data={UserFormData} />;
 }

@@ -21,9 +21,11 @@ import type * as error from "../error.js";
 import type * as http from "../http.js";
 import type * as mutations_briefs from "../mutations/briefs.js";
 import type * as mutations_organizations from "../mutations/organizations.js";
+import type * as mutations_users from "../mutations/users.js";
 import type * as queries_campaigns from "../queries/campaigns.js";
 import type * as queries_invoices from "../queries/invoices.js";
 import type * as queries_medias from "../queries/medias.js";
+import type * as queries_organizations from "../queries/organizations.js";
 import type * as queries_roles from "../queries/roles.js";
 import type * as queries_users from "../queries/users.js";
 
@@ -44,9 +46,11 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "mutations/briefs": typeof mutations_briefs;
   "mutations/organizations": typeof mutations_organizations;
+  "mutations/users": typeof mutations_users;
   "queries/campaigns": typeof queries_campaigns;
   "queries/invoices": typeof queries_invoices;
   "queries/medias": typeof queries_medias;
+  "queries/organizations": typeof queries_organizations;
   "queries/roles": typeof queries_roles;
   "queries/users": typeof queries_users;
 }>;

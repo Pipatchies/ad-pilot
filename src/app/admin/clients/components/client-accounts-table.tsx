@@ -21,20 +21,20 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Id } from "../../../../../convex/_generated/dataModel";
-import DeleteAccountModal from "./delete-account-modal";
-import UpdateAccountModal from "./update-account-modal";
+import UpdateClientModal from "./update-client-modal";
+import DeleteClientModal from "./delete-client-modal";
 
-type AdminAccount = {
-  userId: Id<"users">;
-  name: string;
-  lastname: string;
-  email: string;
-  role: string;
-  id: string;
+type ClientAccount = {
+  organizationId: Id<"organizations">;
+  organizationName: string;
+  logo: string;
+  step: string;
+  createdAt: number;
+  lastConnectionTime: number;
 };
 
-interface AdminAccountsProps {
-  adminAccounts: AdminAccount[];
+interface ClientAccountsProps {
+  clientAccounts: ClientAccount[];
   globalFilter?: string;
 }
 
@@ -49,15 +49,15 @@ function SortIcon({ isSorted }: { isSorted: false | "asc" | "desc" }) {
   );
 }
 
-export default function AdminAccountsTable({
-  adminAccounts,
+export default function ClientAccountsTable({
+  clientAccounts,
   globalFilter = "",
-}: AdminAccountsProps) {
+}: ClientAccountsProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columns: ColumnDef<AdminAccount>[] = [
+  const columns: ColumnDef<ClientAccount>[] = [
     {
-      accessorKey: "name",
+      accessorKey: "organizationName",
       header: ({ column }) => (
         <button
           onClick={() =>
@@ -65,13 +65,41 @@ export default function AdminAccountsTable({
           }
           className="flex items-center gap-1 text-base font-bold text-primary"
         >
-          Prénom <SortIcon isSorted={column.getIsSorted()} />
+          Nom du client <SortIcon isSorted={column.getIsSorted()} />
         </button>
       ),
-      cell: ({ row }) => row.getValue("name"),
+      cell: ({ row }) => {
+        const { logo, organizationName } = row.original;
+    return (
+      <div className="flex items-center gap-3">
+        {logo && (
+          <img
+            src={logo}
+            alt={organizationName}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        )}
+        <span>{organizationName}</span>
+      </div>
+    );
+  },
+},
+    {
+      accessorKey: "step",
+      header: ({ column }) => (
+        <button
+          onClick={() =>
+            column.toggleSorting(column.getIsSorted() === "asc")
+          }
+          className="flex items-center gap-1 text-base font-bold text-primary"
+        >
+          Etat <SortIcon isSorted={column.getIsSorted()} />
+        </button>
+      ),
+      cell: ({ row }) => row.getValue("step"),
     },
     {
-      accessorKey: "lastname",
+      accessorKey: "createdAt",
       header: ({ column }) => (
         <button
           onClick={() =>
@@ -79,13 +107,16 @@ export default function AdminAccountsTable({
           }
           className="flex items-center gap-1 text-base font-bold text-primary"
         >
-          Nom <SortIcon isSorted={column.getIsSorted()} />
+          Date de création <SortIcon isSorted={column.getIsSorted()} />
         </button>
       ),
-      cell: ({ row }) => row.getValue("lastname"),
-    },
+      cell: ({ row }) => {
+    const ts = row.getValue("createdAt") as number;
+    return ts ? new Date(ts).toLocaleDateString("fr-FR") : "-";
+  },
+},
     {
-      accessorKey: "email",
+      accessorKey: "lastConnectionTime",
       header: ({ column }) => (
         <button
           onClick={() =>
@@ -93,38 +124,13 @@ export default function AdminAccountsTable({
           }
           className="flex items-center gap-1 text-base font-bold text-primary"
         >
-          Email <SortIcon isSorted={column.getIsSorted()} />
+          Dernière connexion <SortIcon isSorted={column.getIsSorted()} />
         </button>
       ),
-      cell: ({ row }) => row.getValue("email"),
-    },
-    {
-      accessorKey: "role",
-      header: ({ column }) => (
-        <button
-          onClick={() =>
-            column.toggleSorting(column.getIsSorted() === "asc")
-          }
-          className="flex items-center gap-1 text-base font-bold text-primary"
-        >
-          Rôle <SortIcon isSorted={column.getIsSorted()} />
-        </button>
-      ),
-      cell: ({ row }) => row.getValue("role"),
-    },
-    {
-      accessorKey: "id",
-      header: ({ column }) => (
-        <button
-          onClick={() =>
-            column.toggleSorting(column.getIsSorted() === "asc")
-          }
-          className="flex items-center gap-1 text-base font-bold text-primary"
-        >
-          Identifiant <SortIcon isSorted={column.getIsSorted()} />
-        </button>
-      ),
-      cell: ({ row }) => row.getValue("id"),
+      cell: ({ row }) => {
+    const ts = row.getValue("lastConnectionTime") as number;
+    return ts ? new Date(ts).toLocaleDateString("fr-FR") : "Jamais";
+  },
     },
     {
       id: "actions",
@@ -133,15 +139,14 @@ export default function AdminAccountsTable({
         const data = row.original;
         return (
           <div className="flex justify-end gap-4">
-        <UpdateAccountModal
-          userId={data.userId}
-          firstname={data.name}
-          lastname={data.lastname}
-          email={data.email}
+        <UpdateClientModal
+          organizationId={data.organizationId}
+          organizationName={data.organizationName}
+          logo={data.logo}
         />
-        <DeleteAccountModal
-          userId={data.userId}
-          fullName={`${data.name} ${data.lastname}`}
+        <DeleteClientModal
+          organizationId={data.organizationId}
+          organizationName={data.organizationName}
         />
       </div>
         );
@@ -151,7 +156,7 @@ export default function AdminAccountsTable({
 
 
   const table = useReactTable({
-    data: adminAccounts,
+    data: clientAccounts,
     columns,
     state: {
       sorting,

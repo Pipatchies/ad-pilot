@@ -12,23 +12,34 @@ import {
 
 type SearchBarProps = {
   variant?: "minimal" | "full";
+  onQueryChange: (q: string) => void;
+  onDateSortChange?: (dir: "desc" | "asc") => void;
+  defaultDateSort?: "desc" | "asc";
 };
 
-export default function SearchBar({ variant = "full" }: SearchBarProps) {
+export default function SearchBar({
+  variant = "full",
+  onQueryChange,
+  onDateSortChange,
+  defaultDateSort = "desc",
+}: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [sortOrder, setSortOrder] = useState("Du plus récent au plus ancien");
+  const [sortLabel, setSortLabel] = useState(
+    defaultDateSort === "desc" ? "Du plus récent au plus ancien" : "Du plus ancien au plus récent"
+  );
 
   useEffect(() => {
-    if (query.length > 2) {
-      console.log("query", query);
-    }
-  }, [query]);
+    onQueryChange(query);
+  }, [query, onQueryChange]);
 
-  const toggleSortOrder = (order: string) => {
-    setSortOrder(order);
+
+  const pickSort = (label: string, dir: "desc" | "asc") => {
+    setSortLabel(label);
+    onDateSortChange?.(dir);
     setIsOpen(false);
   };
+
 
   return (
     <div className="flex flex-col md:flex-row items-center gap-6 py-2 w-full max-w-2xl">
@@ -44,32 +55,35 @@ export default function SearchBar({ variant = "full" }: SearchBarProps) {
       </div>
 
       {variant === "full" && (
-      <div className="w-full md:w-72">
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <CollapsibleTrigger asChild>
-            <Button variant="outline" className="w-full justify-between border-primary">
-              <span>{sortOrder}</span>
-              <ChevronDown className="h-4 w-4 color-primary transition-transform group-data-[state=open]/collapsible:rotate-180" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="mt-1 border border-primary rounded-md overflow-hidden">
-            <Button
-              variant="ghost"
-              className="w-full justify-start rounded-none"
-              onClick={() => toggleSortOrder("Du plus récent au plus ancien")}
-            >
-              Du plus récent au plus ancien
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start rounded-none"
-              onClick={() => toggleSortOrder("Du plus ancien au plus récent")}
-            >
-              Du plus ancien au plus récent
-            </Button>
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
+        <div className="w-full md:w-72">
+          <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full justify-between border-primary"
+              >
+                <span>{sortLabel}</span>
+                <ChevronDown className="h-4 w-4 color-primary transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-1 border border-primary rounded-md overflow-hidden">
+              <Button
+                variant="ghost"
+                className="w-full justify-start rounded-none"
+                onClick={() => pickSort("Du plus récent au plus ancien", "desc")}
+              >
+                Du plus récent au plus ancien
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start rounded-none"
+                onClick={() => pickSort("Du plus ancien au plus récent", "asc")}
+              >
+                Du plus ancien au plus récent
+              </Button>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
       )}
     </div>
   );

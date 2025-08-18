@@ -55,6 +55,7 @@ export const getAdmin = query({
           name.trim().toLowerCase() + (lastname.trim()[0]?.toLowerCase() ?? "");
 
         adminAccounts.push({
+          userId: user._id,
           name,
           lastname,
           email: user.email ?? "",

@@ -15,8 +15,9 @@ import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
 type ModalProps = {
+  variant?: "button" | "icon";
   cta: {
-    text: string;
+    text?: string;
     icon: React.ReactNode;
   };
   data: {
@@ -29,19 +30,23 @@ type ModalProps = {
   };
 };
 
-export default function Modal({ cta, data }: ModalProps) {
+export default function Modal({ variant = "button", cta, data }: ModalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white"
-        >
-          <div className="mr-2">{cta.icon}</div>
-          <span className="block !leading-none relative font-[600] cursor-pointer">
-            {cta.text}
-          </span>
-        </Button>
+        {variant === "button" ? (
+          <Button
+            variant="ghost"
+            className="group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white"
+          >
+            <div className="mr-2">{cta.icon}</div>
+            <span className="block !leading-none relative font-[600] cursor-pointer">
+              {cta.text}
+            </span>
+          </Button>
+        ) : (
+          <div className="cursor-pointer hover:opacity-70">{cta.icon}</div>
+        )}
       </DialogTrigger>
       <DialogContent
         className={cn(

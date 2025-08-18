@@ -1,7 +1,8 @@
 "use client"
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
-import AdminAccountsTable from "../components/admin-accounts-table";
+import ClientAccountsTable from "../components/client-accounts-table";
+
 
 type Props = {
   globalFilter: string;
@@ -10,15 +11,15 @@ type Props = {
 export default function SpaceAccountsTable({
   globalFilter,
 }: Props) {
-  const adminAccounts = useQuery(api.queries.users.getAdmin);
+  const clientAccounts = useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection);
 
-  if (!adminAccounts) {
+  if (!clientAccounts) {
     return <p>Chargement...</p>;
   }
 
   return (
     <section>
-      <AdminAccountsTable adminAccounts={adminAccounts}
+      <ClientAccountsTable clientAccounts={clientAccounts}
       globalFilter={globalFilter}
  />
     </section>
