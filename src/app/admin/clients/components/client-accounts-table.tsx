@@ -30,7 +30,7 @@ type ClientAccount = {
   logo: string;
   step: string;
   createdAt: number;
-  lastConnection: number;
+  lastConnectionTime: number;
 };
 
 interface ClientAccountsProps {
@@ -116,7 +116,7 @@ export default function ClientAccountsTable({
   },
 },
     {
-      accessorKey: "lastConnection",
+      accessorKey: "lastConnectionTime",
       header: ({ column }) => (
         <button
           onClick={() =>
@@ -128,7 +128,7 @@ export default function ClientAccountsTable({
         </button>
       ),
       cell: ({ row }) => {
-    const ts = row.getValue("lastConnection") as number;
+    const ts = row.getValue("lastConnectionTime") as number;
     return ts ? new Date(ts).toLocaleDateString("fr-FR") : "Jamais";
   },
     },

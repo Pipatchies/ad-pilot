@@ -1,4 +1,3 @@
-// convex/organizations.ts
 import { query } from "../_generated/server";
 
 export const getAllOrganizationsWithLastConnection = query({
@@ -23,7 +22,7 @@ export const getAllOrganizationsWithLastConnection = query({
       logo: organization.logo ?? "",
       step: organization.step ?? "-",
       createdAt: organization._creationTime,
-      lastConnection: lastByOrganization.get(organization._id) ?? 0,
+      lastConnectionTime: lastByOrganization.get(organization._id) ?? 0,
     }));
   },
 });
