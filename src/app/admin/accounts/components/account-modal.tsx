@@ -118,7 +118,7 @@ export default function AccountModal() {
                   <FormControl>
                     <Input
                       placeholder="Votre prénom"
-                      className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                       {...field}
                     />
                   </FormControl>
@@ -139,7 +139,7 @@ export default function AccountModal() {
                   <FormControl>
                     <Input
                       placeholder="Votre nom"
-                      className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                       {...field}
                     />
                   </FormControl>
@@ -161,7 +161,7 @@ export default function AccountModal() {
                 <FormControl>
                   <Input
                     placeholder="Renseignez votre email"
-                    className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                    className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                     {...field}
                   />
                 </FormControl>
@@ -183,7 +183,7 @@ export default function AccountModal() {
                   <Input
                     type="password"
                     placeholder="••••••••"
-                    className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                    className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
