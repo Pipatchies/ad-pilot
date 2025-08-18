@@ -3,7 +3,13 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import AdminAccountsTable from "../components/admin-accounts-table";
 
-export default function SpaceAccountsTable() {
+type Props = {
+  globalFilter: string;
+};
+
+export default function SpaceAccountsTable({
+  globalFilter,
+}: Props) {
   const adminAccounts = useQuery(api.queries.users.getAdmin);
 
   if (!adminAccounts) {
@@ -12,7 +18,8 @@ export default function SpaceAccountsTable() {
 
   return (
     <section>
-      <AdminAccountsTable adminAccounts={adminAccounts} />
+      <AdminAccountsTable adminAccounts={adminAccounts}
+      globalFilter={globalFilter} />
     </section>
   );
 }

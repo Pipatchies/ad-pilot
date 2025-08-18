@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -33,6 +33,7 @@ type adminAccount = {
 
 interface AdminAccountsProps {
   adminAccounts: adminAccount[];
+  globalFilter?: string;
 }
 
 function SortIcon({ isSorted }: { isSorted: false | "asc" | "desc" }) {
@@ -48,6 +49,7 @@ function SortIcon({ isSorted }: { isSorted: false | "asc" | "desc" }) {
 
 export default function AdminAccountsTable({
   adminAccounts,
+  globalFilter = "",
 }: AdminAccountsProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -139,8 +141,10 @@ export default function AdminAccountsTable({
     columns,
     state: {
       sorting,
+      globalFilter,
     },
     onSortingChange: setSorting,
+    onGlobalFilterChange: () => {},
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
