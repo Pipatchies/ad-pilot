@@ -1,20 +1,20 @@
 "use client";
 import React, { useState } from "react";
-import SpaceAgencyInvoicesHeader from "../../agency/_sections/spaceAgencyInvoicesHeader";
-import SpaceAgencyInvoicesTable from "../../agency/_sections/spaceAgencyInvoicesTable";
+import SpaceVendorInvoicesHeader from "./spaceVendorInvoicesHeader";
+import SpaceVendorInvoicesTable from "./spaceVendorInvoicesTable";
 
-export default function SpaceAgencyInvoices() {
+export default function SpaceVendorInvoices() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [dateSort, setDateSort] = useState<"desc" | "asc">("desc");
 
   return (
     <section className="flex flex-col gap-2">
-      <SpaceAgencyInvoicesHeader
+      <SpaceVendorInvoicesHeader
         onQueryChange={setGlobalFilter}
         onDateSortChange={setDateSort}
         defaultDateSort="desc"
       />
-      <SpaceAgencyInvoicesTable
+      <SpaceVendorInvoicesTable
         globalFilter={globalFilter}
         dateSort={dateSort}
       />
