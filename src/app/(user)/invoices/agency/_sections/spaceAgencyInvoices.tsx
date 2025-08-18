@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import SpaceAgencyInvoicesHeader from "./spaceAgencyInvoicesHeader";
-import SpaceAgencyInvoicesTable from "./spaceAgencyInvoicesTables";
+import SpaceAgencyInvoicesTable from "./spaceAgencyInvoicesTable";
 
 export default function SpaceAgencyInvoices() {
   const [globalFilter, setGlobalFilter] = useState("");
