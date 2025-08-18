@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -9,8 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import SvgCorbeille from "@/components/icons/Corbeille";
-import SvgCrayonBig from "@/components/icons/CrayonBig";
 import SvgSmallDown from "@/components/icons/SmallDown";
 
 import {
@@ -22,9 +20,9 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMutation } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import DeleteAccountModal from "./delete-account-modal";
+import UpdateAccountModal from "./update-account-modal";
 
 type adminAccount = {
   userId: Id<"users">;
@@ -56,27 +54,6 @@ export default function AdminAccountsTable({
   globalFilter = "",
 }: AdminAccountsProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
-
-  const updateUser = useMutation(api.mutations.users.updateUser);
-  const deleteUser = useMutation(api.mutations.users.deleteUser);
-
-  const handleEdit = async (row: adminAccount) => {
-    // TODO: open your modal and collect new values; example below uses a quick patch:
-    await updateUser({
-      userId: row.userId,
-      patch: {
-        // put whatever fields the modal returns; this is a placeholder example:
-        // name: "New name",
-        // lastname: "New lastname",
-        // email: "new@email.com",
-      },
-    });
-  };
-
-  const handleDelete = async (row: adminAccount) => {
-    if (!confirm(`Delete account "${row.name} ${row.lastname}" ?`)) return;
-    await deleteUser({ userId: row.userId });
-  };
 
   const columns: ColumnDef<adminAccount>[] = [
     {
@@ -156,13 +133,17 @@ export default function AdminAccountsTable({
         const data = row.original;
         return (
           <div className="flex justify-end gap-4">
-            <button onClick={() => handleEdit(data)} aria-label="Edit">
-              <SvgCrayonBig className="cursor-pointer" />
-            </button>
-            <button onClick={() => handleDelete(data)} aria-label="Delete">
-              <SvgCorbeille className="cursor-pointer" />
-            </button>
-          </div>
+        <UpdateAccountModal
+          userId={data.userId}
+          firstname={data.name}
+          lastname={data.lastname}
+          email={data.email}
+        />
+        <DeleteAccountModal
+          userId={data.userId}
+          fullName={`${data.name} ${data.lastname}`}
+        />
+      </div>
         );
       },
     },
