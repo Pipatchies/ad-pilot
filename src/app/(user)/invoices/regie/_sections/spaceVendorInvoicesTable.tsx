@@ -23,6 +23,8 @@ export default function SpaceVendorInvoicesTable({
 
 const invoicesData = invoices?.map((invoice) => ({
   title: invoice.title,
+  agencyInvoice: invoice.agencyInvoice,
+  vendorName: invoice.vendorName,
   campaign: invoice.campaignTitle,
   htprice: invoice.htprice,
   ttcprice: invoice.ttcprice,
