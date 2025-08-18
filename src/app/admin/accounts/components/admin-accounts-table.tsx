@@ -22,8 +22,12 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { useMutation } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 type adminAccount = {
+  userId: Id<"users">;
   name: string;
   lastname: string;
   email: string;
@@ -52,6 +56,27 @@ export default function AdminAccountsTable({
   globalFilter = "",
 }: AdminAccountsProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
+
+  const updateUser = useMutation(api.mutations.users.updateUser);
+  const deleteUser = useMutation(api.mutations.users.deleteUser);
+
+  const handleEdit = async (row: adminAccount) => {
+    // TODO: open your modal and collect new values; example below uses a quick patch:
+    await updateUser({
+      userId: row.userId,
+      patch: {
+        // put whatever fields the modal returns; this is a placeholder example:
+        // name: "New name",
+        // lastname: "New lastname",
+        // email: "new@email.com",
+      },
+    });
+  };
+
+  const handleDelete = async (row: adminAccount) => {
+    if (!confirm(`Delete account "${row.name} ${row.lastname}" ?`)) return;
+    await deleteUser({ userId: row.userId });
+  };
 
   const columns: ColumnDef<adminAccount>[] = [
     {
@@ -127,14 +152,22 @@ export default function AdminAccountsTable({
     {
       id: "actions",
       header: () => <span className="sr-only">Actions</span>,
-      cell: () => (
-        <div className="flex justify-end gap-4">
-          <SvgCrayonBig />
-          <SvgCorbeille />
-        </div>
-      ),
+      cell: ({ row }) => {
+        const data = row.original;
+        return (
+          <div className="flex justify-end gap-4">
+            <button onClick={() => handleEdit(data)} aria-label="Edit">
+              <SvgCrayonBig className="cursor-pointer" />
+            </button>
+            <button onClick={() => handleDelete(data)} aria-label="Delete">
+              <SvgCorbeille className="cursor-pointer" />
+            </button>
+          </div>
+        );
+      },
     },
   ];
+
 
   const table = useReactTable({
     data: adminAccounts,
