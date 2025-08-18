@@ -9,7 +9,7 @@ type AccountsHeaderProps = {
   defaultDateSort?: "desc" | "asc";
 };
 
-export default function SpaceVendorInvoiceHeader({
+export default function SpaceVendorInvoicesHeader({
   onQueryChange,
   onDateSortChange,
   defaultDateSort = "desc",
