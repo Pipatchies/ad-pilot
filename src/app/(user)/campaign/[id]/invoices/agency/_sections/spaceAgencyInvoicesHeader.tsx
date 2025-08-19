@@ -3,7 +3,7 @@
 import SearchBar from "@/components/search-bar";
 import Typography from "@/components/typography";
 
-type AccountsHeaderProps = {
+type AgencyInvoicesHeaderProps = {
   onQueryChange: (q: string) => void;
   onDateSortChange: (dir: "desc" | "asc") => void;
   defaultDateSort?: "desc" | "asc";
@@ -13,7 +13,7 @@ export default function SpaceAgencyInvoicesByCampHeader({
   onQueryChange,
   onDateSortChange,
   defaultDateSort = "desc",
-}: AccountsHeaderProps) {
+}: AgencyInvoicesHeaderProps) {
   return (
     <section>
       <Typography variant="h1" className="mb-6">
