@@ -18,8 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 import SvgProfil from "@/components/icons/Profil";
 import SvgMail from "@/components/icons/Mail";
-import { useAction, useMutation, useQuery } from "convex/react";
-import { api, internal } from "@/../convex/_generated/api";
+import { useAction, useQuery } from "convex/react";
+import { api } from "@/../convex/_generated/api";
 import SvgCrayon from "@/components/icons/Crayon";
 import SvgUploder from "@/components/icons/Uploder";
 import { Checkbox } from "@/components/ui/checkbox";
