@@ -8,7 +8,7 @@ type Props = {
   globalFilter: string;
 };
 
-export default function SpaceAccountsTable({
+export default function SpaceClientsTable({
   globalFilter,
 }: Props) {
   const clientAccounts = useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection);

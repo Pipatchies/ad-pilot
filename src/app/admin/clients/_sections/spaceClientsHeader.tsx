@@ -1,5 +1,5 @@
 import Typography from "@/components/typography";
-import React, { useState } from "react";
+import React from "react";
 import SearchBar from "@/components/search-bar";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
