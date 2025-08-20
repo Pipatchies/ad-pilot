@@ -20,7 +20,7 @@ const CtaData = {
   },
   admin: {
     text: "Créer une campagne",
-    url: "/new-campaign",
+    url: "/admin/new-campaign",
     target: "self",
   }
 };
@@ -43,7 +43,7 @@ export default function Topbar({ variant }: TopbarProps) {
 
   return (
     <div className="flex items-end sm:items-center justify-between px-4 md:px-6 w-full text-primary gap-6">
-      {/* Bloc gauche */}
+
       <div className="flex items-center gap-6 2xl:gap-28 flex-1 ">
         <SidebarTrigger />
         <div className="flex items-center border-b border-primary/40 px-3 py-2 flex-grow max-w-4xl">
@@ -58,7 +58,6 @@ export default function Topbar({ variant }: TopbarProps) {
         </div>
       </div>
 
-      {/* Bloc droit */}
       <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-4 items-end sm:items-center text-sm">
         <CtaButton
           props={ctaProps}
