@@ -41,11 +41,11 @@ export default function CtaButton({ props, className, variant, userType, icon }:
           onClick={props?.onClick}
           variant="ghost"
           className={cn(
-            "group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white",
+            "group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border hover:border-primary hover:text-primary bg-primary text-white cursor-pointer",
             className
           )}
         >
-            <span className="block !leading-none relative font-[600] cursor-pointer">
+            <span className="block !leading-none relative font-[600]">
               {text}
             </span>
         </Button>
