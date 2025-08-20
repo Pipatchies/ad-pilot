@@ -45,6 +45,7 @@ import SvgCalendrier from "@/components/icons/Calendrier";
 import SvgSmallDown from "@/components/icons/SmallDown";
 import { useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
+import CtaButton from "@/components/cta-button";
 
 const objectifs = [
   { label: "Notoriété", value: "notoriete" },
@@ -863,9 +864,13 @@ export default function BriefForm() {
               />
 
               <div className="w-full flex justify-center">
-                <Button type="submit" className="w-full md:w-auto">
-                  Envoyer
-                </Button>
+                <CtaButton
+                  props={{
+                    text: "Enregistrer la campagne",
+                    onClick: form.handleSubmit(onSubmit),
+                  }}
+                  variant="submit"
+                />
               </div>
             </form>
           </Form>

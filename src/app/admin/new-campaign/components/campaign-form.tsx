@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -58,11 +58,11 @@ const mediaTypes = [
   { label: "Presse", value: "presse" },
 ];
 
-
 const ctaProps = [
   { text: "Ajouter un média", url: "#", target: "self" },
   { text: "Ajouter un document", url: "#", target: "self" },
   { text: "Ajouter une facture", url: "#", target: "self" },
+  { text: "Enregistrer la campagne", url: "#", target: "self" },
 ];
 
 const formSchema = z
@@ -120,6 +120,13 @@ const formSchema = z
       )
       .min(1),
     deadline: z.date({ required_error: "Sélectionnez une date" }).optional(),
+    diffusionLines: z.array(
+      z.object({
+        media: z.string().min(1, "Le média est requis"),
+        startDate: z.date().optional(),
+        endDate: z.date().optional(),
+      })
+    ),
     targetLine: z.array(
       z.object({
         target: z.string().min(1, "Le cible est requis"),
@@ -205,6 +212,7 @@ export default function CampaignForm() {
         },
       ],
       deadline: undefined,
+      diffusionLines: [],
       targetLine: [
         {
           target: "",
@@ -233,6 +241,13 @@ export default function CampaignForm() {
     name: "budgetLines",
   });
 
+  const { fields: diffusionFields, replace: replaceDiffusions } = useFieldArray(
+    {
+      control: form.control,
+      name: "diffusionLines",
+    }
+  );
+
   const {
     fields: targetFields,
     append: appendTarget,
@@ -250,6 +265,36 @@ export default function CampaignForm() {
     control: form.control,
     name: "kpiLines",
   });
+
+  const budgetWatch = form.watch("budgetLines");
+
+  useEffect(() => {
+    const seen = new Set<string>();
+    const uniqueMedias = (budgetWatch ?? [])
+      .map((b) => (b.media ?? "").trim())
+      .filter((m) => m.length > 0)
+      .filter((m) => {
+        if (seen.has(m)) return false;
+        seen.add(m);
+        return true;
+      });
+
+    if (uniqueMedias.length === 0) return;
+
+    const next = uniqueMedias.map((m) => ({
+      media: m,
+      startDate: undefined,
+      endDate: undefined,
+    }));
+
+    const sameLength = next.length === diffusionFields.length;
+    const sameItems =
+      sameLength && next.every((n, i) => n.media === diffusionFields[i]?.media);
+
+    if (!sameItems) {
+      replaceDiffusions(next);
+    }
+  }, [budgetWatch, diffusionFields.length, replaceDiffusions, form]);
 
   async function onSubmit(values: FormValues) {
     try {
@@ -1062,99 +1107,128 @@ export default function CampaignForm() {
             </CardHeader>
 
             <CardContent>
-              <div className="flex flex-wrap gap-4">
-                <FormField
-                  control={form.control}
-                  name="deadline"
-                  render={({ field }) => (
-                    <FormItem className="w-1/3">
-                      <FormLabel className="text-lg">
-                        Date de lancement
-                      </FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <div
-                            className={cn(
-                              "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
-                              "border",
-                              field.value ? "text-primary" : "text-primary/50",
-                              "border-[#A5A4BF] bg-white"
-                            )}
-                          >
-                            <span className="text-base italic">
-                              {field.value
-                                ? format(field.value, "dd/MM/yyyy", {
-                                    locale: fr,
-                                  })
-                                : "Sélectionnez la date"}
-                            </span>
-                            <SvgCalendrier />
-                          </div>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                          align="start"
-                        >
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(d) => field.onChange(d)}
-                            disabled={(date) => date < new Date("1900-01-01")}
-                            initialFocus
-                            locale={fr}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              {diffusionFields.length === 0 ? (
+                <p className="text-primary/60 italic">
+                  Ajoute au moins un média dans <strong>Le budget</strong> pour
+                  définir ses dates de diffusion.
+                </p>
+              ) : (
+                <div className="flex flex-col gap-6">
+                  {diffusionFields.map((row, index) => (
+                    <div key={row.id} className="flex flex-wrap gap-4">
+                      <div className="w-full">
+                        <div className="mt-1 text-xl underline">
+                          {row.media}
+                        </div>
+                      </div>
 
-                <FormField
-                  control={form.control}
-                  name="deadline"
-                  render={({ field }) => (
-                    <FormItem className="w-1/3">
-                      <FormLabel className="text-lg">Date de fin</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <div
-                            className={cn(
-                              "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
-                              "border",
-                              field.value ? "text-primary" : "text-primary/50",
-                              "border-[#A5A4BF] bg-white"
-                            )}
-                          >
-                            <span className="text-base italic">
-                              {field.value
-                                ? format(field.value, "dd/MM/yyyy", {
-                                    locale: fr,
-                                  })
-                                : "Sélectionnez la date"}
-                            </span>
-                            <SvgCalendrier />
-                          </div>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                          align="start"
-                        >
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(d) => field.onChange(d)}
-                            disabled={(date) => date < new Date("1900-01-01")}
-                            initialFocus
-                            locale={fr}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                      {/* Date de lancement */}
+                      <FormField
+                        control={form.control}
+                        name={`diffusionLines.${index}.startDate`}
+                        render={({ field }) => (
+                          <FormItem className="w-full md:w-1/3">
+                            <FormLabel className="text-lg">
+                              Date de lancement
+                            </FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <div
+                                  className={cn(
+                                    "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
+                                    "border",
+                                    field.value
+                                      ? "text-primary"
+                                      : "text-primary/50",
+                                    "border-[#A5A4BF] bg-white"
+                                  )}
+                                >
+                                  <span className="text-base italic">
+                                    {field.value
+                                      ? format(field.value, "dd/MM/yyyy", {
+                                          locale: fr,
+                                        })
+                                      : "Sélectionnez la date"}
+                                  </span>
+                                  <SvgCalendrier />
+                                </div>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={(d) => field.onChange(d)}
+                                  disabled={(date) =>
+                                    date < new Date("1900-01-01")
+                                  }
+                                  initialFocus
+                                  locale={fr}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Date de fin */}
+                      <FormField
+                        control={form.control}
+                        name={`diffusionLines.${index}.endDate`}
+                        render={({ field }) => (
+                          <FormItem className="w-full md:w-1/3">
+                            <FormLabel className="text-lg">
+                              Date de fin
+                            </FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <div
+                                  className={cn(
+                                    "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
+                                    "border",
+                                    field.value
+                                      ? "text-primary"
+                                      : "text-primary/50",
+                                    "border-[#A5A4BF] bg-white"
+                                  )}
+                                >
+                                  <span className="text-base italic">
+                                    {field.value
+                                      ? format(field.value, "dd/MM/yyyy", {
+                                          locale: fr,
+                                        })
+                                      : "Sélectionnez la date"}
+                                  </span>
+                                  <SvgCalendrier />
+                                </div>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={(d) => field.onChange(d)}
+                                  disabled={(date) =>
+                                    date < new Date("1900-01-01")
+                                  }
+                                  initialFocus
+                                  locale={fr}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -1516,9 +1590,13 @@ export default function CampaignForm() {
           </Card>
 
           <div className="w-full flex justify-center">
-            <Button type="submit" className="w-full md:w-auto cursor-pointer">
-              Enregistrer la campagne
-            </Button>
+            <CtaButton
+              props={{
+                text: "Enregistrer la campagne",
+                onClick: form.handleSubmit(onSubmit),
+              }}
+              variant="submit"
+            />
           </div>
         </form>
       </Form>
