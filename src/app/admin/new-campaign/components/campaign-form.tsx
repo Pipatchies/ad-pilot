@@ -1400,16 +1400,6 @@ export default function CampaignForm() {
                               <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
                             </div>
                           </FormControl>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Sélectionnez l'icon"
-                                className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12"
-                                {...field}
-                              />
-                              <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
-                            </div>
-                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
