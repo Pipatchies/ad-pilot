@@ -16,24 +16,6 @@ export const getUserById = internalQuery({
   },
 });
 
-export const getUserWithRole = query({
-  args: {},
-  handler: async (ctx, _args) => {
-    const userId = await getAuthUserId(ctx);
-    if (userId === null) return null;    
-
-    const user = await ctx.db.get(userId);
-    if (!user) return null;
-
-    const role = user.roleId ? await ctx.db.get(user.roleId) : null;
-
-    return {
-      ...user,
-      role: role?.name ?? "unknown",
-    };
-  },
-});
-
 export const getAdmin = query({
   args:{},
   handler: async (ctx) => {
@@ -77,8 +59,16 @@ export const me = query({
     if (!userId) return null;
 
     const user = await ctx.db.get(userId);
+    if (!user) return null;
     const sessionId = await getAuthSessionId(ctx);
-    return { user, sessionId };
+
+    const role = user.roleId ? await ctx.db.get(user.roleId) : null;
+
+    return {
+      ...user,
+      role: role?.name ?? "unknown",
+      sessionId,
+    };
   },
 });
 

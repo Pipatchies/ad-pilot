@@ -39,7 +39,7 @@ export default function SignInPage() {
   const [justSignedIn, setJustSignedIn] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
 
-  const user = useQuery(api.queries.users.getUserWithRole)
+  const user = useQuery(api.queries.users.me)
   const markLastConnection = useMutation(api.mutations.users.markLastConnection);
 
   const form = useForm<FormValues>({
