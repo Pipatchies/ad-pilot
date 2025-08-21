@@ -2,15 +2,11 @@
 
 import Image from "next/image";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-
-// RHF + Zod
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-// shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
