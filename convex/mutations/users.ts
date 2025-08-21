@@ -16,15 +16,45 @@ export const updateUser = mutation({
     }),
   },
   handler: async (ctx, { userId, patch }) => {
+
+if (patch.email) {
+
+    const newEmail = patch.email
+
+      const accounts = await ctx.db
+        .query("authAccounts")
+        .withIndex("userIdAndProvider", q => q.eq("userId", userId))
+        .collect();
+
+      for (const acc of accounts) {
+        if (acc.provider === "password" || acc.provider === "email") {
+          if (acc.providerAccountId !== newEmail) {
+            await ctx.db.patch(acc._id, { providerAccountId: newEmail });
+          }
+
+      }
+    }
+  }
     await ctx.db.patch(userId, patch);
     return { ok: true };
   },
 });
 
-
 export const deleteUser = mutation({
   args: { userId: v.id("users") },
   handler: async (ctx, { userId }) => {
+    const sessions = await ctx.db
+      .query("authSessions")
+      .withIndex("userId", (q) => q.eq("userId", userId))
+      .collect();
+    for (const s of sessions) await ctx.db.delete(s._id);
+
+    const accounts = await ctx.db
+      .query("authAccounts")
+      .withIndex("userIdAndProvider", (q) => q.eq("userId", userId))
+      .collect();
+    for (const a of accounts) await ctx.db.delete(a._id);
+
     await ctx.db.delete(userId);
     return { ok: true };
   },

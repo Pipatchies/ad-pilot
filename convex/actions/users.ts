@@ -22,7 +22,7 @@ export const adminCreateAdmin = action({
     const adminId = await getAuthUserId(ctx);
     if (!adminId) throw new ConvexError("UNAUTHENTICATED");
 
-    const me = await ctx.runQuery(api.queries.users.getUserWithRole, {});
+    const me = await ctx.runQuery(api.queries.users.me, {});
     if (!me || me.role !== "admin") throw new ConvexError("FORBIDDEN");
 
 
@@ -61,7 +61,7 @@ export const adminCreateClient = action({
     const adminId = await getAuthUserId(ctx);
     if (!adminId) throw new ConvexError("UNAUTHENTICATED");
 
-    const me = await ctx.runQuery(api.queries.users.getUserWithRole, {});
+    const me = await ctx.runQuery(api.queries.users.me, {});
     if (!me || me.role !== "admin") throw new ConvexError("FORBIDDEN");
 
     const organizationId: Id<"organizations"> = await ctx.runMutation(
