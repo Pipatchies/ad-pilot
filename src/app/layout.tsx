@@ -1,7 +1,8 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { AppProviders } from "./AppProvider";
+import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
+import { ConvexClientProvider } from "./ConvexClientProvider";
 
 const mont = localFont({
   src: [
@@ -61,13 +62,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body className={`${mont.variable} antialiased overflow-x-hidden`}>
-        <div className="font-mont">
-          <Toaster />
-            <AppProviders>{children}</AppProviders>
-        </div>
-      </body>
-    </html>
+    <ConvexAuthNextjsServerProvider>
+      <html lang="fr">
+        <body className={`${mont.variable} antialiased overflow-x-hidden`}>
+          <div className="font-mont">
+            <Toaster />
+            <ConvexClientProvider>{children}</ConvexClientProvider>
+          </div>
+        </body>
+      </html>
+    </ConvexAuthNextjsServerProvider>
   );
 }
