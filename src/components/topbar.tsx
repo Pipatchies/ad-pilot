@@ -2,18 +2,25 @@
 import { useState, useEffect } from "react";
 import CtaButton from "./cta-button";
 import { ChevronDown } from "lucide-react";
-import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { SidebarTrigger } from "./ui/sidebar";
 import SvgSearch from "./icons/Search";
 import SvgNotification from "./icons/Notification";
 import SvgCrayon from "./icons/Crayon";
-
-type UserRole = "admin" | "user";
-
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { useAuthActions } from "@convex-dev/auth/react";
 
 const CtaData = {
-  user: {
+  client: {
     text: "Déposer un brief",
     url: "/new-brief",
     target: "self",
@@ -22,18 +29,22 @@ const CtaData = {
     text: "Créer une campagne",
     url: "/admin/new-campaign",
     target: "self",
-  }
+  },
 };
 
-interface TopbarProps {
-  variant: UserRole;
-}
-
-
-export default function Topbar({ variant }: TopbarProps) {
+export default function Topbar() {
   const [query, setQuery] = useState("");
-  const isUser = variant === "user";
-  const ctaProps = CtaData[variant];
+  const me = useQuery(api.queries.users.me);
+  const { signOut } = useAuthActions();
+
+  const role = me?.role === "admin" ? "admin" : "client";
+  const ctaProps = CtaData[role];
+
+  const name = me?.name;
+  const lastname = me?.lastname;
+
+  const initials =
+    (name?.[0] ?? "").toUpperCase() + (lastname?.[0] ?? "").toUpperCase();
 
   useEffect(() => {
     if (query.length > 2) {
@@ -43,7 +54,6 @@ export default function Topbar({ variant }: TopbarProps) {
 
   return (
     <div className="flex items-end sm:items-center justify-between px-4 md:px-6 w-full text-primary gap-6">
-
       <div className="flex items-center gap-6 2xl:gap-28 flex-1 ">
         <SidebarTrigger />
         <div className="flex items-center border-b border-primary/40 px-3 py-2 flex-grow max-w-4xl">
@@ -67,7 +77,7 @@ export default function Topbar({ variant }: TopbarProps) {
         />
 
         <div className="flex items-center gap-3 sm:gap-4">
-          {isUser && (
+          {role === "client" && (
             <div className="relative flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10">
               <SvgNotification className="w-5 h-5 sm:w-6 sm:h-6" />
               <span className="absolute top-1 lg:right-3 right-1 h-2.5 w-2.5 rounded-full bg-destructive border border-white" />
@@ -77,25 +87,39 @@ export default function Topbar({ variant }: TopbarProps) {
           <div className="border-r h-5 hidden sm:block" />
 
           <div className="flex items-center gap-2">
-            <Collapsible defaultOpen className="group/collapsible">
-              <CollapsibleTrigger asChild>
-                <div className="flex items-center gap-1 cursor-pointer">
-                  <span className="hidden md:inline text-sm">John Doe</span>
-                  <ChevronDown className="w-4 h-4 transition-transform group-data-[state=close]/collapsible:rotate-180" />
-                </div>
-              </CollapsibleTrigger>
-            </Collapsible>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 cursor-pointer">
+                  <span className="hidden md:inline text-sm">
+                    {name} {lastname}
+                  </span>
+                  <ChevronDown className="w-4 h-4" />
+                  <Avatar className="w-8 h-8 sm:w-10 sm:h-10">
+                    <AvatarImage src={me?.image} />
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
 
-            <Avatar className="w-8 h-8 sm:w-10 sm:h-10">
-              <AvatarImage src="/logo-occitanie-2017.png" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
+              <DropdownMenuContent align="end" className="w-56 text-primary">
+                <DropdownMenuLabel>Connecté</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <a href="/account" className="cursor-pointer">
+                    Mon profil
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => signOut()}
+                  className="text-destructive focus:text-destructive cursor-pointer"
+                >
+                  Se déconnecter
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-
-
