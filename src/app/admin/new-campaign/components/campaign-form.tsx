@@ -40,7 +40,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SvgCalendrier from "@/components/icons/Calendrier";
 import SvgSmallDown from "@/components/icons/SmallDown";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import Typography from "@/components/typography";
 import { useFieldArray } from "react-hook-form";
@@ -77,6 +77,7 @@ const ctaProps = [
 ];
 
 const formSchema = z.object({
+  organization: z.string().min(1, { message: "L'organisation est requise" }),
   title: z.string().min(1, { message: "Le titre est requis" }),
   subtitle: z.string().min(1, { message: "Le sous-titre est requis" }),
   mediaTypes: z.array(z.string()).min(1, {
@@ -150,6 +151,7 @@ export default function CampaignForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      organization: "",
       title: "",
       subtitle: "",
       mediaTypes: [],
@@ -188,8 +190,9 @@ export default function CampaignForm() {
     },
   });
 
-  const createBrief = useMutation(api.mutations.briefs.createBrief);
-  const [mediaTypeOpen, setMediaTypeOpen] = useState(false);
+  const organizations = useQuery(
+    api.queries.organizations.getAllOrganizationsWithLastConnection
+  ) ?? [];
 
   const {
     fields: budgetFields,
@@ -229,8 +232,8 @@ export default function CampaignForm() {
 
   useEffect(() => {
     const seen = new Set<string>();
-    const uniqueMedias = (budgetWatch ?? [])
-      .flatMap((b) => b.mediaType ?? []) // flatten array
+    const uniqueMedias = budgetWatch
+      .flatMap((b) => b.mediaType)
       .filter((m) => {
         if (!m) return false;
         if (seen.has(m)) return false;
@@ -289,7 +292,7 @@ export default function CampaignForm() {
             <CardContent>
               <FormField
                 control={form.control}
-                name="target"
+                name="organization"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-lg">Le client</FormLabel>
@@ -309,9 +312,14 @@ export default function CampaignForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                        <SelectItem value="1">Verywell</SelectItem>
-                        <SelectItem value="2">Science Po Toulouse</SelectItem>
-                        <SelectItem value="3">Garorock</SelectItem>
+                        {organizations.map((org) => (
+                          <SelectItem
+                            key={org.organizationId}
+                            value={org.organizationId}
+                          >
+                            {org.organizationName}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
