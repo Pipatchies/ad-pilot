@@ -89,9 +89,9 @@ const formSchema = z.object({
   budgetMedia: z
     .array(
       z.object({
-        mediaType: z.array(z.string()).min(1, {
-          message: "Veuillez sélectionner au moins un type de média",
-        }),
+        mediaType: z
+          .string()
+          .min(1, { message: "Veuillez sélectionner un type de média" }),
         amount: z.number().nonnegative({
           message: "Le montant doit être positif",
         }),
@@ -158,7 +158,7 @@ export default function CampaignForm() {
       budgetTotal: 0,
       budgetMedia: [
         {
-          mediaType: [],
+          mediaType: "",
           amount: 0,
           pourcent: "",
           startDate: undefined,
@@ -190,9 +190,10 @@ export default function CampaignForm() {
     },
   });
 
-  const organizations = useQuery(
-    api.queries.organizations.getAllOrganizationsWithLastConnection
-  ) ?? [];
+  const organizations =
+    useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ??
+    [];
+  const createCampaign = useMutation(api.mutations.campaigns.createCampaign);
 
   const {
     fields: budgetFields,
@@ -232,8 +233,8 @@ export default function CampaignForm() {
 
   useEffect(() => {
     const seen = new Set<string>();
-    const uniqueMedias = budgetWatch
-      .flatMap((b) => b.mediaType)
+    const uniqueMedias = (budgetWatch ?? [])
+      .map((b) => b.mediaType)
       .filter((m) => {
         if (!m) return false;
         if (seen.has(m)) return false;
@@ -254,27 +255,72 @@ export default function CampaignForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      await createBrief({
-        periodFrom: values.period.from.toISOString(),
-        periodTo: values.period.to.toISOString(),
-        target: values.target,
-        territory: values.territory,
-        cities: values.cities,
-        budget: values.budget,
-        objectives: values.objectives,
-        mediaTypes: values.mediaTypes,
-        tvTypes: values.tvTypes?.length ? values.tvTypes : undefined,
-        displayTypes: values.displayTypes || undefined,
-        radioTypes: values.radioTypes?.length ? values.radioTypes : undefined,
-        brief: values.brief,
+      const allStarts =
+        values.diffusionLines?.map((d) => d.startDate.getTime()) ?? [];
+      const allEnds =
+        values.diffusionLines?.map((d) => d.endDate.getTime()) ?? [];
+
+      const startDate = allStarts.length
+        ? new Date(Math.min(...allStarts)).toISOString()
+        : new Date().toISOString();
+
+      const endDate = allEnds.length
+        ? new Date(Math.max(...allEnds)).toISOString()
+        : new Date().toISOString();
+
+      await createCampaign({
+        organizationId: values.organization as any,
+        title: values.title,
+        subtitle: values.subtitle,
+        mediaTypes: values.mediaTypes as any,
+        startDate,
+        endDate,
+        totalBudget: values.budgetTotal,
+
+        budgetMedia: values.budgetMedia.map((b) => ({
+          type: b.mediaType[0] ?? "",
+          amount: b.amount,
+          pourcent: b.pourcent,
+          startDate: b.startDate ? b.startDate.toISOString() : undefined,
+          title: b.title,
+          details: b.details,
+        })),
+
+        status: values.status.map((s, i) => ({
+          id: i,
+          label: s.label,
+          state: s.state as any,
+          deadline: s.deadline ? s.deadline.toISOString() : "",
+        })),
+
+        diffusions: (values.diffusionLines ?? []).map((d) => ({
+          mediaType: d.media as any,
+          startDate: d.startDate.toISOString(),
+          endDate: d.endDate.toISOString(),
+        })),
+
+        digitalReportUrl: "", // tu pourras binder si tu ajoutes un champ d’upload
+
+        report: {
+          status: values.statusReport as any,
+          document: values.documentReport,
+          kpi: values.kpiLines.map((k) => ({
+            icon: k.icon,
+            title: k.title,
+            info: k.info,
+          })),
+        },
+
+        archived: false,
       });
 
       toast.success("Succès", {
-        description: "Le formulaire a été envoyé correctement.",
+        description: "La campagne a été enregistrée correctement.",
       });
+      form.reset();
     } catch {
       toast.error("Erreur", {
-        description: "Veuillez remplir tous les champs du formulaire.",
+        description: "Impossible d'enregistrer la campagne.",
       });
     }
   }
@@ -517,80 +563,29 @@ export default function CampaignForm() {
                       name={`budgetMedia.${index}.mediaType`}
                       render={({ field }) => (
                         <FormItem className="flex-1 min-w-[170px]">
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant="ghost"
-                                  role="combobox"
-                                  className={cn(
-                                    "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50 bg-white",
-                                    !field.value?.length
-                                      ? "text-primary/50"
-                                      : "text-primary"
-                                  )}
-                                >
-                                  {field.value?.length > 0
-                                    ? field.value.length > 2
-                                      ? `${field.value.length} types de média sélectionnés`
-                                      : field.value
-                                          .map(
-                                            (mediaType: string) =>
-                                              mediaTypes.find(
-                                                (o) => o.value === mediaType
-                                              )?.label
-                                          )
-                                          .join(", ")
-                                    : "Type de médias"}
-                                  <SvgSmallDown />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-[--radix-popover-trigger-width] min-w-[var(--radix-popover-trigger-width)] max-w-[var(--radix-popover-trigger-width)] p-0 border border-[#A5A4BF] shadow-md rounded-sm bg-white"
-                              align="start"
-                            >
-                              <Command>
-                                <CommandEmpty>
-                                  Aucun type de média trouvé.
-                                </CommandEmpty>
-                                <CommandList>
-                                  <CommandGroup>
-                                    {mediaTypes.map((mediaType) => {
-                                      const isSelected = field.value?.includes(
-                                        mediaType.value
-                                      );
-                                      return (
-                                        <CommandItem
-                                          key={mediaType.value}
-                                          onSelect={() => {
-                                            const updated = isSelected
-                                              ? field.value.filter(
-                                                  (v: string) =>
-                                                    v !== mediaType.value
-                                                )
-                                              : [
-                                                  ...(field.value ?? []),
-                                                  mediaType.value,
-                                                ];
-                                            field.onChange(updated);
-                                          }}
-                                        >
-                                          <div className="flex items-center gap-2">
-                                            <Checkbox
-                                              checked={isSelected}
-                                              onCheckedChange={() => {}}
-                                            />
-                                            {mediaType.label}
-                                          </div>
-                                        </CommandItem>
-                                      );
-                                    })}
-                                  </CommandGroup>
-                                </CommandList>
-                              </Command>
-                            </PopoverContent>
-                          </Popover>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                                <SelectValue
+                                  placeholder={
+                                    <span className="text-primary/50 italic">
+                                      Type de média
+                                    </span>
+                                  }
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
+                              {mediaTypes.map((m) => (
+                                <SelectItem key={m.value} value={m.value}>
+                                  {m.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
