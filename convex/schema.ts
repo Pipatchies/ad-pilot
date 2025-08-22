@@ -96,9 +96,8 @@ export default defineSchema({
     report: v.object({
       status: v.union(
         v.literal("Terminé"),
-        v.literal("En cours"),
-        v.literal("En attente")
-      ),
+        v.literal("Archivée"),
+            ),
       document: v.optional(v.string()),
       kpi: v.array(
         v.object({
