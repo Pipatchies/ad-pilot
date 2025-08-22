@@ -16,9 +16,10 @@ export default defineSchema({
     roleId: v.optional(v.id("roles")),
     organizationId: v.optional(v.id("organizations")),
     lastConnectionTime: v.optional(v.number()),
-  }).index("email", ["email"])
-  .index("phone", ["phone"])
-  .index("by_organizationId", ["organizationId"]),
+  })
+    .index("email", ["email"])
+    .index("phone", ["phone"])
+    .index("by_organizationId", ["organizationId"]),
 
   organizations: defineTable({
     name: v.string(),
@@ -92,12 +93,23 @@ export default defineSchema({
         deadline: v.string(),
       })
     ),
+    diffusions: v.array(
+      v.object({
+        mediaType: v.union(
+          v.literal("Affichage"),
+          v.literal("TV"),
+          v.literal("Radio"),
+          v.literal("Digital"),
+          v.literal("Cinema"),
+          v.literal("Presse")
+        ),
+        startDate: v.string(),
+        endDate: v.string(),
+      })
+    ),
     digitalReportUrl: v.string(),
     report: v.object({
-      status: v.union(
-        v.literal("Terminé"),
-        v.literal("Archivée"),
-            ),
+      status: v.union(v.literal("Terminé"), v.literal("Archivée")),
       document: v.optional(v.string()),
       kpi: v.array(
         v.object({
