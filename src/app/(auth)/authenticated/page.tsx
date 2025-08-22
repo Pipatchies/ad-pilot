@@ -11,7 +11,7 @@ export default function Page() {
 
   return (
     <div>
-      <p>Connecté en tant que {me.user?.email ?? me.user?.name}</p>
+      <p>Connecté en tant que {me?.email ?? me?.name}</p>
       <small>Session: {me.sessionId}</small>
     </div>
   );
