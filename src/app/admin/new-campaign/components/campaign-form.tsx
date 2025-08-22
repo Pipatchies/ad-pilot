@@ -58,6 +58,17 @@ const mediaTypes = [
   { label: "Presse", value: "presse" },
 ];
 
+const state = [
+  { label: "En cours", value: "current" },
+  { label: "Terminé", value: "completed" },
+  { label: "Archivée", value: "archived" },
+];
+
+const stateReport = [
+  { label: "Terminé", value: "completed" },
+  { label: "Archivée", value: "archived" },
+];
+
 const ctaProps = [
   { text: "Ajouter un média", url: "#", target: "self" },
   { text: "Ajouter un document", url: "#", target: "self" },
@@ -65,120 +76,73 @@ const ctaProps = [
   { text: "Enregistrer la campagne", url: "#", target: "self" },
 ];
 
-const formSchema = z
-  .object({
-    period: z
-      .object({
-        from: z.date(),
-        to: z.date(),
-      })
-      .refine((data) => data.from && data.to, {
-        message: "Veuillez sélectionner une période",
-      }),
-    target: z.string().min(2, {
-      message: "Le choix d'une cible est requis",
-    }),
-    territory: z
-      .string({
-        required_error: "Veuillez sélectionner un type de territoire",
-      })
-      .min(1, {
-        message: "Veuillez sélectionner un type de territoire",
-      }),
-    cities: z.string().min(2, {
-      message: "Veuillez inscrire au moins une ville",
-    }),
-    budget: z
-      .number({
-        required_error: "Veuillez préciser votre budget",
-        invalid_type_error: "Le budget doit être un nombre valide",
-      })
-      .positive("Le budget doit être supérieur à 0"),
-    objectives: z.array(z.string()).min(1, {
-      message: "Veuillez sélectionner au moins un objectif",
-    }),
-    mediaTypes: z.array(z.string()).min(1, {
-      message: "Veuillez sélectionner au moins un type de média",
-    }),
-    tvTypes: z.array(z.string()).optional(),
-    displayTypes: z.string().optional(),
-    radioTypes: z.array(z.string()).optional(),
-    brief: z.string().min(10, {
-      message: "Votre brief doit contenir au moins 10 caractères",
-    }),
-    budgetTotal: z.number().nonnegative().optional(),
-    budgetLines: z
-      .array(
-        z.object({
-          media: z.string().min(1, "Le média est requis"),
-          mediaBudget: z.number().nonnegative().optional(),
-          feeShare: z.string().optional(),
-          launchDate: z.date().optional(),
-          infoTitle: z.string().optional(),
-          infoDetail: z.string().optional(),
-        })
-      )
-      .min(1),
-    deadline: z.date({ required_error: "Sélectionnez une date" }).optional(),
-    diffusionLines: z.array(
+const formSchema = z.object({
+  title: z.string().min(1, { message: "Le titre est requis" }),
+  subtitle: z.string().min(1, { message: "Le sous-titre est requis" }),
+  mediaTypes: z.array(z.string()).min(1, {
+    message: "Veuillez sélectionner au moins un média",
+  }),
+  budgetTotal: z.number().nonnegative({
+    message: "Le budget total doit être positif",
+  }),
+  budgetMedia: z
+    .array(
       z.object({
-        media: z.string().min(1, "Le média est requis"),
-        startDate: z.date().optional(),
-        endDate: z.date().optional(),
+        mediaType: z.array(z.string()).min(1, {
+          message: "Veuillez sélectionner au moins un type de média",
+        }),
+        amount: z.number().nonnegative({
+          message: "Le montant doit être positif",
+        }),
+        pourcent: z.string().min(1, { message: "La part est requise" }),
+        startDate: z.date({ required_error: "La date est requise" }),
+        title: z.string().min(1, { message: "Le titre est requis" }),
+        details: z.string().min(1, { message: "Le détail est requis" }),
       })
-    ),
-    targetLine: z.array(
+    )
+    .min(1, { message: "Veuillez ajouter au moins un budget média" }),
+  status: z
+    .array(
       z.object({
-        target: z.string().min(1, "Le cible est requis"),
-        csvFiles: z.string().min(1, "Le fichier csv est requis"),
+        label: z.string().min(1, { message: "Le label est requis" }),
+        state: z.string().min(1, { message: "L'état est requis" }),
+        deadline: z.date({ required_error: "La date est requise" }),
       })
-    ),
-    kpiLines: z
-      .array(
-        z.object({
-          icon: z.string().min(1, "L'icône est requise"),
-          title: z.string().min(1, "Le titre est requis"),
-          info: z.string().min(1, "L'info est requise"),
-        })
-      )
-      .min(1),
-  })
-  .refine(
-    (data) => {
-      if (data.mediaTypes.includes("tv")) {
-        return data.tvTypes && data.tvTypes.length > 0;
-      }
-      return true;
-    },
-    {
-      message: "Veuillez sélectionner au moins un type de diffusion TV",
-      path: ["tvTypes"],
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.mediaTypes.includes("affichage")) {
-        return !!data.displayTypes;
-      }
-      return true;
-    },
-    {
-      message: "Veuillez selectionner un type d'affichage",
-      path: ["displayTypes"],
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.mediaTypes.includes("radio")) {
-        return data.radioTypes && data.radioTypes.length > 0;
-      }
-      return true;
-    },
-    {
-      message: "Veuillez sélectionner au moins un type de diffusion Radio",
-      path: ["radioTypes"],
-    }
-  );
+    )
+    .length(5, { message: "Il doit y avoir exactement 5 étapes" }),
+  diffusionLines: z
+    .array(
+      z.object({
+        media: z.string().min(1, { message: "Le média est requis" }),
+        startDate: z.date({ required_error: "La date de début est requise" }),
+        endDate: z.date({ required_error: "La date de fin est requise" }),
+      })
+    )
+    .optional(),
+  targetLine: z
+    .array(
+      z.object({
+        target: z.string().min(1, { message: "La cible est requise" }),
+        csvFiles: z.string().min(1, { message: "Le fichier CSV est requis" }),
+      })
+    )
+    .min(1, { message: "Veuillez définir au moins une cible" }),
+  statusReport: z
+    .string()
+    .min(1, { message: "Veuillez sélectionner l'état de la campagne" }),
+  documentReport: z
+    .string()
+    .min(1, { message: "Veuillez importer un document de récap" }),
+  kpiLines: z
+    .array(
+      z.object({
+        icon: z.string().min(1, { message: "L'icône est requise" }),
+        title: z.string().min(1, { message: "Le titre est requis" }),
+        info: z.string().min(1, { message: "L'information est requise" }),
+      })
+    )
+    .min(1, { message: "Veuillez définir au moins un KPI" }),
+});
 
 export default function CampaignForm() {
   type FormValues = z.infer<typeof formSchema>;
@@ -186,32 +150,25 @@ export default function CampaignForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      period: {
-        from: undefined,
-        to: undefined,
-      },
-      target: "",
-      territory: "",
-      cities: "",
-      budget: 0,
-      objectives: [],
+      title: "",
+      subtitle: "",
       mediaTypes: [],
-      tvTypes: [],
-      displayTypes: "",
-      radioTypes: [],
-      brief: "",
       budgetTotal: 0,
-      budgetLines: [
+      budgetMedia: [
         {
-          media: "",
-          mediaBudget: 0,
-          feeShare: "",
-          launchDate: undefined,
-          infoTitle: "",
-          infoDetail: "",
+          mediaType: [],
+          amount: 0,
+          pourcent: "",
+          startDate: undefined,
+          title: "",
+          details: "",
         },
       ],
-      deadline: undefined,
+      status: Array.from({ length: 5 }, () => ({
+        label: "",
+        state: "",
+        deadline: undefined,
+      })),
       diffusionLines: [],
       targetLine: [
         {
@@ -219,6 +176,8 @@ export default function CampaignForm() {
           csvFiles: "",
         },
       ],
+      statusReport: "",
+      documentReport: "",
       kpiLines: [
         {
           icon: "",
@@ -238,7 +197,7 @@ export default function CampaignForm() {
     remove: removeBudget,
   } = useFieldArray({
     control: form.control,
-    name: "budgetLines",
+    name: "budgetMedia",
   });
 
   const { fields: diffusionFields, replace: replaceDiffusions } = useFieldArray(
@@ -266,14 +225,14 @@ export default function CampaignForm() {
     name: "kpiLines",
   });
 
-  const budgetWatch = form.watch("budgetLines");
+  const budgetWatch = form.watch("budgetMedia");
 
   useEffect(() => {
     const seen = new Set<string>();
     const uniqueMedias = (budgetWatch ?? [])
-      .map((b) => (b.media ?? "").trim())
-      .filter((m) => m.length > 0)
+      .flatMap((b) => b.mediaType ?? []) // flatten array
       .filter((m) => {
+        if (!m) return false;
         if (seen.has(m)) return false;
         seen.add(m);
         return true;
@@ -287,14 +246,8 @@ export default function CampaignForm() {
       endDate: undefined,
     }));
 
-    const sameLength = next.length === diffusionFields.length;
-    const sameItems =
-      sameLength && next.every((n, i) => n.media === diffusionFields[i]?.media);
-
-    if (!sameItems) {
-      replaceDiffusions(next);
-    }
-  }, [budgetWatch, diffusionFields.length, replaceDiffusions, form]);
+    replaceDiffusions(next);
+  }, [budgetWatch, replaceDiffusions]);
 
   async function onSubmit(values: FormValues) {
     try {
@@ -379,7 +332,7 @@ export default function CampaignForm() {
               <div className="flex flex-wrap gap-4">
                 <FormField
                   control={form.control}
-                  name="territory"
+                  name="title"
                   render={({ field }) => (
                     <FormItem className="flex-1 min-w-[250px]">
                       <FormLabel className="text-lg">
@@ -399,7 +352,7 @@ export default function CampaignForm() {
 
                 <FormField
                   control={form.control}
-                  name="cities"
+                  name="subtitle"
                   render={({ field }) => (
                     <FormItem className="flex-1 min-w-[250px]">
                       <FormLabel className="text-lg">Sous-titre</FormLabel>
@@ -423,16 +376,12 @@ export default function CampaignForm() {
                       <FormLabel className="text-lg">
                         Média de diffusion
                       </FormLabel>
-                      <Popover
-                        open={mediaTypeOpen}
-                        onOpenChange={setMediaTypeOpen}
-                      >
+                      <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant="ghost"
                               role="combobox"
-                              aria-expanded={mediaTypeOpen}
                               className={cn(
                                 "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50 bg-white",
                                 !field.value?.length
@@ -457,7 +406,7 @@ export default function CampaignForm() {
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent
-                          className="w-[--radix-popover-trigger-width] p-0 mt-2 border border-[#A5A4BF] shadow-md rounded-sm bg-white"
+                          className="w-[--radix-popover-trigger-width] min-w-[var(--radix-popover-trigger-width)] max-w-[var(--radix-popover-trigger-width)] p-0 border border-[#A5A4BF] shadow-md rounded-sm bg-white"
                           align="start"
                         >
                           <Command>
@@ -517,7 +466,6 @@ export default function CampaignForm() {
             </CardHeader>
 
             <CardContent className="space-y-6">
-              {/* Budget total */}
               <FormField
                 control={form.control}
                 name="budgetTotal"
@@ -536,41 +484,115 @@ export default function CampaignForm() {
                 )}
               />
 
-              {/* Lignes dynamiques */}
               <div className="space-y-4">
+                <div className="flex flex-wrap gap-4 mb-2">
+                  <div className="flex-1 min-w-[170px] text-lg">Média</div>
+                  <div className="flex-1 min-w-[170px] text-lg">Budget</div>
+                  <div className="flex-1 min-w-[170px] text-lg">
+                    Part honoraire
+                  </div>
+                  <div className="flex-1 min-w-[170px] text-lg">
+                    Date de lancement
+                  </div>
+                  <div className="flex-1 min-w-[170px] text-lg">Titre info</div>
+                  <div className="flex-1 min-w-[170px] text-lg">
+                    Détail info
+                  </div>
+                </div>
                 {budgetFields.map((row, index) => (
                   <div
                     key={row.id}
-                    className="flex flex-row flex-nowrap gap-2 overflow-x-auto"
+                    className="flex flex-row flex-nowrap gap-2 mb-2"
                   >
-                    {/* Média */}
                     <FormField
                       control={form.control}
-                      name={`budgetLines.${index}.media`}
+                      name={`budgetMedia.${index}.mediaType`}
                       render={({ field }) => (
                         <FormItem className="flex-1 min-w-[170px]">
-                          <FormLabel className="text-lg">Média</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Type de média"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="ghost"
+                                  role="combobox"
+                                  className={cn(
+                                    "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50 bg-white",
+                                    !field.value?.length
+                                      ? "text-primary/50"
+                                      : "text-primary"
+                                  )}
+                                >
+                                  {field.value?.length > 0
+                                    ? field.value.length > 2
+                                      ? `${field.value.length} types de média sélectionnés`
+                                      : field.value
+                                          .map(
+                                            (mediaType: string) =>
+                                              mediaTypes.find(
+                                                (o) => o.value === mediaType
+                                              )?.label
+                                          )
+                                          .join(", ")
+                                    : "Type de médias"}
+                                  <SvgSmallDown />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-[--radix-popover-trigger-width] min-w-[var(--radix-popover-trigger-width)] max-w-[var(--radix-popover-trigger-width)] p-0 border border-[#A5A4BF] shadow-md rounded-sm bg-white"
+                              align="start"
+                            >
+                              <Command>
+                                <CommandEmpty>
+                                  Aucun type de média trouvé.
+                                </CommandEmpty>
+                                <CommandList>
+                                  <CommandGroup>
+                                    {mediaTypes.map((mediaType) => {
+                                      const isSelected = field.value?.includes(
+                                        mediaType.value
+                                      );
+                                      return (
+                                        <CommandItem
+                                          key={mediaType.value}
+                                          onSelect={() => {
+                                            const updated = isSelected
+                                              ? field.value.filter(
+                                                  (v: string) =>
+                                                    v !== mediaType.value
+                                                )
+                                              : [
+                                                  ...(field.value ?? []),
+                                                  mediaType.value,
+                                                ];
+                                            field.onChange(updated);
+                                          }}
+                                        >
+                                          <div className="flex items-center gap-2">
+                                            <Checkbox
+                                              checked={isSelected}
+                                              onCheckedChange={() => {}}
+                                            />
+                                            {mediaType.label}
+                                          </div>
+                                        </CommandItem>
+                                      );
+                                    })}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
-                    {/* Budget du média */}
                     <FormField
                       control={form.control}
-                      name={`budgetLines.${index}.mediaBudget`}
+                      name={`budgetMedia.${index}.amount`}
                       render={({ field }) => (
                         <FormItem className="flex-1 min-w-[170px]">
-                          <FormLabel className="text-lg">
-                            Budget du média
-                          </FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -591,15 +613,11 @@ export default function CampaignForm() {
                       )}
                     />
 
-                    {/* Part d'honoraire */}
                     <FormField
                       control={form.control}
-                      name={`budgetLines.${index}.feeShare`}
+                      name={`budgetMedia.${index}.pourcent`}
                       render={({ field }) => (
                         <FormItem className="flex-1 min-w-[170px]">
-                          <FormLabel className="text-lg">
-                            Part d'honoraire
-                          </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Part en € ou en %"
@@ -612,15 +630,11 @@ export default function CampaignForm() {
                       )}
                     />
 
-                    {/* Date de lancement (simple) */}
                     <FormField
                       control={form.control}
-                      name={`budgetLines.${index}.launchDate`}
+                      name={`budgetMedia.${index}.startDate`}
                       render={({ field }) => (
                         <FormItem className="flex-1 min-w-[170px]">
-                          <FormLabel className="text-lg">
-                            Date de lancement
-                          </FormLabel>
                           <Popover>
                             <PopoverTrigger asChild>
                               <div
@@ -664,13 +678,11 @@ export default function CampaignForm() {
                       )}
                     />
 
-                    {/* Titre info */}
                     <FormField
                       control={form.control}
-                      name={`budgetLines.${index}.infoTitle`}
+                      name={`budgetMedia.${index}.title`}
                       render={({ field }) => (
                         <FormItem className="flex-1 min-w-[170px]">
-                          <FormLabel className="text-lg">Titre info</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Titre"
@@ -683,13 +695,11 @@ export default function CampaignForm() {
                       )}
                     />
 
-                    {/* Détail info */}
                     <FormField
                       control={form.control}
-                      name={`budgetLines.${index}.infoDetail`}
+                      name={`budgetMedia.${index}.details`}
                       render={({ field }) => (
                         <FormItem className="flex-1 min-w-[170px]">
-                          <FormLabel className="text-lg">Détail info</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Détail"
@@ -711,12 +721,12 @@ export default function CampaignForm() {
                     className="px-4 py-2 font-semibold cursor-pointer underline"
                     onClick={() =>
                       appendBudget({
-                        media: "",
-                        mediaBudget: 0,
-                        feeShare: "",
-                        launchDate: undefined,
-                        infoTitle: "",
-                        infoDetail: "",
+                        mediaType: [],
+                        amount: 0,
+                        pourcent: "",
+                        startDate: undefined,
+                        title: "",
+                        details: "",
                       })
                     }
                   >
@@ -745,357 +755,113 @@ export default function CampaignForm() {
             </CardHeader>
 
             <CardContent>
-              <div className="flex flex-wrap gap-4">
-                <FormField
-                  control={form.control}
-                  name="territory"
-                  render={({ field }) => (
-                    <FormItem className="flex-1 min-w-[250px]">
-                      <FormLabel className="text-lg">Etapes</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Brief"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormControl>
-                        <Input
-                          placeholder="Création"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormControl>
-                        <Input
-                          placeholder="Validation"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormControl>
-                        <Input
-                          placeholder="Diffusion"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormControl>
-                        <Input
-                          placeholder="Bilan"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="cities"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-lg">Etat</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                            <SelectValue
-                              placeholder={
-                                <span className="text-primary/50 italic">
-                                  Sélectionnez l'état de l'étape
-                                </span>
-                              }
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                          <SelectItem value="1">En attente</SelectItem>
-                          <SelectItem value="2">En cours</SelectItem>
-                          <SelectItem value="3">Terminé</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                            <SelectValue
-                              placeholder={
-                                <span className="text-primary/50 italic">
-                                  Sélectionnez l'état de l'étape
-                                </span>
-                              }
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                          <SelectItem value="1">En attente</SelectItem>
-                          <SelectItem value="2">En cours</SelectItem>
-                          <SelectItem value="3">Terminé</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                            <SelectValue
-                              placeholder={
-                                <span className="text-primary/50 italic">
-                                  Sélectionnez l'état de l'étape
-                                </span>
-                              }
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                          <SelectItem value="1">En attente</SelectItem>
-                          <SelectItem value="2">En cours</SelectItem>
-                          <SelectItem value="3">Terminé</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                            <SelectValue
-                              placeholder={
-                                <span className="text-primary/50 italic">
-                                  Sélectionnez l'état de l'étape
-                                </span>
-                              }
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                          <SelectItem value="1">En attente</SelectItem>
-                          <SelectItem value="2">En cours</SelectItem>
-                          <SelectItem value="3">Terminé</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                            <SelectValue
-                              placeholder={
-                                <span className="text-primary/50 italic">
-                                  Sélectionnez l'état de l'étape
-                                </span>
-                              }
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                          <SelectItem value="1">En attente</SelectItem>
-                          <SelectItem value="2">En cours</SelectItem>
-                          <SelectItem value="3">Terminé</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="deadline"
-                  render={({ field }) => (
-                    <FormItem className="flex-1 min-w-[170px]">
-                      <FormLabel className="text-lg">
-                        Date de lancement
-                      </FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <div
-                            className={cn(
-                              "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
-                              "border",
-                              field.value ? "text-primary" : "text-primary/50",
-                              "border-[#A5A4BF] bg-white"
-                            )}
-                          >
-                            <span className="text-base italic">
-                              {field.value
-                                ? format(field.value, "dd/MM/yyyy", {
-                                    locale: fr,
-                                  })
-                                : "Sélectionnez la date"}
-                            </span>
-                            <SvgCalendrier />
-                          </div>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                          align="start"
-                        >
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(d) => field.onChange(d)}
-                            disabled={(date) => date < new Date("1900-01-01")}
-                            initialFocus
-                            locale={fr}
-                          />
-                        </PopoverContent>
-                      </Popover>
-
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <div
-                            className={cn(
-                              "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
-                              "border",
-                              field.value ? "text-primary" : "text-primary/50",
-                              "border-[#A5A4BF] bg-white"
-                            )}
-                          >
-                            <span className="text-base italic">
-                              {field.value
-                                ? format(field.value, "dd/MM/yyyy", {
-                                    locale: fr,
-                                  })
-                                : "Sélectionnez la date"}
-                            </span>
-                            <SvgCalendrier />
-                          </div>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                          align="start"
-                        >
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(d) => field.onChange(d)}
-                            disabled={(date) => date < new Date("1900-01-01")}
-                            initialFocus
-                            locale={fr}
-                          />
-                        </PopoverContent>
-                      </Popover>
-
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <div
-                            className={cn(
-                              "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
-                              "border",
-                              field.value ? "text-primary" : "text-primary/50",
-                              "border-[#A5A4BF] bg-white"
-                            )}
-                          >
-                            <span className="text-base italic">
-                              {field.value
-                                ? format(field.value, "dd/MM/yyyy", {
-                                    locale: fr,
-                                  })
-                                : "Sélectionnez la date"}
-                            </span>
-                            <SvgCalendrier />
-                          </div>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                          align="start"
-                        >
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(d) => field.onChange(d)}
-                            disabled={(date) => date < new Date("1900-01-01")}
-                            initialFocus
-                            locale={fr}
-                          />
-                        </PopoverContent>
-                      </Popover>
-
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <div
-                            className={cn(
-                              "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
-                              "border",
-                              field.value ? "text-primary" : "text-primary/50",
-                              "border-[#A5A4BF] bg-white"
-                            )}
-                          >
-                            <span className="text-base italic">
-                              {field.value
-                                ? format(field.value, "dd/MM/yyyy", {
-                                    locale: fr,
-                                  })
-                                : "Sélectionnez la date"}
-                            </span>
-                            <SvgCalendrier />
-                          </div>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                          align="start"
-                        >
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(d) => field.onChange(d)}
-                            disabled={(date) => date < new Date("1900-01-01")}
-                            initialFocus
-                            locale={fr}
-                          />
-                        </PopoverContent>
-                      </Popover>
-
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <div
-                            className={cn(
-                              "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
-                              "border",
-                              field.value ? "text-primary" : "text-primary/50",
-                              "border-[#A5A4BF] bg-white"
-                            )}
-                          >
-                            <span className="text-base italic">
-                              {field.value
-                                ? format(field.value, "dd/MM/yyyy", {
-                                    locale: fr,
-                                  })
-                                : "Sélectionnez la date"}
-                            </span>
-                            <SvgCalendrier />
-                          </div>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                          align="start"
-                        >
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(d) => field.onChange(d)}
-                            disabled={(date) => date < new Date("1900-01-01")}
-                            initialFocus
-                            locale={fr}
-                          />
-                        </PopoverContent>
-                      </Popover>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <div className="flex flex-wrap gap-4 mb-2">
+                <div className="flex-1 min-w-[170px] text-lg">Étape</div>
+                <div className="flex-1 min-w-[170px] text-lg">État</div>
+                <div className="flex-1 min-w-[170px] text-lg">
+                  Date de lancement
+                </div>
               </div>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="flex flex-wrap gap-4 mb-2">
+                  <FormField
+                    control={form.control}
+                    name={`status.${index}.label`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1 min-w-[170px]">
+                        <FormControl>
+                          <Input
+                            placeholder="Nom étape"
+                            className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name={`status.${index}.state`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1 min-w-[170px]">
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                              <SelectValue
+                                placeholder={
+                                  <span className="text-primary/50 italic">
+                                    Sélectionnez l'état de l'étape
+                                  </span>
+                                }
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
+                            {state.map((s) => (
+                              <SelectItem key={s.value} value={s.value}>
+                                {s.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name={`status.${index}.deadline`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1 min-w-[170px]">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <div
+                              className={cn(
+                                "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
+                                "border",
+                                field.value
+                                  ? "text-primary"
+                                  : "text-primary/50",
+                                "border-[#A5A4BF] bg-white"
+                              )}
+                            >
+                              <span className="text-base italic">
+                                {field.value
+                                  ? format(field.value, "dd/MM/yyyy", {
+                                      locale: fr,
+                                    })
+                                  : "Sélectionnez la date"}
+                              </span>
+                              <SvgCalendrier />
+                            </div>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
+                            align="start"
+                          >
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(d) => field.onChange(d)}
+                              disabled={(date) => date < new Date("1900-01-01")}
+                              initialFocus
+                              locale={fr}
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              ))}
             </CardContent>
           </Card>
 
@@ -1240,16 +1006,21 @@ export default function CampaignForm() {
             </CardHeader>
 
             <CardContent>
+              <div className="flex flex-wrap gap-4 mb-2">
+                <div className="flex-1 min-w-[170px] text-lg">
+                  Intitulé de la cible
+                </div>
+                <div className="flex-1 min-w-[170px] text-lg">
+                  Importer le fichier CSV
+                </div>
+              </div>
               {targetFields.map((row, index) => (
-                <div key={row.id} className="flex flex-wrap gap-4">
+                <div key={row.id} className="flex flex-wrap gap-4 mb-2">
                   <FormField
                     control={form.control}
                     name={`targetLine.${index}.target`}
                     render={({ field }) => (
                       <FormItem className="w-1/3">
-                        <FormLabel className="text-lg">
-                          Intitulé de la cible
-                        </FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Renseignez l'intitulé"
@@ -1267,9 +1038,6 @@ export default function CampaignForm() {
                     name={`targetLine.${index}.csvFiles`}
                     render={({ field }) => (
                       <FormItem className="w-1/3">
-                        <FormLabel className="text-lg">
-                          Importer le fichier CSV
-                        </FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input
@@ -1366,7 +1134,7 @@ export default function CampaignForm() {
               <div className="flex flex-wrap gap-4">
                 <FormField
                   control={form.control}
-                  name="cities"
+                  name="statusReport"
                   render={({ field }) => (
                     <FormItem className="w-1/3">
                       <FormLabel className="text-lg">
@@ -1388,8 +1156,11 @@ export default function CampaignForm() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                          <SelectItem value="1">Terminée</SelectItem>
-                          <SelectItem value="2">Archivée</SelectItem>
+                          {stateReport.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -1399,7 +1170,7 @@ export default function CampaignForm() {
 
                 <FormField
                   control={form.control}
-                  name="budgetTotal"
+                  name="documentReport"
                   render={({ field }) => (
                     <FormItem className="w-1/3">
                       <FormLabel className="text-lg">
@@ -1420,50 +1191,22 @@ export default function CampaignForm() {
                   )}
                 />
               </div>
-              {/* Lignes dynamiques */}
               <div className="space-y-4">
+                <div className="flex flex-wrap gap-4 mb-2">
+                  <div className="flex-1 min-w-[170px] text-lg">Icône KPI</div>
+                  <div className="flex-1 min-w-[170px] text-lg">Titre KPI</div>
+                  <div className="flex-1 min-w-[170px] text-lg">Info KPI</div>
+                </div>
                 {kpiFields.map((row, index) => (
                   <div
                     key={row.id}
-                    className="flex flex-row flex-nowrap gap-2 overflow-x-auto"
+                    className="flex flex-row flex-nowrap gap-2 mb-2"
                   >
-                    {/* Média */}
                     <FormField
                       control={form.control}
                       name={`kpiLines.${index}.icon`}
                       render={({ field }) => (
-                        <FormItem className="flex-1 min-w-[250px]">
-                          <FormLabel className="text-lg">Icon KPI</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Sélectionnez l'icon"
-                                className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12"
-                                {...field}
-                              />
-                              <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
-                            </div>
-                          </FormControl>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Sélectionnez l'icon"
-                                className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12"
-                                {...field}
-                              />
-                              <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
-                            </div>
-                          </FormControl>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Sélectionnez l'icon"
-                                className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12"
-                                {...field}
-                              />
-                              <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
-                            </div>
-                          </FormControl>
+                        <FormItem className="flex-1 min-w-[170px]">
                           <FormControl>
                             <div className="relative">
                               <Input
@@ -1483,29 +1226,7 @@ export default function CampaignForm() {
                       control={form.control}
                       name={`kpiLines.${index}.title`}
                       render={({ field }) => (
-                        <FormItem className="flex-1 min-w-[250px]">
-                          <FormLabel className="text-lg">Titre KPI</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Renseignez titre KPI"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormControl>
-                            <Input
-                              placeholder="Renseignez titre KPI"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormControl>
-                            <Input
-                              placeholder="Renseignez titre KPI"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
+                        <FormItem className="flex-1 min-w-[170px]">
                           <FormControl>
                             <Input
                               placeholder="Renseignez titre KPI"
@@ -1522,29 +1243,7 @@ export default function CampaignForm() {
                       control={form.control}
                       name={`kpiLines.${index}.info`}
                       render={({ field }) => (
-                        <FormItem className="flex-1 min-w-[250px]">
-                          <FormLabel className="text-lg">Info KPI</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Renseignez info KPI"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormControl>
-                            <Input
-                              placeholder="Renseignez info KPI"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormControl>
-                            <Input
-                              placeholder="Renseignez info KPI"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
+                        <FormItem className="flex-1 min-w-[170px]">
                           <FormControl>
                             <Input
                               placeholder="Renseignez info KPI"
