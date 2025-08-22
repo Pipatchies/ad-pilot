@@ -7,12 +7,12 @@ export const createCampaign = mutation({
     subtitle: v.string(),
     mediaTypes: v.array(
       v.union(
-        v.literal("tv"),
-        v.literal("radio"),
-        v.literal("digital"),
-        v.literal("affichage"),
-        v.literal("cinema"),
-        v.literal("presse")
+        v.literal("Affichage"),
+        v.literal("TV"),
+        v.literal("Radio"),
+        v.literal("Digital"),
+        v.literal("Cinema"),
+        v.literal("Presse")
       )
     ),
     startDate: v.string(),
@@ -47,12 +47,23 @@ export const createCampaign = mutation({
         deadline: v.string(),
       })
     ),
+    diffusions: v.array(
+      v.object({
+        mediaType: v.union(
+          v.literal("Affichage"),
+          v.literal("TV"),
+          v.literal("Radio"),
+          v.literal("Digital"),
+          v.literal("Cinema"),
+          v.literal("Presse")
+        ),
+        startDate: v.string(),
+        endDate: v.string(),
+      })
+    ),
     digitalReportUrl: v.string(),
     report: v.object({
-      status: v.union(
-        v.literal("Terminé"),
-        v.literal("Archivée")
-            ),
+      status: v.union(v.literal("Terminé"), v.literal("Archivée")),
       document: v.optional(v.string()),
       kpi: v.array(
         v.object({
@@ -63,13 +74,12 @@ export const createCampaign = mutation({
       ),
     }),
     archived: v.boolean(),
-    organizationId: v.id("organizations"),  
+    organizationId: v.id("organizations"),
   },
   handler: async (ctx, args) => {
     const campaignId = await ctx.db.insert("campaigns", {
       ...args,
     });
-
 
     return campaignId;
   },

@@ -53,12 +53,12 @@ export default defineSchema({
     subtitle: v.string(),
     mediaTypes: v.array(
       v.union(
-        v.literal("tv"),
-        v.literal("radio"),
-        v.literal("digital"),
-        v.literal("affichage"),
-        v.literal("cinema"),
-        v.literal("presse")
+        v.literal("Affichage"),
+        v.literal("TV"),
+        v.literal("Radio"),
+        v.literal("Digital"),
+        v.literal("Cinema"),
+        v.literal("Presse")
       )
     ),
     startDate: v.string(),
