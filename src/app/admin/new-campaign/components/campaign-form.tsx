@@ -278,7 +278,7 @@ export default function CampaignForm() {
         totalBudget: values.budgetTotal,
 
         budgetMedia: values.budgetMedia.map((b) => ({
-          type: b.mediaType[0] ?? "",
+          type: b.mediaType as any,
           amount: b.amount,
           pourcent: b.pourcent,
           startDate: b.startDate ? b.startDate.toISOString() : undefined,
@@ -299,7 +299,7 @@ export default function CampaignForm() {
           endDate: d.endDate.toISOString(),
         })),
 
-        digitalReportUrl: "", // tu pourras binder si tu ajoutes un champ d’upload
+        digitalReportUrl: "",
 
         report: {
           status: values.statusReport as any,
@@ -528,9 +528,16 @@ export default function CampaignForm() {
                     <FormLabel className="text-lg">Budget total</FormLabel>
                     <FormControl>
                       <Input
+                        type="number"
                         placeholder="Budget en €"
                         className="w-1/3 !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                        {...field}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === ""
+                              ? undefined
+                              : Number(e.target.value)
+                          )
+                        }
                       />
                     </FormControl>
                     <FormMessage />
