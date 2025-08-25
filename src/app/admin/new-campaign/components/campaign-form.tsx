@@ -115,8 +115,14 @@ const formSchema = z.object({
     .array(
       z.object({
         media: z.string().min(1, { message: "Le média est requis" }),
-        startDate: z.date({ required_error: "La date de début est requise" }),
-        endDate: z.date({ required_error: "La date de fin est requise" }),
+        startDate: z
+          .date({ required_error: "La date de début est requise" })
+          .nullable()
+          .optional(),
+        endDate: z
+          .date({ required_error: "La date de fin est requise" })
+          .nullable()
+          .optional(),
       })
     )
     .optional(),
@@ -128,12 +134,12 @@ const formSchema = z.object({
       })
     )
     .min(1, { message: "Veuillez définir au moins une cible" }),
-  statusReport: z
-    .string()
-    .min(1, { message: "Veuillez sélectionner l'état de la campagne" }),
-  documentReport: z
-    .string()
-    .min(1, { message: "Veuillez importer un document de récap" }),
+  // statusReport: z
+  //   .string()
+  //   .min(1, { message: "Veuillez sélectionner l'état de la campagne" }),
+  // documentReport: z
+  //   .string()
+  //   .min(1, { message: "Veuillez importer un document de récap" }),
   // kpiLines: z
   //   .array(
   //     z.object({
@@ -178,8 +184,8 @@ export default function CampaignForm() {
           csvFiles: "",
         },
       ],
-      statusReport: "",
-      documentReport: "",
+      // statusReport: "",
+      // documentReport: "",
       // kpiLines: [
       //   {
       //     icon: "",
@@ -242,23 +248,48 @@ export default function CampaignForm() {
         return true;
       });
 
-    if (uniqueMedias.length === 0) return;
+    if (uniqueMedias.length === 0) {
+      if (form.getValues("diffusionLines")?.length) {
+        replaceDiffusions([]);
+      }
+      return;
+    }
 
-    const next = uniqueMedias.map((m) => ({
-      media: m,
-      startDate: new Date(),
-      endDate: new Date(),
-    }));
+    const current = form.getValues("diffusionLines") ?? [];
+    const byMedia = new Map(current.map((d) => [d.media, d]));
 
-    replaceDiffusions(next);
-  }, [budgetWatch, replaceDiffusions]);
+    const next = uniqueMedias.map((m) => {
+      const prev = byMedia.get(m);
+
+      return {
+        media: m,
+        startDate: prev?.startDate ?? null,
+        endDate: prev?.endDate ?? null,
+      };
+    });
+
+    const same =
+      current.length === next.length &&
+      current.every(
+        (c, i) =>
+          c.media === next[i].media &&
+          (c.startDate?.getTime?.() ?? null) ===
+            (next[i].startDate?.getTime?.() ?? null) &&
+          (c.endDate?.getTime?.() ?? null) ===
+            (next[i].endDate?.getTime?.() ?? null)
+      );
+
+    if (!same) {
+      replaceDiffusions(next);
+    }
+  }, [JSON.stringify(budgetWatch), replaceDiffusions]);
 
   async function onSubmit(values: FormValues) {
     try {
       const allStarts =
-        values.diffusionLines?.map((d) => d.startDate.getTime()) ?? [];
+        values.diffusionLines?.map((d) => d.startDate!.getTime()) ?? [];
       const allEnds =
-        values.diffusionLines?.map((d) => d.endDate.getTime()) ?? [];
+        values.diffusionLines?.map((d) => d.endDate!.getTime()) ?? [];
 
       const startDate = allStarts.length
         ? new Date(Math.min(...allStarts)).toISOString()
@@ -281,7 +312,7 @@ export default function CampaignForm() {
           type: b.mediaType as any,
           amount: b.amount,
           pourcent: b.pourcent,
-          startDate: b.startDate ? b.startDate.toISOString() : undefined,
+          startDate: b.startDate.toISOString(),
           title: b.title,
           details: b.details,
         })),
@@ -290,13 +321,13 @@ export default function CampaignForm() {
           id: i,
           label: s.label,
           state: s.state as any,
-          deadline: s.deadline ? s.deadline.toISOString() : "",
+          deadline: s.deadline.toISOString(),
         })),
 
         diffusions: (values.diffusionLines ?? []).map((d) => ({
           mediaType: d.media as any,
-          startDate: d.startDate.toISOString(),
-          endDate: d.endDate.toISOString(),
+          startDate: d.startDate!.toISOString(),
+          endDate: d.endDate!.toISOString(),
         })),
 
         // digitalReportUrl: "",
@@ -608,7 +639,6 @@ export default function CampaignForm() {
                               type="number"
                               placeholder="Budget en €"
                               className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              value={field.value ?? ""}
                               onChange={(e) =>
                                 field.onChange(
                                   e.target.value === ""
@@ -894,11 +924,11 @@ export default function CampaignForm() {
                     <div key={row.id} className="flex flex-wrap gap-4">
                       <div className="w-full">
                         <div className="mt-1 text-xl underline">
-                          {row.media}
+                          {mediaTypes.find((mt) => mt.value === row.media)
+                            ?.label ?? row.media}
                         </div>
                       </div>
 
-                      {/* Date de lancement */}
                       <FormField
                         control={form.control}
                         name={`diffusionLines.${index}.startDate`}
@@ -935,8 +965,8 @@ export default function CampaignForm() {
                               >
                                 <Calendar
                                   mode="single"
-                                  selected={field.value}
-                                  onSelect={(d) => field.onChange(d)}
+                                  selected={field.value ?? undefined}
+                                  onSelect={(d) => field.onChange(d ?? null)}
                                   disabled={(date) =>
                                     date < new Date("1900-01-01")
                                   }
@@ -950,7 +980,6 @@ export default function CampaignForm() {
                         )}
                       />
 
-                      {/* Date de fin */}
                       <FormField
                         control={form.control}
                         name={`diffusionLines.${index}.endDate`}
@@ -987,8 +1016,8 @@ export default function CampaignForm() {
                               >
                                 <Calendar
                                   mode="single"
-                                  selected={field.value}
-                                  onSelect={(d) => field.onChange(d)}
+                                  selected={field.value ?? undefined}
+                                  onSelect={(d) => field.onChange(d ?? null)}
                                   disabled={(date) =>
                                     date < new Date("1900-01-01")
                                   }
