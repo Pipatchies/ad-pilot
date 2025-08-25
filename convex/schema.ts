@@ -109,7 +109,7 @@ export default defineSchema({
     ),
     digitalReportUrl: v.string(),
     report: v.object({
-      status: v.union(v.literal("Terminé"), v.literal("Archivée")),
+      status: v.union(v.literal("completed"), v.literal("archived")),
       document: v.optional(v.string()),
       kpi: v.array(
         v.object({

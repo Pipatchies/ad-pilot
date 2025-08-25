@@ -50,12 +50,12 @@ import CtaButton from "@/components/cta-button";
 import { Button } from "@/components/ui/button";
 
 const mediaTypes = [
-  { label: "Digital", value: "digital" },
-  { label: "TV", value: "tv" },
-  { label: "Affichage", value: "affichage" },
-  { label: "Radio", value: "radio" },
-  { label: "Cinéma", value: "cinema" },
-  { label: "Presse", value: "presse" },
+  { label: "Digital", value: "Digital" },
+  { label: "TV", value: "Tv" },
+  { label: "Affichage", value: "Affichage" },
+  { label: "Radio", value: "Radio" },
+  { label: "Cinéma", value: "Cinema" },
+  { label: "Presse", value: "Presse" },
 ];
 
 const state = [
