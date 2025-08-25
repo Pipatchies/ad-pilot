@@ -61,7 +61,7 @@ const mediaTypes = [
 const state = [
   { label: "En cours", value: "current" },
   { label: "Terminé", value: "completed" },
-  { label: "Archivée", value: "archived" },
+  { label: "En attente", value: "upcoming" },
 ];
 
 const stateReport = [
@@ -246,8 +246,8 @@ export default function CampaignForm() {
 
     const next = uniqueMedias.map((m) => ({
       media: m,
-      startDate: undefined,
-      endDate: undefined,
+      startDate: new Date(),
+      endDate: new Date(),
     }));
 
     replaceDiffusions(next);
@@ -731,10 +731,10 @@ export default function CampaignForm() {
                     className="px-4 py-2 font-semibold cursor-pointer underline"
                     onClick={() =>
                       appendBudget({
-                        mediaType: [],
+                        mediaType: "",
                         amount: 0,
                         pourcent: "",
-                        startDate: undefined,
+                        startDate: new Date(),
                         title: "",
                         details: "",
                       })
