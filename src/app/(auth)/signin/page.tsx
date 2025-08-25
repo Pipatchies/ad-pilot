@@ -61,7 +61,7 @@ useEffect(() => {
     const to = user.role === "admin" ? "/admin/dashboard" : "/dashboard";
     const t = setTimeout(() => {
       router.replace(to);
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(t);
   }, [justSignedIn, user, router]);
