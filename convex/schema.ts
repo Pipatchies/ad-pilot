@@ -16,9 +16,10 @@ export default defineSchema({
     roleId: v.optional(v.id("roles")),
     organizationId: v.optional(v.id("organizations")),
     lastConnectionTime: v.optional(v.number()),
-  }).index("email", ["email"])
-  .index("phone", ["phone"])
-  .index("by_organizationId", ["organizationId"]),
+  })
+    .index("email", ["email"])
+    .index("phone", ["phone"])
+    .index("by_organizationId", ["organizationId"]),
 
   organizations: defineTable({
     name: v.string(),
@@ -52,12 +53,12 @@ export default defineSchema({
     subtitle: v.string(),
     mediaTypes: v.array(
       v.union(
-        v.literal("tv"),
-        v.literal("radio"),
-        v.literal("digital"),
-        v.literal("affichage"),
-        v.literal("cinema"),
-        v.literal("presse")
+        v.literal("Affichage"),
+        v.literal("TV"),
+        v.literal("Radio"),
+        v.literal("Digital"),
+        v.literal("Cinema"),
+        v.literal("Presse")
       )
     ),
     startDate: v.string(),
@@ -92,22 +93,34 @@ export default defineSchema({
         deadline: v.string(),
       })
     ),
-    digitalReportUrl: v.string(),
-    report: v.object({
-      status: v.union(
-        v.literal("Terminé"),
-        v.literal("En cours"),
-        v.literal("En attente")
-      ),
-      document: v.optional(v.string()),
-      kpi: v.array(
-        v.object({
-          icon: v.string(),
-          title: v.string(),
-          info: v.string(),
-        })
-      ),
-    }),
+    diffusions: v.array(
+      v.object({
+        mediaType: v.union(
+          v.literal("Affichage"),
+          v.literal("TV"),
+          v.literal("Radio"),
+          v.literal("Digital"),
+          v.literal("Cinema"),
+          v.literal("Presse")
+        ),
+        startDate: v.string(),
+        endDate: v.string(),
+      })
+    ),
+    digitalReportUrl: v.optional(v.string()),
+    report: v.optional(
+      v.object({
+        status: v.union(v.literal("completed"), v.literal("archived")),
+        document: v.optional(v.string()),
+        kpi: v.array(
+          v.object({
+            icon: v.string(),
+            title: v.string(),
+            info: v.string(),
+          })
+        ),
+      })
+    ),
     archived: v.boolean(),
     organizationId: v.id("organizations"),
   }).index("by_organizationId", ["organizationId"]),

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -180,10 +180,6 @@ export default function BriefForm() {
   });
 
   const createBrief = useMutation(api.mutations.briefs.createBrief);
-  const [objectifsOpen, setObjectifsOpen] = useState(false);
-  const [mediaTypeOpen, setMediaTypeOpen] = useState(false);
-  const [diffusionTVOpen, setDiffusionTVOpen] = useState(false);
-  const [diffusionRadioOpen, setDiffusionRadioOpen] = useState(false);
 
   const selectedMediaTypes = form.watch("mediaTypes") || [];
 
@@ -288,7 +284,6 @@ export default function BriefForm() {
                   )}
                 />
 
-                {/* Cible */}
                 <FormField
                   control={form.control}
                   name="target"
@@ -309,7 +304,6 @@ export default function BriefForm() {
                   )}
                 />
 
-                {/* Territoire */}
                 <FormField
                   control={form.control}
                   name="territory"
@@ -319,8 +313,8 @@ export default function BriefForm() {
                         Territoire
                       </FormLabel>
                       <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5">
@@ -344,7 +338,6 @@ export default function BriefForm() {
                   )}
                 />
 
-                {/* Villes */}
                 <FormField
                   control={form.control}
                   name="cities"
@@ -365,7 +358,6 @@ export default function BriefForm() {
                   )}
                 />
 
-                {/* Budget */}
                 <FormField
                   control={form.control}
                   name="budget"
@@ -394,7 +386,6 @@ export default function BriefForm() {
                   )}
                 />
 
-                {/* Objectifs avec liste déroulante et cases à cocher */}
                 <FormField
                   control={form.control}
                   name="objectives"
@@ -404,15 +395,12 @@ export default function BriefForm() {
                         Objectifs
                       </FormLabel>
                       <Popover
-                        open={objectifsOpen}
-                        onOpenChange={setObjectifsOpen}
                       >
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant="ghost"
                               role="combobox"
-                              aria-expanded={objectifsOpen}
                               className={cn(
                                 "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50",
                                 !field.value.length
@@ -449,7 +437,7 @@ export default function BriefForm() {
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent
-                          className="w-full p-0 mt-2 border border-[#A5A4BF] shadow-md rounded-sm"
+                          className="w-[--radix-popover-trigger-width] min-w-[var(--radix-popover-trigger-width)] max-w-[var(--radix-popover-trigger-width)] p-0 border border-[#A5A4BF] shadow-md rounded-sm"
                           align="start"
                         >
                           <Command>
@@ -507,16 +495,12 @@ export default function BriefForm() {
                   name="mediaTypes"
                   render={({ field }) => (
                     <FormItem>
-                      <Popover
-                        open={mediaTypeOpen}
-                        onOpenChange={setMediaTypeOpen}
-                      >
+                      <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant="ghost"
                               role="combobox"
-                              aria-expanded={mediaTypeOpen}
                               className={cn(
                                 "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50",
                                 !field.value.length
@@ -554,7 +538,7 @@ export default function BriefForm() {
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent
-                          className="w-[--radix-popover-trigger-width] p-0 mt-2 border border-[#A5A4BF] shadow-md rounded-sm"
+                          className="w-[--radix-popover-trigger-width] min-w-[var(--radix-popover-trigger-width)] max-w-[var(--radix-popover-trigger-width)] p-0 border border-[#A5A4BF] shadow-md rounded-sm"
                           align="start"
                         >
                           <Command>
@@ -600,23 +584,18 @@ export default function BriefForm() {
                   )}
                 />
 
-                {/* Cond. affichage des champs supplémentaires */}
                 {selectedMediaTypes.includes("tv") && (
                   <FormField
                     control={form.control}
                     name="tvTypes"
                     render={({ field }) => (
                       <FormItem>
-                        <Popover
-                          open={diffusionTVOpen}
-                          onOpenChange={setDiffusionTVOpen}
-                        >
+                        <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant="ghost"
                                 role="combobox"
-                                aria-expanded={diffusionTVOpen}
                                 className={cn(
                                   "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50",
                                   !field.value?.length
@@ -653,7 +632,7 @@ export default function BriefForm() {
                             </FormControl>
                           </PopoverTrigger>
                           <PopoverContent
-                            className="w-[--radix-popover-trigger-width] p-0 mt-2 border border-[#A5A4BF] shadow-md rounded-sm"
+                            className="w-[--radix-popover-trigger-width] min-w-[var(--radix-popover-trigger-width)] max-w-[var(--radix-popover-trigger-width)] p-0 border border-[#A5A4BF] shadow-md rounded-sm"
                             align="start"
                           >
                             <Command>
@@ -746,15 +725,12 @@ export default function BriefForm() {
                     render={({ field }) => (
                       <FormItem>
                         <Popover
-                          open={diffusionRadioOpen}
-                          onOpenChange={setDiffusionRadioOpen}
                         >
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant="ghost"
                                 role="combobox"
-                                aria-expanded={diffusionRadioOpen}
                                 className={cn(
                                   "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50",
                                   !field.value?.length
@@ -792,7 +768,7 @@ export default function BriefForm() {
                             </FormControl>
                           </PopoverTrigger>
                           <PopoverContent
-                            className="w-[--radix-popover-trigger-width] p-0 mt-2 border border-[#A5A4BF] shadow-md rounded-sm"
+                            className="w-[--radix-popover-trigger-width] min-w-[var(--radix-popover-trigger-width)] max-w-[var(--radix-popover-trigger-width)] p-0 border border-[#A5A4BF] shadow-md rounded-sm"
                             align="start"
                           >
                             <Command>

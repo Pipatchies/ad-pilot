@@ -24,9 +24,9 @@ export default convexAuthNextjsMiddleware(async (req, { convexAuth }) => {
     return nextjsMiddlewareRedirect(req, "/signin");
   }
 
-  if (isSignIn(req) && isLoggedIn) {
-    return nextjsMiddlewareRedirect(req, "/dashboard");
-  }
+  // if (isSignIn(req) && isLoggedIn) {
+  //   return nextjsMiddlewareRedirect(req, "/dashboard");
+  // }
 
   return NextResponse.next();
 });

@@ -20,6 +20,7 @@ import type * as auth from "../auth.js";
 import type * as error from "../error.js";
 import type * as http from "../http.js";
 import type * as mutations_briefs from "../mutations/briefs.js";
+import type * as mutations_campaigns from "../mutations/campaigns.js";
 import type * as mutations_organizations from "../mutations/organizations.js";
 import type * as mutations_users from "../mutations/users.js";
 import type * as queries_campaigns from "../queries/campaigns.js";
@@ -45,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   error: typeof error;
   http: typeof http;
   "mutations/briefs": typeof mutations_briefs;
+  "mutations/campaigns": typeof mutations_campaigns;
   "mutations/organizations": typeof mutations_organizations;
   "mutations/users": typeof mutations_users;
   "queries/campaigns": typeof queries_campaigns;
