@@ -53,12 +53,12 @@ export default defineSchema({
     subtitle: v.string(),
     mediaTypes: v.array(
       v.union(
-        v.literal("Affichage"),
-        v.literal("TV"),
-        v.literal("Radio"),
-        v.literal("Digital"),
-        v.literal("Cinema"),
-        v.literal("Presse")
+        v.literal("ooh"),
+        v.literal("tv"),
+        v.literal("radio"),
+        v.literal("digital"),
+        v.literal("cinema"),
+        v.literal("press")
       )
     ),
     startDate: v.string(),
@@ -67,12 +67,12 @@ export default defineSchema({
     budgetMedia: v.array(
       v.object({
         type: v.union(
-          v.literal("Affichage"),
-          v.literal("TV"),
-          v.literal("Radio"),
-          v.literal("Digital"),
-          v.literal("Cinema"),
-          v.literal("Presse")
+          v.literal("ooh"),
+          v.literal("tv"),
+          v.literal("radio"),
+          v.literal("digital"),
+          v.literal("cinema"),
+          v.literal("press")
         ),
         amount: v.number(),
         pourcent: v.union(v.number(), v.string()),
@@ -96,12 +96,12 @@ export default defineSchema({
     diffusions: v.array(
       v.object({
         mediaType: v.union(
-          v.literal("Affichage"),
-          v.literal("TV"),
-          v.literal("Radio"),
-          v.literal("Digital"),
-          v.literal("Cinema"),
-          v.literal("Presse")
+          v.literal("ooh"),
+          v.literal("tv"),
+          v.literal("radio"),
+          v.literal("digital"),
+          v.literal("cinema"),
+          v.literal("press")
         ),
         startDate: v.string(),
         endDate: v.string(),
@@ -129,18 +129,20 @@ export default defineSchema({
     title: v.string(),
     mediaTypes: v.array(
       v.union(
+        v.literal("ooh"),
         v.literal("tv"),
-        v.literal("web"),
-        v.literal("affiches"),
-        v.literal("panneaux")
+        v.literal("radio"),
+        v.literal("digital"),
+        v.literal("cinema"),
+        v.literal("press")
       )
     ),
     type: v.union(
-      v.literal("PNG"),
-      v.literal("JPG"),
-      v.literal("MP3"),
-      v.literal("MP4"),
-      v.literal("PDF")
+      v.literal("png"),
+      v.literal("jpg"),
+      v.literal("mp3"),
+      v.literal("mp4"),
+      v.literal("pdf")
     ),
     url: v.string(),
     variant: v.union(

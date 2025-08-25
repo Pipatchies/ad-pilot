@@ -7,12 +7,12 @@ export const createCampaign = mutation({
     subtitle: v.string(),
     mediaTypes: v.array(
       v.union(
-        v.literal("Affichage"),
-        v.literal("TV"),
-        v.literal("Radio"),
-        v.literal("Digital"),
-        v.literal("Cinema"),
-        v.literal("Presse")
+        v.literal("ooh"),
+        v.literal("tv"),
+        v.literal("radio"),
+        v.literal("digital"),
+        v.literal("cinema"),
+        v.literal("press")
       )
     ),
     startDate: v.string(),
@@ -21,12 +21,12 @@ export const createCampaign = mutation({
     budgetMedia: v.array(
       v.object({
         type: v.union(
-          v.literal("Affichage"),
-          v.literal("TV"),
-          v.literal("Radio"),
-          v.literal("Digital"),
-          v.literal("Cinema"),
-          v.literal("Presse")
+          v.literal("ooh"),
+          v.literal("tv"),
+          v.literal("radio"),
+          v.literal("digital"),
+          v.literal("cinema"),
+          v.literal("press")
         ),
         amount: v.number(),
         pourcent: v.union(v.number(), v.string()),
@@ -50,12 +50,12 @@ export const createCampaign = mutation({
     diffusions: v.array(
       v.object({
         mediaType: v.union(
-          v.literal("Affichage"),
-          v.literal("TV"),
-          v.literal("Radio"),
-          v.literal("Digital"),
-          v.literal("Cinema"),
-          v.literal("Presse")
+          v.literal("ooh"),
+          v.literal("tv"),
+          v.literal("radio"),
+          v.literal("digital"),
+          v.literal("cinema"),
+          v.literal("press")
         ),
         startDate: v.string(),
         endDate: v.string(),
