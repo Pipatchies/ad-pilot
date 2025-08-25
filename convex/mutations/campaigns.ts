@@ -61,18 +61,18 @@ export const createCampaign = mutation({
         endDate: v.string(),
       })
     ),
-    digitalReportUrl: v.string(),
-    report: v.object({
-      status: v.union(v.literal("completed"), v.literal("archived")),
-      document: v.optional(v.string()),
-      kpi: v.array(
-        v.object({
-          icon: v.string(),
-          title: v.string(),
-          info: v.string(),
-        })
-      ),
-    }),
+    // digitalReportUrl: v.string(),
+    // report: v.object({
+    //   status: v.union(v.literal("completed"), v.literal("archived")),
+    //   document: v.optional(v.string()),
+    //   kpi: v.array(
+    //     v.object({
+    //       icon: v.string(),
+    //       title: v.string(),
+    //       info: v.string(),
+    //     })
+    //   ),
+    // }),
     archived: v.boolean(),
     organizationId: v.id("organizations"),
   },

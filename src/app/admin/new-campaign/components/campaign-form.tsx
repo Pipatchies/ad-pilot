@@ -134,15 +134,15 @@ const formSchema = z.object({
   documentReport: z
     .string()
     .min(1, { message: "Veuillez importer un document de récap" }),
-  kpiLines: z
-    .array(
-      z.object({
-        icon: z.string().min(1, { message: "L'icône est requise" }),
-        title: z.string().min(1, { message: "Le titre est requis" }),
-        info: z.string().min(1, { message: "L'information est requise" }),
-      })
-    )
-    .min(1, { message: "Veuillez définir au moins un KPI" }),
+  // kpiLines: z
+  //   .array(
+  //     z.object({
+  //       icon: z.string().min(1, { message: "L'icône est requise" }),
+  //       title: z.string().min(1, { message: "Le titre est requis" }),
+  //       info: z.string().min(1, { message: "L'information est requise" }),
+  //     })
+  //   )
+  //   .min(1, { message: "Veuillez définir au moins un KPI" }),
 });
 
 export default function CampaignForm() {
@@ -180,13 +180,13 @@ export default function CampaignForm() {
       ],
       statusReport: "",
       documentReport: "",
-      kpiLines: [
-        {
-          icon: "",
-          title: "",
-          info: "",
-        },
-      ],
+      // kpiLines: [
+      //   {
+      //     icon: "",
+      //     title: "",
+      //     info: "",
+      //   },
+      // ],
     },
   });
 
@@ -220,14 +220,14 @@ export default function CampaignForm() {
     name: "targetLine",
   });
 
-  const {
-    fields: kpiFields,
-    append: appendKpi,
-    remove: removeKpi,
-  } = useFieldArray({
-    control: form.control,
-    name: "kpiLines",
-  });
+  // const {
+  //   fields: kpiFields,
+  //   append: appendKpi,
+  //   remove: removeKpi,
+  // } = useFieldArray({
+  //   control: form.control,
+  //   name: "kpiLines",
+  // });
 
   const budgetWatch = form.watch("budgetMedia");
 
@@ -299,17 +299,17 @@ export default function CampaignForm() {
           endDate: d.endDate.toISOString(),
         })),
 
-        digitalReportUrl: "",
+        // digitalReportUrl: "",
 
-        report: {
-          status: values.statusReport as any,
-          document: values.documentReport,
-          kpi: values.kpiLines.map((k) => ({
-            icon: k.icon,
-            title: k.title,
-            info: k.info,
-          })),
-        },
+        // report: {
+        //   status: values.statusReport as any,
+        //   document: values.documentReport,
+        //   kpi: values.kpiLines.map((k) => ({
+        //     icon: k.icon,
+        //     title: k.title,
+        //     info: k.info,
+        //   })),
+        // },
 
         archived: false,
       });
@@ -1133,7 +1133,7 @@ export default function CampaignForm() {
             <CardContent></CardContent>
           </Card>
 
-          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
+          {/* <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
             <CardHeader>
               <Typography variant="h2" className="mb-0">
                 Bilan
@@ -1296,7 +1296,7 @@ export default function CampaignForm() {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           <div className="w-full flex justify-center">
             <CtaButton
