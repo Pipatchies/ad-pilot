@@ -96,7 +96,7 @@ const formSchema = z.object({
           message: "Le montant doit être positif",
         }),
         pourcent: z.string().min(1, { message: "La part est requise" }),
-        startDate: z.date({ required_error: "La date est requise" }),
+        // startDate: z.date({ required_error: "La date est requise" }),
         title: z.string().min(1, { message: "Le titre est requis" }),
         details: z.string().min(1, { message: "Le détail est requis" }),
       })
@@ -167,7 +167,7 @@ export default function CampaignForm() {
           mediaType: "",
           amount: 0,
           pourcent: "",
-          startDate: undefined,
+          // startDate: undefined,
           title: "",
           details: "",
         },
@@ -312,7 +312,7 @@ export default function CampaignForm() {
           type: b.mediaType as any,
           amount: b.amount,
           pourcent: b.pourcent,
-          startDate: b.startDate.toISOString(),
+          // startDate: b.startDate.toISOString(),
           title: b.title,
           details: b.details,
         })),
@@ -583,9 +583,9 @@ export default function CampaignForm() {
                   <div className="flex-1 min-w-[170px] text-lg">
                     Part honoraire
                   </div>
-                  <div className="flex-1 min-w-[170px] text-lg">
+                  {/* <div className="flex-1 min-w-[170px] text-lg">
                     Date de lancement
-                  </div>
+                  </div> */}
                   <div className="flex-1 min-w-[170px] text-lg">Titre info</div>
                   <div className="flex-1 min-w-[170px] text-lg">
                     Détail info
@@ -670,7 +670,7 @@ export default function CampaignForm() {
                       )}
                     />
 
-                    <FormField
+                    {/* <FormField
                       control={form.control}
                       name={`budgetMedia.${index}.startDate`}
                       render={({ field }) => (
@@ -716,7 +716,7 @@ export default function CampaignForm() {
                           <FormMessage />
                         </FormItem>
                       )}
-                    />
+                    /> */}
 
                     <FormField
                       control={form.control}
@@ -764,7 +764,7 @@ export default function CampaignForm() {
                         mediaType: "",
                         amount: 0,
                         pourcent: "",
-                        startDate: new Date(),
+                        // startDate: new Date(),
                         title: "",
                         details: "",
                       })
@@ -824,34 +824,59 @@ export default function CampaignForm() {
                   <FormField
                     control={form.control}
                     name={`status.${index}.state`}
-                    render={({ field }) => (
-                      <FormItem className="flex-1 min-w-[170px]">
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                              <SelectValue
-                                placeholder={
-                                  <span className="text-primary/50 italic">
-                                    Sélectionnez l'état de l'étape
-                                  </span>
-                                }
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                            {state.map((s) => (
-                              <SelectItem key={s.value} value={s.value}>
-                                {s.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    render={({ field }) => {
+                      const allSteps = form.watch("status");
+
+                      return (
+                        <FormItem className="flex-1 min-w-[170px]">
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                                <SelectValue
+                                  placeholder={
+                                    <span className="text-primary/50 italic">
+                                      Sélectionnez l'état de l'étape
+                                    </span>
+                                  }
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
+                              {state.map((s) => {
+                                const prev = allSteps[index - 1]?.state;
+                                const next = allSteps[index + 1]?.state;
+
+                                const disabled =
+                                  (s.value === "completed" &&
+                                    index > 0 &&
+                                    prev !== "completed") ||
+                                  ((s.value === "current" ||
+                                    s.value === "upcoming") &&
+                                    next === "completed") ||
+                                  (s.value === "current" &&
+                                    prev === "upcoming") ||
+                                  (s.value === "upcoming" && prev === "completed") ||
+                                  (s.value === "current" && prev === "current");
+
+                                return (
+                                  <SelectItem
+                                    key={s.value}
+                                    value={s.value}
+                                    disabled={disabled}
+                                  >
+                                    {s.label}
+                                  </SelectItem>
+                                );
+                              })}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
                   />
 
                   <FormField
