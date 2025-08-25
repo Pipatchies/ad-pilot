@@ -110,7 +110,15 @@ const formSchema = z.object({
         deadline: z.date({ required_error: "La date est requise" }),
       })
     )
-    .length(5, { message: "Il doit y avoir exactement 5 étapes" }),
+    .length(5, { message: "Il doit y avoir exactement 5 étapes" })
+    .refine((steps) => {
+    for (let i = 1; i < steps.length; i++) {
+      if (steps[i].deadline <= steps[i - 1].deadline) {
+        return false;
+      }
+    }
+    return true;
+  }, { message: "Les dates doivent être croissantes (étape 1 < étape 2 < ...)" }),
   diffusionLines: z
     .array(
       z.object({
