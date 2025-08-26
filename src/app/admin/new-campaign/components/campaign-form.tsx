@@ -49,6 +49,7 @@ import SvgUploder from "@/components/icons/Uploder";
 import CtaButton from "@/components/cta-button";
 import { Button } from "@/components/ui/button";
 import DocumentsTable from "@/components/documents-table";
+import InvoicesTable from "@/components/invoices-table";
 
 const mediaTypes = [
   { label: "Digital", value: "digital" },
@@ -1204,7 +1205,7 @@ export default function CampaignForm() {
               />
             </CardHeader>
 
-            <CardContent></CardContent>
+            <CardContent><InvoicesTable invoices={[]} variant="agency" headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
 
             <CardHeader className="flex justify-between">
               <Typography variant="h2" className="mb-0">
@@ -1212,7 +1213,7 @@ export default function CampaignForm() {
               </Typography>
             </CardHeader>
 
-            <CardContent></CardContent>
+            <CardContent> <InvoicesTable invoices={[]} variant="vendor" headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
           </Card>
 
           {/* <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
