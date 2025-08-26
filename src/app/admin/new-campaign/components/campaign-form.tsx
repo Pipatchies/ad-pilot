@@ -1177,10 +1177,26 @@ export default function CampaignForm() {
           <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
             <CardHeader className="flex justify-between">
               <Typography variant="h2" className="mb-0">
-                Les factures agences
+                Les documents
               </Typography>
               <CtaButton
                 props={ctaProps[1]}
+                icon={<SvgPlus />}
+                className="flex items-center border px-3 py-1 text-xs sm:text-sm"
+                variant="default"
+              />
+            </CardHeader>
+
+            <CardContent></CardContent>
+          </Card>
+
+          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
+            <CardHeader className="flex justify-between">
+              <Typography variant="h2" className="mb-0">
+                Les factures agences
+              </Typography>
+              <CtaButton
+                props={ctaProps[2]}
                 icon={<SvgPlus />}
                 className="flex items-center border px-3 py-1 text-xs sm:text-sm"
                 variant="default"
