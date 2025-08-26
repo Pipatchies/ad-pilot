@@ -111,7 +111,7 @@ export default function DocumentsTable({
   }, [dateSort]);
 
   const table = useReactTable({
-    data: documents ?? [],
+    data: documents,
     columns,
     state: { sorting, globalFilter },
     onSortingChange: setSorting,
