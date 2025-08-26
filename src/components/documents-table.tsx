@@ -26,7 +26,7 @@ type DocumentItem = {
 
 interface DocumentsTableProps {
   documents: DocumentItem[];
-    globalFilter?: string;
+  globalFilter?: string;
   dateSort?: "asc" | "desc";
 }
 
@@ -108,7 +108,7 @@ export default function DocumentsTable({
   }, [dateSort]);
 
   const table = useReactTable({
-    data: documents,
+    data: documents ?? [],
     columns,
     state: { sorting, globalFilter },
     onSortingChange: setSorting,
@@ -146,7 +146,7 @@ export default function DocumentsTable({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="text-center py-4">
-                Aucun résultat
+                Aucun document trouvé
               </TableCell>
             </TableRow>
           )}

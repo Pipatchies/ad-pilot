@@ -1,5 +1,5 @@
 "use client"
-import DocumentsTable from "../components/documents-table";
+import DocumentsTable from "../../../../../../components/documents-table";
 
 const documentsData = [
   {
