@@ -111,14 +111,19 @@ const formSchema = z.object({
       })
     )
     .length(5, { message: "Il doit y avoir exactement 5 étapes" })
-    .refine((steps) => {
-    for (let i = 1; i < steps.length; i++) {
-      if (steps[i].deadline <= steps[i - 1].deadline) {
-        return false;
+    .refine(
+      (steps) => {
+        for (let i = 1; i < steps.length; i++) {
+          if (steps[i].deadline <= steps[i - 1].deadline) {
+            return false;
+          }
+        }
+        return true;
+      },
+      {
+        message: "Les dates doivent être croissantes (étape 1 < étape 2 < ...)",
       }
-    }
-    return true;
-  }, { message: "Les dates doivent être croissantes (étape 1 < étape 2 < ...)" }),
+    ),
   diffusionLines: z
     .array(
       z.object({
@@ -290,7 +295,7 @@ export default function CampaignForm() {
     if (!same) {
       replaceDiffusions(next);
     }
-  }, [JSON.stringify(budgetWatch), replaceDiffusions]);
+  }, [JSON.stringify(budgetWatch), replaceDiffusions, form]);
 
   async function onSubmit(values: FormValues) {
     try {
@@ -855,18 +860,16 @@ export default function CampaignForm() {
                             <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
                               {state.map((s) => {
                                 const prev = allSteps[index - 1]?.state;
-                                const next = allSteps[index + 1]?.state;
 
                                 const disabled =
+                                  (index > 0 && !prev) ||
                                   (s.value === "completed" &&
                                     index > 0 &&
                                     prev !== "completed") ||
-                                  ((s.value === "current" ||
-                                    s.value === "upcoming") &&
-                                    next === "completed") ||
                                   (s.value === "current" &&
                                     prev === "upcoming") ||
-                                  (s.value === "upcoming" && prev === "completed") ||
+                                  (s.value === "upcoming" &&
+                                    prev === "completed") ||
                                   (s.value === "current" && prev === "current");
 
                                 return (
