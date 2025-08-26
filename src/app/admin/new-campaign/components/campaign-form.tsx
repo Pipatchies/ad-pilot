@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,6 +48,8 @@ import SvgPlus from "@/components/icons/Plus";
 import SvgUploder from "@/components/icons/Uploder";
 import CtaButton from "@/components/cta-button";
 import { Button } from "@/components/ui/button";
+import DocumentsTable from "@/components/documents-table";
+import InvoicesTable from "@/components/invoices-table";
 
 const mediaTypes = [
   { label: "Digital", value: "digital" },
@@ -64,10 +66,10 @@ const state = [
   { label: "En attente", value: "upcoming" },
 ];
 
-const stateReport = [
-  { label: "Terminé", value: "completed" },
-  { label: "Archivée", value: "archived" },
-];
+// const stateReport = [
+//   { label: "Terminé", value: "completed" },
+//   { label: "Archivée", value: "archived" },
+// ];
 
 const ctaProps = [
   { text: "Ajouter un média", url: "#", target: "self" },
@@ -1177,7 +1179,7 @@ export default function CampaignForm() {
           <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
             <CardHeader className="flex justify-between">
               <Typography variant="h2" className="mb-0">
-                Les factures agences
+                Les documents
               </Typography>
               <CtaButton
                 props={ctaProps[1]}
@@ -1187,7 +1189,23 @@ export default function CampaignForm() {
               />
             </CardHeader>
 
-            <CardContent></CardContent>
+            <CardContent><DocumentsTable documents={[]} headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
+          </Card>
+
+          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
+            <CardHeader className="flex justify-between">
+              <Typography variant="h2" className="mb-0">
+                Les factures agences
+              </Typography>
+              <CtaButton
+                props={ctaProps[2]}
+                icon={<SvgPlus />}
+                className="flex items-center border px-3 py-1 text-xs sm:text-sm"
+                variant="default"
+              />
+            </CardHeader>
+
+            <CardContent><InvoicesTable invoices={[]} variant="agency" headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
 
             <CardHeader className="flex justify-between">
               <Typography variant="h2" className="mb-0">
@@ -1195,7 +1213,7 @@ export default function CampaignForm() {
               </Typography>
             </CardHeader>
 
-            <CardContent></CardContent>
+            <CardContent> <InvoicesTable invoices={[]} variant="vendor" headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
           </Card>
 
           {/* <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">

@@ -17,6 +17,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { cn } from "@/lib/utils";
 
 type DocumentItem = {
   title: string;
@@ -26,8 +27,9 @@ type DocumentItem = {
 
 interface DocumentsTableProps {
   documents: DocumentItem[];
-    globalFilter?: string;
+  globalFilter?: string;
   dateSort?: "asc" | "desc";
+  headerClassName?: string;
 }
 
 function SortIcon({ isSorted }: { isSorted: false | "asc" | "desc" }) {
@@ -46,6 +48,7 @@ export default function DocumentsTable({
   documents,
   globalFilter = "",
   dateSort,
+  headerClassName,
 }: DocumentsTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -123,7 +126,7 @@ export default function DocumentsTable({
       <Table className="min-w-[700px]">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="border-none">
+            <TableRow key={headerGroup.id} className={cn("border-none", headerClassName)}>
               {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
                   {flexRender(header.column.columnDef.header, header.getContext())}
@@ -146,7 +149,7 @@ export default function DocumentsTable({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="text-center py-4">
-                Aucun résultat
+                Aucun document trouvé
               </TableCell>
             </TableRow>
           )}
