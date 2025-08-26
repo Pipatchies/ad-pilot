@@ -22,7 +22,7 @@ export default function ClientLayout({
           <MenuSidebar variant="user" />
           <div className="flex flex-col min-h-screen w-full">
             <header className="sticky top-0 z-50 border-b border-gray-200 sm:px-6 py-4 shadow-topbar bg-white ">
-              <Topbar variant="user" />
+              <Topbar />
             </header>
             {showBackButton ? (
               <main className="lg:py-20 lg:px-15 px-5 py-10 @container max-w-[1400px] w-full">
