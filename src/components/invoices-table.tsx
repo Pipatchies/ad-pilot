@@ -196,7 +196,9 @@ export default function InvoicesTable({
 
   return (
     <div className="w-full overflow-x-auto">
-      <Table className="min-w-[700px]">
+      <Table containerClassName={table.getRowModel().rows.length > 0 ? "overflow-x-auto" : "overflow-x-hidden"}
+        className="min-w-[700px]"
+      >
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className={cn("border-none", headerClassName)}>
