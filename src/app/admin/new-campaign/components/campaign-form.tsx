@@ -48,6 +48,7 @@ import SvgPlus from "@/components/icons/Plus";
 import SvgUploder from "@/components/icons/Uploder";
 import CtaButton from "@/components/cta-button";
 import { Button } from "@/components/ui/button";
+import DocumentsTable from "@/components/documents-table";
 
 const mediaTypes = [
   { label: "Digital", value: "digital" },
@@ -64,10 +65,10 @@ const state = [
   { label: "En attente", value: "upcoming" },
 ];
 
-const stateReport = [
-  { label: "Terminé", value: "completed" },
-  { label: "Archivée", value: "archived" },
-];
+// const stateReport = [
+//   { label: "Terminé", value: "completed" },
+//   { label: "Archivée", value: "archived" },
+// ];
 
 const ctaProps = [
   { text: "Ajouter un média", url: "#", target: "self" },
@@ -1187,7 +1188,7 @@ export default function CampaignForm() {
               />
             </CardHeader>
 
-            <CardContent></CardContent>
+            <CardContent><DocumentsTable documents={[]} headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
           </Card>
 
           <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">

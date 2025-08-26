@@ -22,6 +22,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { cn } from "@/lib/utils";
 
 type Invoice = {
   title: string;
@@ -40,6 +41,7 @@ interface InvoicesTableProps {
   showCampaign?: boolean;
   globalFilter?: string;
   dateSort?: "asc" | "desc";
+  headerClassName?: string;
 }
 
 function SortIcon({ isSorted }: { isSorted: false | "asc" | "desc" }) {
@@ -59,6 +61,7 @@ export default function InvoicesTable({
   showCampaign = false,
   globalFilter,
   dateSort,
+  headerClassName,
 }: InvoicesTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -196,7 +199,7 @@ export default function InvoicesTable({
       <Table className="min-w-[700px]">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="border-none">
+            <TableRow key={headerGroup.id} className={cn("border-none", headerClassName)}>
               {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
                   {flexRender(header.column.columnDef.header, header.getContext())}
