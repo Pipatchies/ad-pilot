@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as ResendOTPPasswordReset from "../ResendOTPPasswordReset.js";
+import type * as actions_cloudinary from "../actions/cloudinary.js";
 import type * as actions_sendEmail from "../actions/sendEmail.js";
 import type * as actions_users from "../actions/users.js";
 import type * as auth from "../auth.js";
@@ -40,6 +41,7 @@ import type * as queries_users from "../queries/users.js";
  */
 declare const fullApi: ApiFromModules<{
   ResendOTPPasswordReset: typeof ResendOTPPasswordReset;
+  "actions/cloudinary": typeof actions_cloudinary;
   "actions/sendEmail": typeof actions_sendEmail;
   "actions/users": typeof actions_users;
   auth: typeof auth;
