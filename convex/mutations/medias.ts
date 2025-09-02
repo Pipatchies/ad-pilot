@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export const createMedia = mutation({
   args: {
     title: v.string(),
-    mediaTypes:  v.array(
+    mediaTypes: v.array(
       v.union(
         v.literal("ooh"),
         v.literal("tv"),
@@ -22,11 +22,14 @@ export const createMedia = mutation({
       v.literal("pdf")
     ),
     url: v.string(),
-    variant: v.union(
-      v.literal("portrait"),
-      v.literal("landscape"),
-      v.literal("default")
+    publicId: v.string(), 
+    resourceType: v.union(
+      v.literal("image"),
+      v.literal("video"),
+      v.literal("raw")
     ),
+    width: v.optional(v.number()), 
+    height: v.optional(v.number()),
     campaignId: v.id("campaigns"),
   },
   handler: async (ctx, args) => {

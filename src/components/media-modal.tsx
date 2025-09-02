@@ -32,8 +32,11 @@ type Media = {
   title: string;
   url: string;
   type: string;
-  variant: string;
   mediaType: (typeof mediaTypeValues)[number];
+  publicId: string;
+  resourceType: string;
+  width?: number;
+  height?: number;
 };
 
 interface MediaModalProps {
@@ -100,12 +103,13 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
       return;
     }
 
-    const resourceType = tableType === "pdf" ? "raw" : "auto";
+    const resourceType =
+      tableType === "mp4" ? "video" : tableType === "mp3" ? "raw" : "image";
     const folder = `campaigns/temp/medias`;
 
     setUploading(true);
     try {
-      const sig = await getSignature({ folder, resourceType });
+      const sig = await getSignature({ folder, resourceType: resourceType });
 
       const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
       const fd = new FormData();
@@ -121,21 +125,15 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
 
       if (json.error) throw new Error(json.error?.message || "Upload failed");
 
-      let variant: "portrait" | "landscape" | "default" = "default";
-      if (tableType === "pdf") {
-        variant = "portrait";
-      } else if (tableType === "jpg" || tableType === "png") {
-        variant = json.width >= json.height ? "landscape" : "portrait";
-      } else if (tableType === "mp3" || tableType === "mp4") {
-        variant = "default";
-      }
-
       onAddMedia({
         title: values.title,
         url: json.secure_url,
         type: tableType,
-        variant,
         mediaType: values.mediaType,
+        publicId: json.public_id,
+        resourceType,
+        width: json.width,
+        height: json.height,
       });
 
       toast.success("Média ajouté avec succès !");
