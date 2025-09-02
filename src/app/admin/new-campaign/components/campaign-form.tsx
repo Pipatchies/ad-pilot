@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,6 +50,8 @@ import CtaButton from "@/components/cta-button";
 import { Button } from "@/components/ui/button";
 import DocumentsTable from "@/components/documents-table";
 import InvoicesTable from "@/components/invoices-table";
+import { Id } from "../../../../../convex/_generated/dataModel";
+import MediaModal from "@/components/media-modal";
 
 const mediaTypes = [
   { label: "Digital", value: "digital" },
@@ -211,10 +213,15 @@ export default function CampaignForm() {
     },
   });
 
+  const [formMedias, setFormMedias] = useState<
+    { title: string; url: string; type: string; variant: string }[]
+  >([]);
+
   const organizations =
     useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ??
     [];
   const createCampaign = useMutation(api.mutations.campaigns.createCampaign);
+  const createMedia = useMutation(api.mutations.medias.createMedia);
 
   const {
     fields: budgetFields,
@@ -314,7 +321,7 @@ export default function CampaignForm() {
         ? new Date(Math.max(...allEnds)).toISOString()
         : new Date().toISOString();
 
-      await createCampaign({
+      const campaignId: Id<"campaigns"> = await createCampaign({
         organizationId: values.organization as any,
         title: values.title,
         subtitle: values.subtitle,
@@ -359,6 +366,19 @@ export default function CampaignForm() {
 
         archived: false,
       });
+
+      await Promise.all(
+        formMedias.map((m) =>
+          createMedia({
+            title: m.title,
+            url: m.url,
+            type: m.type as any,
+            variant: m.variant as any,
+            mediaTypes: [],
+            campaignId,
+          })
+        )
+      );
 
       toast.success("Succès", {
         description: "La campagne a été enregistrée correctement.",
@@ -1165,11 +1185,10 @@ export default function CampaignForm() {
               <Typography variant="h2" className="mb-0">
                 Les médias
               </Typography>
-              <CtaButton
-                props={ctaProps[0]}
-                icon={<SvgPlus />}
-                className="flex items-center border px-3 py-1 text-xs sm:text-sm"
-                variant="default"
+              <MediaModal
+                onAddMedia={(media) =>
+                  setFormMedias((prev) => [...prev, media])
+                }
               />
             </CardHeader>
 
@@ -1189,7 +1208,12 @@ export default function CampaignForm() {
               />
             </CardHeader>
 
-            <CardContent><DocumentsTable documents={[]} headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
+            <CardContent>
+              <DocumentsTable
+                documents={[]}
+                headerClassName="border-b border-solid border-[#A5A4BF]"
+              />
+            </CardContent>
           </Card>
 
           <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
@@ -1205,7 +1229,13 @@ export default function CampaignForm() {
               />
             </CardHeader>
 
-            <CardContent><InvoicesTable invoices={[]} variant="agency" headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
+            <CardContent>
+              <InvoicesTable
+                invoices={[]}
+                variant="agency"
+                headerClassName="border-b border-solid border-[#A5A4BF]"
+              />
+            </CardContent>
 
             <CardHeader className="flex justify-between">
               <Typography variant="h2" className="mb-0">
@@ -1213,7 +1243,14 @@ export default function CampaignForm() {
               </Typography>
             </CardHeader>
 
-            <CardContent> <InvoicesTable invoices={[]} variant="vendor" headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
+            <CardContent>
+              {" "}
+              <InvoicesTable
+                invoices={[]}
+                variant="vendor"
+                headerClassName="border-b border-solid border-[#A5A4BF]"
+              />
+            </CardContent>
           </Card>
 
           {/* <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
