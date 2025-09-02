@@ -149,7 +149,7 @@ export default function DocumentsTable({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="text-center py-4">
-                Aucun document trouvé
+                Aucun document pour le moment.
               </TableCell>
             </TableRow>
           )}
