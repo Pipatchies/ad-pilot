@@ -49,18 +49,24 @@ export default function DetailsCard({
     
     <Card
       className={cn(
-        "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center",
+        "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2",
         variant === "media" && ""
       )}
     >
       <CardHeader>
         {variant === "media" && (
           <>
+          <div
+        className={cn(
+          "flex items-start gap-4 mb-2",
+        )}
+      >
             <MediaThumb publicId={media?.publicId} type={media?.type} width={media?.width} height={media?.height} alt={title} />
+            </div>
             <Typography variant="h3" className="mb-0">
               {title}
             </Typography>
-            <CardDescription className="italic text-primary ">
+            <CardDescription className="italic text-primary">
               {description}
             </CardDescription>
           </>

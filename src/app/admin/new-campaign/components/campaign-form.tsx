@@ -1212,10 +1212,10 @@ export default function CampaignForm() {
           startDate={new Date()}
           media={{
             publicId: m.publicId,
-            url: m.url,
             type: m.type,
             width: m.width,
             height: m.height,
+            alt: m.title,
           }}
         />
       ))}
