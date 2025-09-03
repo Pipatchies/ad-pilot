@@ -52,6 +52,8 @@ import DocumentsTable from "@/components/documents-table";
 import InvoicesTable from "@/components/invoices-table";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import MediaModal from "@/components/media-modal";
+import DetailsCard from "@/components/details-card";
+import { Media } from "@/types/medias";
 
 const mediaTypes = [
   { label: "Digital", value: "digital" },
@@ -214,7 +216,7 @@ export default function CampaignForm() {
   });
 
   const [formMedias, setFormMedias] = useState<
-    { title: string; url: string; type: string; variant: string }[]
+    Media[]
   >([]);
 
   const organizations =
@@ -372,9 +374,12 @@ export default function CampaignForm() {
           createMedia({
             title: m.title,
             url: m.url,
-            type: m.type as any,
-            variant: m.variant as any,
+            type: m.type,
             mediaTypes: [],
+            publicId: m.publicId,
+            resourceType: m.resourceType,
+            width: m.width,
+            height: m.height,
             campaignId,
           })
         )
@@ -1192,7 +1197,30 @@ export default function CampaignForm() {
               />
             </CardHeader>
 
-            <CardContent></CardContent>
+            <CardContent>{formMedias.length === 0 ? (
+    <p className="text-center py-4">
+      Aucun média pour le moment.
+    </p>
+  ) : (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {formMedias.map((m, i) => (
+        <DetailsCard
+          key={i}
+          variant="media"
+          title={m.title}
+          description={m.type.toUpperCase()}
+          startDate={new Date()}
+          media={{
+            publicId: m.publicId,
+            url: m.url,
+            type: m.type,
+            width: m.width,
+            height: m.height,
+          }}
+        />
+      ))}
+    </div>
+  )}</CardContent>
           </Card>
 
           <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">

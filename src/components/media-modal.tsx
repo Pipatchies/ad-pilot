@@ -27,17 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import SvgUploder from "./icons/Uploder";
+import { Media, MediaFileType } from "@/types/medias";
 
-type Media = {
-  title: string;
-  url: string;
-  type: string;
-  mediaType: (typeof mediaTypeValues)[number];
-  publicId: string;
-  resourceType: string;
-  width?: number;
-  height?: number;
-};
 
 interface MediaModalProps {
   onAddMedia: (media: Media) => void;
@@ -91,7 +82,7 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
     }
 
     const ext = (file.name.split(".").pop() || "").toLowerCase();
-    let tableType: "png" | "jpg" | "mp3" | "mp4" | "pdf" | null = null;
+    let tableType: MediaFileType | null = null;
     if (["jpg", "jpeg"].includes(ext)) tableType = "jpg";
     if (ext === "png") tableType = "png";
     if (ext === "pdf") tableType = "pdf";
