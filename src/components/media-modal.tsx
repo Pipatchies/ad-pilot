@@ -231,10 +231,6 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
                   onChange={(e) => {
                     const f = e.target.files?.[0] ?? null;
                     setFile(f);
-                    if (f) {
-                      const f = e.target.files?.[0] ?? null;
-                      setFile(f);
-                    }
                   }}
                 />
               </div>
