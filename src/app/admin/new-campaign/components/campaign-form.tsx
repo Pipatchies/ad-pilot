@@ -40,7 +40,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SvgCalendrier from "@/components/icons/Calendrier";
 import SvgSmallDown from "@/components/icons/SmallDown";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import Typography from "@/components/typography";
 import { useFieldArray } from "react-hook-form";
@@ -215,15 +215,14 @@ export default function CampaignForm() {
     },
   });
 
-  const [formMedias, setFormMedias] = useState<
-    Media[]
-  >([]);
+  const [formMedias, setFormMedias] = useState<Media[]>([]);
 
   const organizations =
     useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ??
     [];
   const createCampaign = useMutation(api.mutations.campaigns.createCampaign);
   const createMedia = useMutation(api.mutations.medias.createMedia);
+  const moveMediaToCampaign = useAction(api.actions.cloudinary.moveMediaToCampaign);
 
   const {
     fields: budgetFields,
@@ -370,26 +369,37 @@ export default function CampaignForm() {
       });
 
       await Promise.all(
-        formMedias.map((m) =>
-          createMedia({
-            title: m.title,
-            url: m.url,
-            type: m.type,
-            mediaTypes: [],
+        formMedias.map(async (m) => {
+          const newPublicId = `campaigns/${campaignId}/medias/${m.publicId
+            .split("/")
+            .pop()}`;
+
+           const renamed = await moveMediaToCampaign({
             publicId: m.publicId,
+            newPublicId,
             resourceType: m.resourceType,
-            width: m.width,
-            height: m.height,
+          });
+
+          await createMedia({
+            title: m.title,
+            url: renamed.secure_url,
+            type: m.type,
+            mediaTypes: [m.mediaType],
+            publicId: newPublicId,
+            resourceType: m.resourceType,
+            width: renamed.width,
+            height: renamed.height,
             campaignId,
-          })
-        )
+          });
+        })
       );
 
       toast.success("Succès", {
         description: "La campagne a été enregistrée correctement.",
       });
       form.reset();
-    } catch {
+    } catch (err) {
+      console.error("Erreur lors de l'enregistrement de la campagne:", err);
       toast.error("Erreur", {
         description: "Impossible d'enregistrer la campagne.",
       });
@@ -1197,30 +1207,30 @@ export default function CampaignForm() {
               />
             </CardHeader>
 
-            <CardContent>{formMedias.length === 0 ? (
-    <p className="text-center py-4">
-      Aucun média pour le moment.
-    </p>
-  ) : (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {formMedias.map((m, i) => (
-        <DetailsCard
-          key={i}
-          variant="media"
-          title={m.title}
-          description={m.type.toUpperCase()}
-          startDate={new Date()}
-          media={{
-            publicId: m.publicId,
-            type: m.type,
-            width: m.width,
-            height: m.height,
-            alt: m.title,
-          }}
-        />
-      ))}
-    </div>
-  )}</CardContent>
+            <CardContent>
+              {formMedias.length === 0 ? (
+                <p className="text-center py-4">Aucun média pour le moment.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {formMedias.map((m, i) => (
+                    <DetailsCard
+                      key={i}
+                      variant="media"
+                      title={m.title}
+                      description={m.type.toUpperCase()}
+                      startDate={new Date()}
+                      media={{
+                        publicId: m.publicId,
+                        type: m.type,
+                        width: m.width,
+                        height: m.height,
+                        alt: m.title,
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </CardContent>
           </Card>
 
           <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">

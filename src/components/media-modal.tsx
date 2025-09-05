@@ -96,7 +96,7 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
 
     const resourceType =
       tableType === "mp4" ? "video" : tableType === "mp3" ? "raw" : "image";
-    const folder = `campaigns/temp/medias`;
+    const folder = `campaigns/medias`;
 
     setUploading(true);
     try {
