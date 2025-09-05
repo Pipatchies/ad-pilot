@@ -224,7 +224,7 @@ export default function InvoicesTable({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="text-center py-4">
-                Aucune facture trouvée
+                Aucune facture pour le moment.
               </TableCell>
             </TableRow>
           )}

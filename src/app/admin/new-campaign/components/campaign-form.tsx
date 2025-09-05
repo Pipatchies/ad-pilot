@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,7 +40,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SvgCalendrier from "@/components/icons/Calendrier";
 import SvgSmallDown from "@/components/icons/SmallDown";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import Typography from "@/components/typography";
 import { useFieldArray } from "react-hook-form";
@@ -50,6 +50,10 @@ import CtaButton from "@/components/cta-button";
 import { Button } from "@/components/ui/button";
 import DocumentsTable from "@/components/documents-table";
 import InvoicesTable from "@/components/invoices-table";
+import { Id } from "../../../../../convex/_generated/dataModel";
+import MediaModal from "@/components/media-modal";
+import DetailsCard from "@/components/details-card";
+import { Media } from "@/types/medias";
 
 const mediaTypes = [
   { label: "Digital", value: "digital" },
@@ -211,10 +215,14 @@ export default function CampaignForm() {
     },
   });
 
+  const [formMedias, setFormMedias] = useState<Media[]>([]);
+
   const organizations =
     useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ??
     [];
   const createCampaign = useMutation(api.mutations.campaigns.createCampaign);
+  const createMedia = useMutation(api.mutations.medias.createMedia);
+  const moveMediaToCampaign = useAction(api.actions.cloudinary.moveMediaToCampaign);
 
   const {
     fields: budgetFields,
@@ -314,7 +322,7 @@ export default function CampaignForm() {
         ? new Date(Math.max(...allEnds)).toISOString()
         : new Date().toISOString();
 
-      await createCampaign({
+      const campaignId: Id<"campaigns"> = await createCampaign({
         organizationId: values.organization as any,
         title: values.title,
         subtitle: values.subtitle,
@@ -360,11 +368,38 @@ export default function CampaignForm() {
         archived: false,
       });
 
+      await Promise.all(
+        formMedias.map(async (m) => {
+          const newPublicId = `campaigns/${campaignId}/medias/${m.publicId
+            .split("/")
+            .pop()}`;
+
+           const renamed = await moveMediaToCampaign({
+            publicId: m.publicId,
+            newPublicId,
+            resourceType: m.resourceType,
+          });
+
+          await createMedia({
+            title: m.title,
+            url: renamed.secure_url,
+            type: m.type,
+            mediaTypes: [m.mediaType],
+            publicId: newPublicId,
+            resourceType: m.resourceType,
+            width: renamed.width,
+            height: renamed.height,
+            campaignId,
+          });
+        })
+      );
+
       toast.success("Succès", {
         description: "La campagne a été enregistrée correctement.",
       });
       form.reset();
-    } catch {
+    } catch (err) {
+      console.error("Erreur lors de l'enregistrement de la campagne:", err);
       toast.error("Erreur", {
         description: "Impossible d'enregistrer la campagne.",
       });
@@ -1165,15 +1200,37 @@ export default function CampaignForm() {
               <Typography variant="h2" className="mb-0">
                 Les médias
               </Typography>
-              <CtaButton
-                props={ctaProps[0]}
-                icon={<SvgPlus />}
-                className="flex items-center border px-3 py-1 text-xs sm:text-sm"
-                variant="default"
+              <MediaModal
+                onAddMedia={(media) =>
+                  setFormMedias((prev) => [...prev, media])
+                }
               />
             </CardHeader>
 
-            <CardContent></CardContent>
+            <CardContent>
+              {formMedias.length === 0 ? (
+                <p className="text-center py-4">Aucun média pour le moment.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {formMedias.map((m, i) => (
+                    <DetailsCard
+                      key={i}
+                      variant="media"
+                      title={m.title}
+                      description={m.type.toUpperCase()}
+                      startDate={new Date()}
+                      media={{
+                        publicId: m.publicId,
+                        type: m.type,
+                        width: m.width,
+                        height: m.height,
+                        alt: m.title,
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </CardContent>
           </Card>
 
           <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
@@ -1189,7 +1246,12 @@ export default function CampaignForm() {
               />
             </CardHeader>
 
-            <CardContent><DocumentsTable documents={[]} headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
+            <CardContent>
+              <DocumentsTable
+                documents={[]}
+                headerClassName="border-b border-solid border-[#A5A4BF]"
+              />
+            </CardContent>
           </Card>
 
           <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
@@ -1205,7 +1267,13 @@ export default function CampaignForm() {
               />
             </CardHeader>
 
-            <CardContent><InvoicesTable invoices={[]} variant="agency" headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
+            <CardContent>
+              <InvoicesTable
+                invoices={[]}
+                variant="agency"
+                headerClassName="border-b border-solid border-[#A5A4BF]"
+              />
+            </CardContent>
 
             <CardHeader className="flex justify-between">
               <Typography variant="h2" className="mb-0">
@@ -1213,7 +1281,14 @@ export default function CampaignForm() {
               </Typography>
             </CardHeader>
 
-            <CardContent> <InvoicesTable invoices={[]} variant="vendor" headerClassName="border-b border-solid border-[#A5A4BF]" /></CardContent>
+            <CardContent>
+              {" "}
+              <InvoicesTable
+                invoices={[]}
+                variant="vendor"
+                headerClassName="border-b border-solid border-[#A5A4BF]"
+              />
+            </CardContent>
           </Card>
 
           {/* <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">

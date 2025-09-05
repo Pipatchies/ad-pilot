@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/card";
 import Typography from "./typography";
 import Image from "next/image";
-import SvgImageSmall from "./icons/ImageSmall";
 import { cn, getIconFromType } from "@/lib/utils";
+import MediaThumb, { MediaThumbProps } from "./media-thumb";
 
 
 type DetailsCardProps = {
@@ -25,6 +25,7 @@ type DetailsCardProps = {
   age?: string;
   subject?: string;
   variant: "default" | "campaign" | "media" | "target" | "archived" | "invoice";
+  media?: MediaThumbProps;
 };
 
 export default function DetailsCard({
@@ -40,24 +41,32 @@ export default function DetailsCard({
   age,
   subject,
   variant,
+  media,
 }: DetailsCardProps) {
+
+  
   return (
+    
     <Card
       className={cn(
-        "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center",
+        "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2",
         variant === "media" && ""
       )}
     >
       <CardHeader>
         {variant === "media" && (
           <>
-            <div className="bg-primary flex items-center justify-center h-17 w-17 fill-white">
-              <SvgImageSmall />
+          <div
+        className={cn(
+          "flex items-start gap-4 mb-2",
+        )}
+      >
+            <MediaThumb publicId={media?.publicId} type={media?.type} width={media?.width} height={media?.height} alt={title} />
             </div>
             <Typography variant="h3" className="mb-0">
               {title}
             </Typography>
-            <CardDescription className="italic text-primary ">
+            <CardDescription className="italic text-primary">
               {description}
             </CardDescription>
           </>
@@ -145,7 +154,7 @@ export default function DetailsCard({
               {startDate?.toLocaleDateString()}
             </li>
             <li>
-              <span className="underline">Date d'archivage' :</span>{" "}
+              <span className="underline">Date d'archivage :</span>{" "}
               {archivedDate?.toLocaleDateString()}
             </li>
           </ul>
@@ -158,7 +167,7 @@ export default function DetailsCard({
               {startDate?.toLocaleDateString()}
             </li>
             <li>
-              <span className="underline">Emmetteur :</span>{" "}
+              <span className="underline">Emetteur :</span>{" "}
               {sendBy}
             </li>
           </ul>

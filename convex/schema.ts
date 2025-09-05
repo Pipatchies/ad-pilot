@@ -145,11 +145,14 @@ export default defineSchema({
       v.literal("pdf")
     ),
     url: v.string(),
-    variant: v.union(
-      v.literal("portrait"),
-      v.literal("landscape"),
-      v.literal("default")
+    publicId: v.string(),
+    resourceType: v.union(
+      v.literal("image"),
+      v.literal("video"),
+      v.literal("raw")
     ),
+    width: v.optional(v.number()), 
+    height: v.optional(v.number()), 
     campaignId: v.id("campaigns"),
   }).index("by_campaignId", ["campaignId"]),
 
