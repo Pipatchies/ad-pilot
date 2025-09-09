@@ -54,6 +54,7 @@ import { Id } from "../../../../../convex/_generated/dataModel";
 import MediaModal from "@/components/media-modal";
 import DetailsCard from "@/components/details-card";
 import { Media, MediaType } from "@/types/medias";
+import InvoiceModal from "@/components/invoices-modal";
 
 // ---------------- CONFIG ----------------
 
@@ -95,18 +96,26 @@ const formSchema = z.object({
   mediaTypes: z.array(z.string()).min(1, {
     message: "Veuillez sélectionner au moins un média",
   }),
-  budgetTotal: z.number().nonnegative({
-    message: "Le budget total doit être positif",
-  }),
+  budgetTotal: z
+    .number({
+      required_error: "Le montant HT est requis",
+    })
+    .nonnegative({
+      message: "Le budget total doit être positif",
+    }),
   budgetMedia: z
     .array(
       z.object({
         mediaType: z
           .string()
           .min(1, { message: "Veuillez sélectionner un type de média" }),
-        amount: z.number().nonnegative({
-          message: "Le montant doit être positif",
-        }),
+        amount: z
+          .number({
+            required_error: "Le montant HT est requis",
+          })
+          .nonnegative({
+            message: "Le montant doit être positif",
+          }),
         pourcent: z.string().min(1, { message: "La part est requise" }),
         // startDate: z.date({ required_error: "La date est requise" }),
         title: z.string().min(1, { message: "Le titre est requis" }),
@@ -124,17 +133,21 @@ const formSchema = z.object({
     )
     .length(5, { message: "Il doit y avoir exactement 5 étapes" })
     .superRefine((steps, ctx) => {
-  for (let i = 1; i < steps.length; i++) {
-    if (steps[i].deadline && steps[i - 1].deadline && 
-        (steps[i].deadline as Date) <= (steps[i - 1].deadline as Date)) {
-      ctx.addIssue({
-        code: "custom",
-        message: "La date doit être supérieure à celle de l'étape précédente",
-        path: [i, "deadline"],
-      });
-    }
-  }
-}),
+      for (let i = 1; i < steps.length; i++) {
+        if (
+          steps[i].deadline &&
+          steps[i - 1].deadline &&
+          (steps[i].deadline as Date) <= (steps[i - 1].deadline as Date)
+        ) {
+          ctx.addIssue({
+            code: "custom",
+            message:
+              "La date doit être supérieure à celle de l'étape précédente",
+            path: [i, "deadline"],
+          });
+        }
+      }
+    }),
   diffusionLines: z
     .array(
       z.object({
@@ -198,43 +211,43 @@ const formSchema = z.object({
 // ---------------- DEFAULT VALUES ----------------
 
 const defaultValues = {
-      organization: "",
+  organization: "",
+  title: "",
+  subtitle: "",
+  mediaTypes: [],
+  budgetTotal: 0,
+  budgetMedia: [
+    {
+      mediaType: "",
+      amount: 0,
+      pourcent: "",
+      // startDate: undefined,
       title: "",
-      subtitle: "",
-      mediaTypes: [],
-      budgetTotal: 0,
-      budgetMedia: [
-        {
-          mediaType: "",
-          amount: 0,
-          pourcent: "",
-          // startDate: undefined,
-          title: "",
-          details: "",
-        },
-      ],
-      status: Array.from({ length: 5 }, () => ({
-        label: "",
-        state: "",
-        deadline: null,
-      })),
-      diffusionLines: [],
-      targetLine: [
-        {
-          target: "",
-          csvFiles: "",
-        },
-      ],
-      // statusReport: "",
-      // documentReport: "",
-      // kpiLines: [
-      //   {
-      //     icon: "",
-      //     title: "",
-      //     info: "",
-      //   },
-      // ],
-    };
+      details: "",
+    },
+  ],
+  status: Array.from({ length: 5 }, () => ({
+    label: "",
+    state: "",
+    deadline: null,
+  })),
+  diffusionLines: [],
+  targetLine: [
+    {
+      target: "",
+      csvFiles: "",
+    },
+  ],
+  // statusReport: "",
+  // documentReport: "",
+  // kpiLines: [
+  //   {
+  //     icon: "",
+  //     title: "",
+  //     info: "",
+  //   },
+  // ],
+};
 
 export default function CampaignForm() {
   type FormValues = z.infer<typeof formSchema>;
@@ -362,7 +375,7 @@ export default function CampaignForm() {
         endDate,
         totalBudget: values.budgetTotal,
 
-       budgetMedia: values.budgetMedia.map((b) => ({
+        budgetMedia: values.budgetMedia.map((b) => ({
           type: b.mediaType as MediaType,
           amount: b.amount,
           pourcent: b.pourcent,
@@ -375,7 +388,9 @@ export default function CampaignForm() {
           id: i,
           label: s.label,
           state: s.state as StatusState,
-          deadline: s.deadline ? s.deadline.toISOString() : new Date().toISOString(),
+          deadline: s.deadline
+            ? s.deadline.toISOString()
+            : new Date().toISOString(),
         })),
 
         diffusions: (values.diffusionLines ?? []).map((d) => ({
@@ -428,8 +443,7 @@ export default function CampaignForm() {
       toast.success("Succès", {
         description: "La campagne a été enregistrée correctement.",
       });
-      form.reset(defaultValues); 
-      
+      form.reset(defaultValues);
     } catch {
       toast.error("Erreur", {
         description: "Impossible d'enregistrer la campagne.",
@@ -454,9 +468,7 @@ export default function CampaignForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-lg">Le client</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                    >
+                    <Select onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-1/3 text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
                           <SelectValue
@@ -645,9 +657,7 @@ export default function CampaignForm() {
                         value={field.value || ""}
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value === ""
-                              ? 0
-                              : Number(e.target.value)
+                            e.target.value === "" ? 0 : Number(e.target.value)
                           )
                         }
                       />
@@ -1278,11 +1288,10 @@ export default function CampaignForm() {
               <Typography variant="h2" className="mb-0">
                 Les documents
               </Typography>
-              <CtaButton
-                props={ctaProps[1]}
-                icon={<SvgPlus />}
-                className="flex items-center border px-3 py-1 text-xs sm:text-sm"
-                variant="default"
+              <InvoiceModal
+                onAddMedia={(media) =>
+                  setFormMedias((prev) => [...prev, media])
+                }
               />
             </CardHeader>
 
