@@ -55,6 +55,8 @@ import MediaModal from "@/components/media-modal";
 import DetailsCard from "@/components/details-card";
 import { Media } from "@/types/medias";
 
+// ---------------- CONFIG ----------------
+
 const mediaTypes = [
   { label: "Digital", value: "digital" },
   { label: "TV", value: "tv" },
@@ -81,6 +83,8 @@ const ctaProps = [
   { text: "Ajouter une facture", url: "#", target: "self" },
   { text: "Enregistrer la campagne", url: "#", target: "self" },
 ];
+
+// ---------------- SCHEMA ----------------
 
 const formSchema = z.object({
   organization: z.string().min(1, { message: "L'organisation est requise" }),
@@ -113,57 +117,57 @@ const formSchema = z.object({
       z.object({
         label: z.string().min(1, { message: "Le label est requis" }),
         state: z.string().min(1, { message: "L'état est requis" }),
-        deadline: z.date({ required_error: "La date est requise" }),
+        deadline: z.date({ required_error: "La date est requise" }).nullable(),
       })
     )
     .length(5, { message: "Il doit y avoir exactement 5 étapes" })
     .superRefine((steps, ctx) => {
-    for (let i = 1; i < steps.length; i++) {
-      if (steps[i].deadline <= steps[i - 1].deadline) {
-        ctx.addIssue({
-          code: "custom",
-          message:
-            "La date doit être supérieure à celle de l'étape précédente",
-          path: [i, "deadline"],
-        });
-      }
+  for (let i = 1; i < steps.length; i++) {
+    if (steps[i].deadline && steps[i - 1].deadline && 
+        (steps[i].deadline as Date) <= (steps[i - 1].deadline as Date)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "La date doit être supérieure à celle de l'étape précédente",
+        path: [i, "deadline"],
+      });
     }
-  }),
+  }
+}),
   diffusionLines: z
-  .array(
-    z.object({
-      media: z.string().min(1, { message: "Le média est requis" }),
-      startDate: z.date().nullable().optional(),
-      endDate: z.date().nullable().optional(),
-    })
-  )
-  .optional()
-  .superRefine((lines, ctx) => {
-    (lines ?? []).forEach((line, i) => {
-      if (!line.startDate) {
-        ctx.addIssue({
-          code: "custom",
-          message: "La date de début est requise",
-          path: [i, "startDate"], 
-        });
-      }
-      if (!line.endDate) {
-        ctx.addIssue({
-          code: "custom",
-          message: "La date de fin est requise",
-          path: [i, "endDate"],
-        });
-      }
+    .array(
+      z.object({
+        media: z.string().min(1, { message: "Le média est requis" }),
+        startDate: z.date().nullable().optional(),
+        endDate: z.date().nullable().optional(),
+      })
+    )
+    .optional()
+    .superRefine((lines, ctx) => {
+      (lines ?? []).forEach((line, i) => {
+        if (!line.startDate) {
+          ctx.addIssue({
+            code: "custom",
+            message: "La date de début est requise",
+            path: [i, "startDate"],
+          });
+        }
+        if (!line.endDate) {
+          ctx.addIssue({
+            code: "custom",
+            message: "La date de fin est requise",
+            path: [i, "endDate"],
+          });
+        }
 
-      if (line.startDate && line.endDate && line.endDate <= line.startDate) {
-        ctx.addIssue({
-          code: "custom",
-          message: "La date de fin doit être postérieure à la date de début",
-          path: [i, "endDate"],
-        });
-      }
-    });
-  }),
+        if (line.startDate && line.endDate && line.endDate <= line.startDate) {
+          ctx.addIssue({
+            code: "custom",
+            message: "La date de fin doit être postérieure à la date de début",
+            path: [i, "endDate"],
+          });
+        }
+      });
+    }),
   targetLine: z
     .array(
       z.object({
@@ -189,12 +193,9 @@ const formSchema = z.object({
   //   .min(1, { message: "Veuillez définir au moins un KPI" }),
 });
 
-export default function CampaignForm() {
-  type FormValues = z.infer<typeof formSchema>;
+// ---------------- DEFAULT VALUES ----------------
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
+const defaultValues = {
       organization: "",
       title: "",
       subtitle: "",
@@ -213,7 +214,7 @@ export default function CampaignForm() {
       status: Array.from({ length: 5 }, () => ({
         label: "",
         state: "",
-        deadline: undefined,
+        deadline: null,
       })),
       diffusionLines: [],
       targetLine: [
@@ -231,7 +232,14 @@ export default function CampaignForm() {
       //     info: "",
       //   },
       // ],
-    },
+    };
+
+export default function CampaignForm() {
+  type FormValues = z.infer<typeof formSchema>;
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues,
   });
 
   const [formMedias, setFormMedias] = useState<Media[]>([]);
@@ -241,7 +249,9 @@ export default function CampaignForm() {
     [];
   const createCampaign = useMutation(api.mutations.campaigns.createCampaign);
   const createMedia = useMutation(api.mutations.medias.createMedia);
-  const moveMediaToCampaign = useAction(api.actions.cloudinary.moveMediaToCampaign);
+  const moveMediaToCampaign = useAction(
+    api.actions.cloudinary.moveMediaToCampaign
+  );
 
   const {
     fields: budgetFields,
@@ -393,7 +403,7 @@ export default function CampaignForm() {
             .split("/")
             .pop()}`;
 
-           const renamed = await moveMediaToCampaign({
+          const renamed = await moveMediaToCampaign({
             publicId: m.publicId,
             newPublicId,
             resourceType: m.resourceType,
@@ -416,9 +426,9 @@ export default function CampaignForm() {
       toast.success("Succès", {
         description: "La campagne a été enregistrée correctement.",
       });
-      form.reset();
-    } catch (err) {
-      console.error("Erreur lors de l'enregistrement de la campagne:", err);
+      form.reset(defaultValues); 
+      
+    } catch {
       toast.error("Erreur", {
         description: "Impossible d'enregistrer la campagne.",
       });
@@ -444,7 +454,6 @@ export default function CampaignForm() {
                     <FormLabel className="text-lg">Le client</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value || ""}
                     >
                       <FormControl>
                         <SelectTrigger className="w-1/3 text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
@@ -631,10 +640,11 @@ export default function CampaignForm() {
                         type="number"
                         placeholder="Budget en €"
                         className="w-1/3 !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                        value={field.value || ""}
                         onChange={(e) =>
                           field.onChange(
                             e.target.value === ""
-                              ? undefined
+                              ? 0
                               : Number(e.target.value)
                           )
                         }
@@ -672,7 +682,7 @@ export default function CampaignForm() {
                         <FormItem className="flex-1 min-w-[170px]">
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value ?? ""}
                           >
                             <FormControl>
                               <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
@@ -900,7 +910,7 @@ export default function CampaignForm() {
                         <FormItem className="flex-1 min-w-[170px]">
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value || ""}
+                            value={field.value ?? ""}
                           >
                             <FormControl>
                               <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
@@ -953,15 +963,17 @@ export default function CampaignForm() {
                       <FormItem className="flex-1 min-w-[170px]">
                         <Popover>
                           <PopoverTrigger asChild>
-                            <div
+                            <button
+                              type="button"
                               className={cn(
-                                "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
+                                "w-full rounded-sm py-2 px-5 flex items-center justify-between",
                                 "border",
                                 field.value
                                   ? "text-primary"
                                   : "text-primary/50",
                                 "border-[#A5A4BF] bg-white"
                               )}
+                              aria-label="Choisir une date"
                             >
                               <span className="text-base italic">
                                 {field.value
@@ -971,7 +983,7 @@ export default function CampaignForm() {
                                   : "Sélectionnez la date"}
                               </span>
                               <SvgCalendrier />
-                            </div>
+                            </button>
                           </PopoverTrigger>
                           <PopoverContent
                             className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
@@ -980,7 +992,7 @@ export default function CampaignForm() {
                             <Calendar
                               mode="single"
                               selected={field.value ?? undefined}
-                              onSelect={(d) => field.onChange(d)}
+                              onSelect={(d) => field.onChange(d || null)}
                               disabled={(date) => date < new Date("1900-01-01")}
                               defaultMonth={field.value ?? new Date()}
                               initialFocus
@@ -1032,15 +1044,17 @@ export default function CampaignForm() {
                             </FormLabel>
                             <Popover>
                               <PopoverTrigger asChild>
-                                <div
+                                <button
+                                  type="button"
                                   className={cn(
-                                    "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
+                                    "w-full rounded-sm py-2 px-5 flex items-center justify-between",
                                     "border",
                                     field.value
                                       ? "text-primary"
                                       : "text-primary/50",
                                     "border-[#A5A4BF] bg-white"
                                   )}
+                                  aria-label="Choisir une date"
                                 >
                                   <span className="text-base italic">
                                     {field.value
@@ -1050,7 +1064,7 @@ export default function CampaignForm() {
                                       : "Sélectionnez la date"}
                                   </span>
                                   <SvgCalendrier />
-                                </div>
+                                </button>
                               </PopoverTrigger>
                               <PopoverContent
                                 className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
@@ -1059,7 +1073,7 @@ export default function CampaignForm() {
                                 <Calendar
                                   mode="single"
                                   selected={field.value ?? undefined}
-                                  onSelect={(d) => field.onChange(d ?? null)}
+                                  onSelect={(d) => field.onChange(d || null)}
                                   disabled={(date) =>
                                     date < new Date("1900-01-01")
                                   }
@@ -1084,15 +1098,17 @@ export default function CampaignForm() {
                             </FormLabel>
                             <Popover>
                               <PopoverTrigger asChild>
-                                <div
+                                <button
+                                  type="button"
                                   className={cn(
-                                    "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer",
+                                    "w-full rounded-sm py-2 px-5 flex items-center justify-between",
                                     "border",
                                     field.value
                                       ? "text-primary"
                                       : "text-primary/50",
                                     "border-[#A5A4BF] bg-white"
                                   )}
+                                  aria-label="Choisir une date"
                                 >
                                   <span className="text-base italic">
                                     {field.value
@@ -1102,7 +1118,7 @@ export default function CampaignForm() {
                                       : "Sélectionnez la date"}
                                   </span>
                                   <SvgCalendrier />
-                                </div>
+                                </button>
                               </PopoverTrigger>
                               <PopoverContent
                                 className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
