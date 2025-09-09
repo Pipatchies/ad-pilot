@@ -53,7 +53,7 @@ import InvoicesTable from "@/components/invoices-table";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import MediaModal from "@/components/media-modal";
 import DetailsCard from "@/components/details-card";
-import { Media } from "@/types/medias";
+import { Media, MediaType } from "@/types/medias";
 
 // ---------------- CONFIG ----------------
 
@@ -71,6 +71,8 @@ const state = [
   { label: "Terminé", value: "completed" },
   { label: "En attente", value: "upcoming" },
 ];
+
+type StatusState = "completed" | "current" | "upcoming";
 
 // const stateReport = [
 //   { label: "Terminé", value: "completed" },
@@ -352,16 +354,16 @@ export default function CampaignForm() {
         : new Date().toISOString();
 
       const campaignId: Id<"campaigns"> = await createCampaign({
-        organizationId: values.organization as any,
+        organizationId: values.organization as Id<"organizations">,
         title: values.title,
         subtitle: values.subtitle,
-        mediaTypes: values.mediaTypes as any,
+        mediaTypes: values.mediaTypes as MediaType[],
         startDate,
         endDate,
         totalBudget: values.budgetTotal,
 
-        budgetMedia: values.budgetMedia.map((b) => ({
-          type: b.mediaType as any,
+       budgetMedia: values.budgetMedia.map((b) => ({
+          type: b.mediaType as MediaType,
           amount: b.amount,
           pourcent: b.pourcent,
           // startDate: b.startDate.toISOString(),
@@ -372,12 +374,12 @@ export default function CampaignForm() {
         status: values.status.map((s, i) => ({
           id: i,
           label: s.label,
-          state: s.state as any,
-          deadline: s.deadline.toISOString(),
+          state: s.state as StatusState,
+          deadline: s.deadline ? s.deadline.toISOString() : new Date().toISOString(),
         })),
 
         diffusions: (values.diffusionLines ?? []).map((d) => ({
-          mediaType: d.media as any,
+          mediaType: d.media as MediaType,
           startDate: d.startDate!.toISOString(),
           endDate: d.endDate!.toISOString(),
         })),
