@@ -117,34 +117,53 @@ const formSchema = z.object({
       })
     )
     .length(5, { message: "Il doit y avoir exactement 5 étapes" })
-    .refine(
-      (steps) => {
-        for (let i = 1; i < steps.length; i++) {
-          if (steps[i].deadline <= steps[i - 1].deadline) {
-            return false;
-          }
-        }
-        return true;
-      },
-      {
-        message: "Les dates doivent être croissantes (étape 1 < étape 2 < ...)",
+    .superRefine((steps, ctx) => {
+    for (let i = 1; i < steps.length; i++) {
+      if (steps[i].deadline <= steps[i - 1].deadline) {
+        ctx.addIssue({
+          code: "custom",
+          message:
+            "La date doit être supérieure à celle de l'étape précédente",
+          path: [i, "deadline"],
+        });
       }
-    ),
+    }
+  }),
   diffusionLines: z
-    .array(
-      z.object({
-        media: z.string().min(1, { message: "Le média est requis" }),
-        startDate: z
-          .date({ required_error: "La date de début est requise" })
-          .nullable()
-          .optional(),
-        endDate: z
-          .date({ required_error: "La date de fin est requise" })
-          .nullable()
-          .optional(),
-      })
-    )
-    .optional(),
+  .array(
+    z.object({
+      media: z.string().min(1, { message: "Le média est requis" }),
+      startDate: z.date().nullable().optional(),
+      endDate: z.date().nullable().optional(),
+    })
+  )
+  .optional()
+  .superRefine((lines, ctx) => {
+    (lines ?? []).forEach((line, i) => {
+      if (!line.startDate) {
+        ctx.addIssue({
+          code: "custom",
+          message: "La date de début est requise",
+          path: [i, "startDate"], 
+        });
+      }
+      if (!line.endDate) {
+        ctx.addIssue({
+          code: "custom",
+          message: "La date de fin est requise",
+          path: [i, "endDate"],
+        });
+      }
+
+      if (line.startDate && line.endDate && line.endDate <= line.startDate) {
+        ctx.addIssue({
+          code: "custom",
+          message: "La date de fin doit être postérieure à la date de début",
+          path: [i, "endDate"],
+        });
+      }
+    });
+  }),
   targetLine: z
     .array(
       z.object({
@@ -425,7 +444,7 @@ export default function CampaignForm() {
                     <FormLabel className="text-lg">Le client</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      defaultValue={field.value || ""}
                     >
                       <FormControl>
                         <SelectTrigger className="w-1/3 text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
@@ -881,7 +900,7 @@ export default function CampaignForm() {
                         <FormItem className="flex-1 min-w-[170px]">
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            defaultValue={field.value || ""}
                           >
                             <FormControl>
                               <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
@@ -960,9 +979,10 @@ export default function CampaignForm() {
                           >
                             <Calendar
                               mode="single"
-                              selected={field.value}
+                              selected={field.value ?? undefined}
                               onSelect={(d) => field.onChange(d)}
                               disabled={(date) => date < new Date("1900-01-01")}
+                              defaultMonth={field.value ?? new Date()}
                               initialFocus
                               locale={fr}
                             />
@@ -1043,6 +1063,7 @@ export default function CampaignForm() {
                                   disabled={(date) =>
                                     date < new Date("1900-01-01")
                                   }
+                                  defaultMonth={field.value ?? new Date()}
                                   initialFocus
                                   locale={fr}
                                 />
@@ -1094,6 +1115,7 @@ export default function CampaignForm() {
                                   disabled={(date) =>
                                     date < new Date("1900-01-01")
                                   }
+                                  defaultMonth={field.value ?? new Date()}
                                   initialFocus
                                   locale={fr}
                                 />
