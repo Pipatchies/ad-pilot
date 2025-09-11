@@ -33,21 +33,7 @@ import SvgCalendrier from "./icons/Calendrier";
 import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-
-type Invoice = {
-  title: string;
-  description: string;
-  invoiceType: "agency" | "vendor";
-  agencyInvoice?: string;
-  vendorName?: string;
-  htprice: number;
-  ttcprice: number;
-  startDate: Date | null;
-  dueDate: Date | null;
-  url: string;
-  publicId: string;
-  resourceType: "raw";
-};
+import { Invoice } from "@/types/invoices";
 
 const invoiceTypes = [
   { label: "Facture Agence", value: "agency" },

@@ -55,6 +55,7 @@ import MediaModal from "@/components/media-modal";
 import DetailsCard from "@/components/details-card";
 import { Media, MediaType } from "@/types/medias";
 import InvoiceModal from "@/components/invoices-modal";
+import { Invoice } from "@/types/invoices";
 
 // ---------------- CONFIG ----------------
 
@@ -74,21 +75,6 @@ const state = [
 ];
 
 type StatusState = "completed" | "current" | "upcoming";
-
-type Invoice = {
-  title: string;
-  description: string;
-  invoiceType: "agency" | "vendor";
-  agencyInvoice?: string;
-  vendorName?: string;
-  htprice: number;
-  ttcprice: number;
-  startDate: Date | null;
-  dueDate: Date | null;
-  url: string;
-  publicId: string;
-  resourceType: "raw";
-};
 
 // const stateReport = [
 //   { label: "Terminé", value: "completed" },

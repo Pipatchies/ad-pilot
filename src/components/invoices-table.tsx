@@ -23,17 +23,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
-
-type Invoice = {
-  title: string;
-  agencyInvoice?: string;
-  vendorName?: string;
-  campaign?: string;
-  htprice: number;
-  ttcprice: number;
-  startDate: number;
-  dueDate: number;
-};
+import { Invoice } from "@/types/invoices";
 
 interface InvoicesTableProps {
   invoices: Invoice[];
