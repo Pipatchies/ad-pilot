@@ -57,9 +57,8 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
 
   const formSchema = z.object({
     title: z.string().min(1, "Le numéro de facture est requis"),
-    description: z.string().min(1, "La description est requise"),
     invoiceType: z.enum(["agency", "vendor"], {
-      errorMap: () => ({ message: "Veuillez sélectionner un type de facture" }),
+      required_error: "Veuillez sélectionner un type de facture",
     }),
     agencyInvoice: z.string().optional(),
     vendorName: z.string().optional(),
@@ -84,7 +83,6 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      description: "",
       invoiceType: undefined,
       agencyInvoice: "",
       vendorName: "",
@@ -98,6 +96,7 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
   const selectedInvoiceType = form.watch("invoiceType");
 
   async function onSubmit(values: FormValues) {
+    console.log("onSubmit called with:", values);
     if (!file) {
       toast.error("Veuillez sélectionner un fichier.");
       return;
@@ -113,7 +112,7 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
       console.log("[InvoiceModal] file:", file);
 
       const sig = await getSignature({ folder, resourceType });
-       console.log("[InvoiceModal] signature:", sig);
+      console.log("[InvoiceModal] signature:", sig);
 
       const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
       console.log("[InvoiceModal] endpoint:", endpoint);
@@ -135,14 +134,17 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
 
       onAddInvoice({
         title: values.title,
-        description: values.description,
         invoiceType: values.invoiceType,
         agencyInvoice: values.agencyInvoice,
         vendorName: values.vendorName,
         htprice: values.htprice,
         ttcprice: values.ttcprice,
-        startDate: values.startDate,
-        dueDate: values.dueDate,
+        startDate: values.startDate
+          ? values.startDate.toISOString()
+          : new Date().toISOString(),
+        dueDate: values.dueDate
+          ? values.dueDate.toISOString()
+          : new Date().toISOString(),
         url: json.secure_url,
         publicId: json.public_id,
         resourceType,

@@ -166,7 +166,6 @@ export default defineSchema({
 
   invoices: defineTable({
     title: v.string(),
-    description: v.string(),
     invoiceType: v.union(v.literal("agency"), v.literal("vendor")),
     agencyInvoice: v.optional(v.string()),
     vendorName: v.optional(v.string()),
