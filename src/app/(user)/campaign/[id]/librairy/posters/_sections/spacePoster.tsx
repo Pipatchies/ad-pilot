@@ -23,7 +23,6 @@ const visualsCardData = useMemo(
       type: media.type,
       date: new Date(media._creationTime),
       icon: <SvgImageSmall />,
-      variant: media.variant,
     })) ?? [],
   [medias]
 );
@@ -59,7 +58,6 @@ const visualsCardData = useMemo(
               type={item.type}
               date={item.date}
               icon={item.icon}
-              variant={item.variant}
             />
           </div>
         ))}
