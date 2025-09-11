@@ -75,17 +75,25 @@ const state = [
 
 type StatusState = "completed" | "current" | "upcoming";
 
+type Invoice = {
+  title: string;
+  description: string;
+  invoiceType: "agency" | "vendor";
+  agencyInvoice?: string;
+  vendorName?: string;
+  htprice: number;
+  ttcprice: number;
+  startDate: Date | null;
+  dueDate: Date | null;
+  url: string;
+  publicId: string;
+  resourceType: "raw";
+};
+
 // const stateReport = [
 //   { label: "Terminé", value: "completed" },
 //   { label: "Archivée", value: "archived" },
 // ];
-
-const ctaProps = [
-  { text: "Ajouter un média", url: "#", target: "self" },
-  { text: "Ajouter un document", url: "#", target: "self" },
-  { text: "Ajouter une facture", url: "#", target: "self" },
-  { text: "Enregistrer la campagne", url: "#", target: "self" },
-];
 
 // ---------------- SCHEMA ----------------
 
@@ -258,6 +266,8 @@ export default function CampaignForm() {
   });
 
   const [formMedias, setFormMedias] = useState<Media[]>([]);
+  const [formInvoices, setFormInvoices] = useState<Invoice[]>([]);
+
 
   const organizations =
     useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ??
@@ -1288,11 +1298,6 @@ export default function CampaignForm() {
               <Typography variant="h2" className="mb-0">
                 Les documents
               </Typography>
-              <InvoiceModal
-                onAddMedia={(media) =>
-                  setFormMedias((prev) => [...prev, media])
-                }
-              />
             </CardHeader>
 
             <CardContent>
@@ -1308,17 +1313,16 @@ export default function CampaignForm() {
               <Typography variant="h2" className="mb-0">
                 Les factures agences
               </Typography>
-              <CtaButton
-                props={ctaProps[2]}
-                icon={<SvgPlus />}
-                className="flex items-center border px-3 py-1 text-xs sm:text-sm"
-                variant="default"
+              <InvoiceModal
+                onAddInvoice={(invoice) =>
+                  setFormInvoices((prev) => [...prev, invoice])
+                }
               />
             </CardHeader>
 
             <CardContent>
               <InvoicesTable
-                invoices={[]}
+                invoices={formInvoices.filter((i) => i.invoiceType === "agency")}
                 variant="agency"
                 headerClassName="border-b border-solid border-[#A5A4BF]"
               />
@@ -1333,7 +1337,7 @@ export default function CampaignForm() {
             <CardContent>
               {" "}
               <InvoicesTable
-                invoices={[]}
+                invoices={formInvoices.filter((i) => i.invoiceType === "vendor")}
                 variant="vendor"
                 headerClassName="border-b border-solid border-[#A5A4BF]"
               />
