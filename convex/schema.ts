@@ -151,8 +151,8 @@ export default defineSchema({
       v.literal("video"),
       v.literal("raw")
     ),
-    width: v.optional(v.number()), 
-    height: v.optional(v.number()), 
+    width: v.optional(v.number()),
+    height: v.optional(v.number()),
     campaignId: v.id("campaigns"),
   }).index("by_campaignId", ["campaignId"]),
 
@@ -166,13 +166,13 @@ export default defineSchema({
 
   invoices: defineTable({
     title: v.string(),
-    description: v.string(),
+    invoiceType: v.union(v.literal("agency"), v.literal("vendor")),
     agencyInvoice: v.optional(v.string()),
     vendorName: v.optional(v.string()),
     htprice: v.number(),
     ttcprice: v.number(),
-    startDate: v.number(),
-    dueDate: v.number(),
+    startDate: v.string(),
+    dueDate: v.string(),
     url: v.optional(v.string()),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),

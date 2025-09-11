@@ -11,6 +11,15 @@ export const MEDIA_TYPE_VALUES = [
 ] as const;
 export type MediaType = typeof MEDIA_TYPE_VALUES[number];
 
+export const MEDIA_TYPE_LABELS: Record<MediaType, string> = {
+  digital: "Digital",
+  tv: "TV",
+  ooh: "Affichage",
+  radio: "Radio",
+  cinema: "Cinéma",
+  press: "Presse",
+} as const;
+
 export type Media = {
   title: string;
   url: string;

@@ -22,6 +22,7 @@ import type * as error from "../error.js";
 import type * as http from "../http.js";
 import type * as mutations_briefs from "../mutations/briefs.js";
 import type * as mutations_campaigns from "../mutations/campaigns.js";
+import type * as mutations_invoices from "../mutations/invoices.js";
 import type * as mutations_medias from "../mutations/medias.js";
 import type * as mutations_organizations from "../mutations/organizations.js";
 import type * as mutations_users from "../mutations/users.js";
@@ -50,6 +51,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "mutations/briefs": typeof mutations_briefs;
   "mutations/campaigns": typeof mutations_campaigns;
+  "mutations/invoices": typeof mutations_invoices;
   "mutations/medias": typeof mutations_medias;
   "mutations/organizations": typeof mutations_organizations;
   "mutations/users": typeof mutations_users;

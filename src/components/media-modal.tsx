@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import SvgUploder from "./icons/Uploder";
-import { Media, MediaFileType } from "@/types/medias";
+import { Media, MEDIA_TYPE_LABELS, MEDIA_TYPE_VALUES, MediaFileType } from "@/types/medias";
 
 
 interface MediaModalProps {
@@ -39,19 +39,15 @@ const CtaProps = {
   icon: <SvgPlus />,
 };
 
-const mediaTypeValues = [
-  "digital",
-  "tv",
-  "ooh",
-  "radio",
-  "cinema",
-  "press",
-] as const;
-
-const mediaTypes = mediaTypeValues.map((v) => ({
-  value: v,
-  label: v.charAt(0).toUpperCase() + v.slice(1),
-}));
+const mediaTypes = MEDIA_TYPE_VALUES.map((value) => {
+  if (!MEDIA_TYPE_LABELS) {
+    return { value, label: value };
+  }
+  return {
+    value,
+    label: MEDIA_TYPE_LABELS[value],
+  };
+});
 
 export default function MediaModal({ onAddMedia }: MediaModalProps) {
   const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
@@ -61,7 +57,7 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
 
   const formSchema = z.object({
     title: z.string().min(1, "Le titre est requis"),
-    mediaType: z.enum(mediaTypeValues, {
+    mediaType: z.enum(MEDIA_TYPE_VALUES, {
       errorMap: () => ({ message: "Veuillez sélectionner un type de média" }),
     }),
   });

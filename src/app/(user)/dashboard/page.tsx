@@ -52,7 +52,7 @@ export default function Dashboard() {
 
     const invoicesData = invoices?.map((invoice) => ({
       title: invoice.title,
-      description: invoice.description,
+      description: invoice.invoiceType,
       startDate: new Date(invoice.startDate),
       campaignTitle: invoice.campaignTitle,
     })).sort((a, b) => b.startDate.getTime() - a.startDate.getTime())

@@ -23,17 +23,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
-
-type Invoice = {
-  title: string;
-  agencyInvoice?: string;
-  vendorName?: string;
-  campaign?: string;
-  htprice: number;
-  ttcprice: number;
-  startDate: number;
-  dueDate: number;
-};
+import { Invoice } from "@/types/invoices";
 
 interface InvoicesTableProps {
   invoices: Invoice[];
@@ -55,6 +45,22 @@ function SortIcon({ isSorted }: { isSorted: false | "asc" | "desc" }) {
   );
 }
 
+function sortableHeader(label: string) {
+  function Header({ column }: { column: any }) {
+    return (
+      <button
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="flex items-center gap-1 text-base font-bold text-primary"
+      >
+        {label} <SortIcon isSorted={column.getIsSorted()} />
+      </button>
+    );
+  }
+  Header.displayName = `SortableHeader(${label})`;
+  return Header;
+}
+
+
 export default function InvoicesTable({
   invoices,
   variant,
@@ -65,118 +71,85 @@ export default function InvoicesTable({
 }: InvoicesTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  
+
   const columns: ColumnDef<Invoice>[] = [
-    {
-      accessorKey: "title",
-      header: ({ column }) => (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1 text-base font-bold text-primary"
-        >
-          N° de facture <SortIcon isSorted={column.getIsSorted()} />
-        </button>
-      ),
-      cell: ({ row }) => row.getValue("title"),
+  {
+    accessorKey: "title",
+    header: sortableHeader("N° de facture"),
+    cell: ({ row }) => row.getValue("title"),
+  },
+  ...(variant === "vendor"
+    ? [
+        {
+          accessorKey: "agencyInvoice",
+          header: sortableHeader("Facture agence rattachée"),
+          cell: ({ row }: any) => row.getValue("agencyInvoice") ?? "-",
+        },
+        {
+          accessorKey: "vendorName",
+          header: sortableHeader("Régie"),
+          cell: ({ row }: any) => (
+            <span className=" font-bold underline">
+              {row.getValue("vendorName")}
+            </span>
+          ),
+        },
+      ]
+    : []),
+  ...(showCampaign
+    ? [
+        {
+          accessorKey: "campaign",
+          header: sortableHeader("Campagne"),
+          cell: ({ row }: any) => (
+            <span className="font-bold underline pr-10">
+              {row.getValue("campaign")}
+            </span>
+          ),
+        },
+      ]
+    : []),
+  {
+    accessorKey: "htprice",
+    header: sortableHeader("Montant HT"),
+    cell: ({ row }) =>
+      `${(row.getValue("htprice") as number).toLocaleString("fr-FR")} €`,
+  },
+  {
+    accessorKey: "ttcprice",
+    header: sortableHeader("Montant TTC"),
+    cell: ({ row }) =>
+      `${(row.getValue("ttcprice") as number).toLocaleString("fr-FR")} €`,
+  },
+  {
+    accessorKey: "startDate",
+    header: sortableHeader("Date de facturation"),
+    cell: ({ row }) => {
+      const ts = row.getValue("startDate") as number;
+      return ts ? new Date(ts).toLocaleDateString("fr-FR") : "-";
     },
-    ...(variant === "vendor"
-      ? [
-          {
-            accessorKey: "agencyInvoice",
-            header: () => (
-              <span className="text-base font-bold text-primary">
-                Facture agence rattachée
-              </span>
-            ),
-            cell: ({ row }: any) => row.getValue("agencyInvoice") ?? "-",
-          },
-          {
-            accessorKey: "vendorName",
-            header: () => (
-              <span className="text-base font-bold text-primary px-10">
-                Régie
-              </span>
-            ),
-            cell: ({ row }: any) => (
-              <span className="px-10 font-bold underline">
-                {row.getValue("vendorName")}
-              </span>
-            ),
-          },
-        ]
-      : []),
-    ...(showCampaign
-      ? [
-          {
-            accessorKey: "campaign",
-            header: () => (
-              <span className="text-base font-bold text-primary">Campagne</span>
-            ),
-            cell: ({ row }: any) => (
-              <span className="font-bold underline pr-10">
-                {row.getValue("campaign")}
-              </span>
-            ),
-          },
-        ]
-      : []),
-    {
-      accessorKey: "htprice",
-      header: ({ column }) => (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1 text-base font-bold text-primary"
-        >
-          Montant HT <SortIcon isSorted={column.getIsSorted()} />
-        </button>
-      ),
-      cell: ({ row }) =>
-        `${(row.getValue("htprice") as number).toLocaleString("fr-FR")} €`,
+  },
+  {
+    accessorKey: "dueDate",
+    header: sortableHeader("Date d'échéance"),
+    cell: ({ row }) => {
+      const ts = row.getValue("dueDate") as number;
+      return ts ? new Date(ts).toLocaleDateString("fr-FR") : "-";
     },
-    {
-      accessorKey: "ttcprice",
-      header: () => (
-        <span className="text-base font-bold text-primary px-5">
-          Montant TTC
-        </span>
-      ),
-      cell: ({ row }) =>
-        `${(row.getValue("ttcprice") as number).toLocaleString("fr-FR")} €`,
-    },
-    {
-      accessorKey: "startDate",
-      header: () => (
-        <span className="text-base font-bold text-primary">
-          Date de facturation
-        </span>
-      ),
-      cell: ({ row }) => {
-        const ts = row.getValue("startDate") as number;
-        return ts ? new Date(ts).toLocaleDateString("fr-FR") : "-";
-      },
-    },
-    {
-      accessorKey: "dueDate",
-      header: () => (
-        <span className="text-base font-bold text-primary">
-          Date d&apos;échéance
-        </span>
-      ),
-      cell: ({ row }) => {
-        const ts = row.getValue("dueDate") as number;
-        return ts ? new Date(ts).toLocaleDateString("fr-FR") : "-";
-      },
-    },
-    {
-      id: "actions",
-      header: () => <span className="sr-only">Actions</span>,
-      cell: () => (
-        <div className="flex justify-end gap-4">
-          <SvgEyeIcon />
-          <SvgUploder />
-        </div>
-      ),
-    },
-  ];
+  },
+  {
+    id: "actions",
+    header: () => <span className="sr-only">Actions</span>,
+    cell: () => (
+      <div className="flex justify-end gap-4">
+        <SvgEyeIcon />
+        <SvgUploder />
+      </div>
+    ),
+  },
+];
+
 
   const table = useReactTable({
     data: invoices,
