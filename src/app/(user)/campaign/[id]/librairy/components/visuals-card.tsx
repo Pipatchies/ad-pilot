@@ -9,7 +9,6 @@ export interface DetailsCardProps {
   type: string;
   date: Date;
   icon: React.ReactNode;
-  variant: "default" | "portrait" | "landscape";
 }
 
 export default function VisualsCard({
@@ -17,17 +16,16 @@ export default function VisualsCard({
   type,
   date,
   icon,
-  variant,
 }: DetailsCardProps) {
   return (
     <Card className="text-primary bg-card/50 min-h-[450px] py-10 shadow-none border-none w-full flex flex-col">
       <div className="flex-1 flex justify-center items-center">
-        {variant === "default" && (
+        {/* {variant === "default" && ( */}
           <div className="bg-primary flex items-center justify-center h-40 w-40 fill-white">
             {icon}
           </div>
-        )}
-        {variant === "portrait" && (
+        {/* )} */}
+        {/* {variant === "portrait" && (
           <div className="bg-primary flex items-center justify-center h-[217px] w-[157px] fill-white">
             {icon}
           </div>
@@ -36,7 +34,7 @@ export default function VisualsCard({
           <div className="bg-primary flex items-center justify-center h-[154px] w-[265px] fill-white">
             {icon}
           </div>
-        )}
+        )} */}
       </div>
 
       <div className="flex flex-col items-center w-full px-4">
