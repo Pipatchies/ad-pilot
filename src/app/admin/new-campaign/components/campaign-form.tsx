@@ -56,6 +56,8 @@ import DetailsCard from "@/components/details-card";
 import { Media, MediaType } from "@/types/medias";
 import InvoiceModal from "@/components/invoices-modal";
 import { Invoice } from "@/types/invoices";
+import DocModal from "@/components/docs-modal";
+import { Document } from "@/types/docs";
 
 // ---------------- CONFIG ----------------
 
@@ -253,7 +255,7 @@ export default function CampaignForm() {
 
   const [formMedias, setFormMedias] = useState<Media[]>([]);
   const [formInvoices, setFormInvoices] = useState<Invoice[]>([]);
-
+  const [formDocuments, setFormDocuments] = useState<Document[]>([]);
 
   const organizations =
     useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ??
@@ -439,10 +441,9 @@ export default function CampaignForm() {
 
       await Promise.all(
         formInvoices.map(async (i) => {
-
           if (!i.publicId || !i.resourceType || !i.invoiceType) {
-      throw new Error("Invoice is missing required fields");
-    }
+            throw new Error("Invoice is missing required fields");
+          }
           const newPublicId = `campaigns/${campaignId}/invoices/${i.publicId
             .split("/")
             .pop()}`;
@@ -1319,11 +1320,16 @@ export default function CampaignForm() {
               <Typography variant="h2" className="mb-0">
                 Les documents
               </Typography>
+              <DocModal
+                onAddDocument={(document) =>
+                  setFormDocuments((prev) => [...prev, document])
+                }
+              />
             </CardHeader>
 
             <CardContent>
               <DocumentsTable
-                documents={[]}
+                documents={formDocuments}
                 headerClassName="border-b border-solid border-[#A5A4BF]"
               />
             </CardContent>
@@ -1343,7 +1349,9 @@ export default function CampaignForm() {
 
             <CardContent>
               <InvoicesTable
-                invoices={formInvoices.filter((i) => i.invoiceType === "agency")}
+                invoices={formInvoices.filter(
+                  (i) => i.invoiceType === "agency"
+                )}
                 variant="agency"
                 headerClassName="border-b border-solid border-[#A5A4BF]"
               />
@@ -1358,7 +1366,9 @@ export default function CampaignForm() {
             <CardContent>
               {" "}
               <InvoicesTable
-                invoices={formInvoices.filter((i) => i.invoiceType === "vendor")}
+                invoices={formInvoices.filter(
+                  (i) => i.invoiceType === "vendor"
+                )}
                 variant="vendor"
                 headerClassName="border-b border-solid border-[#A5A4BF]"
               />
