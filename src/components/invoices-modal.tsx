@@ -96,7 +96,6 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
   const selectedInvoiceType = form.watch("invoiceType");
 
   async function onSubmit(values: FormValues) {
-    console.log("onSubmit called with:", values);
     if (!file) {
       toast.error("Veuillez sélectionner un fichier.");
       return;
@@ -108,14 +107,9 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
     try {
       const resourceType = "raw" as const;
 
-      console.log("[InvoiceModal] values:", values);
-      console.log("[InvoiceModal] file:", file);
-
       const sig = await getSignature({ folder, resourceType });
-      console.log("[InvoiceModal] signature:", sig);
 
       const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
-      console.log("[InvoiceModal] endpoint:", endpoint);
       const fd = new FormData();
       fd.append("file", file);
       fd.append("api_key", sig.apiKey);
@@ -123,12 +117,9 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
       fd.append("upload_preset", sig.uploadPreset);
       fd.append("signature", sig.signature);
       fd.append("folder", sig.folder);
-      console.log("[InvoiceModal] FormData entries:");
 
       const res = await fetch(endpoint, { method: "POST", body: fd });
-      console.log("[InvoiceModal] raw response:", res);
       const json = await res.json();
-      console.log("[InvoiceModal] parsed JSON:", json);
 
       if (json.error) throw new Error(json.error?.message || "Upload failed");
 
@@ -430,14 +421,14 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
 
           <FormItem>
             <FormLabel className="text-lg font-semibold">
-              Importer le média
+              Importer la facture
             </FormLabel>
             <FormControl>
               <div className="relative">
                 <Input
                   readOnly
                   value={file ? file.name : ""}
-                  placeholder="Sélectionnez le média"
+                  placeholder="Sélectionnez la facture"
                   className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
                   onClick={() =>
                     document.getElementById("hiddenMediaInput")?.click()
