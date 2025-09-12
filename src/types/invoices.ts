@@ -12,5 +12,5 @@ export type Invoice = {
   url?: string;
   publicId?: string;
   resourceType?: "raw";
-  organizationId: Id<"organizations">
+  organizationId?: Id<"organizations">
 };
