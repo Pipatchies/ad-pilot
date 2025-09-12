@@ -1,3 +1,5 @@
+import { Id } from "../../convex/_generated/dataModel";
+
 export type Invoice = {
   title: string;
   invoiceType?: "agency" | "vendor";
@@ -10,4 +12,5 @@ export type Invoice = {
   url?: string;
   publicId?: string;
   resourceType?: "raw";
+  organizationId: Id<"organizations">
 };
