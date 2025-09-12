@@ -71,7 +71,7 @@ export default function DocModal({ onAddDocument }: DocumentModalProps) {
     
         const resourceType =
           tableType === "mp4" ? "video" : tableType === "mp3" ? "raw" : "image";
-        const folder = `campaigns/medias`;
+        const folder = `campaigns/documents`;
     
         setUploading(true);
         try {

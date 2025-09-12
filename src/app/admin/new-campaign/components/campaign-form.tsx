@@ -266,6 +266,7 @@ export default function CampaignForm() {
     api.actions.cloudinary.moveMediaToCampaign
   );
   const createInvoice = useMutation(api.mutations.invoices.createInvoice);
+  const createDocument = useMutation(api.mutations.documents.createDocument);
 
   const {
     fields: budgetFields,
@@ -468,6 +469,33 @@ export default function CampaignForm() {
             resourceType: i.resourceType,
             organizationId: values.organization as Id<"organizations">,
             campaignId,
+          });
+        })
+      );
+
+      await Promise.all(
+        formDocuments.map(async (d) => {
+          if (!d.publicId || !d.resourceType || !d.url) {
+            throw new Error("Document is missing required fields");
+          }
+          const newPublicId = `campaigns/${campaignId}/documents/${d.publicId
+            .split("/")
+            .pop()}`;
+
+          const renamed = await moveMediaToCampaign({
+            publicId: d.publicId,
+            newPublicId,
+            resourceType: d.resourceType,
+          });
+
+          await createDocument({
+            title: d.title,
+            url: renamed.secure_url,
+            type: d.type,
+            resourceType: d.resourceType,
+            publicId: newPublicId,
+            campaignId,
+            organizationId: values.organization as Id<"organizations">,
           });
         })
       );
