@@ -158,10 +158,22 @@ export default defineSchema({
 
   documents: defineTable({
     title: v.string(),
-    type: v.string(),
-    date: v.string(),
+    type: v.union(
+      v.literal("png"),
+      v.literal("jpg"),
+      v.literal("mp3"),
+      v.literal("mp4"),
+      v.literal("pdf")
+    ),
     url: v.string(),
+    publicId: v.string(),
+    resourceType: v.union(
+      v.literal("image"),
+      v.literal("video"),
+      v.literal("raw")
+    ),
     campaignId: v.id("campaigns"),
+    organizationId: v.id("organizations"),
   }),
 
   invoices: defineTable({
