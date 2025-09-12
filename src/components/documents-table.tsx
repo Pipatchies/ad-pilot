@@ -2,7 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import SvgEyeIcon from "@/components/icons/EyeIcon";
 import SvgUploder from "@/components/icons/Uploder";
@@ -22,7 +27,6 @@ import { cn } from "@/lib/utils";
 type DocumentItem = {
   title: string;
   type: string;
-  date: number;
 };
 
 interface DocumentsTableProps {
@@ -42,7 +46,6 @@ function SortIcon({ isSorted }: { isSorted: false | "asc" | "desc" }) {
     />
   );
 }
-
 
 export default function DocumentsTable({
   documents,
@@ -78,6 +81,7 @@ export default function DocumentsTable({
       cell: ({ row }) => row.getValue("type"),
     },
     {
+      accessorKey: "_creationTime",
       id: "date",
       header: ({ column }) => (
         <button
@@ -88,7 +92,7 @@ export default function DocumentsTable({
         </button>
       ),
       cell: ({ row }) => {
-        const ts = row.getValue("startDate") as number;
+        const ts = row.getValue("_creationTime") as number;
         return ts ? new Date(ts).toLocaleDateString("fr-FR") : "-";
       },
     },
@@ -106,7 +110,7 @@ export default function DocumentsTable({
 
   useEffect(() => {
     if (dateSort) {
-      setSorting([{ id: "dateTs", desc: dateSort === "desc" }]);
+      setSorting([{ id: "_creationTime", desc: dateSort === "desc" }]);
     }
   }, [dateSort]);
 
@@ -126,10 +130,16 @@ export default function DocumentsTable({
       <Table className="min-w-[700px]">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className={cn("border-none", headerClassName)}>
+            <TableRow
+              key={headerGroup.id}
+              className={cn("border-none", headerClassName)}
+            >
               {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
-                  {flexRender(header.column.columnDef.header, header.getContext())}
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
                 </TableHead>
               ))}
             </TableRow>
