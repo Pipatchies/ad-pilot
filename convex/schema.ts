@@ -173,7 +173,11 @@ export default defineSchema({
     ttcprice: v.number(),
     startDate: v.string(),
     dueDate: v.string(),
-    url: v.optional(v.string()),
+    url: v.string(),
+    publicId: v.string(),
+    resourceType: v.union(
+      v.literal("raw")
+    ),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
   })

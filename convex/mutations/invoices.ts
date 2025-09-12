@@ -4,7 +4,6 @@ import { v } from "convex/values";
 export const createInvoice = mutation({
   args: {
     title: v.string(),
-    description: v.string(),
     invoiceType: v.union(v.literal("agency"), v.literal("vendor")),
     agencyInvoice: v.optional(v.string()),
     vendorName: v.optional(v.string()),
@@ -12,12 +11,10 @@ export const createInvoice = mutation({
     ttcprice: v.number(),
     startDate: v.string(),
     dueDate: v.string(),
-    url: v.optional(v.string()),
-    publicId: v.optional(v.string()),
+    url: v.string(),
+    publicId: v.string(),
     resourceType: v.union(
-      v.literal("raw"),
-      v.literal("image"),
-      v.literal("video")
+      v.literal("raw")
     ),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
