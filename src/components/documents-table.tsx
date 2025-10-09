@@ -23,11 +23,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
+import { DocumentItem } from "@/types/docs";
 
-type DocumentItem = {
-  title: string;
-  type: string;
-};
 
 interface DocumentsTableProps {
   documents: DocumentItem[];

@@ -12,3 +12,8 @@ export type Document = {
   campaignId?: Id<"campaigns">;
   organizationId?: Id<"organizations">;
 };
+
+export type DocumentItem = {
+  title: string;
+  type: string;
+};
