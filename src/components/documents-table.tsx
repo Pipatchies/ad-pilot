@@ -24,6 +24,8 @@ import {
 } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import { DocumentItem } from "@/types/docs";
+import SvgCorbeille from "./icons/Corbeille";
+import SvgCrayonBig from "./icons/CrayonBig";
 
 
 interface DocumentsTableProps {
@@ -99,7 +101,9 @@ export default function DocumentsTable({
       cell: () => (
         <div className="flex justify-end gap-4">
           <SvgEyeIcon />
+          <SvgCrayonBig />
           <SvgUploder />
+          <SvgCorbeille/>
         </div>
       ),
     },
