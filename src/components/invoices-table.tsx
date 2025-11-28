@@ -168,8 +168,8 @@ export default function InvoicesTable({
 }, [dateSort]);
 
   return (
-    <div className="w-full overflow-x-auto">
-      <Table containerClassName={table.getRowModel().rows.length > 0 ? "overflow-x-auto" : "overflow-x-hidden"}
+    <div className={table.getRowModel().rows.length > 0 ? "overflow-x-auto" : "overflow-x-hidden"}>
+      <Table
         className="min-w-[700px]"
       >
         <TableHeader>

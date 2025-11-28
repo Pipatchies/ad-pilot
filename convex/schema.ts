@@ -1,6 +1,7 @@
 import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { start } from "repl";
 
 export default defineSchema({
   ...authTables,
@@ -76,7 +77,9 @@ export default defineSchema({
         ),
         amount: v.number(),
         pourcent: v.union(v.number(), v.string()),
+        periodFrom: v.optional(v.string()),
         startDate: v.optional(v.string()),
+        periodTo: v.optional(v.string()),
         title: v.optional(v.string()),
         details: v.optional(v.string()),
       })
@@ -93,20 +96,22 @@ export default defineSchema({
         deadline: v.string(),
       })
     ),
-    diffusions: v.array(
-      v.object({
-        mediaType: v.union(
-          v.literal("ooh"),
-          v.literal("tv"),
-          v.literal("radio"),
-          v.literal("digital"),
-          v.literal("cinema"),
-          v.literal("press")
-        ),
-        startDate: v.string(),
-        endDate: v.string(),
-      })
-    ),
+    diffusions: v.optional(
+  v.array(
+    v.object({
+      mediaType: v.union(
+        v.literal("ooh"),
+        v.literal("tv"),
+        v.literal("radio"),
+        v.literal("digital"),
+        v.literal("cinema"),
+        v.literal("press")
+      ),
+      startDate: v.string(),
+      endDate: v.string(),
+    })
+  )
+),
     digitalReportUrl: v.optional(v.string()),
     report: v.optional(
       v.object({
