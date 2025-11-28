@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -77,6 +78,14 @@ const state = [
 ];
 
 type StatusState = "completed" | "current" | "upcoming";
+
+const defaultStatusSteps = [
+  "Brief",
+  "Création",
+  "Validation",
+  "Diffusion en cours",
+  "Bilan"
+];
 
 // const stateReport = [
 //   { label: "Terminé", value: "completed" },
@@ -232,8 +241,8 @@ const defaultValues = {
       details: "",
     },
   ],
-  status: Array.from({ length: 5 }, () => ({
-    label: "",
+  status: defaultStatusSteps.map((label) => ({
+    label,
     state: "",
     deadline: null,
   })),
@@ -385,6 +394,8 @@ export default function CampaignForm() {
   //     replaceDiffusions(next);
   //   }
   // }, [JSON.stringify(budgetWatch), replaceDiffusions, form]);
+
+    const router = useRouter();
 
   async function onSubmit(values: FormValues) {
     try {
@@ -546,6 +557,7 @@ export default function CampaignForm() {
         description: "La campagne a été enregistrée correctement.",
       });
       form.reset(defaultValues);
+      router.push(`/admin/dashboard`);
     } catch {
       toast.error("Erreur", {
         description: "Impossible d'enregistrer la campagne.",
@@ -1104,7 +1116,11 @@ export default function CampaignForm() {
                               mode="single"
                               selected={field.value ?? undefined}
                               onSelect={(d) => field.onChange(d || null)}
-                              disabled={(date) => date < new Date("1900-01-01")}
+                              disabled={(date) => {
+                                const prev = form.watch(`status.${index - 1}.deadline`);
+                                if (!prev) return false; 
+                                return date <= prev; 
+                              }}
                               defaultMonth={field.value ?? new Date()}
                               initialFocus
                               locale={fr}
