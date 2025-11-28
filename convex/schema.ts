@@ -1,6 +1,7 @@
 import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { start } from "repl";
 
 export default defineSchema({
   ...authTables,
@@ -77,6 +78,7 @@ export default defineSchema({
         amount: v.number(),
         pourcent: v.union(v.number(), v.string()),
         periodFrom: v.optional(v.string()),
+        startDate: v.optional(v.string()),
         periodTo: v.optional(v.string()),
         title: v.optional(v.string()),
         details: v.optional(v.string()),
