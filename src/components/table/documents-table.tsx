@@ -4,15 +4,10 @@ import { DataTable, sortableHeader } from "@/components/table/data-table";
 import SvgEyeIcon from "@/components/icons/EyeIcon";
 import SvgUploder from "@/components/icons/Uploder";
 import { ColumnDef } from "@tanstack/react-table";
-
-type DocumentItem = {
-  title: string;
-  type: string;
-  _creationTime: number;
-};
+import { Document } from "@/types/docs"; 
 
 interface DocumentsTableProps {
-  documents: DocumentItem[];
+  documents: Document[];
   globalFilter?: string;
   headerClassName?: string;
 }
@@ -22,8 +17,8 @@ export default function DocumentsTable({
   globalFilter,
   headerClassName,
 }: DocumentsTableProps) {
-  
-  const columns: ColumnDef<DocumentItem>[] = [
+
+  const columns: ColumnDef<Document>[] = [
     {
       accessorKey: "title",
       header: sortableHeader("Titre du document"),
@@ -38,7 +33,7 @@ export default function DocumentsTable({
       accessorKey: "_creationTime",
       header: sortableHeader("Date d'import"),
       cell: ({ row }) => {
-        const ts = row.getValue("_creationTime") as number;
+        const ts = row.getValue("_creationTime") as number | undefined;
         return ts ? new Date(ts).toLocaleDateString("fr-FR") : "-";
       },
     },

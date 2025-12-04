@@ -11,4 +11,5 @@ export type Document = {
   resourceType?: "image" | "video" | "raw";
   campaignId?: Id<"campaigns">;
   organizationId?: Id<"organizations">;
+  _creationTime?: number;
 };
