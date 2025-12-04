@@ -3,8 +3,9 @@
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Typography from "@/components/typography";
 import InvoiceModal from "@/components/invoices-modal";
-import InvoicesTable from "@/components/invoices-table";
+
 import { Invoice } from "@/types/invoices";
+import InvoicesTable from "@/components/table/invoices-table";
 
 interface Props {
   formInvoices: Invoice[];

@@ -1,5 +1,5 @@
-"use client"
-import DocumentsTable from "../../../../../../components/documents-table";
+"use client";
+import DocumentsTable from "../../../../../../components/table/documents-table";
 
 const documentsData = [
   {
@@ -65,19 +65,18 @@ type DocumentsTableProps = {
 };
 
 export default function SpaceDocumentsTable({
-    globalFilter,
-    dateSort
-}: DocumentsTableProps
-) {
-
+  globalFilter,
+  dateSort,
+}: DocumentsTableProps) {
   return (
     <section>
-        <div className="overflow-x-auto">
-            <DocumentsTable documents={documentsData}
-            globalFilter={globalFilter}
-            dateSort={dateSort}
-            />
-          </div>
-          </section>
-  )
+      <div className="overflow-x-auto">
+        <DocumentsTable
+          documents={documentsData}
+          globalFilter={globalFilter}
+          dateSort={dateSort}
+        />
+      </div>
+    </section>
+  );
 }

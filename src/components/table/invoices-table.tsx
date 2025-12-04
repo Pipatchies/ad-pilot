@@ -10,8 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import SvgSmallDown from "@/components/icons/SmallDown";
-import SvgEyeIcon from "./icons/EyeIcon";
-import SvgUploder from "./icons/Uploder";
+
 
 import {
   ColumnDef,
@@ -24,6 +23,8 @@ import {
 } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import { Invoice } from "@/types/invoices";
+import SvgEyeIcon from "../icons/EyeIcon";
+import SvgUploder from "../icons/Uploder";
 
 interface InvoicesTableProps {
   invoices: Invoice[];
