@@ -1,223 +1,73 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
-import SvgCalendrier from "@/components/icons/Calendrier";
-import SvgSmallDown from "@/components/icons/SmallDown";
-import { useAction, useMutation, useQuery } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
-import Typography from "@/components/typography";
-import { useFieldArray } from "react-hook-form";
-import SvgPlus from "@/components/icons/Plus";
-import SvgUploder from "@/components/icons/Uploder";
+import { Form } from "@/components/ui/form";
 import CtaButton from "@/components/cta-button";
-import { Button } from "@/components/ui/button";
-import DocumentsTable from "@/components/documents-table";
-import InvoicesTable from "@/components/invoices-table";
+
+// Convex
+import { useQuery, useMutation, useAction } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
-import MediaModal from "@/components/media-modal";
-import DetailsCard from "@/components/details-card";
+
+// Types
 import { Media, MediaType } from "@/types/medias";
-import InvoiceModal from "@/components/invoices-modal";
 import { Invoice } from "@/types/invoices";
-import DocModal from "@/components/docs-modal";
 import { Document } from "@/types/docs";
 
-// ---------------- CONFIG ----------------
-
-const mediaTypes = [
-  { label: "Digital", value: "digital" },
-  { label: "TV", value: "tv" },
-  { label: "Affichage", value: "ooh" },
-  { label: "Radio", value: "radio" },
-  { label: "Cinéma", value: "cinema" },
-  { label: "Presse", value: "press" },
-];
-
-const state = [
-  { label: "En cours", value: "current" },
-  { label: "Terminé", value: "completed" },
-  { label: "En attente", value: "upcoming" },
-];
-
-type StatusState = "completed" | "current" | "upcoming";
-
-const defaultStatusSteps = [
-  "Brief",
-  "Création",
-  "Validation",
-  "Diffusion en cours",
-  "Bilan"
-];
-
-// const stateReport = [
-//   { label: "Terminé", value: "completed" },
-//   { label: "Archivée", value: "archived" },
-// ];
+// Sections
+import SpaceOrganizations from "../_sections/spaceOrganizations";
+import SpaceInfos from "../_sections/spaceInfos";
+import SpaceBudget from "../_sections/spaceBudget";
+import SpaceSteps from "../_sections/spaceSteps";
+import SpaceTarget from "../_sections/spaceTargets";
+import SpaceMedias from "../_sections/spaceMedias";
+import SpaceDocuments from "../_sections/spaceDocuments";
+import SpaceInvoices from "../_sections/spaceInvoices";
 
 // ---------------- SCHEMA ----------------
 
 const formSchema = z.object({
-  organization: z.string().min(1, { message: "L'organisation est requise" }),
-  title: z.string().min(1, { message: "Le titre est requis" }),
-  subtitle: z.string().min(1, { message: "Le sous-titre est requis" }),
-  mediaTypes: z.array(z.string()).min(1, {
-    message: "Veuillez sélectionner au moins un média",
-  }),
-  budgetTotal: z
-    .number({
-      required_error: "Le montant HT est requis",
-    })
-    .nonnegative({
-      message: "Le budget total doit être positif",
-    }),
-  budgetMedia: z
-    .array(
-      z.object({
-        mediaType: z
-          .string()
-          .min(1, { message: "Veuillez sélectionner un type de média" }),
-        amount: z
-          .number({
-            required_error: "Le montant HT est requis",
-          })
-          .nonnegative({
-            message: "Le montant doit être positif",
-          }),
-        pourcent: z.string().min(1, { message: "La part est requise" }),
-        period: z
-          .object({
-            from: z.date().nullable(),
-            to: z.date().nullable(),
-          })
-          .refine((data) => data.from && data.to, {
-            message: "Veuillez sélectionner une période",
-          }),
-        title: z.string().min(1, { message: "Le titre est requis" }),
-        details: z.string().min(1, { message: "Le détail est requis" }),
-      })
-    )
-    .min(1, { message: "Veuillez ajouter au moins un budget média" }),
-  status: z
-    .array(
-      z.object({
-        label: z.string().min(1, { message: "Le label est requis" }),
-        state: z.string().min(1, { message: "L'état est requis" }),
-        deadline: z.date({ required_error: "La date est requise" }).nullable(),
-      })
-    )
-    .length(5, { message: "Il doit y avoir exactement 5 étapes" })
-    .superRefine((steps, ctx) => {
-      for (let i = 1; i < steps.length; i++) {
-        if (
-          steps[i].deadline &&
-          steps[i - 1].deadline &&
-          (steps[i].deadline as Date) <= (steps[i - 1].deadline as Date)
-        ) {
-          ctx.addIssue({
-            code: "custom",
-            message:
-              "La date doit être supérieure à celle de l'étape précédente",
-            path: [i, "deadline"],
-          });
-        }
-      }
-    }),
-  // diffusionLines: z
-  //   .array(
-  //     z.object({
-  //       media: z.string().min(1, { message: "Le média est requis" }),
-  //       startDate: z.date().nullable().optional(),
-  //       endDate: z.date().nullable().optional(),
-  //     })
-  //   )
-  //   .optional()
-  //   .superRefine((lines, ctx) => {
-  //     (lines ?? []).forEach((line, i) => {
-  //       if (!line.startDate) {
-  //         ctx.addIssue({
-  //           code: "custom",
-  //           message: "La date de début est requise",
-  //           path: [i, "startDate"],
-  //         });
-  //       }
-  //       if (!line.endDate) {
-  //         ctx.addIssue({
-  //           code: "custom",
-  //           message: "La date de fin est requise",
-  //           path: [i, "endDate"],
-  //         });
-  //       }
+  organization: z.string().min(1),
+  title: z.string().min(1),
+  subtitle: z.string().min(1),
+  mediaTypes: z.array(z.string()).min(1),
+  budgetTotal: z.number().nonnegative(),
 
-  //       if (line.startDate && line.endDate && line.endDate <= line.startDate) {
-  //         ctx.addIssue({
-  //           code: "custom",
-  //           message: "La date de fin doit être postérieure à la date de début",
-  //           path: [i, "endDate"],
-  //         });
-  //       }
-  //     });
-  //   }),
-  targetLine: z
-    .array(
-      z.object({
-        target: z.string().min(1, { message: "La cible est requise" }),
-        csvFiles: z.string().min(1, { message: "Le fichier CSV est requis" }),
-      })
-    )
-    .min(1, { message: "Veuillez définir au moins une cible" }),
-  // statusReport: z
-  //   .string()
-  //   .min(1, { message: "Veuillez sélectionner l'état de la campagne" }),
-  // documentReport: z
-  //   .string()
-  //   .min(1, { message: "Veuillez importer un document de récap" }),
-  // kpiLines: z
-  //   .array(
-  //     z.object({
-  //       icon: z.string().min(1, { message: "L'icône est requise" }),
-  //       title: z.string().min(1, { message: "Le titre est requis" }),
-  //       info: z.string().min(1, { message: "L'information est requise" }),
-  //     })
-  //   )
-  //   .min(1, { message: "Veuillez définir au moins un KPI" }),
+  budgetMedia: z.array(
+    z.object({
+      mediaType: z.string().min(1),
+      amount: z.number().nonnegative(),
+      pourcent: z.string().min(1),
+      period: z.object({
+        from: z.date().nullable(),
+        to: z.date().nullable(),
+      }).refine((p) => p.from && p.to, {
+        message: "La période est requise",
+      }),
+      title: z.string().min(1),
+      details: z.string().min(1),
+    })
+  ),
+
+  status: z.array(
+    z.object({
+      label: z.string().min(1),
+      state: z.string().min(1),
+      deadline: z.date().nullable(),
+    })
+  ).length(5),
+
+  targetLine: z.array(
+    z.object({
+      target: z.string().min(1),
+      csvFiles: z.string().min(1),
+    })
+  ).min(1),
 });
 
 // ---------------- DEFAULT VALUES ----------------
@@ -233,190 +83,81 @@ const defaultValues = {
       mediaType: "",
       amount: 0,
       pourcent: "",
-      period: {
-        from: undefined,
-        to: undefined,
-      },
+      period: { from: null, to: null },
       title: "",
       details: "",
     },
   ],
-  status: defaultStatusSteps.map((label) => ({
+  status: ["Brief","Création","Validation","Diffusion en cours","Bilan"].map(label => ({
     label,
     state: "",
     deadline: null,
   })),
-  // diffusionLines: [],
-  targetLine: [
-    {
-      target: "",
-      csvFiles: "",
-    },
-  ],
-  statusReport: "",
-  documentReport: "",
-  kpiLines: [
-    {
-      icon: "",
-      title: "",
-      info: "",
-    },
-  ],
+  targetLine: [{ target: "", csvFiles: "" }],
 };
 
 export default function CampaignForm() {
   type FormValues = z.infer<typeof formSchema>;
 
+  const router = useRouter();
+
+  // Form
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
+  // Local states
   const [formMedias, setFormMedias] = useState<Media[]>([]);
   const [formInvoices, setFormInvoices] = useState<Invoice[]>([]);
   const [formDocuments, setFormDocuments] = useState<Document[]>([]);
 
+  // Convex queries
   const organizations =
-    useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ??
-    [];
+    useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ?? [];
+
   const createCampaign = useMutation(api.mutations.campaigns.createCampaign);
   const createMedia = useMutation(api.mutations.medias.createMedia);
-  const moveMediaToCampaign = useAction(
-    api.actions.cloudinary.moveMediaToCampaign
-  );
+  const moveMediaToCampaign = useAction(api.actions.cloudinary.moveMediaToCampaign);
   const createInvoice = useMutation(api.mutations.invoices.createInvoice);
   const createDocument = useMutation(api.mutations.documents.createDocument);
 
-  const {
-    fields: budgetFields,
-  } = useFieldArray({
-    control: form.control,
-    name: "budgetMedia",
-  });
-
-  // const { fields: diffusionFields, replace: replaceDiffusions } = useFieldArray(
-  //   {
-  //     control: form.control,
-  //     name: "diffusionLines",
-  //   }
-  // );
-
-  const {
-    fields: targetFields,
-    append: appendTarget,
-    remove: removeTarget,
-  } = useFieldArray({
-    control: form.control,
-    name: "targetLine",
-  });
-
-  // const {
-  //   fields: kpiFields,
-  //   append: appendKpi,
-  //   remove: removeKpi,
-  // } = useFieldArray({
-  //   control: form.control,
-  //   name: "kpiLines",
-  // });
-
+  // Keep budgetMedia in sync with mediaTypes
   const mediaTypesWatch = form.watch("mediaTypes");
 
   useEffect(() => {
     const selected = mediaTypesWatch ?? [];
-
-    // On récupère les anciennes lignes déjà remplies pour ne pas perdre les champs
-    const oldLines = form.getValues("budgetMedia") ?? [];
+    const prev = form.getValues("budgetMedia") ?? [];
 
     const updated = selected.map((media) => {
-      const existing = oldLines.find((b) => b.mediaType === media);
-
-      return (
-        existing ?? {
-          mediaType: media,
-          amount: 0,
-          pourcent: "",
-          period: { from: null, to: null },
-          title: "",
-          details: "",
-        }
-      );
+      const existing = prev.find((b) => b.mediaType === media);
+      return existing ?? {
+        mediaType: media,
+        amount: 0,
+        pourcent: "",
+        period: { from: null, to: null },
+        title: "",
+        details: "",
+      };
     });
 
     form.setValue("budgetMedia", updated, { shouldValidate: true });
   }, [JSON.stringify(mediaTypesWatch)]);
 
-
-  // const budgetWatch = form.watch("budgetMedia");
-
-  // useEffect(() => {
-  //   const seen = new Set<string>();
-  //   const uniqueMedias = (budgetWatch ?? [])
-  //     .map((b) => b.mediaType)
-  //     .filter((m) => {
-  //       if (!m) return false;
-  //       if (seen.has(m)) return false;
-  //       seen.add(m);
-  //       return true;
-  //     });
-
-  //   if (uniqueMedias.length === 0) {
-  //     if (form.getValues("diffusionLines")?.length) {
-  //       replaceDiffusions([]);
-  //     }
-  //     return;
-  //   }
-
-  //   const current = form.getValues("diffusionLines") ?? [];
-  //   const byMedia = new Map(current.map((d) => [d.media, d]));
-
-  //   const next = uniqueMedias.map((m) => {
-  //     const prev = byMedia.get(m);
-
-  //     return {
-  //       media: m,
-  //       startDate: prev?.startDate ?? null,
-  //       endDate: prev?.endDate ?? null,
-  //     };
-  //   });
-
-  //   const same =
-  //     current.length === next.length &&
-  //     current.every(
-  //       (c, i) =>
-  //         c.media === next[i].media &&
-  //         (c.startDate?.getTime?.() ?? null) ===
-  //           (next[i].startDate?.getTime?.() ?? null) &&
-  //         (c.endDate?.getTime?.() ?? null) ===
-  //           (next[i].endDate?.getTime?.() ?? null)
-  //     );
-
-  //   if (!same) {
-  //     replaceDiffusions(next);
-  //   }
-  // }, [JSON.stringify(budgetWatch), replaceDiffusions, form]);
-
-    const router = useRouter();
+  // ---------------- SUBMIT ----------------
 
   async function onSubmit(values: FormValues) {
     try {
-      const allStarts =
-        values.budgetMedia
-          ?.map((b) => b.period.from?.getTime())
-          .filter((n): n is number => typeof n === "number") ?? [];
+      const startDates = values.budgetMedia
+        .map((b) => b.period.from?.getTime())
+        .filter((x): x is number => typeof x === "number");
 
+      const endDates = values.budgetMedia
+        .map((b) => b.period.to?.getTime())
+        .filter((x): x is number => typeof x === "number");
 
-      const allEnds =
-        values.budgetMedia
-          ?.map((b) => b.period.to?.getTime())
-          .filter((n): n is number => typeof n === "number") ?? [];
-
-      const startDate = allStarts.length
-        ? new Date(Math.min(...allStarts)).toISOString()
-        : new Date().toISOString();
-
-      const endDate = allEnds.length
-        ? new Date(Math.max(...allEnds)).toISOString()
-        : new Date().toISOString();
+      const startDate = startDates.length ? new Date(Math.min(...startDates)).toISOString() : new Date().toISOString();
+      const endDate = endDates.length ? new Date(Math.max(...endDates)).toISOString() : new Date().toISOString();
 
       const campaignId: Id<"campaigns"> = await createCampaign({
         organizationId: values.organization as Id<"organizations">,
@@ -431,8 +172,8 @@ export default function CampaignForm() {
           type: b.mediaType as MediaType,
           amount: b.amount,
           pourcent: b.pourcent,
-          periodFrom: b.period.from ? b.period.from.toISOString() : undefined,
-          periodTo: b.period.to ? b.period.to.toISOString() : undefined,
+          periodFrom: b.period.from?.toISOString(),
+          periodTo: b.period.to?.toISOString(),
           title: b.title,
           details: b.details,
         })),
@@ -440,39 +181,20 @@ export default function CampaignForm() {
         status: values.status.map((s, i) => ({
           id: i,
           label: s.label,
-          state: s.state as StatusState,
-          deadline: s.deadline
-            ? s.deadline.toISOString()
-            : new Date().toISOString(),
+          state: s.state as any,
+          deadline: s.deadline ? s.deadline.toISOString() : new Date().toISOString(),
         })),
-
-        // diffusions: (values.diffusionLines ?? []).map((d) => ({
-        //   mediaType: d.media as MediaType,
-        //   startDate: d.startDate!.toISOString(),
-        //   endDate: d.endDate!.toISOString(),
-        // })),
-
-        // digitalReportUrl: "",
-
-        // report: {
-        //   status: values.statusReport as any,
-        //   document: values.documentReport,
-        //   kpi: values.kpiLines.map((k) => ({
-        //     icon: k.icon,
-        //     title: k.title,
-        //     info: k.info,
-        //   })),
-        // },
 
         archived: false,
       });
 
+      // Save medias
       await Promise.all(
         formMedias.map(async (m) => {
-          const newPublicId = `campaigns/${campaignId}/medias/${m.publicId
-            .split("/")
-            .pop()}`;
-
+          if (!m.publicId || !m.resourceType || !m.mediaType) {
+            throw new Error("Media is missing required fields");
+          }
+          const newPublicId = `campaigns/${campaignId}/medias/${m.publicId.split("/").pop()}`;
           const renamed = await moveMediaToCampaign({
             publicId: m.publicId,
             newPublicId,
@@ -493,15 +215,13 @@ export default function CampaignForm() {
         })
       );
 
+      // Save invoices
       await Promise.all(
         formInvoices.map(async (i) => {
           if (!i.publicId || !i.resourceType || !i.invoiceType) {
             throw new Error("Invoice is missing required fields");
           }
-          const newPublicId = `campaigns/${campaignId}/invoices/${i.publicId
-            .split("/")
-            .pop()}`;
-
+          const newPublicId = `campaigns/${campaignId}/invoices/${i.publicId.split("/").pop()}`;
           const renamed = await moveMediaToCampaign({
             publicId: i.publicId,
             newPublicId,
@@ -526,15 +246,13 @@ export default function CampaignForm() {
         })
       );
 
+      // Save documents
       await Promise.all(
         formDocuments.map(async (d) => {
-          if (!d.publicId || !d.resourceType || !d.url) {
+          if (!d.publicId || !d.resourceType || !d.type) {
             throw new Error("Document is missing required fields");
           }
-          const newPublicId = `campaigns/${campaignId}/documents/${d.publicId
-            .split("/")
-            .pop()}`;
-
+          const newPublicId = `campaigns/${campaignId}/documents/${d.publicId.split("/").pop()}`;
           const renamed = await moveMediaToCampaign({
             publicId: d.publicId,
             newPublicId,
@@ -545,1083 +263,54 @@ export default function CampaignForm() {
             title: d.title,
             url: renamed.secure_url,
             type: d.type,
-            resourceType: d.resourceType,
             publicId: newPublicId,
+            resourceType: d.resourceType,
             campaignId,
             organizationId: values.organization as Id<"organizations">,
           });
         })
       );
 
-      toast.success("Succès", {
-        description: "La campagne a été enregistrée correctement.",
-      });
+      toast.success("Succès", { description: "La campagne a été enregistrée." });
       form.reset(defaultValues);
       router.push(`/admin/dashboard`);
-    } catch {
-      toast.error("Erreur", {
-        description: "Impossible d'enregistrer la campagne.",
-      });
+
+    } catch (err) {
+      toast.error("Erreur", { description: "Impossible d'enregistrer la campagne." });
     }
   }
+
+  // ---------------- RENDER ----------------
 
   return (
     <section>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10 gap-2">
-            <CardHeader>
-              <Typography variant="h2" className="mb-0">
-                Le client
-              </Typography>
-            </CardHeader>
-            <CardContent>
-              <FormField
-                control={form.control}
-                name="organization"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-lg">Le client</FormLabel>
-                    <Select onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger className="w-1/3 text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                          <SelectValue
-                            placeholder={
-                              <span className="text-primary/50 italic">
-                                Sélectionnez un client existant
-                              </span>
-                            }
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                        {organizations.map((org) => (
-                          <SelectItem
-                            key={org.organizationId}
-                            value={org.organizationId}
-                          >
-                            {org.organizationName}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
 
-          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
-            <CardHeader>
-              <Typography variant="h2" className="mb-0">
-                La campagne
-              </Typography>
-            </CardHeader>
+          <SpaceOrganizations organizations={organizations} />
 
-            <CardContent>
-              <div className="flex flex-wrap gap-4">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem className="flex-1 min-w-[250px]">
-                      <FormLabel className="text-lg">
-                        Titre de la campagne
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Renseignez le nom de la campagne"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+          <SpaceInfos />
 
-                <FormField
-                  control={form.control}
-                  name="subtitle"
-                  render={({ field }) => (
-                    <FormItem className="flex-1 min-w-[250px]">
-                      <FormLabel className="text-lg">Sous-titre</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Renseignez le sous-titre"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+          <SpaceBudget />
 
-                <FormField
-                  control={form.control}
-                  name="mediaTypes"
-                  render={({ field }) => (
-                    <FormItem className="flex-1 min-w-[250px]">
-                      <FormLabel className="text-lg">
-                        Média de diffusion
-                      </FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="ghost"
-                              role="combobox"
-                              className={cn(
-                                "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50 bg-white",
-                                !field.value?.length
-                                  ? "text-primary/50"
-                                  : "text-primary"
-                              )}
-                            >
-                              {field.value?.length > 0
-                                ? field.value.length > 2
-                                  ? `${field.value.length} types de média sélectionnés`
-                                  : field.value
-                                      .map(
-                                        (mediaType: string) =>
-                                          mediaTypes.find(
-                                            (o) => o.value === mediaType
-                                          )?.label
-                                      )
-                                      .join(", ")
-                                : "Sélectionnez un ou plusieurs médias"}
-                              <SvgSmallDown />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-[--radix-popover-trigger-width] min-w-[var(--radix-popover-trigger-width)] max-w-[var(--radix-popover-trigger-width)] p-0 border border-[#A5A4BF] shadow-md rounded-sm bg-white"
-                          align="start"
-                        >
-                          <Command>
-                            <CommandEmpty>
-                              Aucun type de média trouvé.
-                            </CommandEmpty>
-                            <CommandList>
-                              <CommandGroup>
-                                {mediaTypes.map((mediaType) => {
-                                  const isSelected = field.value?.includes(
-                                    mediaType.value
-                                  );
-                                  return (
-                                    <CommandItem
-                                      key={mediaType.value}
-                                      onSelect={() => {
-                                        const updated = isSelected
-                                          ? field.value.filter(
-                                              (v: string) =>
-                                                v !== mediaType.value
-                                            )
-                                          : [
-                                              ...(field.value ?? []),
-                                              mediaType.value,
-                                            ];
-                                        field.onChange(updated);
-                                      }}
-                                    >
-                                      <div className="flex items-center gap-2">
-                                        <Checkbox
-                                          checked={isSelected}
-                                          onCheckedChange={() => {}}
-                                        />
-                                        {mediaType.label}
-                                      </div>
-                                    </CommandItem>
-                                  );
-                                })}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </CardContent>
-          </Card>
+          <SpaceSteps />
 
-          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
-            <CardHeader>
-              <Typography variant="h2" className="mb-0">
-                Le budget
-              </Typography>
-            </CardHeader>
+          <SpaceTarget />
 
-            <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="budgetTotal"
-                render={({ field }) => (
-                  <FormItem className="flex-1 min-w-[150px]">
-                    <FormLabel className="text-lg">Budget total</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Budget en €"
-                        className="w-1/3 !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                        value={field.value || ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === "" ? 0 : Number(e.target.value)
-                          )
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <SpaceMedias
+            formMedias={formMedias}
+            setFormMedias={setFormMedias}
+          />
 
-              <div className="space-y-8">
-              {budgetFields.map((row, index) => (
-                <div key={row.id}>
+          <SpaceDocuments
+            formDocuments={formDocuments}
+            setFormDocuments={setFormDocuments}
+          />
 
-                  {index > 0 && (
-                    <div className="border-t border-gray-300 my-8"></div>
-                  )}
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-
-                    <FormField
-                      control={form.control}
-                      name={`budgetMedia.${index}.mediaType`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-lg">Média</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value ?? ""}>
-                            <FormControl>
-                              <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                                <SelectValue placeholder="Type de média" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {mediaTypes.map((m) => (
-                                <SelectItem key={m.value} value={m.value}>
-                                  {m.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`budgetMedia.${index}.amount`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-lg">Budget</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="Budget en €"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              onChange={(e) =>
-                                field.onChange(
-                                  e.target.value === "" ? undefined : Number(e.target.value)
-                                )
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`budgetMedia.${index}.pourcent`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-lg">Part honoraire</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Part en € ou en %"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`budgetMedia.${index}.period`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-lg">Période</FormLabel>
-
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <div
-                                className={cn(
-                                  "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer bg-white",
-                                  "border",
-                                  form.formState.errors.budgetMedia?.[index]?.period
-                                    ? "border-destructive"
-                                    : "border-[#A5A4BF]"
-                                )}
-                              >
-                                <span className="text-base italic">
-                                  {field.value?.from && field.value?.to
-                                    ? `${format(field.value.from, "dd/MM/yyyy", {
-                                        locale: fr,
-                                      })} - ${format(field.value.to, "dd/MM/yyyy", {
-                                        locale: fr,
-                                      })}`
-                                    : "Sélectionner la période"}
-                                </span>
-                                <SvgCalendrier />
-                              </div>
-                            </PopoverTrigger>
-
-                            <PopoverContent className="w-auto p-0">
-                              <Calendar
-                                mode="range"
-                                selected={
-                                  field.value
-                                    ? {
-                                        from: field.value.from ?? undefined,
-                                        to: field.value.to ?? undefined,
-                                      }
-                                    : undefined
-                                }
-                                onSelect={(range) => {
-                                  field.onChange({
-                                    from: range?.from ?? null,
-                                    to: range?.to ?? null,
-                                  });
-                                }}
-                                locale={fr}
-                              />
-                            </PopoverContent>
-                          </Popover>
-
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`budgetMedia.${index}.title`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-lg">Titre info</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Titre"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`budgetMedia.${index}.details`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-lg">Détail info</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Détail"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                  </div>
-                </div>
-              ))}
-
-
-                {/* <div className="flex">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="px-4 py-2 font-semibold cursor-pointer underline"
-                    onClick={() =>
-                      appendBudget({
-                        mediaType: "",
-                        amount: 0,
-                        pourcent: "",
-                        // startDate: new Date(),
-                        title: "",
-                        details: "",
-                      })
-                    }
-                  >
-                    Ajouter
-                    <SvgPlus />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="px-4 py-2 font-semibold cursor-pointer"
-                    onClick={() => removeBudget(budgetFields.length - 1)}
-                    disabled={budgetFields.length === 0}
-                  >
-                    Supprimer
-                  </Button>
-                </div> */}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
-            <CardHeader>
-              <Typography variant="h2" className="mb-0">
-                Les étapes
-              </Typography>
-            </CardHeader>
-
-            <CardContent>
-              <div className="flex flex-wrap gap-4 mb-2">
-                <div className="flex-1 min-w-[170px] text-lg">Étape</div>
-                <div className="flex-1 min-w-[170px] text-lg">État</div>
-                <div className="flex-1 min-w-[170px] text-lg">
-                  Date de lancement
-                </div>
-              </div>
-              {Array.from({ length: 5 }).map((_, index) => (
-                <div key={index} className="flex flex-wrap gap-4 mb-2">
-                  <FormField
-                    control={form.control}
-                    name={`status.${index}.label`}
-                    render={({ field }) => (
-                      <FormItem className="flex-1 min-w-[170px]">
-                        <FormControl>
-                          <Input
-                            placeholder="Nom étape"
-                            className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name={`status.${index}.state`}
-                    render={({ field }) => {
-                      const allSteps = form.watch("status");
-
-                      return (
-                        <FormItem className="flex-1 min-w-[170px]">
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value ?? ""}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                                <SelectValue
-                                  placeholder={
-                                    <span className="text-primary/50 italic">
-                                      Sélectionnez l'état de l'étape
-                                    </span>
-                                  }
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                              {state.map((s) => {
-                                const prev = allSteps[index - 1]?.state;
-
-                                const disabled =
-                                  (index > 0 && !prev) ||
-                                  (s.value === "completed" &&
-                                    index > 0 &&
-                                    prev !== "completed") ||
-                                  (s.value === "current" &&
-                                    prev === "upcoming") ||
-                                  (s.value === "upcoming" &&
-                                    prev === "completed") ||
-                                  (s.value === "current" && prev === "current");
-
-                                return (
-                                  <SelectItem
-                                    key={s.value}
-                                    value={s.value}
-                                    disabled={disabled}
-                                  >
-                                    {s.label}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      );
-                    }}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name={`status.${index}.deadline`}
-                    render={({ field }) => (
-                      <FormItem className="flex-1 min-w-[170px]">
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <button
-                              type="button"
-                              className={cn(
-                                "w-full rounded-sm py-2 px-5 flex items-center justify-between",
-                                "border",
-                                field.value
-                                  ? "text-primary"
-                                  : "text-primary/50",
-                                "border-[#A5A4BF] bg-white"
-                              )}
-                              aria-label="Choisir une date"
-                            >
-                              <span className="text-base italic">
-                                {field.value
-                                  ? format(field.value, "dd/MM/yyyy", {
-                                      locale: fr,
-                                    })
-                                  : "Sélectionnez la date"}
-                              </span>
-                              <SvgCalendrier />
-                            </button>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                            align="start"
-                          >
-                            <Calendar
-                              mode="single"
-                              selected={field.value ?? undefined}
-                              onSelect={(d) => field.onChange(d || null)}
-                              disabled={(date) => {
-                                const prev = form.watch(`status.${index - 1}.deadline`);
-                                if (!prev) return false; 
-                                return date <= prev; 
-                              }}
-                              defaultMonth={field.value ?? new Date()}
-                              initialFocus
-                              locale={fr}
-                            />
-                          </PopoverContent>
-                        </Popover>
-
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
-            <CardHeader>
-              <Typography variant="h2" className="mb-0">
-                La diffusion
-              </Typography>
-            </CardHeader>
-
-            <CardContent>
-              {diffusionFields.length === 0 ? (
-                <p className="text-primary/60 italic">
-                  Ajoute au moins un média dans <strong>Le budget</strong> pour
-                  définir ses dates de diffusion.
-                </p>
-              ) : (
-                <div className="flex flex-col gap-6">
-                  {diffusionFields.map((row, index) => (
-                    <div key={row.id} className="flex flex-wrap gap-4">
-                      <div className="w-full">
-                        <div className="mt-1 text-xl underline">
-                          {mediaTypes.find((mt) => mt.value === row.media)
-                            ?.label ?? row.media}
-                        </div>
-                      </div>
-
-                      <FormField
-                        control={form.control}
-                        name={`diffusionLines.${index}.startDate`}
-                        render={({ field }) => (
-                          <FormItem className="w-full md:w-1/3">
-                            <FormLabel className="text-lg">
-                              Date de lancement
-                            </FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <button
-                                  type="button"
-                                  className={cn(
-                                    "w-full rounded-sm py-2 px-5 flex items-center justify-between",
-                                    "border",
-                                    field.value
-                                      ? "text-primary"
-                                      : "text-primary/50",
-                                    "border-[#A5A4BF] bg-white"
-                                  )}
-                                  aria-label="Choisir une date"
-                                >
-                                  <span className="text-base italic">
-                                    {field.value
-                                      ? format(field.value, "dd/MM/yyyy", {
-                                          locale: fr,
-                                        })
-                                      : "Sélectionnez la date"}
-                                  </span>
-                                  <SvgCalendrier />
-                                </button>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value ?? undefined}
-                                  onSelect={(d) => field.onChange(d || null)}
-                                  disabled={(date) =>
-                                    date < new Date("1900-01-01")
-                                  }
-                                  defaultMonth={field.value ?? new Date()}
-                                  initialFocus
-                                  locale={fr}
-                                />
-                              </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name={`diffusionLines.${index}.endDate`}
-                        render={({ field }) => (
-                          <FormItem className="w-full md:w-1/3">
-                            <FormLabel className="text-lg">
-                              Date de fin
-                            </FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <button
-                                  type="button"
-                                  className={cn(
-                                    "w-full rounded-sm py-2 px-5 flex items-center justify-between",
-                                    "border",
-                                    field.value
-                                      ? "text-primary"
-                                      : "text-primary/50",
-                                    "border-[#A5A4BF] bg-white"
-                                  )}
-                                  aria-label="Choisir une date"
-                                >
-                                  <span className="text-base italic">
-                                    {field.value
-                                      ? format(field.value, "dd/MM/yyyy", {
-                                          locale: fr,
-                                        })
-                                      : "Sélectionnez la date"}
-                                  </span>
-                                  <SvgCalendrier />
-                                </button>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value ?? undefined}
-                                  onSelect={(d) => field.onChange(d ?? null)}
-                                  disabled={(date) =>
-                                    date < new Date("1900-01-01")
-                                  }
-                                  defaultMonth={field.value ?? new Date()}
-                                  initialFocus
-                                  locale={fr}
-                                />
-                              </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card> */}
-
-          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
-            <CardHeader>
-              <Typography variant="h2" className="mb-0">
-                Les cibles de la campagne
-              </Typography>
-            </CardHeader>
-
-            <CardContent>
-              <div className="flex flex-wrap gap-4 mb-2">
-                <div className="flex-1 min-w-[170px] text-lg">
-                  Intitulé de la cible
-                </div>
-                <div className="flex-1 min-w-[170px] text-lg">
-                  Importer le fichier CSV
-                </div>
-              </div>
-              {targetFields.map((row, index) => (
-                <div key={row.id} className="flex flex-wrap gap-4 mb-2">
-                  <FormField
-                    control={form.control}
-                    name={`targetLine.${index}.target`}
-                    render={({ field }) => (
-                      <FormItem className="w-1/3">
-                        <FormControl>
-                          <Input
-                            placeholder="Renseignez l'intitulé"
-                            className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name={`targetLine.${index}.csvFiles`}
-                    render={({ field }) => (
-                      <FormItem className="w-1/3">
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder="Importer le fichier CSV"
-                              className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12"
-                              {...field}
-                            />
-                            <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              ))}
-
-              <div className="flex">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="px-4 py-2 font-semibold cursor-pointer underline"
-                  onClick={() =>
-                    appendTarget({
-                      target: "",
-                      csvFiles: "",
-                    })
-                  }
-                >
-                  Ajouter
-                  <SvgPlus />
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="px-4 py-2 font-semibold cursor-pointer"
-                  onClick={() => removeTarget(targetFields.length - 1)}
-                  disabled={targetFields.length === 0}
-                >
-                  Supprimer
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
-            <CardHeader className="flex justify-between">
-              <Typography variant="h2" className="mb-0">
-                Les médias
-              </Typography>
-              <MediaModal
-                onAddMedia={(media) =>
-                  setFormMedias((prev) => [...prev, media])
-                }
-              />
-            </CardHeader>
-
-            <CardContent>
-              {formMedias.length === 0 ? (
-                <p className="text-center py-4">Aucun média pour le moment.</p>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {formMedias.map((m, i) => (
-                    <DetailsCard
-                      key={i}
-                      variant="media"
-                      title={m.title}
-                      description={m.type.toUpperCase()}
-                      startDate={new Date()}
-                      media={{
-                        publicId: m.publicId,
-                        type: m.type,
-                        width: m.width,
-                        height: m.height,
-                        alt: m.title,
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
-            <CardHeader className="flex justify-between">
-              <Typography variant="h2" className="mb-0">
-                Les documents
-              </Typography>
-              <DocModal
-                onAddDocument={(document) =>
-                  setFormDocuments((prev) => [...prev, document])
-                }
-              />
-            </CardHeader>
-
-            <CardContent>
-              <DocumentsTable
-                documents={formDocuments}
-                headerClassName="border-b border-solid border-[#A5A4BF]"
-              />
-            </CardContent>
-          </Card>
-
-          <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
-            <CardHeader className="flex justify-between">
-              <Typography variant="h2" className="mb-0">
-                Les factures agences
-              </Typography>
-              <InvoiceModal
-                onAddInvoice={(invoice) =>
-                  setFormInvoices((prev) => [...prev, invoice])
-                }
-              />
-            </CardHeader>
-
-            <CardContent>
-              <InvoicesTable
-                invoices={formInvoices.filter(
-                  (i) => i.invoiceType === "agency"
-                )}
-                variant="agency"
-                headerClassName="border-b border-solid border-[#A5A4BF]"
-              />
-            </CardContent>
-
-            <CardHeader className="flex justify-between">
-              <Typography variant="h2" className="mb-0">
-                Les factures régie
-              </Typography>
-            </CardHeader>
-
-            <CardContent>
-              {" "}
-              <InvoicesTable
-                invoices={formInvoices.filter(
-                  (i) => i.invoiceType === "vendor"
-                )}
-                variant="vendor"
-                headerClassName="border-b border-solid border-[#A5A4BF]"
-              />
-            </CardContent>
-          </Card>
-
-          {/* <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
-            <CardHeader>
-              <Typography variant="h2" className="mb-0">
-                Bilan
-              </Typography>
-            </CardHeader>
-
-            <CardContent className="space-y-6">
-              <div className="flex flex-wrap gap-4">
-                <FormField
-                  control={form.control}
-                  name="statusReport"
-                  render={({ field }) => (
-                    <FormItem className="w-1/3">
-                      <FormLabel className="text-lg">
-                        Etat de la campagne
-                      </FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                            <SelectValue
-                              placeholder={
-                                <span className="text-primary/50 italic">
-                                  Sélectionnez l'état de l'étape
-                                </span>
-                              }
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
-                          {stateReport.map((s) => (
-                            <SelectItem key={s.value} value={s.value}>
-                              {s.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="documentReport"
-                  render={({ field }) => (
-                    <FormItem className="w-1/3">
-                      <FormLabel className="text-lg">
-                        Document de récap
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            placeholder="Importer le fichier CSV"
-                            className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12"
-                            {...field}
-                          />
-                          <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="space-y-4">
-                <div className="flex flex-wrap gap-4 mb-2">
-                  <div className="flex-1 min-w-[170px] text-lg">Icône KPI</div>
-                  <div className="flex-1 min-w-[170px] text-lg">Titre KPI</div>
-                  <div className="flex-1 min-w-[170px] text-lg">Info KPI</div>
-                </div>
-                {kpiFields.map((row, index) => (
-                  <div
-                    key={row.id}
-                    className="flex flex-row flex-nowrap gap-2 mb-2"
-                  >
-                    <FormField
-                      control={form.control}
-                      name={`kpiLines.${index}.icon`}
-                      render={({ field }) => (
-                        <FormItem className="flex-1 min-w-[170px]">
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                placeholder="Sélectionnez l'icon"
-                                className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12"
-                                {...field}
-                              />
-                              <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`kpiLines.${index}.title`}
-                      render={({ field }) => (
-                        <FormItem className="flex-1 min-w-[170px]">
-                          <FormControl>
-                            <Input
-                              placeholder="Renseignez titre KPI"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`kpiLines.${index}.info`}
-                      render={({ field }) => (
-                        <FormItem className="flex-1 min-w-[170px]">
-                          <FormControl>
-                            <Input
-                              placeholder="Renseignez info KPI"
-                              className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                ))}
-
-                <div className="flex">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="px-4 py-2 font-semibold cursor-pointer underline"
-                    onClick={() =>
-                      appendKpi({
-                        icon: "",
-                        title: "",
-                        info: "",
-                      })
-                    }
-                  >
-                    Ajouter
-                    <SvgPlus />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="px-4 py-2 font-semibold cursor-pointer"
-                    onClick={() => removeKpi(kpiFields.length - 1)}
-                    disabled={kpiFields.length === 0}
-                  >
-                    Supprimer
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card> */}
+          <SpaceInvoices
+            formInvoices={formInvoices}
+            setFormInvoices={setFormInvoices}
+          />
 
           <div className="w-full flex justify-center">
             <CtaButton
