@@ -42,6 +42,7 @@ export type Campaign = {
   report?: CampaignReport;
   archived: boolean;
   organizationId: Id<"organizations">;
+  organizationName?: string;
   _id: Id<"campaigns">;
   _creationTime: number;
 };
