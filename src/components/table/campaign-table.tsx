@@ -9,11 +9,13 @@ interface CampaignTableProps {
   campaigns: Campaign[];
   headerClassName?: string;
   showArchived?: boolean;
+  globalFilter?: string;
 }
 
 export default function CampaignTable({
   campaigns,
   headerClassName,
+  globalFilter = "",
 }: CampaignTableProps) {
   
   const columns: ColumnDef<Campaign>[] = [
@@ -73,6 +75,7 @@ export default function CampaignTable({
     <DataTable
       data={campaigns}
       columns={columns}
+      globalFilter={globalFilter}
       emptyMessage="Aucune campagne trouvée."
       headerClassName={headerClassName}
       defaultSort={{ id: "startDate", desc: false }}
