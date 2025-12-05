@@ -34,35 +34,60 @@ export const getCampaignbyId = query({
 
 export const getActiveCampaigns = query({
   handler: async (ctx) => {
-    const now = Date.now();
+    const now = new Date().toISOString();
 
-    return await ctx.db
+    const campaigns = await ctx.db
       .query("campaigns")
       .filter((q) =>
         q.and(
           q.eq(q.field("archived"), false),
-          q.gte(q.field("endDate"), new Date(now).toISOString())
+          q.gte(q.field("endDate"), now)
         )
       )
       .collect();
+
+    // Enrichissement avec le nom du client
+    return Promise.all(
+      campaigns.map(async (c) => {
+        const org = await ctx.db.get(c.organizationId);
+
+        return {
+          ...c,
+          organizationName: org?.name ?? "—",
+        };
+      })
+    );
   },
 });
 
 export const getFinishedCampaigns = query({
   handler: async (ctx) => {
-    const now = Date.now();
+    const now = new Date().toISOString();
 
-    return await ctx.db
+    const campaigns = await ctx.db
       .query("campaigns")
       .filter((q) =>
         q.and(
           q.eq(q.field("archived"), false),
-          q.lt(q.field("endDate"), new Date(now).toISOString())
+          q.lt(q.field("endDate"), now)
         )
       )
       .collect();
+
+    // Enrichissement avec le nom du client
+    return Promise.all(
+      campaigns.map(async (c) => {
+        const org = await ctx.db.get(c.organizationId);
+
+        return {
+          ...c,
+          organizationName: org?.name ?? "—",
+        };
+      })
+    );
   },
 });
+
 
 export const getArchivedCampaigns = query({
   handler: async (ctx) => {

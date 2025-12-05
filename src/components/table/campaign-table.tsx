@@ -35,7 +35,7 @@ export default function CampaignTable({
       accessorKey: "organizationId",
       header: sortableHeader("Client"),
       cell: ({ row }) =>
-        row.original.subtitle || "—",
+        row.original.organizationName || "—",
     },
     {
       accessorKey: "status",
