@@ -2,6 +2,7 @@
 
 import { DataTable, sortableHeader } from "@/components/table/data-table";
 import { Campaign } from "@/types/campaigns";
+import { MEDIA_TYPE_LABELS } from "@/types/medias";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
@@ -49,7 +50,8 @@ export default function CampaignTable({
       accessorKey: "mediaTypes",
       header: sortableHeader("Type"),
       cell: ({ row }) =>
-        row.original.mediaTypes.join(", ").toUpperCase(),
+        row.original.mediaTypes.map((t) => MEDIA_TYPE_LABELS[t])
+      .join(", "),
     },
     {
       accessorKey: "totalBudget",
