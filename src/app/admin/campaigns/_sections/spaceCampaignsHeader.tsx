@@ -4,11 +4,12 @@ import SearchBar from "@/components/search-bar";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import CtaButton from "@/components/cta-button";
-import SvgCrayonBig from "@/components/icons/CrayonBig";
+import SvgCrayon from "@/components/icons/Crayon";
 
 const CtaProps = {
-  text: "Ajouter un document",
-  icon: <SvgCrayonBig />,
+  text: "Ajouter une campagne",
+  url: "/admin/new-campaign",
+  target: "self",
 };
 
 type campaignsHeaderProps = {
@@ -26,7 +27,7 @@ export default function SpaceCampaignsHeader({
         <Typography variant="h1" className="mb-0">
           Campagnes
         </Typography>
-        <CtaButton props={CtaProps} />
+        <CtaButton props={CtaProps} icon={<SvgCrayon />} />
       </div>
       <p className="text-primary/80">{`${count} campagnes`}</p>
       <div className="flex justify-end">
