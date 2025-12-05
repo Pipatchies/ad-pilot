@@ -52,7 +52,7 @@ export function sortableHeader(label: string) {
     return (
       <button
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items-center gap-1 text-base font-bold text-primary"
+        className="flex items-center gap-1 text-lg font-bold text-primary"
       >
         {label}
         <SortIcon isSorted={column.getIsSorted()} />
