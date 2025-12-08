@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Modal from "@/components/modal";
+import Modal from "@/components/modal/modal";
 import SvgCrayonBig from "@/components/icons/CrayonBig";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

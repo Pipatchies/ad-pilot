@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Modal from "@/components/modal";
+import Modal from "@/components/modal/modal";
 import CtaButton from "@/components/cta-button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Typography from "@/components/typography";
-import InvoiceModal from "@/components/invoices-modal";
+import InvoiceModal from "@/components/modal/invoices-modal";
 
 import { Invoice } from "@/types/invoices";
 import InvoicesTable from "@/components/table/invoices-table";
@@ -17,17 +17,12 @@ export default function SpaceInvoices({
   setFormInvoices,
 }: Props) {
   // Séparation agence / régie
-  const agencyInvoices = formInvoices.filter(
-    (i) => i.invoiceType === "agency"
-  );
+  const agencyInvoices = formInvoices.filter((i) => i.invoiceType === "agency");
 
-  const vendorInvoices = formInvoices.filter(
-    (i) => i.invoiceType === "vendor"
-  );
+  const vendorInvoices = formInvoices.filter((i) => i.invoiceType === "vendor");
 
   return (
     <Card className="w-full rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
-      
       {/* HEADER */}
       <CardHeader className="flex justify-between items-center">
         <Typography variant="h2" className="mb-0">
@@ -42,7 +37,6 @@ export default function SpaceInvoices({
       </CardHeader>
 
       <CardContent className="space-y-12">
-
         {/* ---------------- AGENCY INVOICES ---------------- */}
         <div>
           <Typography variant="h3" className="font-semibold mb-4">
@@ -80,7 +74,6 @@ export default function SpaceInvoices({
             />
           )}
         </div>
-
       </CardContent>
     </Card>
   );

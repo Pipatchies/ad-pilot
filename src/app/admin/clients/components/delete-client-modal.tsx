@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Modal from "@/components/modal";
+import Modal from "@/components/modal/modal";
 import SvgCorbeille from "@/components/icons/Corbeille";
 import { useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
@@ -18,7 +18,9 @@ export default function DeleteClientModal({
   organizationId,
   organizationName,
 }: DeletedModalProps) {
-  const deleteOrganization = useMutation(api.mutations.organizations.deleteOrganization);
+  const deleteOrganization = useMutation(
+    api.mutations.organizations.deleteOrganization
+  );
 
   async function onDelete() {
     try {
@@ -34,7 +36,9 @@ export default function DeleteClientModal({
     children: (
       <div>
         Confirmez la suppression du compte <strong>{organizationName}</strong>.
-        <p className="text-xs mt-5 text-muted-foreground">Cette action est irréversible. Le compte sera définitivement supprimé.</p>
+        <p className="text-xs mt-5 text-muted-foreground">
+          Cette action est irréversible. Le compte sera définitivement supprimé.
+        </p>
       </div>
     ),
     footer: (

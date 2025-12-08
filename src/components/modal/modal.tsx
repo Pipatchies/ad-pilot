@@ -11,7 +11,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { ReactNode } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 
 type ModalProps = {

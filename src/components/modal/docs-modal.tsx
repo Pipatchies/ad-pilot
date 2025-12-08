@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Modal from "@/components/modal";
+import Modal from "@/components/modal/modal";
 import SvgPlus from "@/components/icons/Plus";
 import CtaButton from "@/components/cta-button";
 import { useForm } from "react-hook-form";
@@ -19,9 +19,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAction } from "convex/react";
 import { api } from "@/../convex/_generated/api";
-import SvgUploder from "./icons/Uploder";
+import SvgUploder from "../icons/Uploder";
 import { DocumentFileType, Document } from "@/types/docs";
-
 
 interface DocumentModalProps {
   onAddDocument: (documents: Document) => void;
@@ -52,44 +51,44 @@ export default function DocModal({ onAddDocument }: DocumentModalProps) {
 
   async function onSubmit(values: FormValues) {
     if (!file) {
-          toast.error("Veuillez sélectionner un fichier.");
-          return;
-        }
-    
-        const ext = (file.name.split(".").pop() || "").toLowerCase();
-        let tableType: DocumentFileType | null = null;
-        if (["jpg", "jpeg"].includes(ext)) tableType = "jpg";
-        if (ext === "png") tableType = "png";
-        if (ext === "pdf") tableType = "pdf";
-        if (ext === "mp3") tableType = "mp3";
-        if (ext === "mp4") tableType = "mp4";
-    
-        if (!tableType) {
-          toast.error("Format non supporté. Autorisés : png, jpg, pdf, mp3, mp4.");
-          return;
-        }
-    
-        const resourceType =
-          tableType === "mp4" ? "video" : tableType === "mp3" ? "raw" : "image";
-        const folder = `campaigns/documents`;
-    
-        setUploading(true);
-        try {
-          const sig = await getSignature({ folder, resourceType: resourceType });
-    
-          const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
-          const fd = new FormData();
-          fd.append("file", file);
-          fd.append("api_key", sig.apiKey);
-          fd.append("timestamp", String(sig.timestamp));
-          fd.append("upload_preset", sig.uploadPreset);
-          fd.append("signature", sig.signature);
-          fd.append("folder", sig.folder);
-    
-          const res = await fetch(endpoint, { method: "POST", body: fd });
-          const json = await res.json();
-    
-          if (json.error) throw new Error(json.error?.message || "Upload failed");
+      toast.error("Veuillez sélectionner un fichier.");
+      return;
+    }
+
+    const ext = (file.name.split(".").pop() || "").toLowerCase();
+    let tableType: DocumentFileType | null = null;
+    if (["jpg", "jpeg"].includes(ext)) tableType = "jpg";
+    if (ext === "png") tableType = "png";
+    if (ext === "pdf") tableType = "pdf";
+    if (ext === "mp3") tableType = "mp3";
+    if (ext === "mp4") tableType = "mp4";
+
+    if (!tableType) {
+      toast.error("Format non supporté. Autorisés : png, jpg, pdf, mp3, mp4.");
+      return;
+    }
+
+    const resourceType =
+      tableType === "mp4" ? "video" : tableType === "mp3" ? "raw" : "image";
+    const folder = `campaigns/documents`;
+
+    setUploading(true);
+    try {
+      const sig = await getSignature({ folder, resourceType: resourceType });
+
+      const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("api_key", sig.apiKey);
+      fd.append("timestamp", String(sig.timestamp));
+      fd.append("upload_preset", sig.uploadPreset);
+      fd.append("signature", sig.signature);
+      fd.append("folder", sig.folder);
+
+      const res = await fetch(endpoint, { method: "POST", body: fd });
+      const json = await res.json();
+
+      if (json.error) throw new Error(json.error?.message || "Upload failed");
 
       onAddDocument({
         title: values.title,
@@ -116,26 +115,26 @@ export default function DocModal({ onAddDocument }: DocumentModalProps) {
     children: (
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel className="text-lg font-semibold">
-                    {" "}
-                    Numéro de facture
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Renseignez le titre"
-                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel className="text-lg font-semibold">
+                  {" "}
+                  Numéro de facture
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Renseignez le titre"
+                    className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormItem>
             <FormLabel className="text-lg font-semibold">

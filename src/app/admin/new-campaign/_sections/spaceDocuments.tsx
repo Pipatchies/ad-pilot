@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Typography from "@/components/typography";
-import DocModal from "@/components/docs-modal";
+import DocModal from "@/components/modal/docs-modal";
 import DocumentsTable from "@/components/table/documents-table";
 import { Document } from "@/types/docs";
 
