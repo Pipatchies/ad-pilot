@@ -6,15 +6,20 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 type Props = {
-    props: string | any;
-    className?: string;
-    variant?: string;
-    userType?: string;
-    icon?: React.ReactNode;
-}
+  props: string | any;
+  className?: string;
+  variant?: string;
+  userType?: string;
+  icon?: React.ReactNode;
+};
 
-export default function CtaButton({ props, className, variant, userType, icon }: Props) {
-
+export default function CtaButton({
+  props,
+  className,
+  variant,
+  userType,
+  icon,
+}: Props) {
   const linkProps: any = {
     href: props.url,
     className: "flex items-center justify-between w-fit space-x-5",
@@ -45,13 +50,31 @@ export default function CtaButton({ props, className, variant, userType, icon }:
             className
           )}
         >
-            <span className="block !leading-none relative font-[600]">
-              {text}
-            </span>
+          <span className="block !leading-none relative font-[600]">
+            {text}
+          </span>
         </Button>
       );
 
-      case "noIcon":
+    case "cancel":
+      if (!props?.text) return null;
+
+      return (
+        <Button
+          type="button"
+          variant="outline"
+          className={cn(
+            "group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border hover:border-primary hover:text-primary bg-primary text-white cursor-pointer",
+            className
+          )}
+        >
+          <span className="block !leading-none relative font-[600]">
+            {text}
+          </span>
+        </Button>
+      );
+
+    case "noIcon":
       if (!props?.url || !props?.text) return null;
 
       return (
@@ -64,9 +87,7 @@ export default function CtaButton({ props, className, variant, userType, icon }:
           )}
         >
           <Link {...linkProps}>
-            <span className="block !leading-none font-600">
-              {text}
-            </span>
+            <span className="block !leading-none font-600">{text}</span>
           </Link>
         </Button>
       );
@@ -84,10 +105,8 @@ export default function CtaButton({ props, className, variant, userType, icon }:
           )}
         >
           <Link {...linkProps}>
-          {icon && <div className="mr-2">{icon}</div>}
-            <span className="block !leading-none font-600">
-              {text}
-            </span>
+            {icon && <div className="mr-2">{icon}</div>}
+            <span className="block !leading-none font-600">{text}</span>
           </Link>
         </Button>
       );
