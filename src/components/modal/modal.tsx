@@ -21,8 +21,8 @@ type ModalProps = {
     icon: React.ReactNode;
   };
   data: {
-    title?: string;
-    description?: string;
+    title?: ReactNode;
+    description?: ReactNode;
     children: ReactNode;
     footer?: ReactNode;
     subject?: string;
@@ -54,10 +54,18 @@ export default function Modal({ variant = "button", cta, data }: ModalProps) {
           data.className
         )}
       >
-        <DialogHeader>
-          <DialogTitle className="font-bold text-2xl">{data.title}</DialogTitle>
-          <DialogDescription>{data.description}</DialogDescription>
-        </DialogHeader>
+        {(data.title || data.description) && (
+          <DialogHeader>
+            {data.title && (
+              <DialogTitle className="font-bold text-2xl">
+                {data.title}
+              </DialogTitle>
+            )}
+            {data.description && (
+              <DialogDescription>{data.description}</DialogDescription>
+            )}
+          </DialogHeader>
+        )}
         <div className="mt-4 w-full max-w-2xl">{data.children}</div>
         <DialogFooter className="mt-6">
           <DialogClose asChild>{data.footer}</DialogClose>
