@@ -5,9 +5,11 @@ import { Campaign } from "@/types/campaigns";
 import { MEDIA_TYPE_LABELS } from "@/types/medias";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
-import SvgCorbeille from "../icons/Corbeille";
 import SvgDupliquer from "../icons/Dupliquer";
 import SvgCrayonBig from "../icons/CrayonBig";
+import DeleteModal from "../modal/delete-modal";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 interface CampaignTableProps {
   campaigns: Campaign[];
@@ -21,6 +23,8 @@ export default function CampaignTable({
   headerClassName,
   globalFilter = "",
 }: CampaignTableProps) {
+
+  const deleteCampaign = useMutation(api.mutations.campaigns.deleteCampaign);
   
   const columns: ColumnDef<Campaign>[] = [
     {
@@ -77,11 +81,12 @@ export default function CampaignTable({
     {
       id: "actions",
       header: "",
-      cell: () => (
+      cell: ({ row }) => (
         <div className="flex justify-end gap-4">
           <SvgCrayonBig />
           <SvgDupliquer />
-          <SvgCorbeille />
+          <DeleteModal 
+          onConfirm={() => deleteCampaign({ campaignId: row.original._id })}/>
         </div>
       ),
     },

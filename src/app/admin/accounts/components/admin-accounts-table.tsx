@@ -21,8 +21,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Id } from "../../../../../convex/_generated/dataModel";
-import DeleteAccountModal from "./delete-account-modal";
 import UpdateAccountModal from "./update-account-modal";
+import DeleteModal from "@/components/modal/delete-modal";
+import { useMutation } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 
 type AdminAccount = {
   userId: Id<"users">;
@@ -54,6 +56,8 @@ export default function AdminAccountsTable({
   globalFilter = "",
 }: AdminAccountsProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
+
+  const deleteAccount = useMutation(api.mutations.users.deleteUser);
 
   const columns: ColumnDef<AdminAccount>[] = [
     {
@@ -139,9 +143,8 @@ export default function AdminAccountsTable({
           lastname={data.lastname}
           email={data.email}
         />
-        <DeleteAccountModal
-          userId={data.userId}
-          fullName={`${data.name} ${data.lastname}`}
+        <DeleteModal
+          onConfirm={() => deleteAccount({ userId: data.userId })}
         />
       </div>
         );
