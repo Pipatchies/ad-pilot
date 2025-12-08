@@ -5,6 +5,9 @@ import { Campaign } from "@/types/campaigns";
 import { MEDIA_TYPE_LABELS } from "@/types/medias";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
+import SvgCorbeille from "../icons/Corbeille";
+import SvgDupliquer from "../icons/Dupliquer";
+import SvgCrayonBig from "../icons/CrayonBig";
 
 interface CampaignTableProps {
   campaigns: Campaign[];
@@ -70,6 +73,17 @@ export default function CampaignTable({
       header: sortableHeader("Date fin"),
       cell: ({ row }) =>
         new Date(row.original.endDate).toLocaleDateString("fr-FR"),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: () => (
+        <div className="flex justify-end gap-4">
+          <SvgCrayonBig />
+          <SvgDupliquer />
+          <SvgCorbeille />
+        </div>
+      ),
     },
   ];
 
