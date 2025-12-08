@@ -85,3 +85,56 @@ export const createCampaign = mutation({
     return campaignId;
   },
 });
+
+export const archiveCampaign = mutation({
+  args: {
+    campaignId: v.id("campaigns"),
+    archived: v.boolean(),
+  },
+  handler: async (ctx, { campaignId, archived }) => {
+    await ctx.db.patch(campaignId, { archived });
+  },
+});
+
+export const updateCampaign = mutation({
+  args: {
+    campaignId: v.id("campaigns"),
+    patch: v.object({
+      title: v.optional(v.string()),
+      subtitle: v.optional(v.string()),
+      startDate: v.optional(v.string()),
+      endDate: v.optional(v.string()),
+      totalBudget: v.optional(v.number()),
+      archived: v.optional(v.boolean()),
+      mediaTypes: v.optional(
+        v.array(
+          v.union(
+            v.literal("digital"),
+            v.literal("tv"),
+            v.literal("ooh"),
+            v.literal("radio"),
+            v.literal("cinema"),
+            v.literal("press")
+          )
+        )
+      ),
+    }),
+  },
+
+  handler: async (ctx, { campaignId, patch }) => {
+    await ctx.db.patch(campaignId, patch);
+  },
+});
+
+
+export const deleteCampaign = mutation({
+  args: {
+    campaignId: v.id("campaigns"),
+  },
+  handler: async (ctx, { campaignId }) => {
+    await ctx.db.delete(campaignId);
+  },
+}); 
+
+
+
