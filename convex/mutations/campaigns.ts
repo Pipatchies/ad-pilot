@@ -48,32 +48,6 @@ export const createCampaign = mutation({
         deadline: v.string(),
       })
     ),
-    // diffusions: v.array(
-    //   v.object({
-    //     mediaType: v.union(
-    //       v.literal("ooh"),
-    //       v.literal("tv"),
-    //       v.literal("radio"),
-    //       v.literal("digital"),
-    //       v.literal("cinema"),
-    //       v.literal("press")
-    //     ),
-    //     startDate: v.string(),
-    //     endDate: v.string(),
-    //   })
-    // ),
-    // digitalReportUrl: v.string(),
-    // report: v.object({
-    //   status: v.union(v.literal("completed"), v.literal("archived")),
-    //   document: v.optional(v.string()),
-    //   kpi: v.array(
-    //     v.object({
-    //       icon: v.string(),
-    //       title: v.string(),
-    //       info: v.string(),
-    //     })
-    //   ),
-    // }),
     archived: v.boolean(),
     organizationId: v.id("organizations"),
   },
@@ -125,6 +99,28 @@ export const updateCampaign = mutation({
     await ctx.db.patch(campaignId, patch);
   },
 });
+
+export const duplicateCampaign = mutation({
+  args: { campaignId: v.id("campaigns") },
+  handler: async (ctx, { campaignId }) => {
+
+    const original = await ctx.db.get(campaignId);
+    if (!original) throw new Error("Campaign not found");
+
+    const { _id, _creationTime, archived, ...rest } = original;
+
+    const duplicatedData = {
+      ...rest,
+      title: `${original.title} (copie)`,
+      archived: false,
+    };
+
+    const newCampaignId = await ctx.db.insert("campaigns", duplicatedData);
+
+    return { success: true, newCampaignId };
+  },
+});
+
 
 
 export const deleteCampaign = mutation({

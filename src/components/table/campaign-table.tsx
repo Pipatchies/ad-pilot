@@ -10,6 +10,8 @@ import SvgCrayonBig from "../icons/CrayonBig";
 import DeleteModal from "../modal/delete-modal";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { toast } from "sonner";
+import { Id } from "../../../convex/_generated/dataModel";
 
 interface CampaignTableProps {
   campaigns: Campaign[];
@@ -25,6 +27,17 @@ export default function CampaignTable({
 }: CampaignTableProps) {
 
   const deleteCampaign = useMutation(api.mutations.campaigns.deleteCampaign);
+  const duplicateCampaign = useMutation(api.mutations.campaigns.duplicateCampaign);
+
+  async function handleDuplicate(campaignId: Id<"campaigns">) {
+    try {
+      await duplicateCampaign({ campaignId });
+      toast.success("Campagne dupliquée avec succès");
+    } catch {
+      toast.error("Échec de la duplication de la campagne");
+    }
+  }
+
   
   const columns: ColumnDef<Campaign>[] = [
     {
@@ -84,7 +97,9 @@ export default function CampaignTable({
       cell: ({ row }) => (
         <div className="flex justify-end gap-4">
           <SvgCrayonBig />
+          <button onClick={() => handleDuplicate(row.original._id)} className="cursor-pointer">
           <SvgDupliquer />
+          </button>
           <DeleteModal 
           onConfirm={() => deleteCampaign({ campaignId: row.original._id })}/>
         </div>
