@@ -21,7 +21,7 @@ export const getCampaignsByOrganization = query({
   },
 });
 
-export const getCampaignbyId = query({
+export const getCampaignById = query({
   args: {
     campaignId: v.id("campaigns"),
   },

@@ -96,7 +96,9 @@ export default function CampaignTable({
       header: "",
       cell: ({ row }) => (
         <div className="flex justify-end gap-4">
-          <SvgCrayonBig />
+          <Link href={`campaigns/${row.original._id}`} className="cursor-pointer">
+            <SvgCrayonBig />
+          </Link>
           <button onClick={() => handleDuplicate(row.original._id)} className="cursor-pointer">
           <SvgDupliquer />
           </button>

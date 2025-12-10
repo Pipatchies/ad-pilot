@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -40,34 +40,40 @@ const formSchema = z.object({
 
   budgetMedia: z.array(
     z.object({
-      mediaType: z.string().min(1),
+      type: z.string().min(1),
       amount: z.number().nonnegative(),
-      pourcent: z.string().min(1),
-      period: z.object({
-        from: z.date().nullable(),
-        to: z.date().nullable(),
-      }).refine((p) => p.from && p.to, {
-        message: "La période est requise",
-      }),
+      pourcent: z.number().or(z.string()),
+      period: z
+        .object({
+          from: z.date().nullable(),
+          to: z.date().nullable(),
+        })
+        .refine((p) => p.from && p.to, {
+          message: "La période est requise",
+        }),
       title: z.string().min(1),
       details: z.string().min(1),
     })
   ),
 
-  status: z.array(
-    z.object({
-      label: z.string().min(1),
-      state: z.string().min(1),
-      deadline: z.date().nullable(),
-    })
-  ).length(5),
+  status: z
+    .array(
+      z.object({
+        label: z.string().min(1),
+        state: z.string().min(1),
+        deadline: z.date().nullable(),
+      })
+    )
+    .length(5),
 
-  targetLine: z.array(
-    z.object({
-      target: z.string().min(1),
-      csvFiles: z.string().min(1),
-    })
-  ).min(1),
+  targetLine: z
+    .array(
+      z.object({
+        target: z.string().min(1),
+        csvFiles: z.string().min(1),
+      })
+    )
+    .min(1),
 });
 
 // ---------------- DEFAULT VALUES ----------------
@@ -80,15 +86,21 @@ const defaultValues = {
   budgetTotal: 0,
   budgetMedia: [
     {
-      mediaType: "",
+      type: "",
       amount: 0,
-      pourcent: "",
+      pourcent: 0,
       period: { from: null, to: null },
       title: "",
       details: "",
     },
   ],
-  status: ["Brief","Création","Validation","Diffusion en cours","Bilan"].map(label => ({
+  status: [
+    "Brief",
+    "Création",
+    "Validation",
+    "Diffusion en cours",
+    "Bilan",
+  ].map((label) => ({
     label,
     state: "",
     deadline: null,
@@ -96,7 +108,11 @@ const defaultValues = {
   targetLine: [{ target: "", csvFiles: "" }],
 };
 
-export default function CampaignForm() {
+export default function CampaignForm({
+  campaignId,
+}: {
+  campaignId?: Id<"campaigns">;
+}) {
   type FormValues = z.infer<typeof formSchema>;
 
   const router = useRouter();
@@ -107,20 +123,61 @@ export default function CampaignForm() {
     defaultValues,
   });
 
-  // Local states
+  // Local states for uploaded files
   const [formMedias, setFormMedias] = useState<Media[]>([]);
   const [formInvoices, setFormInvoices] = useState<Invoice[]>([]);
   const [formDocuments, setFormDocuments] = useState<Document[]>([]);
 
   // Convex queries
   const organizations =
-    useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ?? [];
+    useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ??
+    [];
 
+  const existingCampaign = useQuery(
+    api.queries.campaigns.getCampaignById,
+    campaignId ? { campaignId } : "skip"
+  );
+
+  // Convex mutations
   const createCampaign = useMutation(api.mutations.campaigns.createCampaign);
+  const updateCampaign = useMutation(api.mutations.campaigns.updateCampaign);
   const createMedia = useMutation(api.mutations.medias.createMedia);
-  const moveMediaToCampaign = useAction(api.actions.cloudinary.moveMediaToCampaign);
   const createInvoice = useMutation(api.mutations.invoices.createInvoice);
   const createDocument = useMutation(api.mutations.documents.createDocument);
+
+  // Convex actions
+  const moveMediaToCampaign = useAction(
+    api.actions.cloudinary.moveMediaToCampaign
+  );
+
+  // When editing → reset form with existing values
+  useEffect(() => {
+    if (!existingCampaign) return;
+
+    form.reset({
+      organization: existingCampaign.organizationId,
+      title: existingCampaign.title,
+      subtitle: existingCampaign.subtitle,
+      mediaTypes: existingCampaign.mediaTypes,
+      budgetTotal: existingCampaign.totalBudget,
+      budgetMedia: existingCampaign.budgetMedia.map((b) => ({
+        type: b.type as MediaType,
+        amount: b.amount,
+        pourcent: b.pourcent,
+        period: {
+          from: b.periodFrom ? new Date(b.periodFrom) : null,
+          to: b.periodTo ? new Date(b.periodTo) : null,
+        },
+        title: b.title,
+        details: b.details,
+      })),
+      status: existingCampaign.status.map((s) => ({
+        label: s.label,
+        state: s.state as any,
+        deadline: s.deadline ? new Date(s.deadline) : null,
+      })),
+    });
+  }, [existingCampaign]);
 
   // Keep budgetMedia in sync with mediaTypes
   const mediaTypesWatch = form.watch("mediaTypes");
@@ -130,15 +187,17 @@ export default function CampaignForm() {
     const prev = form.getValues("budgetMedia") ?? [];
 
     const updated = selected.map((media) => {
-      const existing = prev.find((b) => b.mediaType === media);
-      return existing ?? {
-        mediaType: media,
-        amount: 0,
-        pourcent: "",
-        period: { from: null, to: null },
-        title: "",
-        details: "",
-      };
+      const existing = prev.find((b) => b.type === media);
+      return (
+        existing ?? {
+          type: media,
+          amount: 0,
+          pourcent: "",
+          period: { from: null, to: null },
+          title: "",
+          details: "",
+        }
+      );
     });
 
     form.setValue("budgetMedia", updated, { shouldValidate: true });
@@ -156,8 +215,12 @@ export default function CampaignForm() {
         .map((b) => b.period.to?.getTime())
         .filter((x): x is number => typeof x === "number");
 
-      const startDate = startDates.length ? new Date(Math.min(...startDates)).toISOString() : new Date().toISOString();
-      const endDate = endDates.length ? new Date(Math.max(...endDates)).toISOString() : new Date().toISOString();
+      const startDate = startDates.length
+        ? new Date(Math.min(...startDates)).toISOString()
+        : new Date().toISOString();
+      const endDate = endDates.length
+        ? new Date(Math.max(...endDates)).toISOString()
+        : new Date().toISOString();
 
       const campaignId: Id<"campaigns"> = await createCampaign({
         organizationId: values.organization as Id<"organizations">,
@@ -169,7 +232,7 @@ export default function CampaignForm() {
         totalBudget: values.budgetTotal,
 
         budgetMedia: values.budgetMedia.map((b) => ({
-          type: b.mediaType as MediaType,
+          type: b.type as MediaType,
           amount: b.amount,
           pourcent: b.pourcent,
           periodFrom: b.period.from?.toISOString(),
@@ -182,7 +245,9 @@ export default function CampaignForm() {
           id: i,
           label: s.label,
           state: s.state as any,
-          deadline: s.deadline ? s.deadline.toISOString() : new Date().toISOString(),
+          deadline: s.deadline
+            ? s.deadline.toISOString()
+            : new Date().toISOString(),
         })),
 
         archived: false,
@@ -194,7 +259,9 @@ export default function CampaignForm() {
           if (!m.publicId || !m.resourceType || !m.mediaType) {
             throw new Error("Media is missing required fields");
           }
-          const newPublicId = `campaigns/${campaignId}/medias/${m.publicId.split("/").pop()}`;
+          const newPublicId = `campaigns/${campaignId}/medias/${m.publicId
+            .split("/")
+            .pop()}`;
           const renamed = await moveMediaToCampaign({
             publicId: m.publicId,
             newPublicId,
@@ -221,7 +288,9 @@ export default function CampaignForm() {
           if (!i.publicId || !i.resourceType || !i.invoiceType) {
             throw new Error("Invoice is missing required fields");
           }
-          const newPublicId = `campaigns/${campaignId}/invoices/${i.publicId.split("/").pop()}`;
+          const newPublicId = `campaigns/${campaignId}/invoices/${i.publicId
+            .split("/")
+            .pop()}`;
           const renamed = await moveMediaToCampaign({
             publicId: i.publicId,
             newPublicId,
@@ -252,7 +321,9 @@ export default function CampaignForm() {
           if (!d.publicId || !d.resourceType || !d.type) {
             throw new Error("Document is missing required fields");
           }
-          const newPublicId = `campaigns/${campaignId}/documents/${d.publicId.split("/").pop()}`;
+          const newPublicId = `campaigns/${campaignId}/documents/${d.publicId
+            .split("/")
+            .pop()}`;
           const renamed = await moveMediaToCampaign({
             publicId: d.publicId,
             newPublicId,
@@ -271,12 +342,54 @@ export default function CampaignForm() {
         })
       );
 
-      toast.success("Succès", { description: "La campagne a été enregistrée." });
+      toast.success("Succès", {
+        description: "La campagne a été enregistrée.",
+      });
       form.reset(defaultValues);
       router.push(`/admin/dashboard`);
-
     } catch (err) {
-      toast.error("Erreur", { description: "Impossible d'enregistrer la campagne." });
+      toast.error("Erreur", {
+        description: "Impossible d'enregistrer la campagne.",
+      });
+    }
+  }
+
+  // ---------------- UPDATE ----------------
+
+  async function onUpdate(values: FormValues) {
+    try {
+      if (!campaignId) return;
+
+      await updateCampaign({
+        campaignId,
+        patch: {
+          organizationId: values.organization as Id<"organizations">,
+          title: values.title,
+          subtitle: values.subtitle,
+          mediaTypes: values.mediaTypes as MediaType[],
+          totalBudget: values.budgetTotal,
+          budgetMedia: values.budgetMedia.map((b) => ({
+            type: b.type as MediaType,
+            amount: b.amount,
+            pourcent: b.pourcent,
+            periodFrom: b.period.from?.toISOString(),
+            periodTo: b.period.to?.toISOString(),
+            title: b.title,
+            details: b.details,
+          })),
+          status: values.status.map((s, i) => ({
+            id: i,
+            label: s.label,
+            state: s.state as "completed" | "current" | "upcoming",
+            deadline: s.deadline ? s.deadline.toISOString() : new Date().toISOString(),
+          })),
+        },
+      });
+
+      toast.success("Campagne mise à jour !");
+      router.push(`/campaigns/${campaignId}`);
+    } catch (err) {
+      toast.error("Erreur lors de la mise à jour.");
     }
   }
 
@@ -286,7 +399,6 @@ export default function CampaignForm() {
     <section>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-
           <SpaceOrganizations organizations={organizations} />
 
           <SpaceInfos />
@@ -297,10 +409,7 @@ export default function CampaignForm() {
 
           <SpaceTarget />
 
-          <SpaceMedias
-            formMedias={formMedias}
-            setFormMedias={setFormMedias}
-          />
+          <SpaceMedias formMedias={formMedias} setFormMedias={setFormMedias} />
 
           <SpaceDocuments
             formDocuments={formDocuments}
