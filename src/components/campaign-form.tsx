@@ -28,6 +28,7 @@ import SpaceTarget from "../app/admin/new-campaign/_sections/spaceTargets";
 import SpaceMedias from "../app/admin/new-campaign/_sections/spaceMedias";
 import SpaceDocuments from "../app/admin/new-campaign/_sections/spaceDocuments";
 import SpaceInvoices from "../app/admin/new-campaign/_sections/spaceInvoices";
+import SpaceCampaignReport from "@/app/admin/new-campaign/_sections/spaceCampaignReport";
 
 // ---------------- SCHEMA ----------------
 
@@ -74,6 +75,20 @@ const formSchema = z.object({
       })
     )
     .min(1),
+
+   report: z
+    .object({
+      status: z.enum(["completed", "archived"]).optional(),
+      document: z.string().optional(),
+      kpi: z.array(
+        z.object({
+          icon: z.string(),
+          title: z.string(),
+          info: z.string(),
+        })
+      ).optional(),
+    })
+    .optional()
 });
 
 // ---------------- DEFAULT VALUES ----------------
@@ -106,6 +121,11 @@ const defaultValues = {
     deadline: null,
   })),
   targetLine: [{ target: "", csvFiles: "" }],
+  report: {
+    status: undefined,
+    document: "",
+    kpi: []
+  }
 };
 
 export default function CampaignForm({
@@ -191,24 +211,30 @@ export default function CampaignForm({
         state: s.state as any,
         deadline: s.deadline ? new Date(s.deadline) : null,
       })),
+      report: existingCampaign.report
+    ? {
+        status: existingCampaign.report.status,
+        document: existingCampaign.report.document ?? "",
+        kpi: existingCampaign.report.kpi ?? []
+      }
+    : undefined,
     });
   }, [existingCampaign]);
 
   useEffect(() => {
-  if (!existingMedias) return;
-  setFormMedias(existingMedias);
-}, [existingMedias]);
+    if (!existingMedias) return;
+    setFormMedias(existingMedias);
+  }, [existingMedias]);
 
-useEffect(() => {
-  if (!existingInvoices) return;
-  setFormInvoices(existingInvoices);
-}, [existingInvoices]);
+  useEffect(() => {
+    if (!existingInvoices) return;
+    setFormInvoices(existingInvoices);
+  }, [existingInvoices]);
 
-useEffect(() => {
-  if (!existingDocuments) return;
-  setFormDocuments(existingDocuments);
-}, [existingDocuments]);
-
+  useEffect(() => {
+    if (!existingDocuments) return;
+    setFormDocuments(existingDocuments);
+  }, [existingDocuments]);
 
   // Keep budgetMedia in sync with mediaTypes
   const mediaTypesWatch = form.watch("mediaTypes");
@@ -416,6 +442,13 @@ useEffect(() => {
               ? s.deadline.toISOString()
               : new Date().toISOString(),
           })),
+          report: values.report
+        ? {
+            status: values.report.status,
+            document: values.report.document ?? "",
+            kpi: values.report.kpi ?? []
+          }
+        : undefined,
         },
       });
 
@@ -453,6 +486,8 @@ useEffect(() => {
             formInvoices={formInvoices}
             setFormInvoices={setFormInvoices}
           />
+
+          {campaignId && <SpaceCampaignReport campaignId={campaignId} />}
 
           <div className="w-full flex justify-center">
             <CtaButton

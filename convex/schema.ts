@@ -114,14 +114,16 @@ export default defineSchema({
     digitalReportUrl: v.optional(v.string()),
     report: v.optional(
       v.object({
-        status: v.union(v.literal("completed"), v.literal("archived")),
+        status: v.optional(v.union(v.literal("completed"), v.literal("archived"))),
         document: v.optional(v.string()),
-        kpi: v.array(
-          v.object({
-            icon: v.string(),
-            title: v.string(),
-            info: v.string(),
-          })
+        kpi: v.optional(
+          v.array(
+            v.object({
+              icon: v.string(),
+              title: v.string(),
+              info: v.string(),
+            })
+          )   
         ),
       })
     ),
