@@ -45,7 +45,7 @@ export default function CampaignTable({
       header: sortableHeader("Nom de la campagne"),
       cell: ({ row }) => (
         <Link
-          href={`/campaigns/${row.original._id}`}
+          href={`campaigns/${row.original._id}`}
           className="font-bold underline"
         >
           {row.getValue("title")}
