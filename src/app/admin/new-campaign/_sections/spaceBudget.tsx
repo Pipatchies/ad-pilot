@@ -91,7 +91,7 @@ export default function SpaceBudget() {
                 {/* MEDIA TYPE */}
                 <FormField
                   control={control}
-                  name={`budgetMedia.${index}.mediaType`}
+                  name={`budgetMedia.${index}.type`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg">Média</FormLabel>
