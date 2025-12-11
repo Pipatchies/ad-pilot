@@ -12,8 +12,8 @@ type clientsHeaderProps = {
 export default function SpaceClientsHeader({
   onQueryChange,
 }: clientsHeaderProps) {
-      const adminAccounts = useQuery(api.queries.users.getAdmin) ?? [];
-      const count = adminAccounts.length;
+      const organizationAccounts = useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection) ?? [];
+      const count = organizationAccounts.length;
   return (
     <section><div className="flex flex-wrap items-center justify-between">
         <Typography variant="h1" className="mb-0">
