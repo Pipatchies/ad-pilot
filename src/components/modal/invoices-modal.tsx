@@ -184,7 +184,7 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
               name="invoiceType"
               render={({ field }) => (
                 <FormItem className="flex-1 min-w-[170px]">
-                  <FormLabel className="text-lg">Type de média</FormLabel>
+                  <FormLabel className="text-lg">Type de facture</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
