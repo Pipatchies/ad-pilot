@@ -179,7 +179,7 @@ export default defineSchema({
     ),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
-  }),
+  }).index("by_campaignId", ["campaignId"]),
 
   invoices: defineTable({
     title: v.string(),
