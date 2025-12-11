@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Modal from "@/components/modal";
+import Modal from "@/components/modal/modal";
 import SvgCrayonBig from "@/components/icons/CrayonBig";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -95,9 +95,7 @@ export default function UpdateClientModal({
               name="logo"
               render={({ field }) => (
                 <FormItem className="w-1/2">
-                  <FormLabel className="text-lg font-semibold">
-                    Logo
-                  </FormLabel>
+                  <FormLabel className="text-lg font-semibold">Logo</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Nom"

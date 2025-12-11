@@ -84,6 +84,19 @@ export const getVendorInvoicesByOrganization = query({
   },
 });
 
+export const getInvoicesByCampaign = query({
+  args: {
+    campaignId: v.id("campaigns"),
+  },
+  handler: async (ctx, { campaignId }) => {
+    const invoices = await ctx.db
+      .query("invoices")
+      .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
+      .collect();
+      return invoices;
+  },
+});
+
 export const getAgencyInvoicesByCampaign = query({
   args: {
     campaignId: v.id("campaigns"),

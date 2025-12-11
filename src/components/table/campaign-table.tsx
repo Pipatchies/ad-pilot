@@ -5,6 +5,13 @@ import { Campaign } from "@/types/campaigns";
 import { MEDIA_TYPE_LABELS } from "@/types/medias";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
+import SvgDupliquer from "../icons/Dupliquer";
+import SvgCrayonBig from "../icons/CrayonBig";
+import DeleteModal from "../modal/delete-modal";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { toast } from "sonner";
+import { Id } from "../../../convex/_generated/dataModel";
 
 interface CampaignTableProps {
   campaigns: Campaign[];
@@ -18,6 +25,19 @@ export default function CampaignTable({
   headerClassName,
   globalFilter = "",
 }: CampaignTableProps) {
+
+  const deleteCampaign = useMutation(api.mutations.campaigns.deleteCampaign);
+  const duplicateCampaign = useMutation(api.mutations.campaigns.duplicateCampaign);
+
+  async function handleDuplicate(campaignId: Id<"campaigns">) {
+    try {
+      await duplicateCampaign({ campaignId });
+      toast.success("Campagne dupliquée avec succès");
+    } catch {
+      toast.error("Échec de la duplication de la campagne");
+    }
+  }
+
   
   const columns: ColumnDef<Campaign>[] = [
     {
@@ -25,7 +45,7 @@ export default function CampaignTable({
       header: sortableHeader("Nom de la campagne"),
       cell: ({ row }) => (
         <Link
-          href={`/campaigns/${row.original._id}`}
+          href={`campaigns/${row.original._id}`}
           className="font-bold underline"
         >
           {row.getValue("title")}
@@ -70,6 +90,22 @@ export default function CampaignTable({
       header: sortableHeader("Date fin"),
       cell: ({ row }) =>
         new Date(row.original.endDate).toLocaleDateString("fr-FR"),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <div className="flex justify-end gap-4">
+          <Link href={`campaigns/${row.original._id}`} className="cursor-pointer">
+            <SvgCrayonBig />
+          </Link>
+          <button onClick={() => handleDuplicate(row.original._id)} className="cursor-pointer">
+          <SvgDupliquer />
+          </button>
+          <DeleteModal 
+          onConfirm={() => deleteCampaign({ campaignId: row.original._id })}/>
+        </div>
+      ),
     },
   ];
 

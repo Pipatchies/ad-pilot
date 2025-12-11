@@ -4,7 +4,7 @@ import SpaceCampaignsHeader from "./spaceCampaignsHeader";
 import SpaceCampaignsActive from "./spaceCampaignsActive";
 import SpaceCampaignsFinished from "./spaceCampaignsFinished";
 
-export default function SpaceAccounts() {
+export default function SpaceCampaigns() {
   const [globalFilter, setGlobalFilter] = useState("");
 
   return (

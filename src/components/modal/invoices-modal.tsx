@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Modal from "@/components/modal";
+import Modal from "@/components/modal/modal";
 import SvgPlus from "@/components/icons/Plus";
 import CtaButton from "@/components/cta-button";
 import { useForm } from "react-hook-form";
@@ -26,11 +26,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import SvgUploder from "./icons/Uploder";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import SvgUploder from "../icons/Uploder";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
-import SvgCalendrier from "./icons/Calendrier";
-import { Calendar } from "./ui/calendar";
+import SvgCalendrier from "../icons/Calendrier";
+import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Invoice } from "@/types/invoices";
@@ -184,7 +184,7 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
               name="invoiceType"
               render={({ field }) => (
                 <FormItem className="flex-1 min-w-[170px]">
-                  <FormLabel className="text-lg">Type de média</FormLabel>
+                  <FormLabel className="text-lg">Type de facture</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}

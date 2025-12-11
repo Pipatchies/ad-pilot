@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Modal from "@/components/modal";
+import Modal from "@/components/modal/modal";
 import SvgPlus from "@/components/icons/Plus";
 import CtaButton from "@/components/cta-button";
 import { useForm } from "react-hook-form";
@@ -26,9 +26,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import SvgUploder from "./icons/Uploder";
-import { Media, MEDIA_TYPE_LABELS, MEDIA_TYPE_VALUES, MediaFileType } from "@/types/medias";
-
+import SvgUploder from "../icons/Uploder";
+import {
+  Media,
+  MEDIA_TYPE_LABELS,
+  MEDIA_TYPE_VALUES,
+  MediaFileType,
+} from "@/types/medias";
 
 interface MediaModalProps {
   onAddMedia: (media: Media) => void;
@@ -116,7 +120,7 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
         title: values.title,
         url: json.secure_url,
         type: tableType,
-        mediaType: values.mediaType,
+        mediaTypes: [values.mediaType],
         publicId: json.public_id,
         resourceType,
         width: json.width,

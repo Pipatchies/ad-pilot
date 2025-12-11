@@ -1,7 +1,6 @@
 import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { start } from "repl";
 
 export default defineSchema({
   ...authTables,
@@ -115,14 +114,16 @@ export default defineSchema({
     digitalReportUrl: v.optional(v.string()),
     report: v.optional(
       v.object({
-        status: v.union(v.literal("completed"), v.literal("archived")),
+        status: v.optional(v.union(v.literal("completed"), v.literal("archived"))),
         document: v.optional(v.string()),
-        kpi: v.array(
-          v.object({
-            icon: v.string(),
-            title: v.string(),
-            info: v.string(),
-          })
+        kpi: v.optional(
+          v.array(
+            v.object({
+              icon: v.string(),
+              title: v.string(),
+              info: v.string(),
+            })
+          )   
         ),
       })
     ),
@@ -179,7 +180,7 @@ export default defineSchema({
     ),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
-  }),
+  }).index("by_campaignId", ["campaignId"]),
 
   invoices: defineTable({
     title: v.string(),

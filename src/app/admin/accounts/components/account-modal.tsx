@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Modal from "@/components/modal";
+import Modal from "@/components/modal/modal";
 import SvgPlus from "@/components/icons/Plus";
 import CtaButton from "@/components/cta-button";
 import { useForm } from "react-hook-form";
@@ -34,7 +34,6 @@ export default function AccountModal() {
   const roles = useQuery(api.queries.roles.getAllRoles);
   const adminRoleId = roles?.find((r) => r.name === "admin")?._id;
   const adminCreateUser = useAction(api.actions.users.adminCreateAdmin);
-
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);
 
@@ -90,14 +89,16 @@ export default function AccountModal() {
       form.reset();
     } catch (e: any) {
       const msg =
-        e?.data === "EMAIL_TAKEN" ? "Email déjà utilisé." :
-        e?.data === "FORBIDDEN" ? "Accès refusé." :
-        e?.data === "UNAUTHENTICATED" ? "Vous devez être connecté." :
-        "Échec de la création.";
+        e?.data === "EMAIL_TAKEN"
+          ? "Email déjà utilisé."
+          : e?.data === "FORBIDDEN"
+          ? "Accès refusé."
+          : e?.data === "UNAUTHENTICATED"
+          ? "Vous devez être connecté."
+          : "Échec de la création.";
       toast.error("Erreur", { description: msg });
     }
   }
-
 
   const UserFormData = {
     title: "Créer un compte administrateur",
