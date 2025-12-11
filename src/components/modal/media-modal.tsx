@@ -120,7 +120,7 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
         title: values.title,
         url: json.secure_url,
         type: tableType,
-        mediaType: values.mediaType,
+        mediaTypes: [values.mediaType],
         publicId: json.public_id,
         resourceType,
         width: json.width,
