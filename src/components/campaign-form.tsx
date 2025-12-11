@@ -138,6 +138,21 @@ export default function CampaignForm({
     campaignId ? { campaignId } : "skip"
   );
 
+  const existingMedias = useQuery(
+    api.queries.medias.getMediaFilesByCampaign,
+    campaignId ? { campaignId } : "skip"
+  );
+
+  const existingInvoices = useQuery(
+    api.queries.invoices.getInvoicesByCampaign,
+    campaignId ? { campaignId } : "skip"
+  );
+
+  const existingDocuments = useQuery(
+    api.queries.documents.getDocumentsByCampaign,
+    campaignId ? { campaignId } : "skip"
+  );
+
   // Convex mutations
   const createCampaign = useMutation(api.mutations.campaigns.createCampaign);
   const updateCampaign = useMutation(api.mutations.campaigns.updateCampaign);
@@ -178,6 +193,22 @@ export default function CampaignForm({
       })),
     });
   }, [existingCampaign]);
+
+  useEffect(() => {
+  if (!existingMedias) return;
+  setFormMedias(existingMedias);
+}, [existingMedias]);
+
+useEffect(() => {
+  if (!existingInvoices) return;
+  setFormInvoices(existingInvoices);
+}, [existingInvoices]);
+
+useEffect(() => {
+  if (!existingDocuments) return;
+  setFormDocuments(existingDocuments);
+}, [existingDocuments]);
+
 
   // Keep budgetMedia in sync with mediaTypes
   const mediaTypesWatch = form.watch("mediaTypes");
@@ -256,7 +287,7 @@ export default function CampaignForm({
       // Save medias
       await Promise.all(
         formMedias.map(async (m) => {
-          if (!m.publicId || !m.resourceType || !m.mediaType) {
+          if (!m.publicId || !m.resourceType || !m.mediaTypes) {
             throw new Error("Media is missing required fields");
           }
           const newPublicId = `campaigns/${campaignId}/medias/${m.publicId
@@ -272,7 +303,7 @@ export default function CampaignForm({
             title: m.title,
             url: renamed.secure_url,
             type: m.type,
-            mediaTypes: [m.mediaType],
+            mediaTypes: m.mediaTypes,
             publicId: newPublicId,
             resourceType: m.resourceType,
             width: renamed.width,
