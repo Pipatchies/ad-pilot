@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SvgCalendrier from "@/components/icons/Calendrier";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 
 const stateOptions = [
   { label: "En cours", value: "current" },
@@ -46,7 +47,7 @@ export default function SpaceSteps() {
               render={({ field, fieldState }) => (
                 <FormItem className="flex-1 min-w-[170px]">
                   <FormControl>
-                    <input
+                    <Input
                       className={cn(
                         "w-full p-5 rounded-sm border bg-white italic",
                         fieldState.error ? "border-destructive" : "border-[#A5A4BF]"
