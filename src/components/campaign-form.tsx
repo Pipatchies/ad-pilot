@@ -11,8 +11,8 @@ import CtaButton from "@/components/cta-button";
 
 // Convex
 import { useQuery, useMutation, useAction } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
-import { Id } from "../../../../../convex/_generated/dataModel";
+import { api } from "../../convex/_generated/api";
+import { Id } from "../../convex/_generated/dataModel";
 
 // Types
 import { Media, MediaType } from "@/types/medias";
@@ -20,14 +20,14 @@ import { Invoice } from "@/types/invoices";
 import { Document } from "@/types/docs";
 
 // Sections
-import SpaceOrganizations from "../_sections/spaceOrganizations";
-import SpaceInfos from "../_sections/spaceInfos";
-import SpaceBudget from "../_sections/spaceBudget";
-import SpaceSteps from "../_sections/spaceSteps";
-import SpaceTarget from "../_sections/spaceTargets";
-import SpaceMedias from "../_sections/spaceMedias";
-import SpaceDocuments from "../_sections/spaceDocuments";
-import SpaceInvoices from "../_sections/spaceInvoices";
+import SpaceOrganizations from "../app/admin/new-campaign/_sections/spaceOrganizations";
+import SpaceInfos from "../app/admin/new-campaign/_sections/spaceInfos";
+import SpaceBudget from "../app/admin/new-campaign/_sections/spaceBudget";
+import SpaceSteps from "../app/admin/new-campaign/_sections/spaceSteps";
+import SpaceTarget from "../app/admin/new-campaign/_sections/spaceTargets";
+import SpaceMedias from "../app/admin/new-campaign/_sections/spaceMedias";
+import SpaceDocuments from "../app/admin/new-campaign/_sections/spaceDocuments";
+import SpaceInvoices from "../app/admin/new-campaign/_sections/spaceInvoices";
 
 // ---------------- SCHEMA ----------------
 
@@ -381,7 +381,9 @@ export default function CampaignForm({
             id: i,
             label: s.label,
             state: s.state as "completed" | "current" | "upcoming",
-            deadline: s.deadline ? s.deadline.toISOString() : new Date().toISOString(),
+            deadline: s.deadline
+              ? s.deadline.toISOString()
+              : new Date().toISOString(),
           })),
         },
       });
