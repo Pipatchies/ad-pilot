@@ -12,12 +12,13 @@ import { calculateBroadcastProgress } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { getIconFromType } from "@/lib/utils";
 import Image from "next/image";
+import { MEDIA_TYPE_LABELS } from "@/types/medias";
 
 export default function SpaceRecap() {
   const params = useParams();
   const campaignId = params?.id as Id<"campaigns">;
 
-  const campaign = useQuery(api.queries.campaigns.getCampaignbyId, {
+  const campaign = useQuery(api.queries.campaigns.getCampaignById, {
     campaignId,
   });
 
@@ -36,7 +37,7 @@ export default function SpaceRecap() {
 
   const mediaData =
     campaign.budgetMedia?.map((media) => ({
-      type: media.type,
+      type: MEDIA_TYPE_LABELS[media.type],
       amount: media.amount,
     })) ?? [];
 

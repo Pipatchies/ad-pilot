@@ -12,6 +12,7 @@ interface Props {
   showCampaign?: boolean;
   globalFilter?: string;
   headerClassName?: string;
+  dateSort?: "asc" | "desc";
 }
 
 export default function InvoicesTable({
@@ -20,6 +21,7 @@ export default function InvoicesTable({
   showCampaign = false,
   globalFilter,
   headerClassName,
+  dateSort,
 }: Props) {
   const columns: ColumnDef<Invoice>[] = [
     {
@@ -110,6 +112,9 @@ export default function InvoicesTable({
       globalFilter={globalFilter}
       headerClassName={headerClassName}
       emptyMessage="Aucune facture pour le moment."
+      defaultSort={
+        dateSort ? { id: "startDate", desc: dateSort === "desc" } : undefined
+      }
     />
   );
 }

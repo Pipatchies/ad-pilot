@@ -39,6 +39,9 @@ export default function ClientModal() {
   const adminCreateClient = useAction(api.actions.users.adminCreateClient);
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);
+  const [file, setFile] = React.useState<File | null>(null);
+  const [uploading, setUploading] = React.useState(false);
+  const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
 
   const formSchema = z.object({
     organizationName: z.string().min(1, "Le nom du client est requis"),
@@ -85,10 +88,45 @@ export default function ClientModal() {
       return;
     }
 
+    if (!file) {
+      toast.error("Veuillez sélectionner un logo.");
+      return;
+    }
+
+    let logoUrl = values.logo;
+
+    if (file) {
+      try {
+        setUploading(true);
+        const folder = "clients/logos";
+        const resourceType = "image";
+        const sig = await getSignature({ folder, resourceType });
+        const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
+
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("api_key", sig.apiKey);
+        fd.append("timestamp", String(sig.timestamp));
+        fd.append("upload_preset", sig.uploadPreset);
+        fd.append("signature", sig.signature);
+        fd.append("folder", sig.folder);
+
+        const res = await fetch(endpoint, { method: "POST", body: fd });
+        const json = await res.json();
+
+        if (json.error) throw new Error(json.error.message);
+        logoUrl = json.secure_url;
+      } catch {
+        toast.error("Erreur à l'upload du logo");
+        setUploading(false);
+        return;
+      }
+    }
+
     try {
       await adminCreateClient({
         organizationName: values.organizationName,
-        logo: values.logo,
+        logo: logoUrl, // Use the uploaded URL
         firstname: values.firstname,
         lastname: values.lastname,
         email: values.email,
@@ -99,11 +137,14 @@ export default function ClientModal() {
 
       toast.success("Client créé !");
       form.reset();
+      setFile(null);
     } catch (e) {
       toast.error("Erreur", {
         description:
           "Échec de la création. Vérifiez l'email (doublon ?) ou les champs requis.",
       });
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -146,11 +187,31 @@ export default function ClientModal() {
                   <FormControl>
                     <div className="relative">
                       <Input
+                        readOnly
+                        value={file ? file.name : ""}
                         placeholder="Importer le logo du client"
-                        className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12"
-                        {...field}
+                        className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
+                        onClick={() =>
+                          document.getElementById("hiddenLogoInput")?.click()
+                        }
                       />
-                      <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
+                      <SvgUploder
+                        className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                        onClick={() =>
+                          document.getElementById("hiddenLogoInput")?.click()
+                        }
+                      />
+                      <input
+                        id="hiddenLogoInput"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0] ?? null;
+                          setFile(f);
+                          if (f) field.onChange(f.name);
+                        }}
+                      />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -344,6 +405,7 @@ export default function ClientModal() {
         props={{
           text: "Enregistrer le nouveau client",
           onClick: form.handleSubmit(onSubmit),
+          disabled: uploading,
         }}
         variant="submit"
       />

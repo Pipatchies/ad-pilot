@@ -1,7 +1,7 @@
 "use client"
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
-import ClientAccountsTable from "../components/client-accounts-table";
+import ClientAccountsTable from "@/components/table/client-accounts-table";
 
 
 type Props = {

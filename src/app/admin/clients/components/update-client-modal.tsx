@@ -17,11 +17,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import CtaButton from "@/components/cta-button";
-import { useMutation } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
-import SvgProfil from "@/components/icons/Profil";
-import SvgMail from "@/components/icons/Mail";
+import SvgUploder from "@/components/icons/Uploder";
 
 const formSchema = z.object({
   organizationName: z.string().min(1, "Le nom du client est requis"),
@@ -42,6 +41,10 @@ export default function UpdateClientModal({
   const updateOrganization = useMutation(
     api.mutations.organizations.updateOrganization
   );
+  const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
+
+  const [file, setFile] = React.useState<File | null>(null);
+  const [uploading, setUploading] = React.useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,18 +53,56 @@ export default function UpdateClientModal({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!file) {
+      toast.error("Veuillez sélectionner un logo.");
+      return;
+    }
+
+    let logoUrl = values.logo;
+
+    if (file) {
+      try {
+        setUploading(true);
+        const folder = "clients/logos";
+        const resourceType = "image";
+        const sig = await getSignature({ folder, resourceType });
+        const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
+
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("api_key", sig.apiKey);
+        fd.append("timestamp", String(sig.timestamp));
+        fd.append("upload_preset", sig.uploadPreset);
+        fd.append("signature", sig.signature);
+        fd.append("folder", sig.folder);
+
+        const res = await fetch(endpoint, { method: "POST", body: fd });
+        const json = await res.json();
+
+        if (json.error) throw new Error(json.error.message);
+        logoUrl = json.secure_url;
+      } catch {
+        toast.error("Erreur à l'upload du logo");
+        setUploading(false);
+        return;
+      }
+    }
+
     try {
       await updateOrganization({
         organizationId,
         patch: {
           name: values.organizationName,
-          logo: values.logo,
+          logo: logoUrl,
         },
       });
       toast.success("Compte mis à jour");
-      form.reset(values);
+      form.reset({ ...values, logo: logoUrl });
+      setFile(null);
     } catch {
       toast.error("Échec de la mise à jour");
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -81,7 +122,7 @@ export default function UpdateClientModal({
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Prénom"
+                      placeholder="Nom du client"
                       className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                       {...field}
                     />
@@ -97,11 +138,34 @@ export default function UpdateClientModal({
                 <FormItem className="w-1/2">
                   <FormLabel className="text-lg font-semibold">Logo</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Nom"
-                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Input
+                        readOnly
+                        value={file ? file.name : ""}
+                        placeholder="Importer le nouveau logo"
+                        className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
+                        onClick={() =>
+                          document.getElementById("hiddenUpdateLogoInput")?.click()
+                        }
+                      />
+                      <SvgUploder
+                        className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                        onClick={() =>
+                          document.getElementById("hiddenUpdateLogoInput")?.click()
+                        }
+                      />
+                      <input
+                        id="hiddenUpdateLogoInput"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0] ?? null;
+                          setFile(f);
+                          if (f) field.onChange(f.name);
+                        }}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,7 +177,11 @@ export default function UpdateClientModal({
     ),
     footer: (
       <CtaButton
-        props={{ text: "Enregistrer", onClick: form.handleSubmit(onSubmit) }}
+        props={{
+          text: "Enregistrer",
+          onClick: form.handleSubmit(onSubmit),
+          disabled: uploading,
+        }}
         variant="submit"
       />
     ),
