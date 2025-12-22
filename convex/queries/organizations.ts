@@ -1,4 +1,5 @@
 import { query } from "../_generated/server";
+import { v } from "convex/values";
 
 export const getAllOrganizationsWithLastConnection = query({
   args: {},
@@ -43,5 +44,35 @@ export const getAllOrganizationsWithLastConnection = query({
     );
 
     return organizationsWithStatus;
+  },
+});
+
+export const getOrganizationDetails = query({
+  args: {
+    organizationId: v.id("organizations"),
+  },
+  handler: async (ctx, args) => {
+    const organization = await ctx.db.get(args.organizationId);
+    if (!organization) throw new Error("Organization not found");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_organizationId", (q) =>
+        q.eq("organizationId", args.organizationId)
+      )
+      .first();
+
+    const campaigns = await ctx.db
+      .query("campaigns")
+      .withIndex("by_organizationId", (q) =>
+        q.eq("organizationId", args.organizationId)
+      )
+      .collect();
+
+    return {
+      organization,
+      user,
+      campaigns,
+    };
   },
 });
