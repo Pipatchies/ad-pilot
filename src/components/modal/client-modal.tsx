@@ -188,7 +188,7 @@ export default function ClientModal() {
                     <div className="relative">
                       <Input
                         readOnly
-                        value={file ? file.name : field.value || ""}
+                        value={file ? file.name : ""}
                         placeholder="Importer le logo du client"
                         className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
                         onClick={() =>
