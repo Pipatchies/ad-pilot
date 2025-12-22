@@ -8,6 +8,7 @@ import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import DeleteModal from "../modal/delete-modal";
 import UpdateClientModal from "@/app/admin/clients/components/update-client-modal";
+import { useRouter } from "next/navigation";
 
 type ClientAccount = {
   organizationId: Id<"organizations">;
@@ -27,6 +28,7 @@ export default function ClientAccountsTable({
   clientAccounts,
   globalFilter = "",
 }: ClientAccountsProps) {
+  const router = useRouter();
   const deleteOrganization = useMutation(
     api.mutations.organizations.deleteOrganization
   );
@@ -87,7 +89,10 @@ export default function ClientAccountsTable({
       cell: ({ row }) => {
         const data = row.original;
         return (
-          <div className="flex justify-end gap-4">
+          <div
+            className="flex justify-end gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             <UpdateClientModal
               organizationId={data.organizationId}
               organizationName={data.organizationName}
@@ -112,6 +117,9 @@ export default function ClientAccountsTable({
       columns={columns}
       globalFilter={globalFilter}
       emptyMessage="Aucun client trouvé"
+      onRowClick={(row) =>
+        router.push(`/admin/clients/${row.original.organizationId}`)
+      }
     />
   );
 }

@@ -70,7 +70,10 @@ export function DataTable<TData, TValue>({
   defaultSort,
   emptyMessage = "Aucune donnée disponible.",
   headerClassName,
-}: DataTableProps<TData, TValue>) {
+  onRowClick,
+}: DataTableProps<TData, TValue> & {
+  onRowClick?: (row: any) => void;
+}) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
@@ -123,7 +126,11 @@ export function DataTable<TData, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className="text-lg h-15 border-[#A5A4BF]"
+                className={cn(
+                  "text-lg h-15 border-[#A5A4BF]",
+                  onRowClick && "cursor-pointer hover:bg-muted/50 transition-colors"
+                )}
+                onClick={() => onRowClick && onRowClick(row)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
