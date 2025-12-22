@@ -78,9 +78,13 @@ export default function ClientAccountsTable({
       <div className="flex items-center gap-3">
         {logo && (
           <img
-            src={logo}
+            src={
+              logo.includes("cloudinary.com")
+                ? logo.replace("/upload/", "/upload/c_pad,h_64,w_80,b_auto/")
+                : logo
+            }
             alt={organizationName}
-            className="w-8 h-8 rounded-full object-cover"
+            className="w-10 h-8 object-contain"
           />
         )}
         <span>{organizationName}</span>
