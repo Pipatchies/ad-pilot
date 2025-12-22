@@ -84,7 +84,7 @@ export default function ClientAccountsTable({
                 : logo
             }
             alt={organizationName}
-            className="w-10 h-8 object-contain"
+            className="w-14 h-14 object-contain"
           />
         )}
         <span>{organizationName}</span>
