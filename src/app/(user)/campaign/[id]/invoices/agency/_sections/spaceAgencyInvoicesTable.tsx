@@ -1,9 +1,9 @@
 "use client"
 import { useQuery } from "convex/react";
-import InvoicesTable from "@/components/invoices-table";
 import { Id } from "../../../../../../../../convex/_generated/dataModel";
 import { useParams } from "next/navigation";
 import { api } from "../../../../../../../../convex/_generated/api";
+import InvoicesTable from "@/components/table/invoices-table";
 
 
 type AgencyInvoicesTableProps = {

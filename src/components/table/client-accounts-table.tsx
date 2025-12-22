@@ -20,9 +20,11 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Id } from "../../../../../convex/_generated/dataModel";
-import UpdateClientModal from "./update-client-modal";
-import DeleteClientModal from "./delete-client-modal";
+import { Id } from "../../../convex/_generated/dataModel";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import DeleteModal from "../modal/delete-modal";
+import UpdateClientModal from "@/app/admin/clients/components/update-client-modal";
 
 type ClientAccount = {
   organizationId: Id<"organizations">;
@@ -54,6 +56,8 @@ export default function ClientAccountsTable({
   globalFilter = "",
 }: ClientAccountsProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
+
+  const deleteOrganization = useMutation(api.mutations.organizations.deleteOrganization);
 
   const columns: ColumnDef<ClientAccount>[] = [
     {
@@ -144,10 +148,8 @@ export default function ClientAccountsTable({
           organizationName={data.organizationName}
           logo={data.logo}
         />
-        <DeleteClientModal
-          organizationId={data.organizationId}
-          organizationName={data.organizationName}
-        />
+        <DeleteModal 
+            onConfirm={() => deleteOrganization({ organizationId: row.original.organizationId })}/>
       </div>
         );
       },

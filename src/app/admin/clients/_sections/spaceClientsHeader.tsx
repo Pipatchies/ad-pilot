@@ -3,7 +3,7 @@ import React from "react";
 import SearchBar from "@/components/search-bar";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
-import ClientModal from "../components/client-modal";
+import ClientModal from "../../../../components/modal/client-modal";
 
 type clientsHeaderProps = {
   onQueryChange: (q: string) => void;
