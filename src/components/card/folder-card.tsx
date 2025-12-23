@@ -1,8 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import React from "react";
-import SvgOpenFolder from "./icons/OpenFolder";
-import Typography from "./typography";
+import SvgOpenFolder from "../icons/OpenFolder";
+import Typography from "../typography";
 import Link from "next/link";
 
 interface FolderCardProps {

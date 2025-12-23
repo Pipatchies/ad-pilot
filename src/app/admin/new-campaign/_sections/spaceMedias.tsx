@@ -3,7 +3,7 @@
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Typography from "@/components/typography";
 import MediaModal from "@/components/modal/media-modal";
-import DetailsCard from "@/components/details-card";
+import DetailsCard from "@/components/card/details-card";
 import { Media } from "@/types/medias";
 
 interface Props {

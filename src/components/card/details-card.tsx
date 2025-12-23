@@ -6,10 +6,10 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import Typography from "./typography";
+import Typography from "../typography";
 import Image from "next/image";
 import { cn, getIconFromType } from "@/lib/utils";
-import MediaThumb, { MediaThumbProps } from "./media-thumb";
+import MediaThumb, { MediaThumbProps } from "../media-thumb";
 
 
 type DetailsCardProps = {

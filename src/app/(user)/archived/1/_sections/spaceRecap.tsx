@@ -2,10 +2,10 @@
 import React from "react";
 import { Domaine, Television } from "@/components/icons";
 import Typography from "@/components/typography";
-import StepCard from "@/components/step-card";
-import BudgetCard from "@/components//budget-card";
-import ChartCard from "@/components/chart-card";
-import BroadcastCard from "@/components/broadcast-card";
+import StepCard from "@/components/card/step-card";
+import BudgetCard from "@/components/card/budget-card";
+import ChartCard from "@/components/card/chart-card";
+import BroadcastCard from "@/components/card/broadcast-card";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../convex/_generated/dataModel";

@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import FolderCard from '../../../../../components/folder-card'
+import FolderCard from '../../../../../components/card/folder-card'
 import Typography from '@/components/typography'
 import { useParams } from 'next/navigation';
 import { Id } from '../../../../../../convex/_generated/dataModel';

@@ -1,6 +1,6 @@
 import Typography from "@/components/typography";
 import CtaButton from "@/components/cta-button";
-import DetailsCard from "@/components/details-card";
+import DetailsCard from "@/components/card/details-card";
 
 type Props = {
   title: string;
