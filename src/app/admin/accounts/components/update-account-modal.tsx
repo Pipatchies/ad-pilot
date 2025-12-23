@@ -34,6 +34,8 @@ type UpdateModalProps = {
   firstname: string;
   lastname: string;
   email: string;
+  triggerType?: "button" | "icon";
+  triggerText?: string;
 };
 
 export default function UpdateAccountModal({
@@ -41,6 +43,8 @@ export default function UpdateAccountModal({
   firstname,
   lastname,
   email,
+  triggerType = "icon",
+  triggerText = "Modifier",
 }: UpdateModalProps) {
   const updateUser = useMutation(api.mutations.users.updateUser);
 
@@ -150,8 +154,11 @@ export default function UpdateAccountModal({
 
   return (
     <Modal
-      variant="icon"
-      cta={{ icon: <SvgCrayonBig className="cursor-pointer" /> }}
+      variant={triggerType}
+      cta={{ 
+        icon: triggerType === "button" ? <SvgCrayonBig /> : <SvgCrayonBig className="cursor-pointer" />,
+        text: triggerText 
+      }}
       data={modalData}
     />
   );

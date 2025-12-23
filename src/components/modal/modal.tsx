@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { ReactNode } from "react";
 import { Button } from "../ui/button";
+import CtaButton from "../cta-button";
 import { cn } from "@/lib/utils";
 
 type ModalProps = {
@@ -35,15 +36,12 @@ export default function Modal({ variant = "button", cta, data }: ModalProps) {
     <Dialog>
       <DialogTrigger asChild>
         {variant === "button" ? (
-          <Button
-            variant="ghost"
-            className="group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white"
-          >
-            <div className="mr-2">{cta.icon}</div>
-            <span className="block !leading-none relative font-[600] cursor-pointer">
-              {cta.text}
-            </span>
-          </Button>
+          <CtaButton
+            variant="trigger"
+            props={{ text: cta.text }}
+            icon={cta.icon}
+            className="cursor-pointer"
+          />
         ) : (
           <div className="cursor-pointer hover:opacity-70">{cta.icon}</div>
         )}
