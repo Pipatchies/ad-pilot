@@ -49,7 +49,7 @@ export default function CampaignTable({
       header: sortableHeader("Nom de la campagne"),
       cell: ({ row }) => (
         <Link
-          href={`campaigns/${row.original._id}`}
+          href={`/admin/campaigns/${row.original._id}`}
           className="font-bold underline"
         >
           {row.getValue("title")}
@@ -107,7 +107,7 @@ export default function CampaignTable({
       cell: ({ row }) => (
         <div className="flex justify-end gap-4">
           <Link
-            href={`campaigns/${row.original._id}`}
+            href={`/admin/campaigns/${row.original._id}`}
             className="cursor-pointer"
           >
             <SvgCrayonBig />
