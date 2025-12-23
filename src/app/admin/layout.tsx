@@ -25,8 +25,8 @@ export default function AdminLayout({
               <Topbar />
             </header>
             {showBackButton ? (
-              <main className="lg:py-20 lg:px-15 px-5 py-10 @container max-w-[1400px] w-full">
-                <div className="flex flex-wrap lg:flex-nowrap items-start gap-15 mb-10">
+              <main className="lg:py-20 px-6 py-10 @container max-w-[1400px] mx-auto w-full">
+                <div className="flex flex-wrap lg:flex-nowrap items-start gap-4 mb-10">
                   <BackButton />
                   <div className="flex-1">{children}</div>
                 </div>
