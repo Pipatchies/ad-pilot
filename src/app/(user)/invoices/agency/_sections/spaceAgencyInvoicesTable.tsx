@@ -1,8 +1,8 @@
 "use client"
 import { useQuery } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
-import InvoicesTable from "@/components/invoices-table";
 import { Id } from "../../../../../../convex/_generated/dataModel";
+import InvoicesTable from "@/components/table/invoices-table";
 
 const organizationId: Id<"organizations"> = "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" as Id<"organizations">;
 
