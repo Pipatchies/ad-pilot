@@ -20,9 +20,9 @@ export type CampaignBudgetLine = {
 };
 
 export type CampaignReport = {
-  status: "completed" | "archived";
+  status?: "completed" | "archived";
   document?: string;
-  kpi: {
+  kpi?: {
     icon: string;
     title: string;
     info: string;
@@ -38,6 +38,11 @@ export type Campaign = {
   totalBudget: number;
   budgetMedia: CampaignBudgetLine[];
   status: CampaignStatus[];
+  diffusions?: {
+    mediaType: MediaType;
+    startDate: string;
+    endDate: string;
+  }[];
   digitalReportUrl?: string;
   report?: CampaignReport;
   archived: boolean;

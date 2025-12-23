@@ -22,6 +22,7 @@ import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import SvgProfil from "@/components/icons/Profil";
 import SvgMail from "@/components/icons/Mail";
+import SvgCrayon from "@/components/icons/Crayon";
 
 const formSchema = z.object({
   firstname: z.string().min(1, "Le prénom est requis"),
@@ -34,6 +35,8 @@ type UpdateModalProps = {
   firstname: string;
   lastname: string;
   email: string;
+  triggerType?: "button" | "icon";
+  triggerText?: string;
 };
 
 export default function UpdateAccountModal({
@@ -41,6 +44,8 @@ export default function UpdateAccountModal({
   firstname,
   lastname,
   email,
+  triggerType = "icon",
+  triggerText = "Modifier",
 }: UpdateModalProps) {
   const updateUser = useMutation(api.mutations.users.updateUser);
 
@@ -150,8 +155,11 @@ export default function UpdateAccountModal({
 
   return (
     <Modal
-      variant="icon"
-      cta={{ icon: <SvgCrayonBig className="cursor-pointer" /> }}
+      variant={triggerType}
+      cta={{ 
+        icon: triggerType === "button" ? <SvgCrayon /> : <SvgCrayon className="cursor-pointer" />,
+        text: triggerText 
+      }}
       data={modalData}
     />
   );

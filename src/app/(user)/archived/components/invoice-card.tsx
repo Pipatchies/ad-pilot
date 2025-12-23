@@ -1,4 +1,4 @@
-import DetailsCard from "@/components/details-card";
+import DetailsCard from "@/components/card/details-card";
 import Link from "next/link";
 
 type Props = {

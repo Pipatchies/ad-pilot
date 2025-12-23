@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { CldImage } from "next-cloudinary";
 import { DataTable, sortableHeader } from "@/components/table/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -42,17 +43,12 @@ export default function ClientAccountsTable({
         return (
           <div className="flex items-center gap-3">
             {logo && (
-              <img
-                src={
-                  logo.includes("cloudinary.com")
-                    ? logo.replace(
-                        "/upload/",
-                        "/upload/c_pad,h_64,w_80,b_auto/"
-                      )
-                    : logo
-                }
+              <CldImage
+                src={logo}
+                width={56}
+                height={56}
                 alt={organizationName}
-                className="w-14 h-14 object-contain"
+                className="object-contain"
               />
             )}
             <span className="text-lg font-bold text-primary">

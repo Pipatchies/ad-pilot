@@ -18,12 +18,16 @@ interface CampaignTableProps {
   headerClassName?: string;
   showArchived?: boolean;
   globalFilter?: string;
+  hideClientColumn?: boolean;
+  hideStepColumn?: boolean;
 }
 
 export default function CampaignTable({
   campaigns,
   headerClassName,
   globalFilter = "",
+  hideClientColumn = false,
+  hideStepColumn = false,
 }: CampaignTableProps) {
 
   const deleteCampaign = useMutation(api.mutations.campaigns.deleteCampaign);
@@ -45,33 +49,39 @@ export default function CampaignTable({
       header: sortableHeader("Nom de la campagne"),
       cell: ({ row }) => (
         <Link
-          href={`campaigns/${row.original._id}`}
+          href={`/admin/campaigns/${row.original._id}`}
           className="font-bold underline"
         >
           {row.getValue("title")}
         </Link>
       ),
     },
-    {
-      accessorKey: "organizationId",
-      header: sortableHeader("Client"),
-      cell: ({ row }) =>
-        row.original.organizationName || "—",
-    },
-    {
-      accessorKey: "status",
-      header: sortableHeader("Étape"),
-      cell: ({ row }) => {
-        const s = row.original.status.at(-1);
-        return s ? s.label : "—";
-      },
-    },
+    ...(!hideClientColumn
+      ? [
+          {
+            accessorKey: "organizationId",
+            header: sortableHeader("Client"),
+            cell: ({ row }) => row.original.organizationName || "—",
+          } as ColumnDef<Campaign>,
+        ]
+      : []),
+    ...(!hideStepColumn
+      ? [
+          {
+            accessorKey: "status",
+            header: sortableHeader("Étape"),
+            cell: ({ row }) => {
+              const s = row.original.status.at(-1);
+              return s ? s.label : "—";
+            },
+          } as ColumnDef<Campaign>,
+        ]
+      : []),
     {
       accessorKey: "mediaTypes",
       header: sortableHeader("Type"),
       cell: ({ row }) =>
-        row.original.mediaTypes.map((t) => MEDIA_TYPE_LABELS[t])
-      .join(", "),
+        row.original.mediaTypes.map((t) => MEDIA_TYPE_LABELS[t]).join(", "),
     },
     {
       accessorKey: "totalBudget",
@@ -96,14 +106,21 @@ export default function CampaignTable({
       header: "",
       cell: ({ row }) => (
         <div className="flex justify-end gap-4">
-          <Link href={`campaigns/${row.original._id}`} className="cursor-pointer">
+          <Link
+            href={`/admin/campaigns/${row.original._id}`}
+            className="cursor-pointer"
+          >
             <SvgCrayonBig />
           </Link>
-          <button onClick={() => handleDuplicate(row.original._id)} className="cursor-pointer">
-          <SvgDupliquer />
+          <button
+            onClick={() => handleDuplicate(row.original._id)}
+            className="cursor-pointer"
+          >
+            <SvgDupliquer />
           </button>
-          <DeleteModal 
-          onConfirm={() => deleteCampaign({ campaignId: row.original._id })}/>
+          <DeleteModal
+            onConfirm={() => deleteCampaign({ campaignId: row.original._id })}
+          />
         </div>
       ),
     },

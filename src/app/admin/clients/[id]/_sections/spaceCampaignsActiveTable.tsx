@@ -1,0 +1,37 @@
+import SearchBar from '@/components/search-bar'
+import CampaignTable from '@/components/table/campaign-table'
+import Typography from '@/components/typography'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Campaign } from '@/types/campaigns'
+import React from 'react'
+
+interface SpaceCampaignsActiveTableProps {
+  campaigns: Campaign[]
+}
+
+export default function SpaceCampaignsActiveTable({ campaigns }: SpaceCampaignsActiveTableProps) {
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const activeCampaigns = campaigns.filter((c) => !c.archived);
+
+  return (
+    <Card className="text-primary bg-card/50 shadow-none border-none">
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <Typography variant="h2">Campagnes en cours</Typography>
+          <SearchBar
+            onQueryChange={setSearchQuery}
+            onDateSortChange={(dir) => console.log(dir)}
+            variant="minimal"
+          />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <CampaignTable 
+          campaigns={activeCampaigns} 
+          hideClientColumn={true} 
+          globalFilter={searchQuery}
+        />
+      </CardContent>
+    </Card>
+  )
+}
