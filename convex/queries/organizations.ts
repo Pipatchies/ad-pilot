@@ -69,10 +69,34 @@ export const getOrganizationDetails = query({
       )
       .collect();
 
+    const invoicesData = await ctx.db
+      .query("invoices")
+      .withIndex("by_organizationId", (q) =>
+        q.eq("organizationId", args.organizationId)
+      )
+      .collect();
+
+    const invoices = await Promise.all(
+      invoicesData.map(async (invoice) => {
+        let campaignName = "—";
+        if (invoice.campaignId) {
+          const campaign = await ctx.db.get(invoice.campaignId);
+          if (campaign) {
+            campaignName = campaign.title;
+          }
+        }
+        return {
+          ...invoice,
+          campaign: campaignName,
+        };
+      })
+    );
+
     return {
       organization,
       user,
       campaigns,
+      invoices,
     };
   },
 });
