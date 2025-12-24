@@ -3,8 +3,13 @@
 import { DataTable, sortableHeader } from "@/components/table/data-table";
 import SvgEyeIcon from "@/components/icons/EyeIcon";
 import SvgUploder from "@/components/icons/Uploder";
+import UpdateInvoiceModal from "@/components/modal/update-invoice-modal";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { Invoice } from "@/types/invoices";
+import SvgCorbeille from "../icons/Corbeille";
+import DeleteModal from "../modal/delete-modal";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 interface Props {
   invoices: Invoice[];
@@ -23,6 +28,8 @@ export default function InvoicesTable({
   headerClassName,
   dateSort,
 }: Props) {
+  const deleteInvoice = useMutation(api.mutations.invoices.deleteInvoice);
+
   const columns: ColumnDef<Invoice>[] = [
     {
       accessorKey: "title",
@@ -96,10 +103,41 @@ export default function InvoicesTable({
     {
       id: "actions",
       header: "",
-      cell: () => (
+      cell: ({ row }: { row: Row<Invoice> }) => (
         <div className="flex justify-end gap-4">
           <SvgEyeIcon />
-          <SvgUploder />
+          {row.original._id && (
+            <UpdateInvoiceModal
+              invoiceId={row.original._id}
+              defaultValues={{
+                title: row.original.title,
+                htprice: row.original.htprice,
+                ttcprice: row.original.ttcprice,
+                startDate: row.original.startDate,
+                dueDate: row.original.dueDate,
+              }}
+            />
+          )}
+          {row.original.url && (
+            <a
+              href={row.original.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              download
+              className="cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              <SvgUploder />
+            </a>
+          )}
+          {row.original._id && (
+            <DeleteModal
+              onConfirm={() =>
+                deleteInvoice({
+                  invoiceId: row.original._id!,
+                })
+              }
+            />
+          )}
         </div>
       ),
     },
