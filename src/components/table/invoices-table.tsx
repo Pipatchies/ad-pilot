@@ -112,7 +112,7 @@ export default function InvoicesTable({
         <div className="flex justify-end gap-4">
           <button
             onClick={() => setViewingInvoice(row.original)}
-            className="hover:opacity-80 transition-opacity"
+            className="hover:opacity-80 transition-opacity cursor-pointer"
           >
             <SvgEyeIcon />
           </button>
