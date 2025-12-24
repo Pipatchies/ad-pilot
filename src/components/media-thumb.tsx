@@ -4,6 +4,7 @@ import SvgAudio from "./icons/Audio";
 
 export type MediaThumbProps = {
   publicId?: string;
+  url?: string;
   type?: "jpg" | "png" | "pdf" | "mp4" | "mp3";
   className?: string;
   width?: number;
@@ -59,11 +60,7 @@ export default function MediaThumb({
   }
 
   return (
-    <div
-      className={cn(
-        className
-      )}
-    >
+    <div className={cn(className)}>
       {isImage && (
         <CldImage
           src={publicId}

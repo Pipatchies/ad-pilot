@@ -45,6 +45,7 @@ export default function SpaceMedias({ formMedias, setFormMedias }: Props) {
                 startDate={new Date()}
                 media={{
                   publicId: m.publicId,
+                  url: m.url,
                   type: m.type,
                   width: m.width,
                   height: m.height,
