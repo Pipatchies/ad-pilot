@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,7 +12,7 @@ import Typography from "../typography";
 import Image from "next/image";
 import { cn, getIconFromType } from "@/lib/utils";
 import MediaThumb, { MediaThumbProps } from "../media-thumb";
-
+import MediaViewerModal from "../modal/media-viewer-modal";
 
 type DetailsCardProps = {
   title: string;
@@ -43,10 +45,9 @@ export default function DetailsCard({
   variant,
   media,
 }: DetailsCardProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  
   return (
-    
     <Card
       className={cn(
         "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2",
@@ -56,12 +57,19 @@ export default function DetailsCard({
       <CardHeader>
         {variant === "media" && (
           <>
-          <div
-        className={cn(
-          "flex items-start gap-4 mb-2",
-        )}
-      >
-            <MediaThumb publicId={media?.publicId} type={media?.type} width={media?.width} height={media?.height} alt={title} />
+            <div
+              onClick={() => media?.url && setIsModalOpen(true)}
+              className={cn(
+                "flex items-start gap-4 mb-2",
+                media?.url &&
+                  "cursor-pointer hover:opacity-80 transition-opacity"
+              )}
+            >
+              <MediaThumb
+                publicId={media?.publicId}
+                type={media?.type}
+                alt={title}
+              />
             </div>
             <Typography variant="h3" className="mb-0">
               {title}
@@ -74,7 +82,7 @@ export default function DetailsCard({
         {(variant === "campaign" ||
           variant === "default" ||
           variant === "archived" ||
-        variant === "invoice") && (
+          variant === "invoice") && (
           <>
             <Typography variant="h3" className="mb-0">
               {title}
@@ -167,8 +175,7 @@ export default function DetailsCard({
               {startDate?.toLocaleDateString()}
             </li>
             <li>
-              <span className="underline">Emetteur :</span>{" "}
-              {sendBy}
+              <span className="underline">Emetteur :</span> {sendBy}
             </li>
           </ul>
         )}
@@ -192,6 +199,19 @@ export default function DetailsCard({
             );
           })}
         </CardFooter>
+      )}
+      {isModalOpen && media?.url && (
+        <MediaViewerModal
+          isOpen={isModalOpen}
+          mediaItem={{
+            title: title,
+            url: media.url,
+            type: media.type || "pdf",
+            publicId: media.publicId,
+            resourceType: "raw",
+          }}
+          onClose={() => setIsModalOpen(false)}
+        />
       )}
     </Card>
   );

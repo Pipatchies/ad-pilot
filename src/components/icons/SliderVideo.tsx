@@ -5,6 +5,7 @@ const SvgSliderVideo = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     width={51.016}
     height={51.016}
+    viewBox="0 0 51.016 51.016"
     {...props}
   >
     <path

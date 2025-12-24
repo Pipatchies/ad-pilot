@@ -1,5 +1,6 @@
 import { mutation } from "../_generated/server";
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 export const createInvoice = mutation({
   args: {
@@ -13,9 +14,7 @@ export const createInvoice = mutation({
     dueDate: v.string(),
     url: v.string(),
     publicId: v.string(),
-    resourceType: v.union(
-      v.literal("raw")
-    ),
+    resourceType: v.union(v.literal("raw")),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
   },
@@ -33,7 +32,9 @@ export const updateInvoice = mutation({
       ttcprice: v.optional(v.number()),
       startDate: v.optional(v.string()),
       dueDate: v.optional(v.string()),
-      invoiceType: v.optional(v.union(v.literal("agency"), v.literal("vendor"))),
+      invoiceType: v.optional(
+        v.union(v.literal("agency"), v.literal("vendor"))
+      ),
       agencyInvoice: v.optional(v.string()),
       vendorName: v.optional(v.string()),
       url: v.optional(v.string()),
@@ -42,6 +43,15 @@ export const updateInvoice = mutation({
     }),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("UNAUTHENTICATED");
+
+    const user = await ctx.db.get(userId);
+    if (!user?.roleId) throw new ConvexError("FORBIDDEN");
+
+    const role = await ctx.db.get(user.roleId);
+    if (role?.name !== "admin") throw new ConvexError("FORBIDDEN");
+
     return await ctx.db.patch(args.invoiceId, args.patch);
   },
 });
@@ -51,6 +61,15 @@ export const deleteInvoice = mutation({
     invoiceId: v.id("invoices"),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("UNAUTHENTICATED");
+
+    const user = await ctx.db.get(userId);
+    if (!user?.roleId) throw new ConvexError("FORBIDDEN");
+
+    const role = await ctx.db.get(user.roleId);
+    if (role?.name !== "admin") throw new ConvexError("FORBIDDEN");
+
     return await ctx.db.delete(args.invoiceId);
   },
 });
