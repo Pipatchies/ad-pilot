@@ -120,9 +120,14 @@ export default function InvoicesTable({
           )}
           {row.original.url && (
             <a
-              href={row.original.url}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={
+                row.original.url.includes("/upload/")
+                  ? row.original.url.replace(
+                      "/upload/",
+                      "/upload/fl_attachment/"
+                    )
+                  : row.original.url
+              }
               download
               className="cursor-pointer hover:opacity-80 transition-opacity"
             >
