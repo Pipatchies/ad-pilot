@@ -68,8 +68,6 @@ export default function DetailsCard({
               <MediaThumb
                 publicId={media?.publicId}
                 type={media?.type}
-                width={media?.width}
-                height={media?.height}
                 alt={title}
               />
             </div>

@@ -16,16 +16,17 @@ export default function SpaceTv() {
     campaignId,
   });
 
-const visualsCardData = useMemo(
-  () =>
-    medias?.map((media) => ({
-      title: media.title,
-      type: media.type,
-      date: new Date(media._creationTime),
-      icon: <SvgImageSmall />,
-    })) ?? [],
-  [medias]
-);
+  const visualsCardData = useMemo(
+    () =>
+      medias?.map((media) => ({
+        title: media.title,
+        type: media.type,
+        date: new Date(media._creationTime),
+        icon: <SvgImageSmall />,
+        media: media,
+      })) ?? [],
+    [medias]
+  );
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [dateSort, setDateSort] = useState<"asc" | "desc">("desc");
@@ -50,14 +51,15 @@ const visualsCardData = useMemo(
         defaultDateSort="desc"
       />
 
-      <div className="flex flex-wrap gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {filteredAndSorted.map((item, index) => (
-          <div key={index} className="w-full xl:basis-1/4 grow">
+          <div key={index} className="w-full">
             <VisualsCard
               title={item.title}
               type={item.type}
               date={item.date}
               icon={item.icon}
+              media={item.media}
             />
           </div>
         ))}
