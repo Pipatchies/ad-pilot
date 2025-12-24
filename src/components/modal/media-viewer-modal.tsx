@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import SvgUploder from "@/components/icons/Uploder";
 import { CldImage } from "next-cloudinary";
 
 import { X } from "lucide-react";
 import SvgTallDown from "../icons/TallDown";
+import SvgSliderVideo from "../icons/SliderVideo";
 import { Media } from "@/types/medias";
 import { Document } from "@/types/docs";
 import { Invoice } from "@/types/invoices";
@@ -71,13 +72,13 @@ export default function MediaViewerModal({
       )}
 
       {/* Main Content */}
-      <div className="relative flex flex-col items-center justify-center w-full max-w-7xl h-full max-h-[85vh]">
-        <div className="flex-1 w-full flex items-center justify-center overflow-hidden">
+      <div className="relative flex flex-col items-center justify-center w-fit h-auto max-w-[95vw] max-h-[95vh] bg-black overflow-hidden shadow-2xl">
+        <div className="relative w-auto h-auto flex items-center justify-center">
           {renderContent(mediaItem)}
         </div>
 
         {/* Footer */}
-        <div className="w-full flex items-center justify-between bg-black/80 px-6 py-4">
+        <div className="w-full flex items-center justify-between bg-neutral-900/90 px-6 py-4">
           <p className="text-white text-lg font-medium truncate max-w-[80%]">
             {mediaItem.title}
           </p>
@@ -113,12 +114,12 @@ function renderContent(item: Media | Document | Invoice) {
     case "jpg":
     case "png":
       return (
-        <div className="relative w-full h-full flex items-center justify-center">
+        <div className="relative flex items-center justify-center">
           <CldImage
             src={item.publicId || item.url!}
             width={1920}
             height={1080}
-            className="max-w-full max-h-full object-contain"
+            className="max-w-[90vw] max-h-[80vh] w-auto h-auto object-contain"
             alt={item.title}
             preserveTransformations
           />
@@ -127,11 +128,9 @@ function renderContent(item: Media | Document | Invoice) {
 
     case "mp4":
       return (
-        <video
-          src={item.url}
-          controls
-          className="max-w-full max-h-full object-contain"
-          autoPlay={false}
+        <VideoPlayer
+          url={item.url!}
+          className="max-w-[90vw] max-h-[80vh] w-auto h-auto object-contain"
         />
       );
 
@@ -147,7 +146,7 @@ function renderContent(item: Media | Document | Invoice) {
       return (
         <iframe
           src={item.url}
-          className="w-full h-full bg-white shadow-xl"
+          className="w-[90vw] h-[80vh] md:w-[70vw] bg-white shadow-xl"
           title={item.title}
         />
       );
@@ -158,4 +157,36 @@ function renderContent(item: Media | Document | Invoice) {
         </div>
       );
   }
+}
+
+function VideoPlayer({ url, className }: { url: string; className?: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlay = () => {
+    if (videoRef.current) {
+      videoRef.current.play();
+    }
+  };
+
+  return (
+    <div className="relative flex items-center justify-center group">
+      <video
+        ref={videoRef}
+        src={url}
+        controls
+        className={className}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onEnded={() => setIsPlaying(false)}
+      />
+      {!isPlaying && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <button onClick={handlePlay} className="cursor-pointer">
+            <SvgSliderVideo className="w-24 h-24 fill-white drop-shadow-2xl" />
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
