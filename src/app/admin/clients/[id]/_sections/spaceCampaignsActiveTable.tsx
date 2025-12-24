@@ -16,7 +16,7 @@ export default function SpaceCampaignsActiveTable({ campaigns }: SpaceCampaignsA
   return (
     <Card className="text-primary bg-card/50 shadow-none border-none">
       <CardHeader>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0">
           <Typography variant="h2">Campagnes en cours</Typography>
           <SearchBar
             onQueryChange={setSearchQuery}

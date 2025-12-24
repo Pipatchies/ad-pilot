@@ -12,7 +12,7 @@ const CtaProps = {
 
 export default function SpaceOrgnizationDetailsHeader({ organization }: { organization: any }) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0">
       <div className="flex items-center gap-2">
         {organization.logo && (
           <CldImage

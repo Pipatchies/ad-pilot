@@ -8,6 +8,7 @@ import UserCard from "./components/user-card";
 import SpaceCampaignsActiveTable from "./_sections/spaceCampaignsActiveTable";
 import SpaceCampaignsArchivedTable from "./_sections/spaceCampaignsArchivedTable";
 import SpaceOrgnizationDetailsHeader from "./_sections/spaceOrgnizationDetailsHeader";
+import SpaceInvoicesTable from "./_sections/spaceInvoicesTable";
 
 
 export default function ClientDetailsPage() {
@@ -18,11 +19,13 @@ export default function ClientDetailsPage() {
 
   if (!data) return <p className="p-10">Chargement...</p>;
 
-  const { organization, user, campaigns } = data;
+  const { organization, user, campaigns, invoices } = data;
 
   return (
-   <section className="p-10">
-      <SpaceOrgnizationDetailsHeader organization={organization} />
+   <section className="p-4 md:p-10">
+      <div className="mb-8">
+        <SpaceOrgnizationDetailsHeader organization={organization} />
+      </div>
       {/* Card Info User */}
       <div className="space-y-8">
         <UserCard user={user} />
@@ -33,6 +36,9 @@ export default function ClientDetailsPage() {
 
       {/* Table Campagnes archivées */}
       <SpaceCampaignsArchivedTable campaigns={campaigns} />
+
+      {/* Table Factures */}
+      <SpaceInvoicesTable invoices={invoices} />
       </div>
     </section>
   );

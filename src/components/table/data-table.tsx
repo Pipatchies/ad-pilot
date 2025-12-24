@@ -52,7 +52,7 @@ export function sortableHeader(label: string) {
     return (
       <button
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items-center gap-1 text-lg font-bold text-primary"
+        className="flex items-center gap-1 text-sm md:text-lg font-bold text-primary"
       >
         {label}
         <SortIcon isSorted={column.getIsSorted()} />
@@ -127,7 +127,7 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 className={cn(
-                  "text-lg h-15 border-[#A5A4BF]",
+                  "text-sm md:text-lg h-15 border-[#A5A4BF]",
                   onRowClick && "cursor-pointer hover:bg-muted/50 transition-colors"
                 )}
                 onClick={() => onRowClick && onRowClick(row)}
