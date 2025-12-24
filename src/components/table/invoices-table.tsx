@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { DataTable, sortableHeader } from "@/components/table/data-table";
 import SvgEyeIcon from "@/components/icons/EyeIcon";
 import SvgUploder from "@/components/icons/Uploder";
@@ -10,6 +11,7 @@ import SvgCorbeille from "../icons/Corbeille";
 import DeleteModal from "../modal/delete-modal";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import MediaViewerModal from "@/components/modal/media-viewer-modal";
 
 interface Props {
   invoices: Invoice[];
@@ -29,6 +31,7 @@ export default function InvoicesTable({
   dateSort,
 }: Props) {
   const deleteInvoice = useMutation(api.mutations.invoices.deleteInvoice);
+  const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
 
   const columns: ColumnDef<Invoice>[] = [
     {
@@ -105,7 +108,13 @@ export default function InvoicesTable({
       header: "",
       cell: ({ row }: { row: Row<Invoice> }) => (
         <div className="flex justify-end gap-4">
-          <SvgEyeIcon />
+          <button
+            onClick={() => setViewingInvoice(row.original)}
+            className="hover:opacity-80 transition-opacity"
+          >
+            <SvgEyeIcon />
+          </button>
+
           {row.original._id && (
             <UpdateInvoiceModal
               invoiceId={row.original._id}
@@ -149,15 +158,37 @@ export default function InvoicesTable({
   ];
 
   return (
-    <DataTable
-      data={invoices}
-      columns={columns}
-      globalFilter={globalFilter}
-      headerClassName={headerClassName}
-      emptyMessage="Aucune facture pour le moment."
-      defaultSort={
-        dateSort ? { id: "startDate", desc: dateSort === "desc" } : undefined
-      }
-    />
+    <>
+      <DataTable
+        data={invoices}
+        columns={columns}
+        globalFilter={globalFilter}
+        headerClassName={headerClassName}
+        emptyMessage="Aucune facture pour le moment."
+        defaultSort={
+          dateSort ? { id: "startDate", desc: dateSort === "desc" } : undefined
+        }
+      />
+      {viewingInvoice && viewingInvoice.url && (
+        <MediaViewerModal
+          isOpen={true}
+          mediaItem={viewingInvoice}
+          onClose={() => setViewingInvoice(null)}
+          onNext={() => {
+            const idx = invoices.findIndex((i) => i._id === viewingInvoice._id);
+            if (idx < invoices.length - 1) setViewingInvoice(invoices[idx + 1]);
+          }}
+          onPrev={() => {
+            const idx = invoices.findIndex((i) => i._id === viewingInvoice._id);
+            if (idx > 0) setViewingInvoice(invoices[idx - 1]);
+          }}
+          hasNext={
+            invoices.findIndex((i) => i._id === viewingInvoice._id) <
+            invoices.length - 1
+          }
+          hasPrev={invoices.findIndex((i) => i._id === viewingInvoice._id) > 0}
+        />
+      )}
+    </>
   );
 }

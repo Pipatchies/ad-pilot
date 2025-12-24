@@ -25,7 +25,7 @@ export type Media = {
   url: string;
   type: MediaFileType;
   mediaTypes: MediaType[];
-  publicId: string;
+  publicId?: string;
   resourceType: "image" | "video" | "raw";
   width?: number;
   height?: number;
