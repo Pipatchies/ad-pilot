@@ -20,6 +20,7 @@ interface Props {
   globalFilter?: string;
   headerClassName?: string;
   dateSort?: "asc" | "desc";
+  readOnly?: boolean;
 }
 
 export default function InvoicesTable({
@@ -29,6 +30,7 @@ export default function InvoicesTable({
   globalFilter,
   headerClassName,
   dateSort,
+  readOnly,
 }: Props) {
   const deleteInvoice = useMutation(api.mutations.invoices.deleteInvoice);
   const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
@@ -115,7 +117,7 @@ export default function InvoicesTable({
             <SvgEyeIcon />
           </button>
 
-          {row.original._id && (
+          {!readOnly && row.original._id && (
             <UpdateInvoiceModal
               invoiceId={row.original._id}
               defaultValues={{
@@ -143,7 +145,7 @@ export default function InvoicesTable({
               <SvgUploder />
             </a>
           )}
-          {row.original._id && (
+          {!readOnly && row.original._id && (
             <DeleteModal
               onConfirm={() =>
                 deleteInvoice({
