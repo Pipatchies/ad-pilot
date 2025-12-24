@@ -8,7 +8,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import DeleteModal from "../modal/delete-modal";
-import UpdateClientModal from "@/app/admin/clients/components/update-client-modal";
+import UpdateClientModal from "@/components/modal/update/update-client-modal";
 import { useRouter } from "next/navigation";
 
 type ClientAccount = {

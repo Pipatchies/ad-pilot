@@ -25,8 +25,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import CtaButton from "../cta-button";
-import SvgCrayonBig from "../icons/CrayonBig";
+import CtaButton from "../../cta-button";
+import SvgCrayonBig from "../../icons/CrayonBig";
 
 const formSchema = z.object({
   title: z.string().min(1, "Le titre est requis"),
@@ -53,7 +53,7 @@ export default function UpdateInvoiceModal({
 }: UpdateInvoiceModalProps) {
   const updateInvoice = useMutation(api.mutations.invoices.updateInvoice);
   const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -61,11 +61,15 @@ export default function UpdateInvoiceModal({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-        title: defaultValues.title,
-        htprice: defaultValues.htprice,
-        ttcprice: defaultValues.ttcprice,
-        startDate: defaultValues.startDate ? new Date(defaultValues.startDate).toISOString().split('T')[0] : "",
-        dueDate: defaultValues.dueDate ? new Date(defaultValues.dueDate).toISOString().split('T')[0] : "",
+      title: defaultValues.title,
+      htprice: defaultValues.htprice,
+      ttcprice: defaultValues.ttcprice,
+      startDate: defaultValues.startDate
+        ? new Date(defaultValues.startDate).toISOString().split("T")[0]
+        : "",
+      dueDate: defaultValues.dueDate
+        ? new Date(defaultValues.dueDate).toISOString().split("T")[0]
+        : "",
     },
   });
 
@@ -79,10 +83,10 @@ export default function UpdateInvoiceModal({
       if (file) {
         const folder = `campaigns/invoices`;
         const rType = "raw" as const;
-        
+
         const sig = await getSignature({ folder, resourceType: rType });
         const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
-        
+
         const fd = new FormData();
         fd.append("file", file);
         fd.append("api_key", sig.apiKey);
@@ -95,7 +99,7 @@ export default function UpdateInvoiceModal({
         const json = await res.json();
 
         if (json.error) throw new Error(json.error?.message || "Upload failed");
-        
+
         url = json.secure_url;
         publicId = json.public_id;
         resourceType = rType;
@@ -114,7 +118,7 @@ export default function UpdateInvoiceModal({
           ...(resourceType && { resourceType }),
         },
       });
-      
+
       toast.success("Facture mise à jour");
       setIsOpen(false);
       setFile(null);
@@ -138,7 +142,7 @@ export default function UpdateInvoiceModal({
             Modifier la facture
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="mt-4 w-full max-w-2xl">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -164,7 +168,12 @@ export default function UpdateInvoiceModal({
                     <FormItem className="w-1/2">
                       <FormLabel>Montant HT</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -177,7 +186,12 @@ export default function UpdateInvoiceModal({
                     <FormItem className="w-1/2">
                       <FormLabel>Montant TTC</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -226,14 +240,18 @@ export default function UpdateInvoiceModal({
                       placeholder="Sélectionnez un nouveau fichier"
                       className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
                       onClick={() =>
-                        document.getElementById("updateInvoiceFileInput")?.click()
+                        document
+                          .getElementById("updateInvoiceFileInput")
+                          ?.click()
                       }
                     />
 
                     <SvgUploder
                       className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
                       onClick={() =>
-                        document.getElementById("updateInvoiceFileInput")?.click()
+                        document
+                          .getElementById("updateInvoiceFileInput")
+                          ?.click()
                       }
                     />
 
@@ -257,7 +275,7 @@ export default function UpdateInvoiceModal({
                   props={{
                     text: "Mettre à jour",
                     onClick: form.handleSubmit(onSubmit),
-                      disabled: uploading,
+                    disabled: uploading,
                   }}
                   variant="submit"
                 />
