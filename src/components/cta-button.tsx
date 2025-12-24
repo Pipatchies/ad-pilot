@@ -14,7 +14,7 @@ type Props = {
 };
 
 const CtaButton = React.forwardRef<HTMLButtonElement, Props>(
-  ({ props, className, variant, userType, icon }, ref) => {
+  ({ props, className, variant, userType, icon, ...rest }, ref) => {
     const linkProps: any = {
       href: props.url,
       className: "flex items-center justify-between w-fit space-x-5",
@@ -96,12 +96,14 @@ const CtaButton = React.forwardRef<HTMLButtonElement, Props>(
         return (
           <Button
             ref={ref}
+            type="button"
             variant="ghost"
             className={cn(
               "group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border border-primary text-primary hover:bg-primary hover:text-white",
               className
             )}
-            {...props} // Spread props like onClick
+            {...props}
+            {...rest}
           >
             {icon && <div className="mr-2">{icon}</div>}
             <span className="block !leading-none font-600">{text}</span>
