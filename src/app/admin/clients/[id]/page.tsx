@@ -21,8 +21,10 @@ export default function ClientDetailsPage() {
   const { organization, user, campaigns } = data;
 
   return (
-   <section className="p-10">
-      <SpaceOrgnizationDetailsHeader organization={organization} />
+   <section className="p-4 md:p-10">
+      <div className="mb-8">
+        <SpaceOrgnizationDetailsHeader organization={organization} />
+      </div>
       {/* Card Info User */}
       <div className="space-y-8">
         <UserCard user={user} />
