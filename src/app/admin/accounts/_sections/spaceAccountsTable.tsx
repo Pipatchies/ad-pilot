@@ -1,7 +1,7 @@
 "use client"
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
-import AdminAccountsTable from "../components/admin-accounts-table";
+import AdminAccountsTable from "@/components/table/admin-accounts-table";
 
 type Props = {
   globalFilter: string;

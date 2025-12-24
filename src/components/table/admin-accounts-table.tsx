@@ -20,11 +20,11 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Id } from "../../../../../convex/_generated/dataModel";
-import UpdateAccountModal from "./update-account-modal";
 import DeleteModal from "@/components/modal/delete-modal";
 import { useMutation } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+import { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
+import UpdateAccountModal from "@/components/modal/update/update-account-modal";
 
 type AdminAccount = {
   userId: Id<"users">;
@@ -64,9 +64,7 @@ export default function AdminAccountsTable({
       accessorKey: "name",
       header: ({ column }) => (
         <button
-          onClick={() =>
-            column.toggleSorting(column.getIsSorted() === "asc")
-          }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center gap-1 text-base font-bold text-primary"
         >
           Prénom <SortIcon isSorted={column.getIsSorted()} />
@@ -78,9 +76,7 @@ export default function AdminAccountsTable({
       accessorKey: "lastname",
       header: ({ column }) => (
         <button
-          onClick={() =>
-            column.toggleSorting(column.getIsSorted() === "asc")
-          }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center gap-1 text-base font-bold text-primary"
         >
           Nom <SortIcon isSorted={column.getIsSorted()} />
@@ -92,9 +88,7 @@ export default function AdminAccountsTable({
       accessorKey: "email",
       header: ({ column }) => (
         <button
-          onClick={() =>
-            column.toggleSorting(column.getIsSorted() === "asc")
-          }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center gap-1 text-base font-bold text-primary"
         >
           Email <SortIcon isSorted={column.getIsSorted()} />
@@ -106,9 +100,7 @@ export default function AdminAccountsTable({
       accessorKey: "role",
       header: ({ column }) => (
         <button
-          onClick={() =>
-            column.toggleSorting(column.getIsSorted() === "asc")
-          }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center gap-1 text-base font-bold text-primary"
         >
           Rôle <SortIcon isSorted={column.getIsSorted()} />
@@ -120,9 +112,7 @@ export default function AdminAccountsTable({
       accessorKey: "id",
       header: ({ column }) => (
         <button
-          onClick={() =>
-            column.toggleSorting(column.getIsSorted() === "asc")
-          }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center gap-1 text-base font-bold text-primary"
         >
           Identifiant <SortIcon isSorted={column.getIsSorted()} />
@@ -137,21 +127,20 @@ export default function AdminAccountsTable({
         const data = row.original;
         return (
           <div className="flex justify-end gap-4">
-        <UpdateAccountModal
-          userId={data.userId}
-          firstname={data.name}
-          lastname={data.lastname}
-          email={data.email}
-        />
-        <DeleteModal
-          onConfirm={() => deleteAccount({ userId: data.userId })}
-        />
-      </div>
+            <UpdateAccountModal
+              userId={data.userId}
+              firstname={data.name}
+              lastname={data.lastname}
+              email={data.email}
+            />
+            <DeleteModal
+              onConfirm={() => deleteAccount({ userId: data.userId })}
+            />
+          </div>
         );
       },
     },
   ];
-
 
   const table = useReactTable({
     data: adminAccounts,
@@ -187,26 +176,17 @@ export default function AdminAccountsTable({
         <TableBody>
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className="text-lg h-15 border-[#A5A4BF]"
-              >
+              <TableRow key={row.id} className="text-lg h-15 border-[#A5A4BF]">
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="text-center py-4"
-              >
+              <TableCell colSpan={columns.length} className="text-center py-4">
                 Aucun résultat
               </TableCell>
             </TableRow>

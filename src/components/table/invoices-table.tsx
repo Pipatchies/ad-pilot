@@ -3,7 +3,7 @@
 import { DataTable, sortableHeader } from "@/components/table/data-table";
 import SvgEyeIcon from "@/components/icons/EyeIcon";
 import SvgUploder from "@/components/icons/Uploder";
-import UpdateInvoiceModal from "@/components/modal/update-invoice-modal";
+import UpdateInvoiceModal from "@/components/modal/update/update-invoice-modal";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { Invoice } from "@/types/invoices";
 import SvgCorbeille from "../icons/Corbeille";
