@@ -6,10 +6,10 @@ import { CldImage } from "next-cloudinary";
 
 import { X } from "lucide-react";
 import SvgTallDown from "../icons/TallDown";
-import SvgSliderVideo from "../icons/SliderVideo";
 import { Media } from "@/types/medias";
 import { Document } from "@/types/docs";
 import { Invoice } from "@/types/invoices";
+import VideoPlayer from "../video-player";
 
 interface MediaViewerModalProps {
   mediaItem: Media | Document | Invoice | null;
@@ -159,34 +159,4 @@ function renderContent(item: Media | Document | Invoice) {
   }
 }
 
-function VideoPlayer({ url, className }: { url: string; className?: string }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
 
-  const handlePlay = () => {
-    if (videoRef.current) {
-      videoRef.current.play();
-    }
-  };
-
-  return (
-    <div className="relative flex items-center justify-center group">
-      <video
-        ref={videoRef}
-        src={url}
-        controls
-        className={className}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
-      />
-      {!isPlaying && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <button onClick={handlePlay} className="cursor-pointer">
-            <SvgSliderVideo className="w-24 h-24 fill-white drop-shadow-2xl" />
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
