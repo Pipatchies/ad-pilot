@@ -20,11 +20,11 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Id } from "../../../../../convex/_generated/dataModel";
-import UpdateAccountModal from "../../../../components/modal/update/update-account-modal";
 import DeleteModal from "@/components/modal/delete-modal";
 import { useMutation } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+import { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
+import UpdateAccountModal from "@/components/modal/update/update-account-modal";
 
 type AdminAccount = {
   userId: Id<"users">;
