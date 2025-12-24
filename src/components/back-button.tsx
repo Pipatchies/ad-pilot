@@ -13,9 +13,11 @@ export default function BackButton() {
   }
 
   return (
-    <button onClick={handleBack} className='flex flex-row items-center gap-2 fill-primary pt-2 cursor-pointer'>
-      <SvgSmallDown style={{ transform: 'rotate(90deg)' }}/>
-      <span className='text-sm'>Retour</span>
+    <button onClick={handleBack} className='flex flex-row items-center gap-2 fill-primary pt-1 cursor-pointer hover:opacity-80 transition-opacity'>
+      <div className="w-6 h-6 flex items-center justify-center">
+         <SvgSmallDown style={{ transform: 'rotate(90deg)', width: '20px', height: '20px' }}/>
+      </div>
+      <span className='text-md font-medium'>Retour</span>
     </button>
   )
 }

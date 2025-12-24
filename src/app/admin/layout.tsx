@@ -25,10 +25,15 @@ export default function AdminLayout({
               <Topbar />
             </header>
             {showBackButton ? (
-              <main className="lg:py-20 px-6 py-10 @container max-w-[1400px] mx-auto w-full">
-                <div className="flex flex-wrap lg:flex-nowrap items-start gap-4 mb-10">
-                  <BackButton />
-                  <div className="flex-1">{children}</div>
+              <main className="lg:py-20 px-6 py-10 w-full">
+                <div className="flex flex-col lg:flex-row items-start gap-4 mb-10">
+                  <div className="shrink-0 lg:w-[100px]">
+                    <BackButton />
+                  </div>
+                  <div className="flex-1 w-full flex justify-center min-w-0">
+                    <div className="w-full max-w-[1400px] @container">{children}</div>
+                  </div>
+                  <div className="shrink-0 lg:w-[100px] hidden lg:block" aria-hidden="true" />
                 </div>
               </main>
             ) : (
