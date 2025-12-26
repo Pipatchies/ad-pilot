@@ -76,19 +76,21 @@ const formSchema = z.object({
     )
     .min(1),
 
-   report: z
+  report: z
     .object({
-      status: z.enum(["completed", "archived"]).optional(),
+      status: z.enum(["current", "archived"]).optional(),
       document: z.string().optional(),
-      kpi: z.array(
-        z.object({
-          icon: z.string(),
-          title: z.string(),
-          info: z.string(),
-        })
-      ).optional(),
+      kpi: z
+        .array(
+          z.object({
+            icon: z.string(),
+            title: z.string(),
+            info: z.string(),
+          })
+        )
+        .optional(),
     })
-    .optional()
+    .optional(),
 });
 
 // ---------------- DEFAULT VALUES ----------------
@@ -124,8 +126,8 @@ const defaultValues = {
   report: {
     status: undefined,
     document: "",
-    kpi: []
-  }
+    kpi: [],
+  },
 };
 
 export default function CampaignForm({
@@ -212,12 +214,12 @@ export default function CampaignForm({
         deadline: s.deadline ? new Date(s.deadline) : null,
       })),
       report: existingCampaign.report
-    ? {
-        status: existingCampaign.report.status,
-        document: existingCampaign.report.document ?? "",
-        kpi: existingCampaign.report.kpi ?? []
-      }
-    : undefined,
+        ? {
+            status: existingCampaign.report.status,
+            document: existingCampaign.report.document ?? "",
+            kpi: existingCampaign.report.kpi ?? [],
+          }
+        : undefined,
     });
   }, [existingCampaign]);
 
@@ -443,12 +445,13 @@ export default function CampaignForm({
               : new Date().toISOString(),
           })),
           report: values.report
-        ? {
-            status: values.report.status,
-            document: values.report.document ?? "",
-            kpi: values.report.kpi ?? []
-          }
-        : undefined,
+            ? {
+                status: values.report.status,
+                document: values.report.document ?? "",
+                kpi: values.report.kpi ?? [],
+              }
+            : undefined,
+          archived: values.report?.status === "archived",
         },
       });
 

@@ -3,7 +3,13 @@
 import { useFormContext, useFieldArray } from "react-hook-form";
 import Typography from "@/components/typography";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -35,10 +41,8 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
       </CardHeader>
 
       <CardContent className="space-y-6">
-
         {/* ====== LIGNE 1 : STATUT & DOCUMENT ====== */}
         <div className="flex flex-wrap gap-4">
-
           {/* --- Statut --- */}
           <FormField
             control={control}
@@ -46,7 +50,10 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
             render={({ field }) => (
               <FormItem className="w-1/3">
                 <FormLabel className="text-lg">État de la campagne</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? ""}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ""}
+                >
                   <FormControl>
                     <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
                       <SelectValue
@@ -59,7 +66,7 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="text-base border border-[#A5A4BF]">
-                    <SelectItem value="completed">Terminé</SelectItem>
+                    <SelectItem value="current">En cours</SelectItem>
                     <SelectItem value="archived">Archivé</SelectItem>
                   </SelectContent>
                 </Select>
@@ -102,10 +109,7 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
 
           {/* ====== LIGNES KPI ====== */}
           {fields.map((row, index) => (
-            <div
-              key={row.id}
-              className="flex flex-row flex-nowrap gap-2 mb-2"
-            >
+            <div key={row.id} className="flex flex-row flex-nowrap gap-2 mb-2">
               {/* ICON */}
               <FormField
                 control={control}
