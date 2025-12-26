@@ -29,11 +29,21 @@ type ModalProps = {
     subject?: string;
     className?: string;
   };
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  preventAutoClose?: boolean;
 };
 
-export default function Modal({ variant = "button", cta, data }: ModalProps) {
+export default function Modal({
+  variant = "button",
+  cta,
+  data,
+  open,
+  onOpenChange,
+  preventAutoClose,
+}: ModalProps) {
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         {variant === "button" ? (
           <CtaButton
@@ -66,7 +76,11 @@ export default function Modal({ variant = "button", cta, data }: ModalProps) {
         )}
         <div className="mt-4 w-full max-w-2xl">{data.children}</div>
         <DialogFooter className="mt-6">
-          <DialogClose asChild>{data.footer}</DialogClose>
+          {preventAutoClose ? (
+            data.footer
+          ) : (
+            <DialogClose asChild>{data.footer}</DialogClose>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

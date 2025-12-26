@@ -57,6 +57,7 @@ export default function UpdateInvoiceModal({
   const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -75,6 +76,7 @@ export default function UpdateInvoiceModal({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setUploading(true);
+    setIsSubmitting(true);
     try {
       let url: string | undefined;
       let publicId: string | undefined;
@@ -126,6 +128,7 @@ export default function UpdateInvoiceModal({
       toast.error("Échec de la mise à jour");
     } finally {
       setUploading(false);
+      setIsSubmitting(false);
     }
   }
 
@@ -275,7 +278,8 @@ export default function UpdateInvoiceModal({
                   props={{
                     text: "Mettre à jour",
                     onClick: form.handleSubmit(onSubmit),
-                    disabled: uploading,
+                    disabled: uploading || isSubmitting,
+                    loading: isSubmitting,
                   }}
                   variant="submit"
                 />
