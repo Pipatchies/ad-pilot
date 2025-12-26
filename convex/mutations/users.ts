@@ -16,14 +16,15 @@ export const updateUser = mutation({
     }),
   },
   handler: async (ctx, { userId, patch }) => {
+    const authUserId = await getAuthUserId(ctx);
+    if (!authUserId) throw new Error("Unauthorized");
 
-if (patch.email) {
-
-    const newEmail = patch.email
+    if (patch.email) {
+      const newEmail = patch.email;
 
       const accounts = await ctx.db
         .query("authAccounts")
-        .withIndex("userIdAndProvider", q => q.eq("userId", userId))
+        .withIndex("userIdAndProvider", (q) => q.eq("userId", userId))
         .collect();
 
       for (const acc of accounts) {
@@ -31,10 +32,9 @@ if (patch.email) {
           if (acc.providerAccountId !== newEmail) {
             await ctx.db.patch(acc._id, { providerAccountId: newEmail });
           }
-
+        }
       }
     }
-  }
     await ctx.db.patch(userId, patch);
     return { ok: true };
   },
@@ -43,6 +43,9 @@ if (patch.email) {
 export const deleteUser = mutation({
   args: { userId: v.id("users") },
   handler: async (ctx, { userId }) => {
+    const authUserId = await getAuthUserId(ctx);
+    if (!authUserId) throw new Error("Unauthorized");
+
     const sessions = await ctx.db
       .query("authSessions")
       .withIndex("userId", (q) => q.eq("userId", userId))

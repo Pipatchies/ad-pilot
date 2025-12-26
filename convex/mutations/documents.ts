@@ -1,3 +1,4 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation } from "../_generated/server";
 import { v } from "convex/values";
 
@@ -16,12 +17,15 @@ export const createDocument = mutation({
     resourceType: v.union(
       v.literal("image"),
       v.literal("video"),
-      v.literal("raw"),
+      v.literal("raw")
     ),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Unauthorized");
+
     return await ctx.db.insert("documents", { ...args });
   },
 });

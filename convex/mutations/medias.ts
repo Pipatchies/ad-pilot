@@ -1,3 +1,4 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation } from "../_generated/server";
 import { v } from "convex/values";
 
@@ -22,17 +23,20 @@ export const createMedia = mutation({
       v.literal("pdf")
     ),
     url: v.string(),
-    publicId: v.string(), 
+    publicId: v.string(),
     resourceType: v.union(
       v.literal("image"),
       v.literal("video"),
       v.literal("raw")
     ),
-    width: v.optional(v.number()), 
+    width: v.optional(v.number()),
     height: v.optional(v.number()),
     campaignId: v.id("campaigns"),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Unauthorized");
+
     return await ctx.db.insert("medias", { ...args });
   },
 });

@@ -1,3 +1,4 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation, internalMutation } from "../_generated/server";
 import { v } from "convex/values";
 
@@ -52,6 +53,9 @@ export const createCampaign = mutation({
     organizationId: v.id("organizations"),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Unauthorized");
+
     const campaignId = await ctx.db.insert("campaigns", {
       ...args,
     });
@@ -66,6 +70,9 @@ export const archiveCampaign = mutation({
     archived: v.boolean(),
   },
   handler: async (ctx, { campaignId, archived }) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Unauthorized");
+
     await ctx.db.patch(campaignId, { archived });
   },
 });
@@ -153,6 +160,9 @@ export const updateCampaign = mutation({
   },
 
   handler: async (ctx, { campaignId, patch }) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Unauthorized");
+
     await ctx.db.patch(campaignId, patch);
   },
 });
@@ -160,6 +170,9 @@ export const updateCampaign = mutation({
 export const duplicateCampaign = mutation({
   args: { campaignId: v.id("campaigns") },
   handler: async (ctx, { campaignId }) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Unauthorized");
+
     const original = await ctx.db.get(campaignId);
     if (!original) throw new Error("Campaign not found");
 
@@ -182,6 +195,9 @@ export const deleteCampaign = mutation({
     campaignId: v.id("campaigns"),
   },
   handler: async (ctx, { campaignId }) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Unauthorized");
+
     await ctx.db.delete(campaignId);
   },
 });
