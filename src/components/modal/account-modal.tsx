@@ -38,6 +38,7 @@ export default function AccountModal() {
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const formSchema = z.object({
     firstname: z.string().min(1, "Le prénom est requis"),
@@ -79,6 +80,7 @@ export default function AccountModal() {
     }
 
     try {
+      setIsSubmitting(true);
       await adminCreateUser({
         email: values.email,
         firstname: values.firstname,
@@ -107,6 +109,8 @@ export default function AccountModal() {
           description: "Échec de la création. Vérifiez les champs requis.",
         });
       }
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -280,6 +284,7 @@ export default function AccountModal() {
         props={{
           text: "Enregistrer",
           onClick: form.handleSubmit(onSubmit),
+          loading: isSubmitting,
         }}
         variant="submit"
       />

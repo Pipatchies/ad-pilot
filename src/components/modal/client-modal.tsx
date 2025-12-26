@@ -42,6 +42,7 @@ export default function ClientModal() {
   const [passwordStrength, setPasswordStrength] = React.useState(0);
   const [file, setFile] = React.useState<File | null>(null);
   const [uploading, setUploading] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
 
@@ -96,6 +97,7 @@ export default function ClientModal() {
     }
 
     let logoUrl = values.logo;
+    setIsSubmitting(true);
 
     if (file) {
       try {
@@ -121,6 +123,7 @@ export default function ClientModal() {
       } catch {
         toast.error("Erreur à l'upload du logo");
         setUploading(false);
+        setIsSubmitting(false);
         return;
       }
     }
@@ -160,6 +163,7 @@ export default function ClientModal() {
       }
     } finally {
       setUploading(false);
+      setIsSubmitting(false);
     }
   }
 
@@ -420,7 +424,8 @@ export default function ClientModal() {
         props={{
           text: "Enregistrer le nouveau client",
           onClick: form.handleSubmit(onSubmit),
-          disabled: uploading,
+          disabled: uploading || isSubmitting,
+          loading: isSubmitting,
         }}
         variant="submit"
       />

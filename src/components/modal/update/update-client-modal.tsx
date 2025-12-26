@@ -45,6 +45,8 @@ export default function UpdateClientModal({
 
   const [file, setFile] = React.useState<File | null>(null);
   const [uploading, setUploading] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,6 +61,7 @@ export default function UpdateClientModal({
     }
 
     let logoUrl = values.logo;
+    setIsSubmitting(true);
 
     if (file) {
       try {
@@ -84,6 +87,7 @@ export default function UpdateClientModal({
       } catch {
         toast.error("Erreur à l'upload du logo");
         setUploading(false);
+        setIsSubmitting(false);
         return;
       }
     }
@@ -99,10 +103,12 @@ export default function UpdateClientModal({
       toast.success("Compte mis à jour");
       form.reset({ ...values, logo: logoUrl });
       setFile(null);
+      setIsOpen(false);
     } catch {
       toast.error("Échec de la mise à jour");
     } finally {
       setUploading(false);
+      setIsSubmitting(false);
     }
   }
 
@@ -145,13 +151,17 @@ export default function UpdateClientModal({
                         placeholder="Importer le nouveau logo"
                         className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
                         onClick={() =>
-                          document.getElementById("hiddenUpdateLogoInput")?.click()
+                          document
+                            .getElementById("hiddenUpdateLogoInput")
+                            ?.click()
                         }
                       />
                       <SvgUploder
                         className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
                         onClick={() =>
-                          document.getElementById("hiddenUpdateLogoInput")?.click()
+                          document
+                            .getElementById("hiddenUpdateLogoInput")
+                            ?.click()
                         }
                       />
                       <input
@@ -180,7 +190,8 @@ export default function UpdateClientModal({
         props={{
           text: "Enregistrer",
           onClick: form.handleSubmit(onSubmit),
-          disabled: uploading,
+          disabled: uploading || isSubmitting,
+          loading: isSubmitting,
         }}
         variant="submit"
       />
@@ -189,6 +200,9 @@ export default function UpdateClientModal({
 
   return (
     <Modal
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      preventAutoClose={true}
       variant="icon"
       cta={{ icon: <SvgCrayonBig className="cursor-pointer" /> }}
       data={modalData}

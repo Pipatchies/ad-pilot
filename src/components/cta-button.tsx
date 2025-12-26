@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 type Props = {
   props: string | any;
@@ -41,11 +42,15 @@ const CtaButton = React.forwardRef<HTMLButtonElement, Props>(
             type="submit"
             onClick={props?.onClick}
             variant="ghost"
+            disabled={props?.disabled || props?.loading}
             className={cn(
-              "group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border hover:border-primary hover:text-primary bg-primary text-white cursor-pointer",
+              "group flex items-center gap-2 p-5 rounded-sm text-base font-semibold transition border hover:border-primary hover:text-primary bg-primary text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
               className
             )}
           >
+            {props?.loading && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
             <span className="block !leading-none relative font-[600]">
               {text}
             </span>

@@ -54,6 +54,8 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
 
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formSchema = z.object({
     title: z.string().min(1, "Le numéro de facture est requis"),
@@ -104,6 +106,7 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
     const folder = `campaigns/invoices`;
 
     setUploading(true);
+    setIsSubmitting(true);
     try {
       const resourceType = "raw" as const;
 
@@ -144,12 +147,14 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
       toast.success("Facture ajoutée avec succès !");
       setFile(null);
       form.reset();
+      setIsOpen(false);
     } catch {
       toast.error("Erreur lors de l'upload", {
         description: "Échec de l'enregistrement.",
       });
     } finally {
       setUploading(false);
+      setIsSubmitting(false);
     }
   }
 
@@ -464,11 +469,20 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
         props={{
           text: "Enregistrer",
           onClick: form.handleSubmit(onSubmit),
-          disabled: uploading,
+          disabled: uploading || isSubmitting,
+          loading: isSubmitting,
         }}
         variant="submit"
       />
     ),
   };
-  return <Modal cta={CtaProps} data={InvoiceFormData} />;
+  return (
+    <Modal
+      cta={CtaProps}
+      data={InvoiceFormData}
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      preventAutoClose={true}
+    />
+  );
 }
