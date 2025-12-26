@@ -4,17 +4,26 @@ import SvgAudio from "./icons/Audio";
 
 export type MediaThumbProps = {
   publicId?: string;
+  url?: string;
   type?: "jpg" | "png" | "pdf" | "mp4" | "mp3";
   className?: string;
   width?: number;
   height?: number;
   alt: string;
+  variant?: "thumbnail" | "card";
 };
 
-const size = {
-  landscape: { w: 140, h: 100 },
-  portrait: { w: 80, h: 100 },
-  square: { w: 100, h: 100 },
+const sizes = {
+  thumbnail: {
+    landscape: { w: 140, h: 100 },
+    portrait: { w: 80, h: 100 },
+    square: { w: 100, h: 100 },
+  },
+  card: {
+    landscape: { w: 270, h: 170 },
+    portrait: { w: 150, h: 210 },
+    square: { w: 150, h: 150 },
+  },
 };
 
 export default function MediaThumb({
@@ -24,6 +33,7 @@ export default function MediaThumb({
   width,
   height,
   alt,
+  variant = "thumbnail",
 }: MediaThumbProps) {
   let orientation: "landscape" | "portrait" | "square" = "landscape";
 
@@ -39,7 +49,16 @@ export default function MediaThumb({
     }
   }
 
-  const target = size[orientation];
+  const selectedSize = sizes[variant][orientation];
+
+  const target =
+    variant === "card"
+      ? selectedSize
+      : {
+          w: width || selectedSize.w,
+          h: height || selectedSize.h,
+        };
+
   const isPdf = type === "pdf";
   const isVideo = type === "mp4";
   const isImage = type === "jpg" || type === "png";
@@ -59,11 +78,7 @@ export default function MediaThumb({
   }
 
   return (
-    <div
-      className={cn(
-        className
-      )}
-    >
+    <div className={cn(className)}>
       {isImage && (
         <CldImage
           src={publicId}

@@ -58,6 +58,8 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
 
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formSchema = z.object({
     title: z.string().min(1, "Le titre est requis"),
@@ -99,6 +101,7 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
     const folder = `campaigns/medias`;
 
     setUploading(true);
+    setIsSubmitting(true);
     try {
       const sig = await getSignature({ folder, resourceType: resourceType });
 
@@ -130,12 +133,14 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
       toast.success("Média ajouté avec succès !");
       setFile(null);
       form.reset();
+      setIsOpen(false);
     } catch {
       toast.error("Erreur lors de l'upload", {
         description: "Échec de l'enregistrement.",
       });
     } finally {
       setUploading(false);
+      setIsSubmitting(false);
     }
   }
 
@@ -245,11 +250,20 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
         props={{
           text: "Enregistrer",
           onClick: form.handleSubmit(onSubmit),
-          disabled: uploading,
+          disabled: uploading || isSubmitting,
+          loading: isSubmitting,
         }}
         variant="submit"
       />
     ),
   };
-  return <Modal cta={CtaProps} data={MediaFormData} />;
+  return (
+    <Modal
+      cta={CtaProps}
+      data={MediaFormData}
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      preventAutoClose={true}
+    />
+  );
 }

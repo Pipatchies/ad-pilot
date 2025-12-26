@@ -49,6 +49,9 @@ export default function UpdateAccountModal({
 }: UpdateModalProps) {
   const updateUser = useMutation(api.mutations.users.updateUser);
 
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { firstname, lastname, email },
@@ -56,6 +59,7 @@ export default function UpdateAccountModal({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
     try {
       await updateUser({
         userId,
@@ -67,8 +71,11 @@ export default function UpdateAccountModal({
       });
       toast.success("Compte mis à jour");
       form.reset(values);
+      setIsOpen(false);
     } catch {
       toast.error("Échec de la mise à jour");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -147,7 +154,11 @@ export default function UpdateAccountModal({
     ),
     footer: (
       <CtaButton
-        props={{ text: "Enregistrer", onClick: form.handleSubmit(onSubmit) }}
+        props={{
+          text: "Enregistrer",
+          onClick: form.handleSubmit(onSubmit),
+          loading: isSubmitting,
+        }}
         variant="submit"
       />
     ),
@@ -155,10 +166,18 @@ export default function UpdateAccountModal({
 
   return (
     <Modal
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      preventAutoClose={true}
       variant={triggerType}
-      cta={{ 
-        icon: triggerType === "button" ? <SvgCrayon /> : <SvgCrayon className="cursor-pointer" />,
-        text: triggerText 
+      cta={{
+        icon:
+          triggerType === "button" ? (
+            <SvgCrayon />
+          ) : (
+            <SvgCrayon className="cursor-pointer" />
+          ),
+        text: triggerText,
       }}
       data={modalData}
     />

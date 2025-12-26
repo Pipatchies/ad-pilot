@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { DataTable, sortableHeader } from "@/components/table/data-table";
 import SvgEyeIcon from "@/components/icons/EyeIcon";
 import SvgUploder from "@/components/icons/Uploder";
 import { ColumnDef } from "@tanstack/react-table";
-import { Document } from "@/types/docs"; 
+import { Document } from "@/types/docs";
+import MediaViewerModal from "@/components/modal/media-viewer-modal";
 
 interface DocumentsTableProps {
   documents: Document[];
@@ -17,6 +19,7 @@ export default function DocumentsTable({
   globalFilter,
   headerClassName,
 }: DocumentsTableProps) {
+  const [viewingDocument, setViewingDocument] = useState<Document | null>(null);
 
   const columns: ColumnDef<Document>[] = [
     {
@@ -40,23 +43,68 @@ export default function DocumentsTable({
     {
       id: "actions",
       header: "",
-      cell: () => (
+      cell: ({ row }) => (
         <div className="flex justify-end gap-4">
-          <SvgEyeIcon />
-          <SvgUploder />
+          <button
+            onClick={() => setViewingDocument(row.original)}
+            className="hover:opacity-80 transition-opacity"
+          >
+            <SvgEyeIcon />
+          </button>
+
+          {row.original.url && (
+            <a
+              href={
+                row.original.url.includes("/upload/")
+                  ? row.original.url.replace(
+                      "/upload/",
+                      "/upload/fl_attachment/"
+                    )
+                  : row.original.url
+              }
+              download
+              className="hover:opacity-80 transition-opacity"
+            >
+              <SvgUploder />
+            </a>
+          )}
         </div>
       ),
     },
   ];
 
   return (
-    <DataTable
-      data={documents}
-      columns={columns}
-      globalFilter={globalFilter}
-      emptyMessage="Aucun document pour le moment."
-      headerClassName={headerClassName}
-      defaultSort={{ id: "_creationTime", desc: true }}
-    />
+    <>
+      <DataTable
+        data={documents}
+        columns={columns}
+        globalFilter={globalFilter}
+        emptyMessage="Aucun document pour le moment."
+        headerClassName={headerClassName}
+        defaultSort={{ id: "_creationTime", desc: true }}
+      />
+
+      {viewingDocument && (
+        <MediaViewerModal
+          isOpen={true}
+          mediaItem={viewingDocument}
+          onClose={() => setViewingDocument(null)}
+          onNext={() => {
+            const idx = documents.indexOf(viewingDocument);
+            if (idx !== -1 && idx < documents.length - 1) {
+              setViewingDocument(documents[idx + 1]);
+            }
+          }}
+          onPrev={() => {
+            const idx = documents.indexOf(viewingDocument);
+            if (idx > 0) {
+              setViewingDocument(documents[idx - 1]);
+            }
+          }}
+          hasNext={documents.indexOf(viewingDocument) < documents.length - 1}
+          hasPrev={documents.indexOf(viewingDocument) > 0}
+        />
+      )}
+    </>
   );
 }

@@ -6,7 +6,7 @@ import {
 } from "@convex-dev/auth/nextjs/server";
 
 const isRoot = createRouteMatcher(["/"]);
-const isSignIn = createRouteMatcher(["/signin"]);
+// const isSignIn = createRouteMatcher(["/signin"]);
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/admin(.*)",
