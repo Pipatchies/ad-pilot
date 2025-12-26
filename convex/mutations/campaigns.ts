@@ -132,7 +132,7 @@ export const updateCampaign = mutation({
       report: v.optional(
         v.object({
           status: v.optional(
-            v.union(v.literal("completed"), v.literal("archived"))
+            v.union(v.literal("current"), v.literal("archived"))
           ),
           document: v.optional(v.string()),
           kpi: v.optional(
