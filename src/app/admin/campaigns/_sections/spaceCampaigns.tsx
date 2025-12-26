@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import SpaceCampaignsHeader from "./spaceCampaignsHeader";
 import SpaceCampaignsActive from "./spaceCampaignsActive";
-import SpaceCampaignsFinished from "./spaceCampaignsFinished";
+import SpaceCampaignsArchived from "./spaceCampaignsArchived";
+
 
 export default function SpaceCampaigns() {
   const [globalFilter, setGlobalFilter] = useState("");
@@ -15,7 +16,7 @@ export default function SpaceCampaigns() {
       <SpaceCampaignsActive
         globalFilter={globalFilter}
       />
-      <SpaceCampaignsFinished
+      <SpaceCampaignsArchived
         globalFilter={globalFilter}
       />
     </section>

@@ -9,12 +9,12 @@ type Props = {
   globalFilter: string;
 };
 
-export default function SpaceCampaignsFinished({ globalFilter }: Props) {
-  const campaignsFinished = useQuery(
-    api.queries.campaigns.getFinishedCampaigns
+export default function SpaceCampaignsArchived({ globalFilter }: Props) {
+  const campaignsArchived = useQuery(
+    api.queries.campaigns.getArchivedCampaigns
   ) as Campaign[];
 
-  if (!campaignsFinished) {
+  if (!campaignsArchived) {
     return <p>Chargement...</p>;
   }
 
@@ -22,7 +22,7 @@ export default function SpaceCampaignsFinished({ globalFilter }: Props) {
     <section>
       <Typography variant="h2">Campagnes archivées</Typography>
       <CampaignTable
-        campaigns={campaignsFinished}
+        campaigns={campaignsArchived}
         globalFilter={globalFilter}
       />
     </section>
