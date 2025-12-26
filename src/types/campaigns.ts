@@ -20,7 +20,7 @@ export type CampaignBudgetLine = {
 };
 
 export type CampaignReport = {
-  status?: "completed" | "archived";
+  status?: "current" | "archived";
   document?: string;
   kpi?: {
     icon: string;
