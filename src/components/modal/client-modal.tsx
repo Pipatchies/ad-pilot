@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import SvgProfil from "@/components/icons/Profil";
 import SvgMail from "@/components/icons/Mail";
 import { useAction, useQuery } from "convex/react";
+import { ConvexError } from "convex/values";
 import { api } from "@/../convex/_generated/api";
 import SvgCrayon from "@/components/icons/Crayon";
 import SvgUploder from "@/components/icons/Uploder";
@@ -41,6 +42,7 @@ export default function ClientModal() {
   const [passwordStrength, setPasswordStrength] = React.useState(0);
   const [file, setFile] = React.useState<File | null>(null);
   const [uploading, setUploading] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
   const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
 
   const formSchema = z.object({
@@ -138,11 +140,24 @@ export default function ClientModal() {
       toast.success("Client créé !");
       form.reset();
       setFile(null);
+      setIsOpen(false);
     } catch (e) {
-      toast.error("Erreur", {
-        description:
-          "Échec de la création. Vérifiez l'email (doublon ?) ou les champs requis.",
-      });
+      if (
+        e instanceof ConvexError &&
+        (e.data as any).message === "EMAIL_EXISTS"
+      ) {
+        form.setError("email", {
+          type: "manual",
+          message: (e.data as any).payload || "Cet email est déjà utilisé.",
+        });
+        toast.error("Erreur de validation", {
+          description: "Cet email est déjà lié à un compte existant.",
+        });
+      } else {
+        toast.error("Erreur", {
+          description: "Échec de la création. Vérifiez les champs requis.",
+        });
+      }
     } finally {
       setUploading(false);
     }
@@ -411,5 +426,13 @@ export default function ClientModal() {
       />
     ),
   };
-  return <Modal cta={ctaProps} data={userFormData} />;
+  return (
+    <Modal
+      cta={ctaProps}
+      data={userFormData}
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      preventAutoClose={true}
+    />
+  );
 }

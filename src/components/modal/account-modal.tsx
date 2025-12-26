@@ -21,6 +21,7 @@ import SvgProfil from "@/components/icons/Profil";
 import SvgMail from "@/components/icons/Mail";
 import SvgLock from "@/components/icons/Lock";
 import { useAction, useQuery } from "convex/react";
+import { ConvexError } from "convex/values";
 import { api } from "@/../convex/_generated/api";
 import zxcvbn from "zxcvbn";
 import { getPasswordCriteria } from "@/lib/utils";
@@ -36,6 +37,7 @@ export default function AccountModal() {
   const adminCreateUser = useAction(api.actions.users.adminCreateAdmin);
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const formSchema = z.object({
     firstname: z.string().min(1, "Le prénom est requis"),
@@ -87,16 +89,24 @@ export default function AccountModal() {
 
       toast.success("Compte administrateur créé !");
       form.reset();
-    } catch (e: any) {
-      const msg =
-        e?.data === "EMAIL_TAKEN"
-          ? "Email déjà utilisé."
-          : e?.data === "FORBIDDEN"
-          ? "Accès refusé."
-          : e?.data === "UNAUTHENTICATED"
-          ? "Vous devez être connecté."
-          : "Échec de la création.";
-      toast.error("Erreur", { description: msg });
+      setIsOpen(false);
+    } catch (e) {
+      if (
+        e instanceof ConvexError &&
+        (e.data as any).message === "EMAIL_EXISTS"
+      ) {
+        form.setError("email", {
+          type: "manual",
+          message: (e.data as any).payload || "Cet email est déjà utilisé.",
+        });
+        toast.error("Erreur de validation", {
+          description: "Cet email est déjà lié à un compte existant.",
+        });
+      } else {
+        toast.error("Erreur", {
+          description: "Échec de la création. Vérifiez les champs requis.",
+        });
+      }
     }
   }
 
