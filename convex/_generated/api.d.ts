@@ -13,6 +13,7 @@ import type * as actions_cloudinary from "../actions/cloudinary.js";
 import type * as actions_sendEmail from "../actions/sendEmail.js";
 import type * as actions_users from "../actions/users.js";
 import type * as auth from "../auth.js";
+import type * as crons from "../crons.js";
 import type * as error from "../error.js";
 import type * as http from "../http.js";
 import type * as mutations_briefs from "../mutations/briefs.js";
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   "actions/sendEmail": typeof actions_sendEmail;
   "actions/users": typeof actions_users;
   auth: typeof auth;
+  crons: typeof crons;
   error: typeof error;
   http: typeof http;
   "mutations/briefs": typeof mutations_briefs;

@@ -1,4 +1,4 @@
-import { mutation } from "../_generated/server";
+import { mutation, internalMutation } from "../_generated/server";
 import { v } from "convex/values";
 
 export const createCampaign = mutation({
@@ -131,7 +131,9 @@ export const updateCampaign = mutation({
 
       report: v.optional(
         v.object({
-          status: v.optional(v.union(v.literal("completed"), v.literal("archived"))),
+          status: v.optional(
+            v.union(v.literal("completed"), v.literal("archived"))
+          ),
           document: v.optional(v.string()),
           kpi: v.optional(
             v.array(
@@ -155,11 +157,9 @@ export const updateCampaign = mutation({
   },
 });
 
-
 export const duplicateCampaign = mutation({
   args: { campaignId: v.id("campaigns") },
   handler: async (ctx, { campaignId }) => {
-
     const original = await ctx.db.get(campaignId);
     if (!original) throw new Error("Campaign not found");
 
@@ -177,8 +177,6 @@ export const duplicateCampaign = mutation({
   },
 });
 
-
-
 export const deleteCampaign = mutation({
   args: {
     campaignId: v.id("campaigns"),
@@ -186,7 +184,23 @@ export const deleteCampaign = mutation({
   handler: async (ctx, { campaignId }) => {
     await ctx.db.delete(campaignId);
   },
-}); 
+});
 
+export const autoArchiveCampaigns = internalMutation({
+  handler: async (ctx) => {
+    const now = new Date().toISOString();
 
+    const campaignsToArchive = await ctx.db
+      .query("campaigns")
+      .filter((q) =>
+        q.and(q.eq(q.field("archived"), false), q.lt(q.field("endDate"), now))
+      )
+      .collect();
 
+    for (const campaign of campaignsToArchive) {
+      await ctx.db.patch(campaign._id, { archived: true });
+    }
+
+    console.log(`Archived ${campaignsToArchive.length} campaigns.`);
+  },
+});
