@@ -455,9 +455,112 @@ export default function CampaignForm({
         },
       });
 
+      // Save NEW medias
+      const mediasToSave = formMedias.filter(
+        (m) =>
+          m.publicId &&
+          !existingMedias?.some((em) => em.publicId === m.publicId)
+      );
+
+      await Promise.all(
+        mediasToSave.map(async (m) => {
+          if (!m.publicId || !m.resourceType || !m.mediaTypes) return;
+
+          const newPublicId = `campaigns/${campaignId}/medias/${m.publicId
+            .split("/")
+            .pop()}`;
+          const renamed = await moveMediaToCampaign({
+            publicId: m.publicId,
+            newPublicId,
+            resourceType: m.resourceType,
+          });
+
+          await createMedia({
+            title: m.title,
+            url: renamed.secure_url,
+            type: m.type,
+            mediaTypes: m.mediaTypes,
+            publicId: newPublicId,
+            resourceType: m.resourceType,
+            width: renamed.width,
+            height: renamed.height,
+            campaignId,
+          });
+        })
+      );
+
+      // Save NEW invoices
+      const invoicesToSave = formInvoices.filter(
+        (i) =>
+          i.publicId &&
+          !existingInvoices?.some((ei) => ei.publicId === i.publicId)
+      );
+      await Promise.all(
+        invoicesToSave.map(async (i) => {
+          if (!i.publicId || !i.resourceType || !i.invoiceType) return;
+
+          const newPublicId = `campaigns/${campaignId}/invoices/${i.publicId
+            .split("/")
+            .pop()}`;
+          const renamed = await moveMediaToCampaign({
+            publicId: i.publicId,
+            newPublicId,
+            resourceType: i.resourceType,
+          });
+
+          await createInvoice({
+            title: i.title,
+            url: renamed.secure_url,
+            invoiceType: i.invoiceType,
+            vendorName: i.vendorName ?? "",
+            agencyInvoice: i.agencyInvoice ?? "",
+            htprice: i.htprice,
+            ttcprice: i.ttcprice,
+            startDate: i.startDate,
+            dueDate: i.dueDate,
+            publicId: newPublicId,
+            resourceType: i.resourceType,
+            organizationId: values.organization as Id<"organizations">,
+            campaignId,
+          });
+        })
+      );
+
+      // Save NEW documents
+      const docsToSave = formDocuments.filter(
+        (d) =>
+          d.publicId &&
+          !existingDocuments?.some((ed) => ed.publicId === d.publicId)
+      );
+      await Promise.all(
+        docsToSave.map(async (d) => {
+          if (!d.publicId || !d.resourceType || !d.type) return;
+
+          const newPublicId = `campaigns/${campaignId}/documents/${d.publicId
+            .split("/")
+            .pop()}`;
+          const renamed = await moveMediaToCampaign({
+            publicId: d.publicId,
+            newPublicId,
+            resourceType: d.resourceType,
+          });
+
+          await createDocument({
+            title: d.title,
+            url: renamed.secure_url,
+            type: d.type,
+            publicId: newPublicId,
+            resourceType: d.resourceType,
+            campaignId,
+            organizationId: values.organization as Id<"organizations">,
+          });
+        })
+      );
+
       toast.success("Campagne mise à jour !");
-      router.push(`/campaigns/${campaignId}`);
+      router.push(`/admin/campaigns/${campaignId}`);
     } catch (err) {
+      console.error(err);
       toast.error("Erreur lors de la mise à jour.");
     }
   }
@@ -467,7 +570,10 @@ export default function CampaignForm({
   return (
     <section>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(campaignId ? onUpdate : onSubmit)}
+          className="space-y-6"
+        >
           <SpaceOrganizations organizations={organizations} />
 
           <SpaceInfos />
@@ -495,8 +601,10 @@ export default function CampaignForm({
           <div className="w-full flex justify-center">
             <CtaButton
               props={{
-                text: "Enregistrer la campagne",
-                onClick: form.handleSubmit(onSubmit),
+                text: campaignId
+                  ? "Enregistrer les modifications"
+                  : "Enregistrer la campagne",
+                onClick: form.handleSubmit(campaignId ? onUpdate : onSubmit),
               }}
               variant="submit"
             />

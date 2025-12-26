@@ -21,16 +21,18 @@ import {
 import { Button } from "@/components/ui/button";
 import SvgPlus from "@/components/icons/Plus";
 import SvgUploder from "@/components/icons/Uploder";
+import React from "react";
 
 export default function SpaceReport({ campaignId }: { campaignId?: string }) {
   const { control } = useFormContext();
+  const [file, setFile] = React.useState<File | null>(null);
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "report.kpi",
   });
 
-  if (!campaignId) return null; // Section visible uniquement lors de l'édition
+  if (!campaignId) return null;
 
   return (
     <Card className="w-full h-auto rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
@@ -85,12 +87,31 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                 <FormControl>
                   <div className="relative">
                     <Input
+                      readOnly
+                      value={field.value ? field.value.name : ""}
                       placeholder="Importer le fichier PDF"
                       className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white"
-                      {...field}
-                      value={field.value ?? ""}
+                      onClick={() =>
+                        document.getElementById("hiddenDocumentInput")?.click()
+                      }
                     />
-                    <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
+                    <SvgUploder
+                      className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                      onClick={() =>
+                        document.getElementById("hiddenDocumentInput")?.click()
+                      }
+                    />
+                    <input
+                      id="hiddenDocumentInput"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0] ?? null;
+                        setFile(f);
+                        if (f) field.onChange(f.name);
+                      }}
+                    />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -119,11 +140,35 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                     <FormControl>
                       <div className="relative">
                         <Input
+                          readOnly
+                          value={field.value ? field.value.name : ""}
                           placeholder="Icône"
                           className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white"
-                          {...field}
+                          onClick={() =>
+                            document
+                              .getElementById("hiddenLogoInput")
+                              ?.click()
+                          }
                         />
-                        <SvgUploder className="absolute right-3 top-1/2 -translate-y-1/2" />
+                        <SvgUploder
+                          className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                          onClick={() =>
+                            document
+                              .getElementById("hiddenLogoInput")
+                              ?.click()
+                          }
+                        />
+                        <input
+                          id="hiddenLogoInput"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0] ?? null;
+                            setFile(f);
+                            if (f) field.onChange(f.name);
+                          }}
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />
