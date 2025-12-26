@@ -16,13 +16,22 @@ export const getUserById = internalQuery({
   },
 });
 
+export const getUserByEmail = internalQuery({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("email", (q) => q.eq("email", args.email))
+      .unique();
+  },
+});
+
 export const getAdmin = query({
-  args:{},
+  args: {},
   handler: async (ctx) => {
     const users = await ctx.db.query("users").collect();
 
     const adminAccounts = [];
-
 
     for (const user of users) {
       if (!user.roleId) continue;
@@ -42,7 +51,7 @@ export const getAdmin = query({
           lastname,
           email: user.email ?? "",
           role: role.label,
-          id
+          id,
         });
       }
     }
@@ -50,7 +59,6 @@ export const getAdmin = query({
     return adminAccounts;
   },
 });
-
 
 export const me = query({
   args: {},
@@ -71,4 +79,3 @@ export const me = query({
     };
   },
 });
-
