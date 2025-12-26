@@ -1,3 +1,4 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation } from "../_generated/server";
 import { v } from "convex/values";
 import { internal } from "../_generated/api";
@@ -18,6 +19,9 @@ export const createBrief = mutation({
     brief: v.string(),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Unauthorized");
+
     const briefId = await ctx.db.insert("briefs", {
       ...args,
     });

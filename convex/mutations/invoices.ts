@@ -19,6 +19,9 @@ export const createInvoice = mutation({
     organizationId: v.id("organizations"),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("UNAUTHENTICATED");
+
     return await ctx.db.insert("invoices", { ...args });
   },
 });
