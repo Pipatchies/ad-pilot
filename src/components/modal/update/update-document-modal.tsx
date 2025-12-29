@@ -17,13 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useMutation, useAction } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import Modal from "@/components/modal/modal";
 import CtaButton from "../../cta-button";
 import SvgCrayonBig from "../../icons/CrayonBig";
 import SvgUploder from "@/components/icons/Uploder";
@@ -123,28 +117,19 @@ export default function UpdateDocumentModal({
     }
   }
 
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <button className="cursor-pointer hover:opacity-80 transition-opacity">
-          <SvgCrayonBig />
-        </button>
-      </DialogTrigger>
-      <DialogContent className="w-full !max-w-xl flex flex-col items-center py-10">
-        <DialogHeader>
-          <DialogTitle className="font-bold text-2xl">
-            Modifier le document
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="mt-4 w-full max-w-md">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+  const modalData = {
+    title: "Modifier le document",
+    className: "!max-w-4xl",
+    children: (
+      <div className="w-full">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="flex gap-4">
               <FormField
                 control={form.control}
                 name="title"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="w-1/2">
                     <FormLabel>Titre</FormLabel>
                     <FormControl>
                       <Input placeholder="Titre du document" {...field} />
@@ -154,7 +139,7 @@ export default function UpdateDocumentModal({
                 )}
               />
 
-              <FormItem>
+              <FormItem className="w-1/2">
                 <FormLabel className="text-lg font-semibold">
                   Mettre à jour le fichier (Optionnel)
                 </FormLabel>
@@ -194,29 +179,32 @@ export default function UpdateDocumentModal({
                 </FormControl>
                 <FormMessage />
               </FormItem>
+            </div>
+          </form>
+        </Form>
+      </div>
+    ),
+    footer: (
+      <CtaButton
+        props={{
+          text: "Mettre à jour",
+          onClick: form.handleSubmit(onSubmit),
+          disabled: uploading || isSubmitting,
+          loading: isSubmitting,
+        }}
+        variant="submit"
+      />
+    ),
+  };
 
-              <div className="flex justify-end pt-4 gap-4">
-                <CtaButton
-                  props={{
-                    text: "Annuler",
-                    onClick: () => setIsOpen(false),
-                  }}
-                  variant="cancel"
-                />
-                <CtaButton
-                  props={{
-                    text: "Mettre à jour",
-                    onClick: form.handleSubmit(onSubmit),
-                    disabled: uploading || isSubmitting,
-                    loading: isSubmitting,
-                  }}
-                  variant="submit"
-                />
-              </div>
-            </form>
-          </Form>
-        </div>
-      </DialogContent>
-    </Dialog>
+  return (
+    <Modal
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      preventAutoClose={true}
+      variant="icon"
+      cta={{ icon: <SvgCrayonBig className="cursor-pointer" /> }}
+      data={modalData}
+    />
   );
 }

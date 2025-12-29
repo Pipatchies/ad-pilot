@@ -51,7 +51,7 @@ export default function DocumentsTable({
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-4 cursor-pointer">
           <button
             onClick={() => setViewingDocument(row.original)}
             className="hover:opacity-80 transition-opacity"

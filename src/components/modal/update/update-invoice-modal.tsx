@@ -18,13 +18,7 @@ import { useMutation, useAction } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import SvgUploder from "@/components/icons/Uploder";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import Modal from "@/components/modal/modal";
 import CtaButton from "../../cta-button";
 import SvgCrayonBig from "../../icons/CrayonBig";
 
@@ -132,162 +126,157 @@ export default function UpdateInvoiceModal({
     }
   }
 
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <button className="cursor-pointer hover:opacity-80 transition-opacity">
-          <SvgCrayonBig />
-        </button>
-      </DialogTrigger>
-      <DialogContent className="w-full !max-w-4xl flex flex-col items-center py-15 max-h-screen overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="font-bold text-2xl">
-            Modifier la facture
-          </DialogTitle>
-        </DialogHeader>
+  const modalData = {
+    title: "Modifier la facture",
+    className: "!max-w-4xl",
+    children: (
+      <div className="w-full">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Titre</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Titre de la facture" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="mt-4 w-full max-w-2xl">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="flex gap-4">
               <FormField
                 control={form.control}
-                name="title"
+                name="htprice"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Titre</FormLabel>
+                  <FormItem className="w-1/2">
+                    <FormLabel>Montant HT</FormLabel>
                     <FormControl>
-                      <Input placeholder="Titre de la facture" {...field} />
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="ttcprice"
+                render={({ field }) => (
+                  <FormItem className="w-1/2">
+                    <FormLabel>Montant TTC</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-              <div className="flex gap-4">
-                <FormField
-                  control={form.control}
-                  name="htprice"
-                  render={({ field }) => (
-                    <FormItem className="w-1/2">
-                      <FormLabel>Montant HT</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          placeholder="0.00"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="ttcprice"
-                  render={({ field }) => (
-                    <FormItem className="w-1/2">
-                      <FormLabel>Montant TTC</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          placeholder="0.00"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormItem className="w-1/2">
+                    <FormLabel>Date de facturation</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dueDate"
+                render={({ field }) => (
+                  <FormItem className="w-1/2">
+                    <FormLabel>Date d'échéance</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-              <div className="flex gap-4">
-                <FormField
-                  control={form.control}
-                  name="startDate"
-                  render={({ field }) => (
-                    <FormItem className="w-1/2">
-                      <FormLabel>Date de facturation</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="dueDate"
-                  render={({ field }) => (
-                    <FormItem className="w-1/2">
-                      <FormLabel>Date d'échéance</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+            <FormItem>
+              <FormLabel className="text-lg font-semibold">
+                Mettre à jour le fichier
+              </FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    readOnly
+                    value={file ? file.name : ""}
+                    placeholder="Sélectionnez un nouveau fichier"
+                    className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("updateInvoiceFileInput")?.click()
+                    }
+                  />
 
-              <FormItem>
-                <FormLabel className="text-lg font-semibold">
-                  Mettre à jour le fichier
-                </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input
-                      readOnly
-                      value={file ? file.name : ""}
-                      placeholder="Sélectionnez un nouveau fichier"
-                      className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
-                      onClick={() =>
-                        document
-                          .getElementById("updateInvoiceFileInput")
-                          ?.click()
-                      }
-                    />
+                  <SvgUploder
+                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("updateInvoiceFileInput")?.click()
+                    }
+                  />
 
-                    <SvgUploder
-                      className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                      onClick={() =>
-                        document
-                          .getElementById("updateInvoiceFileInput")
-                          ?.click()
-                      }
-                    />
+                  <input
+                    id="updateInvoiceFileInput"
+                    type="file"
+                    accept="application/pdf"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0] ?? null;
+                      setFile(f);
+                    }}
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </form>
+        </Form>
+      </div>
+    ),
+    footer: (
+      <CtaButton
+        props={{
+          text: "Mettre à jour",
+          onClick: form.handleSubmit(onSubmit),
+          disabled: uploading || isSubmitting,
+          loading: isSubmitting,
+        }}
+        variant="submit"
+      />
+    ),
+  };
 
-                    <input
-                      id="updateInvoiceFileInput"
-                      type="file"
-                      accept="application/pdf"
-                      className="hidden"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0] ?? null;
-                        setFile(f);
-                      }}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-
-              <div className="flex justify-end pt-4">
-                <CtaButton
-                  props={{
-                    text: "Mettre à jour",
-                    onClick: form.handleSubmit(onSubmit),
-                    disabled: uploading || isSubmitting,
-                    loading: isSubmitting,
-                  }}
-                  variant="submit"
-                />
-              </div>
-            </form>
-          </Form>
-        </div>
-      </DialogContent>
-    </Dialog>
+  return (
+    <Modal
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      preventAutoClose={true}
+      variant="icon"
+      cta={{ icon: <SvgCrayonBig className="cursor-pointer" /> }}
+      data={modalData}
+    />
   );
 }
