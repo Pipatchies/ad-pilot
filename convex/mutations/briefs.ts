@@ -36,9 +36,30 @@ export const createBrief = mutation({
       organizationId: user.organizationId,
     });
 
+    const adminRole = await ctx.db
+      .query("roles")
+      .filter((q) => q.eq(q.field("name"), "admin"))
+      .first();
+
+    const admins = adminRole
+      ? await ctx.db
+          .query("users")
+          .filter((q) => q.eq(q.field("roleId"), adminRole._id))
+          .collect()
+      : [];
+
+    const recipients = Array.from(
+      new Set(
+        [user.email, ...admins.map((a) => a.email)].filter(
+          (email): email is string => !!email
+        )
+      )
+    );
+
     await ctx.scheduler.runAfter(0, internal.actions.sendEmail.sendEmail, {
       ...args,
       clientName: organization?.name,
+      recipients,
     });
 
     return briefId;

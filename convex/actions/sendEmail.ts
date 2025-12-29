@@ -21,6 +21,7 @@ export const sendEmail = internalAction({
     url: v.optional(v.string()),
     brief: v.string(),
     clientName: v.optional(v.string()),
+    recipients: v.array(v.string()),
   },
   handler: async (_, args) => {
     const transporter = nodemailer.createTransport({
@@ -55,7 +56,7 @@ ${args.brief}
 
     const mailOptions = {
       from: "no-reply@agenceverywell.fr",
-      to: "arianeb@verywell.fr",
+      to: args.recipients,
       subject: "Nouveau brief client",
       text,
       attachments: args.url ? [{ path: args.url }] : [],
