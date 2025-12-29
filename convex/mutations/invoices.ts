@@ -1,6 +1,7 @@
 import { mutation } from "../_generated/server";
 import { v, ConvexError } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { internal } from "../_generated/api";
 
 export const createInvoice = mutation({
   args: {
@@ -74,5 +75,37 @@ export const deleteInvoice = mutation({
     if (role?.name !== "admin") throw new ConvexError("FORBIDDEN");
 
     return await ctx.db.patch(args.invoiceId, { deleted: true });
+  },
+});
+
+export const hardDeleteInvoice = mutation({
+  args: {
+    invoiceId: v.id("invoices"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("UNAUTHENTICATED");
+
+    const user = await ctx.db.get(userId);
+    if (!user?.roleId) throw new ConvexError("FORBIDDEN");
+
+    const role = await ctx.db.get(user.roleId);
+    if (role?.name !== "admin") throw new ConvexError("FORBIDDEN");
+
+    const invoice = await ctx.db.get(args.invoiceId);
+    if (!invoice) throw new ConvexError("Invoice not found");
+
+    await ctx.db.delete(args.invoiceId);
+
+    if (invoice.publicId) {
+      await ctx.scheduler.runAfter(
+        0,
+        internal.actions.cloudinary.destroyMedia,
+        {
+          publicId: invoice.publicId,
+          resourceType: invoice.resourceType,
+        }
+      );
+    }
   },
 });

@@ -50,7 +50,9 @@ export default function SpaceMedias({ formMedias, setFormMedias }: Props) {
                   width: m.width,
                   height: m.height,
                   alt: m.title,
+                  _id: m._id,
                 }}
+                mediaTypes={m.mediaTypes}
               />
             ))}
           </div>

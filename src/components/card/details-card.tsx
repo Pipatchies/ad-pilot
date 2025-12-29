@@ -13,6 +13,10 @@ import Image from "next/image";
 import { cn, getIconFromType } from "@/lib/utils";
 import MediaThumb, { MediaThumbProps } from "../media-thumb";
 import MediaViewerModal from "../modal/media-viewer-modal";
+import UpdateMediaModal from "../modal/update/update-media-modal";
+import SvgCrayon from "../icons/Crayon";
+import { Id } from "@/../convex/_generated/dataModel";
+import { MediaType } from "@/types/medias";
 
 type DetailsCardProps = {
   title: string;
@@ -50,10 +54,24 @@ export default function DetailsCard({
   return (
     <Card
       className={cn(
-        "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2",
+        "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2 relative",
         variant === "media" && ""
       )}
     >
+      {variant === "media" && media?._id && (
+        <div className="absolute top-8 right-6 z-10">
+          <UpdateMediaModal
+            mediaId={media._id as Id<"medias">}
+            defaultValues={{
+              title: title,
+              mediaTypes: (mediaTypes as MediaType[]) || [],
+            }}
+            trigger={
+              <SvgCrayon className="w-5 h-5 cursor-pointer hover:opacity-70" />
+            }
+          />
+        </div>
+      )}
       <CardHeader>
         {variant === "media" && (
           <>
