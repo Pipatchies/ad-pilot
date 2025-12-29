@@ -16,6 +16,7 @@ export default defineSchema({
     roleId: v.optional(v.id("roles")),
     organizationId: v.optional(v.id("organizations")),
     lastConnectionTime: v.optional(v.number()),
+    deleted: v.optional(v.boolean()),
   })
     .index("email", ["email"])
     .index("phone", ["phone"])
@@ -25,6 +26,7 @@ export default defineSchema({
     name: v.string(),
     logo: v.string(),
     step: v.optional(v.string()),
+    deleted: v.optional(v.boolean()),
   }),
 
   roles: defineTable({
@@ -46,6 +48,7 @@ export default defineSchema({
     displayTypes: v.optional(v.string()),
     radioTypes: v.optional(v.array(v.string())),
     brief: v.string(),
+    deleted: v.optional(v.boolean()),
   }),
 
   campaigns: defineTable({
@@ -96,25 +99,27 @@ export default defineSchema({
       })
     ),
     diffusions: v.optional(
-  v.array(
-    v.object({
-      mediaType: v.union(
-        v.literal("ooh"),
-        v.literal("tv"),
-        v.literal("radio"),
-        v.literal("digital"),
-        v.literal("cinema"),
-        v.literal("press")
-      ),
-      startDate: v.string(),
-      endDate: v.string(),
-    })
-  )
-),
+      v.array(
+        v.object({
+          mediaType: v.union(
+            v.literal("ooh"),
+            v.literal("tv"),
+            v.literal("radio"),
+            v.literal("digital"),
+            v.literal("cinema"),
+            v.literal("press")
+          ),
+          startDate: v.string(),
+          endDate: v.string(),
+        })
+      )
+    ),
     digitalReportUrl: v.optional(v.string()),
     report: v.optional(
       v.object({
-        status: v.optional(v.union(v.literal("current"), v.literal("archived"))),
+        status: v.optional(
+          v.union(v.literal("current"), v.literal("archived"))
+        ),
         document: v.optional(v.string()),
         kpi: v.optional(
           v.array(
@@ -123,10 +128,11 @@ export default defineSchema({
               title: v.string(),
               info: v.string(),
             })
-          )   
+          )
         ),
       })
     ),
+    deleted: v.optional(v.boolean()),
     archived: v.boolean(),
     organizationId: v.id("organizations"),
   }).index("by_organizationId", ["organizationId"]),
@@ -160,6 +166,7 @@ export default defineSchema({
     width: v.optional(v.number()),
     height: v.optional(v.number()),
     campaignId: v.id("campaigns"),
+    deleted: v.optional(v.boolean()),
   }).index("by_campaignId", ["campaignId"]),
 
   documents: defineTable({
@@ -180,6 +187,7 @@ export default defineSchema({
     ),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
+    deleted: v.optional(v.boolean()),
   }).index("by_campaignId", ["campaignId"]),
 
   invoices: defineTable({
@@ -193,11 +201,10 @@ export default defineSchema({
     dueDate: v.string(),
     url: v.string(),
     publicId: v.string(),
-    resourceType: v.union(
-      v.literal("raw")
-    ),
+    resourceType: v.union(v.literal("raw")),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
+    deleted: v.optional(v.boolean()),
   })
     .index("by_organizationId", ["organizationId"])
     .index("by_campaignId", ["campaignId"]),

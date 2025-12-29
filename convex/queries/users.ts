@@ -22,6 +22,7 @@ export const getUserByEmail = internalQuery({
     return await ctx.db
       .query("users")
       .withIndex("email", (q) => q.eq("email", args.email))
+      .filter((q) => q.neq(q.field("deleted"), true))
       .unique();
   },
 });
@@ -29,7 +30,10 @@ export const getUserByEmail = internalQuery({
 export const getAdmin = query({
   args: {},
   handler: async (ctx) => {
-    const users = await ctx.db.query("users").collect();
+    const users = await ctx.db
+      .query("users")
+      .filter((q) => q.neq(q.field("deleted"), true))
+      .collect();
 
     const adminAccounts = [];
 

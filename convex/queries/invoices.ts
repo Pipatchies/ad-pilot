@@ -11,20 +11,20 @@ export const getInvoicesByOrganization = query({
       .withIndex("by_organizationId", (q) =>
         q.eq("organizationId", organizationId)
       )
+      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
-    
-      const enriched = await Promise.all(
-        invoices.map(async (invoice) => {
-          const campaign = await ctx.db.get(invoice.campaignId);
-          return {
-            ...invoice,
-            campaignTitle: campaign?.title ?? "Campagne inconnue",
-          };
-        })
-      );
+
+    const enriched = await Promise.all(
+      invoices.map(async (invoice) => {
+        const campaign = await ctx.db.get(invoice.campaignId);
+        return {
+          ...invoice,
+          campaignTitle: campaign?.title ?? "Campagne inconnue",
+        };
+      })
+    );
 
     return enriched;
-
   },
 });
 
@@ -38,6 +38,7 @@ export const getAgencyInvoicesByOrganization = query({
       .withIndex("by_organizationId", (q) =>
         q.eq("organizationId", organizationId)
       )
+      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
 
     const agencyInvoices = invoices.filter((invoice) => !invoice.vendorName);
@@ -66,6 +67,7 @@ export const getVendorInvoicesByOrganization = query({
       .withIndex("by_organizationId", (q) =>
         q.eq("organizationId", organizationId)
       )
+      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
 
     const vendorInvoices = invoices.filter((invoice) => invoice.vendorName);
@@ -92,8 +94,9 @@ export const getInvoicesByCampaign = query({
     const invoices = await ctx.db
       .query("invoices")
       .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
+      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
-      return invoices;
+    return invoices;
   },
 });
 
@@ -105,11 +108,12 @@ export const getAgencyInvoicesByCampaign = query({
     const invoices = await ctx.db
       .query("invoices")
       .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
+      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
 
-      const agencyInvoices = invoices.filter((invoice) => !invoice.vendorName);
+    const agencyInvoices = invoices.filter((invoice) => !invoice.vendorName);
 
-      return agencyInvoices;
+    return agencyInvoices;
   },
 });
 
@@ -121,10 +125,11 @@ export const getVendorInvoicesByCampaign = query({
     const invoices = await ctx.db
       .query("invoices")
       .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
+      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
 
-      const vendorInvoices = invoices.filter((invoice) => invoice.vendorName);
+    const vendorInvoices = invoices.filter((invoice) => invoice.vendorName);
 
-      return vendorInvoices;
+    return vendorInvoices;
   },
 });

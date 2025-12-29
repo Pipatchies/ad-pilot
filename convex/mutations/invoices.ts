@@ -73,6 +73,6 @@ export const deleteInvoice = mutation({
     const role = await ctx.db.get(user.roleId);
     if (role?.name !== "admin") throw new ConvexError("FORBIDDEN");
 
-    return await ctx.db.delete(args.invoiceId);
+    return await ctx.db.patch(args.invoiceId, { deleted: true });
   },
 });

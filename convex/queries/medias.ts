@@ -9,9 +9,9 @@ export const getMediaFilesByCampaign = query({
     const medias = await ctx.db
       .query("medias")
       .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
+      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
 
-      return medias;
+    return medias;
   },
 });
-

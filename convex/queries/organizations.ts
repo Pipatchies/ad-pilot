@@ -4,9 +4,15 @@ import { v } from "convex/values";
 export const getAllOrganizationsWithLastConnection = query({
   args: {},
   handler: async (ctx) => {
-    const organizations = await ctx.db.query("organizations").collect();
+    const organizations = await ctx.db
+      .query("organizations")
+      .filter((q) => q.neq(q.field("deleted"), true))
+      .collect();
 
-    const users = await ctx.db.query("users").collect();
+    const users = await ctx.db
+      .query("users")
+      .filter((q) => q.neq(q.field("deleted"), true))
+      .collect();
 
     const lastByOrganization = new Map<string, number | undefined>();
     for (const user of users) {
@@ -24,6 +30,7 @@ export const getAllOrganizationsWithLastConnection = query({
           .withIndex("by_organizationId", (q) =>
             q.eq("organizationId", organization._id)
           )
+          .filter((q) => q.neq(q.field("deleted"), true))
           .collect();
 
         const hasActiveCampaign = campaigns.some((campaign) => {
@@ -60,6 +67,7 @@ export const getOrganizationDetails = query({
       .withIndex("by_organizationId", (q) =>
         q.eq("organizationId", args.organizationId)
       )
+      .filter((q) => q.neq(q.field("deleted"), true))
       .first();
 
     const campaigns = await ctx.db
@@ -67,6 +75,7 @@ export const getOrganizationDetails = query({
       .withIndex("by_organizationId", (q) =>
         q.eq("organizationId", args.organizationId)
       )
+      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
 
     const invoicesData = await ctx.db
@@ -74,6 +83,7 @@ export const getOrganizationDetails = query({
       .withIndex("by_organizationId", (q) =>
         q.eq("organizationId", args.organizationId)
       )
+      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
 
     const invoices = await Promise.all(
