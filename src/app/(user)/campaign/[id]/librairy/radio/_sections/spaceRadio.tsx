@@ -5,10 +5,10 @@ import { useParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../../../convex/_generated/dataModel";
-import SvgImageSmall from "@/components/icons/ImageSmall";
-import SpaceBillboardHeader from "./spaceBillboardHeader";
+import SvgAudio from "@/components/icons/Audio";
+import SpaceRadioHeader from "./spaceRadioHeader";
 
-export default function SpaceBillboard() {
+export default function SpaceRadio() {
   const params = useParams();
   const campaignId = params?.id as Id<"campaigns">;
 
@@ -20,13 +20,13 @@ export default function SpaceBillboard() {
     () =>
       medias
         ?.filter(
-          (media) => media.mediaTypes && media.mediaTypes.includes("ooh")
+          (media) => media.mediaTypes && media.mediaTypes.includes("radio")
         )
         .map((media) => ({
           title: media.title,
           type: media.type,
           date: new Date(media._creationTime),
-          icon: <SvgImageSmall />,
+          icon: <SvgAudio />,
           media: media,
         })) ?? [],
     [medias]
@@ -49,7 +49,7 @@ export default function SpaceBillboard() {
 
   return (
     <section>
-      <SpaceBillboardHeader
+      <SpaceRadioHeader
         onQueryChange={setGlobalFilter}
         onDateSortChange={setDateSort}
         defaultDateSort="desc"
