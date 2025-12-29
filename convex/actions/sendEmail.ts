@@ -20,6 +20,7 @@ export const sendEmail = internalAction({
     radioTypes: v.optional(v.array(v.string())),
     url: v.optional(v.string()),
     brief: v.string(),
+    clientName: v.optional(v.string()),
   },
   handler: async (_, args) => {
     const transporter = nodemailer.createTransport({
@@ -35,6 +36,7 @@ export const sendEmail = internalAction({
     const text = `
 Un nouveau brief a été soumis :
 
+Client : ${args.clientName || "Non spécifié"}
 Titre : ${args.title || "Sans titre"}
 Période : ${formatDateFR(args.periodFrom)} au ${formatDateFR(args.periodTo)}
 Cible : ${args.target}

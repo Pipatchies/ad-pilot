@@ -27,6 +27,10 @@ export const createBrief = mutation({
     const user = await ctx.db.get(userId);
     if (!user) throw new Error("User not found");
 
+    const organization = user.organizationId
+      ? await ctx.db.get(user.organizationId)
+      : null;
+
     const briefId = await ctx.db.insert("briefs", {
       ...args,
       organizationId: user.organizationId,
@@ -34,6 +38,7 @@ export const createBrief = mutation({
 
     await ctx.scheduler.runAfter(0, internal.actions.sendEmail.sendEmail, {
       ...args,
+      clientName: organization?.name,
     });
 
     return briefId;
