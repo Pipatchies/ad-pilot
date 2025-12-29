@@ -36,6 +36,7 @@ export default defineSchema({
   }),
 
   briefs: defineTable({
+    title: v.optional(v.string()),
     periodFrom: v.string(),
     periodTo: v.string(),
     target: v.string(),
@@ -47,6 +48,7 @@ export default defineSchema({
     tvTypes: v.optional(v.array(v.string())),
     displayTypes: v.optional(v.string()),
     radioTypes: v.optional(v.array(v.string())),
+    url: v.optional(v.string()),
     brief: v.string(),
     deleted: v.optional(v.boolean()),
   }),

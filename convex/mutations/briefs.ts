@@ -5,6 +5,7 @@ import { internal } from "../_generated/api";
 
 export const createBrief = mutation({
   args: {
+    title: v.optional(v.string()),
     periodFrom: v.string(),
     periodTo: v.string(),
     target: v.string(),
@@ -16,6 +17,7 @@ export const createBrief = mutation({
     tvTypes: v.optional(v.array(v.string())),
     displayTypes: v.optional(v.string()),
     radioTypes: v.optional(v.array(v.string())),
+    url: v.optional(v.string()),
     brief: v.string(),
   },
   handler: async (ctx, args) => {
