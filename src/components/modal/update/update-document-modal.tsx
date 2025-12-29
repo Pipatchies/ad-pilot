@@ -130,9 +130,9 @@ export default function UpdateDocumentModal({
                 name="title"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel>Titre</FormLabel>
+                    <FormLabel className="text-lg font-semibold">Titre</FormLabel>
                     <FormControl>
-                      <Input placeholder="Titre du document" {...field} />
+                      <Input placeholder="Titre du document" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

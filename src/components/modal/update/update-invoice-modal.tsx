@@ -138,9 +138,9 @@ export default function UpdateInvoiceModal({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Titre</FormLabel>
+                  <FormLabel className="text-lg font-semibold">Titre</FormLabel>
                   <FormControl>
-                    <Input placeholder="Titre de la facture" {...field} />
+                    <Input placeholder="Titre de la facture" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -153,12 +153,13 @@ export default function UpdateInvoiceModal({
                 name="htprice"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel>Montant HT</FormLabel>
+                    <FormLabel className="text-lg font-semibold">Montant HT</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         step="0.01"
                         placeholder="0.00"
+                        className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
                         {...field}
                       />
                     </FormControl>
@@ -171,12 +172,13 @@ export default function UpdateInvoiceModal({
                 name="ttcprice"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel>Montant TTC</FormLabel>
+                    <FormLabel className="text-lg font-semibold">Montant TTC</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         step="0.01"
                         placeholder="0.00"
+                        className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
                         {...field}
                       />
                     </FormControl>
@@ -192,9 +194,9 @@ export default function UpdateInvoiceModal({
                 name="startDate"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel>Date de facturation</FormLabel>
+                    <FormLabel className="text-lg font-semibold">Date de facturation</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input type="date" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -205,9 +207,9 @@ export default function UpdateInvoiceModal({
                 name="dueDate"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel>Date d'échéance</FormLabel>
+                    <FormLabel className="text-lg font-semibold">Date d'échéance</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input type="date" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
