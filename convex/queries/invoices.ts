@@ -95,6 +95,7 @@ export const getInvoicesByCampaign = query({
       .query("invoices")
       .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
       .filter((q) => q.neq(q.field("deleted"), true))
+      .order("desc")
       .collect();
     return invoices;
   },
@@ -109,6 +110,7 @@ export const getAgencyInvoicesByCampaign = query({
       .query("invoices")
       .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
       .filter((q) => q.neq(q.field("deleted"), true))
+      .order("desc")
       .collect();
 
     const agencyInvoices = invoices.filter((invoice) => !invoice.vendorName);
@@ -126,6 +128,7 @@ export const getVendorInvoicesByCampaign = query({
       .query("invoices")
       .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
       .filter((q) => q.neq(q.field("deleted"), true))
+      .order("desc")
       .collect();
 
     const vendorInvoices = invoices.filter((invoice) => invoice.vendorName);
