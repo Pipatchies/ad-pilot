@@ -12,9 +12,9 @@ export default function ClientLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const showBackButton = /^\/(targets|librairy|archived)\/[^\/]+$/.test(
-    pathname
-  );
+  const showBackButton =
+    /^\/(targets|librairy|archived)\/[^\/]+$/.test(pathname) ||
+    /\/campaign\/[^/]+\/librairy\/[^/]+$/.test(pathname);
   return (
     <>
       <Authenticated>
