@@ -37,7 +37,7 @@ export default function AdminLayout({
                 </div>
               </main>
             ) : (
-              <main className="py-20 px-5 @container max-w-[1400px] mx-auto w-full">
+              <main className="py-20 px-4 @container max-w-[1400px] mx-auto w-full">
                 {children}
               </main>
             )}
