@@ -36,6 +36,20 @@ export const updateDocumentMetadata = mutation({
     documentId: v.id("documents"),
     patch: v.object({
       title: v.optional(v.string()),
+      type: v.optional(
+        v.union(
+          v.literal("png"),
+          v.literal("jpg"),
+          v.literal("mp3"),
+          v.literal("mp4"),
+          v.literal("pdf")
+        )
+      ),
+      url: v.optional(v.string()),
+      publicId: v.optional(v.string()),
+      resourceType: v.optional(
+        v.union(v.literal("image"), v.literal("video"), v.literal("raw"))
+      ),
     }),
   },
   handler: async (ctx, args) => {

@@ -7,18 +7,25 @@ import SvgUploder from "@/components/icons/Uploder";
 import { ColumnDef } from "@tanstack/react-table";
 import { Document } from "@/types/docs";
 import MediaViewerModal from "@/components/modal/media-viewer-modal";
+import UpdateDocumentModal from "@/components/modal/update/update-document-modal";
+import DeleteModal from "../modal/delete-modal";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 interface DocumentsTableProps {
   documents: Document[];
   globalFilter?: string;
   headerClassName?: string;
+  readOnly?: boolean;
 }
 
 export default function DocumentsTable({
   documents,
   globalFilter,
   headerClassName,
+  readOnly,
 }: DocumentsTableProps) {
+  const deleteDocument = useMutation(api.mutations.documents.deleteDocument);
   const [viewingDocument, setViewingDocument] = useState<Document | null>(null);
 
   const columns: ColumnDef<Document>[] = [
@@ -52,6 +59,15 @@ export default function DocumentsTable({
             <SvgEyeIcon />
           </button>
 
+          {!readOnly && row.original._id && (
+            <UpdateDocumentModal
+              documentId={row.original._id}
+              defaultValues={{
+                title: row.original.title,
+              }}
+            />
+          )}
+
           {row.original.url && (
             <a
               href={
@@ -67,6 +83,16 @@ export default function DocumentsTable({
             >
               <SvgUploder />
             </a>
+          )}
+
+          {!readOnly && row.original._id && (
+            <DeleteModal
+              onConfirm={() =>
+                deleteDocument({
+                  documentId: row.original._id!,
+                })
+              }
+            />
           )}
         </div>
       ),
