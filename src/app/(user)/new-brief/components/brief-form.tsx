@@ -942,6 +942,15 @@ export default function BriefForm() {
                           className="hidden"
                           onChange={(e) => {
                             const f = e.target.files?.[0] ?? null;
+                            if (f && f.size > 10 * 1024 * 1024) {
+                              toast.error(
+                                "Le fichier est trop volumineux (max 10 Mo)."
+                              );
+                              e.target.value = ""; // Reset input
+                              setFile(null);
+                              field.onChange("");
+                              return;
+                            }
                             setFile(f);
                             if (f) field.onChange(f.name);
                           }}
