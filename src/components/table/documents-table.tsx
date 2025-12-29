@@ -51,10 +51,10 @@ export default function DocumentsTable({
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <div className="flex justify-end gap-4 cursor-pointer">
+        <div className="flex justify-end gap-4">
           <button
             onClick={() => setViewingDocument(row.original)}
-            className="hover:opacity-80 transition-opacity"
+            className="hover:opacity-80 transition-opacity cursor-pointer"
           >
             <SvgEyeIcon />
           </button>

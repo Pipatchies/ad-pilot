@@ -48,8 +48,8 @@ export default function MediaViewerModal({
   if (!isOpen || !mediaItem || !mediaItem.url) return null;
 
   const downloadUrl = mediaItem.url.includes("/upload/")
-    ? mediaItem.url.replace("/upload/", "/upload/fl_attachment/")
-    : mediaItem.url;
+      ? mediaItem.url.replace("/upload/", "/upload/fl_attachment/")
+      : mediaItem.url;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
@@ -158,5 +158,3 @@ function renderContent(item: Media | Document | Invoice) {
       );
   }
 }
-
-
