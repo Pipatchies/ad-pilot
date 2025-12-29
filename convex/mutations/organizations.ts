@@ -39,7 +39,7 @@ export const deleteOrganization = mutation({
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new Error("Unauthorized");
 
-    await ctx.db.delete(organizationId);
+    await ctx.db.patch(organizationId, { deleted: true });
     return { ok: true };
   },
 });

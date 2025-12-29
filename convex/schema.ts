@@ -16,6 +16,7 @@ export default defineSchema({
     roleId: v.optional(v.id("roles")),
     organizationId: v.optional(v.id("organizations")),
     lastConnectionTime: v.optional(v.number()),
+    deleted: v.optional(v.boolean()),
   })
     .index("email", ["email"])
     .index("phone", ["phone"])
@@ -25,6 +26,7 @@ export default defineSchema({
     name: v.string(),
     logo: v.string(),
     step: v.optional(v.string()),
+    deleted: v.optional(v.boolean()),
   }),
 
   roles: defineTable({
@@ -46,6 +48,7 @@ export default defineSchema({
     displayTypes: v.optional(v.string()),
     radioTypes: v.optional(v.array(v.string())),
     brief: v.string(),
+    deleted: v.optional(v.boolean()),
   }),
 
   campaigns: defineTable({
@@ -163,6 +166,7 @@ export default defineSchema({
     width: v.optional(v.number()),
     height: v.optional(v.number()),
     campaignId: v.id("campaigns"),
+    deleted: v.optional(v.boolean()),
   }).index("by_campaignId", ["campaignId"]),
 
   documents: defineTable({
@@ -183,6 +187,7 @@ export default defineSchema({
     ),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
+    deleted: v.optional(v.boolean()),
   }).index("by_campaignId", ["campaignId"]),
 
   invoices: defineTable({
@@ -199,6 +204,7 @@ export default defineSchema({
     resourceType: v.union(v.literal("raw")),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
+    deleted: v.optional(v.boolean()),
   })
     .index("by_organizationId", ["organizationId"])
     .index("by_campaignId", ["campaignId"]),
