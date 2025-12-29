@@ -946,7 +946,7 @@ export default function BriefForm() {
                               toast.error(
                                 "Le fichier est trop volumineux (max 10 Mo)."
                               );
-                              e.target.value = ""; // Reset input
+                              e.target.value = "";
                               setFile(null);
                               field.onChange("");
                               return;

@@ -24,8 +24,12 @@ export const createBrief = mutation({
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new Error("Unauthorized");
 
+    const user = await ctx.db.get(userId);
+    if (!user) throw new Error("User not found");
+
     const briefId = await ctx.db.insert("briefs", {
       ...args,
+      organizationId: user.organizationId,
     });
 
     await ctx.scheduler.runAfter(0, internal.actions.sendEmail.sendEmail, {

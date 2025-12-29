@@ -51,7 +51,8 @@ export default defineSchema({
     url: v.optional(v.string()),
     brief: v.string(),
     deleted: v.optional(v.boolean()),
-  }),
+    organizationId: v.optional(v.id("organizations")),
+  }).index("by_organizationId", ["organizationId"]),
 
   campaigns: defineTable({
     title: v.string(),
