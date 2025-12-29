@@ -3,7 +3,10 @@ import { query } from "../_generated/server";
 
 export const getAllCampaigns = query({
   handler: async (ctx) => {
-    return await ctx.db.query("campaigns").collect();
+    return await ctx.db
+      .query("campaigns")
+      .filter((q) => q.neq(q.field("deleted"), true))
+      .collect();
   },
 });
 
@@ -17,6 +20,7 @@ export const getCampaignsByOrganization = query({
       .withIndex("by_organizationId", (q) =>
         q.eq("organizationId", organizationId)
       )
+      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
   },
 });
@@ -31,7 +35,6 @@ export const getCampaignById = query({
   },
 });
 
-
 export const getActiveCampaigns = query({
   handler: async (ctx) => {
     const now = new Date().toISOString();
@@ -41,7 +44,8 @@ export const getActiveCampaigns = query({
       .filter((q) =>
         q.and(
           q.eq(q.field("archived"), false),
-          q.gte(q.field("endDate"), now)
+          q.gte(q.field("endDate"), now),
+          q.neq(q.field("deleted"), true)
         )
       )
       .collect();
@@ -88,12 +92,13 @@ export const getActiveCampaigns = query({
 //   },
 // });
 
-
 export const getArchivedCampaigns = query({
   handler: async (ctx) => {
     const campaigns = await ctx.db
       .query("campaigns")
-      .filter((q) => q.eq(q.field("archived"), true))
+      .filter((q) =>
+        q.and(q.eq(q.field("archived"), true), q.neq(q.field("deleted"), true))
+      )
       .collect();
 
     return Promise.all(
@@ -108,4 +113,3 @@ export const getArchivedCampaigns = query({
     );
   },
 });
-

@@ -198,7 +198,7 @@ export const deleteCampaign = mutation({
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new Error("Unauthorized");
 
-    await ctx.db.delete(campaignId);
+    await ctx.db.patch(campaignId, { deleted: true });
   },
 });
 
