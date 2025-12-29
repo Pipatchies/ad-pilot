@@ -6,6 +6,7 @@ import { formatDateFR } from "../../src/lib/utils";
 
 export const sendEmail = internalAction({
   args: {
+    title: v.optional(v.string()),
     periodFrom: v.string(),
     periodTo: v.string(),
     target: v.string(),
@@ -17,6 +18,7 @@ export const sendEmail = internalAction({
     tvTypes: v.optional(v.array(v.string())),
     displayTypes: v.optional(v.string()),
     radioTypes: v.optional(v.array(v.string())),
+    url: v.optional(v.string()),
     brief: v.string(),
   },
   handler: async (_, args) => {
@@ -33,6 +35,7 @@ export const sendEmail = internalAction({
     const text = `
 Un nouveau brief a été soumis :
 
+Titre : ${args.title || "Sans titre"}
 Période : ${formatDateFR(args.periodFrom)} au ${formatDateFR(args.periodTo)}
 Cible : ${args.target}
 Territoire : ${args.territory}
@@ -43,6 +46,7 @@ Médias : ${args.mediaTypes.join(", ")}
 TV types: ${args.tvTypes?.join(", ") || "N/A"}
 Display types: ${args.displayTypes || "N/A"}
 Radio types: ${args.radioTypes?.join(", ") || "N/A"}
+URL : ${args.url || "N/A"}
 Brief :
 ${args.brief}
       `;
@@ -51,20 +55,20 @@ ${args.brief}
       from: "no-reply@agenceverywell.fr",
       to: "arianeb@verywell.fr",
       subject: "Nouveau brief client",
-      text
+      text,
+      attachments: args.url ? [{ path: args.url }] : [],
     };
 
-      const info = await transporter.sendMail(mailOptions);
-      return { success: true, messageId: info.messageId };
+    const info = await transporter.sendMail(mailOptions);
+    return { success: true, messageId: info.messageId };
   },
 });
 
-
 export const sendAccountCreatedEmail = internalAction({
-args: {
+  args: {
     to: v.string(),
     clientName: v.string(),
-    appUrl: v.optional(v.string())
+    appUrl: v.optional(v.string()),
   },
   handler: async (_, { to, clientName, appUrl }) => {
     const APP_URL = appUrl ?? process.env.APP_URL ?? "http://localhost:3000";
@@ -88,9 +92,9 @@ args: {
         "Bonjour,",
         "",
         `Votre compte pour ${clientName} a bien été créé.`,
-         "Cliquez sur ce lien pour recevoir un code et définir votre mot de passe :",
-      link,
-      "",
+        "Cliquez sur ce lien pour recevoir un code et définir votre mot de passe :",
+        link,
+        "",
         "Si vous n’êtes pas à l’origine de cette action, ignorez cet e-mail.",
       ].join("\n"),
       html: `
@@ -108,4 +112,3 @@ args: {
     return { success: true, messageId: info.messageId, link };
   },
 });
-
