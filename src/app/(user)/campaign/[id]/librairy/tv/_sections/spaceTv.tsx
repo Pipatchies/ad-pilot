@@ -18,13 +18,15 @@ export default function SpaceTv() {
 
   const visualsCardData = useMemo(
     () =>
-      medias?.map((media) => ({
-        title: media.title,
-        type: media.type,
-        date: new Date(media._creationTime),
-        icon: <SvgImageSmall />,
-        media: media,
-      })) ?? [],
+      medias
+        ?.filter((media) => media.mediaTypes && media.mediaTypes.includes("tv"))
+        .map((media) => ({
+          title: media.title,
+          type: media.type,
+          date: new Date(media._creationTime),
+          icon: <SvgImageSmall />,
+          media: media,
+        })) ?? [],
     [medias]
   );
 

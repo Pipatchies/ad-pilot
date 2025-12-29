@@ -25,16 +25,14 @@ export default function SpaceVendorInvoicesByCampTable({
 
   return (
     <section>
-      <div className="overflow-x-auto">
-        <InvoicesTable
-          invoices={invoicesData}
-          variant="vendor"
-          showCampaign={false}
-          globalFilter={globalFilter}
-          dateSort={dateSort}
-          readOnly={true}
-        />
-      </div>
+      <InvoicesTable
+        invoices={invoicesData}
+        variant="vendor"
+        showCampaign={false}
+        globalFilter={globalFilter}
+        dateSort={dateSort}
+        readOnly={true}
+      />
     </section>
   );
 }

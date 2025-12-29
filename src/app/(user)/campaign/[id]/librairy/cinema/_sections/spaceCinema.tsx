@@ -6,9 +6,9 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../../../convex/_generated/dataModel";
 import SvgImageSmall from "@/components/icons/ImageSmall";
-import SpaceBillboardHeader from "./spaceBillboardHeader";
+import SpaceCinemaHeader from "./spaceCinemaHeader";
 
-export default function SpaceBillboard() {
+export default function SpaceCinema() {
   const params = useParams();
   const campaignId = params?.id as Id<"campaigns">;
 
@@ -20,7 +20,7 @@ export default function SpaceBillboard() {
     () =>
       medias
         ?.filter(
-          (media) => media.mediaTypes && media.mediaTypes.includes("ooh")
+          (media) => media.mediaTypes && media.mediaTypes.includes("cinema")
         )
         .map((media) => ({
           title: media.title,
@@ -49,7 +49,7 @@ export default function SpaceBillboard() {
 
   return (
     <section>
-      <SpaceBillboardHeader
+      <SpaceCinemaHeader
         onQueryChange={setGlobalFilter}
         onDateSortChange={setDateSort}
         defaultDateSort="desc"

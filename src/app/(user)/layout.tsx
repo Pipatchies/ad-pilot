@@ -12,9 +12,9 @@ export default function ClientLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const showBackButton = /^\/(targets|librairy|archived)\/[^\/]+$/.test(
-    pathname
-  );
+  const showBackButton =
+    /^\/(targets|librairy|archived)\/[^\/]+$/.test(pathname) ||
+    /\/campaign\/[^/]+\/librairy\/[^/]+$/.test(pathname);
   return (
     <>
       <Authenticated>
@@ -32,7 +32,7 @@ export default function ClientLayout({
                 </div>
               </main>
             ) : (
-              <main className="py-20 p-5 @container max-w-7xl mx-auto w-full">
+              <main className="py-20 p-4 @container max-w-7xl mx-auto w-full">
                 {children}
               </main>
             )}

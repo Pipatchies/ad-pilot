@@ -18,6 +18,7 @@ type Props = {
   }[];
   variant: "media" | "default" | "campaign";
   className?: string;
+  hideEditIcon?: boolean;
 };
 
 export default function LatestFiles({
@@ -26,6 +27,7 @@ export default function LatestFiles({
   data,
   variant,
   className = "",
+  hideEditIcon = false,
 }: Props) {
   return (
     <div className={`space-y-4 ${className}`}>
@@ -34,17 +36,21 @@ export default function LatestFiles({
           {title}
         </Typography>
         {cta && (
-        <CtaButton
-          props={cta}
-          className="border transition h-10"
-          variant="noIcon"
-        />
+          <CtaButton
+            props={cta}
+            className="border transition h-10"
+            variant="noIcon"
+          />
         )}
       </div>
-      <div className="flex gap-5 flex-wrap w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {data.map((item, index) => (
-          <div key={index} className="w-full xl:basis-1/4 grow">
-            <DetailsCard variant={variant} {...item} />
+          <div key={index} className="w-full">
+            <DetailsCard
+              variant={variant}
+              hideEditIcon={hideEditIcon}
+              {...item}
+            />
           </div>
         ))}
       </div>

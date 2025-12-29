@@ -93,64 +93,54 @@ export function DataTable<TData, TValue>({
   }, [defaultSort]);
 
   return (
-    <div
-      className={
-        table.getRowModel().rows.length > 0
-          ? "overflow-x-auto"
-          : "overflow-x-hidden"
-      }
-    >
-      <Table className="min-w-[700px]">
-        {/* HEADER */}
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
+    <Table>
+      {/* HEADER */}
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow
+            key={headerGroup.id}
+            className={cn("border-none", headerClassName)}
+          >
+            {headerGroup.headers.map((header) => (
+              <TableHead key={header.id}>
+                {flexRender(
+                  header.column.columnDef.header,
+                  header.getContext()
+                )}
+              </TableHead>
+            ))}
+          </TableRow>
+        ))}
+      </TableHeader>
+
+      {/* BODY */}
+      <TableBody>
+        {table.getRowModel().rows.length ? (
+          table.getRowModel().rows.map((row) => (
             <TableRow
-              key={headerGroup.id}
-              className={cn("border-none", headerClassName)}
+              key={row.id}
+              className={cn(
+                "text-sm md:text-lg h-15 border-[#A5A4BF]",
+                onRowClick &&
+                  "cursor-pointer hover:bg-muted/50 transition-colors"
+              )}
+              onClick={() => onRowClick && onRowClick(row)}
             >
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </TableHead>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableHeader>
-
-        {/* BODY */}
-        <TableBody>
-          {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className={cn(
-                  "text-sm md:text-lg h-15 border-[#A5A4BF]",
-                  onRowClick && "cursor-pointer hover:bg-muted/50 transition-colors"
-                )}
-                onClick={() => onRowClick && onRowClick(row)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="text-center py-4">
-                {emptyMessage}
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={columns.length} className="text-center py-4">
+              {emptyMessage}
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
 }

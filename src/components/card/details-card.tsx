@@ -32,6 +32,7 @@ type DetailsCardProps = {
   subject?: string;
   variant: "default" | "campaign" | "media" | "target" | "archived" | "invoice";
   media?: MediaThumbProps;
+  hideEditIcon?: boolean;
 };
 
 export default function DetailsCard({
@@ -48,6 +49,7 @@ export default function DetailsCard({
   subject,
   variant,
   media,
+  hideEditIcon = false,
 }: DetailsCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -58,7 +60,7 @@ export default function DetailsCard({
         variant === "media" && ""
       )}
     >
-      {variant === "media" && media?._id && (
+      {variant === "media" && media?._id && !hideEditIcon && (
         <div className="absolute top-8 right-6 z-10">
           <UpdateMediaModal
             mediaId={media._id as Id<"medias">}
