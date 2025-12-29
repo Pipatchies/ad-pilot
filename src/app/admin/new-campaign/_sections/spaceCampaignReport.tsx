@@ -21,11 +21,67 @@ import {
 import { Button } from "@/components/ui/button";
 import SvgPlus from "@/components/icons/Plus";
 import SvgUploder from "@/components/icons/Uploder";
-import React from "react";
+import React, { useState } from "react";
+import { useAction } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { toast } from "sonner";
+import { DocumentFileType } from "@/types/docs";
 
 export default function SpaceReport({ campaignId }: { campaignId?: string }) {
   const { control } = useFormContext();
-  const [file, setFile] = React.useState<File | null>(null);
+  const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
+  const [uploading, setUploading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleUpload = async (
+    file: File,
+    onChange: (value: string) => void
+  ) => {
+    try {
+      setUploading(true);
+      const ext = (file.name.split(".").pop() || "").toLowerCase();
+      let tableType: DocumentFileType | null = null;
+      if (["jpg", "jpeg"].includes(ext)) tableType = "jpg";
+      if (ext === "png") tableType = "png";
+      if (ext === "pdf") tableType = "pdf";
+      if (ext === "mp3") tableType = "mp3";
+      if (ext === "mp4") tableType = "mp4";
+
+      if (!tableType) {
+        toast.error("Format non supporté.");
+        return;
+      }
+
+      const resourceType =
+        tableType === "mp4" ? "video" : tableType === "mp3" ? "raw" : "image";
+
+      const folder = `campaigns/${campaignId}/reports`;
+
+      const sig = await getSignature({ folder, resourceType });
+      const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${resourceType}/upload`;
+
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("api_key", sig.apiKey);
+      fd.append("timestamp", String(sig.timestamp));
+      fd.append("upload_preset", sig.uploadPreset);
+      fd.append("signature", sig.signature);
+      fd.append("folder", sig.folder);
+
+      const res = await fetch(endpoint, { method: "POST", body: fd });
+      const json = await res.json();
+
+      if (json.error) throw new Error(json.error.message || "Upload failed");
+
+      onChange(json.secure_url);
+      toast.success("Fichier uploadé avec succès !");
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur lors de l'upload");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -88,9 +144,15 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                   <div className="relative">
                     <Input
                       readOnly
-                      value={field.value ? field.value.name : ""}
+                      value={
+                        field.value
+                          ? typeof field.value === "string"
+                            ? field.value
+                            : field.value.name
+                          : ""
+                      }
                       placeholder="Importer le fichier PDF"
-                      className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white"
+                      className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white cursor-pointer"
                       onClick={() =>
                         document.getElementById("hiddenDocumentInput")?.click()
                       }
@@ -104,12 +166,14 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                     <input
                       id="hiddenDocumentInput"
                       type="file"
-                      accept="image/*"
+                      accept="application/pdf,image/png,image/jpeg"
                       className="hidden"
                       onChange={(e) => {
                         const f = e.target.files?.[0] ?? null;
-                        setFile(f);
-                        if (f) field.onChange(f.name);
+                        if (f) {
+                          setFile(f);
+                          handleUpload(f, field.onChange);
+                        }
                       }}
                     />
                   </div>
@@ -141,12 +205,18 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                       <div className="relative">
                         <Input
                           readOnly
-                          value={field.value ? field.value.name : ""}
+                          value={
+                            field.value
+                              ? typeof field.value === "string"
+                                ? field.value
+                                : field.value.name
+                              : ""
+                          }
                           placeholder="Icône"
-                          className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white"
+                          className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white cursor-pointer"
                           onClick={() =>
                             document
-                              .getElementById("hiddenLogoInput")
+                              .getElementById(`hiddenLogoInput-${index}`)
                               ?.click()
                           }
                         />
@@ -154,19 +224,21 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                           className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
                           onClick={() =>
                             document
-                              .getElementById("hiddenLogoInput")
+                              .getElementById(`hiddenLogoInput-${index}`)
                               ?.click()
                           }
                         />
                         <input
-                          id="hiddenLogoInput"
+                          id={`hiddenLogoInput-${index}`}
                           type="file"
                           accept="image/*"
                           className="hidden"
                           onChange={(e) => {
                             const f = e.target.files?.[0] ?? null;
-                            setFile(f);
-                            if (f) field.onChange(f.name);
+                            if (f) {
+                              setFile(f); // Note: setFile overrides the main file state but it's local only for potential display? logic. Actually handleUpload uses passed file arg.
+                              handleUpload(f, field.onChange);
+                            }
                           }}
                         />
                       </div>

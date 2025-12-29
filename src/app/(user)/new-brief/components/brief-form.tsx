@@ -43,9 +43,11 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SvgCalendrier from "@/components/icons/Calendrier";
 import SvgSmallDown from "@/components/icons/SmallDown";
-import { useMutation } from "convex/react";
+import { useMutation, useAction } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
+import { DocumentFileType } from "@/types/docs";
 import CtaButton from "@/components/cta-button";
+import SvgUploder from "@/components/icons/Uploder";
 
 const objectifs = [
   { label: "Notoriété", value: "notoriete" },
@@ -79,6 +81,9 @@ const radioTypes = [
 
 const formSchema = z
   .object({
+    title: z.string().min(2, {
+      message: "Le titre est requis",
+    }),
     period: z
       .object({
         from: z.date(),
@@ -115,6 +120,7 @@ const formSchema = z
     tvTypes: z.array(z.string()).optional(),
     displayTypes: z.string().optional(),
     radioTypes: z.array(z.string()).optional(),
+    url: z.string().optional(),
     brief: z.string().min(10, {
       message: "Votre brief doit contenir au moins 10 caractères",
     }),
@@ -159,9 +165,14 @@ const formSchema = z
 export default function BriefForm() {
   type FormValues = z.infer<typeof formSchema>;
 
+  const [file, setFile] = React.useState<File | null>(null);
+  const [uploading, setUploading] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      title: "",
       period: {
         from: undefined,
         to: undefined,
@@ -175,17 +186,73 @@ export default function BriefForm() {
       tvTypes: [],
       displayTypes: "",
       radioTypes: [],
+      url: "",
       brief: "",
     },
   });
 
   const createBrief = useMutation(api.mutations.briefs.createBrief);
+  const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
 
   const selectedMediaTypes = form.watch("mediaTypes") || [];
 
   async function onSubmit(values: FormValues) {
+    if (!file) {
+      toast.error("Veuillez sélectionner un document.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    let fileUrl = values.url;
+
+    try {
+      setUploading(true);
+      const ext = (file.name.split(".").pop() || "").toLowerCase();
+      let tableType: DocumentFileType | null = null;
+      if (["jpg", "jpeg"].includes(ext)) tableType = "jpg";
+      if (ext === "png") tableType = "png";
+      if (ext === "pdf") tableType = "pdf";
+      if (ext === "mp3") tableType = "mp3";
+      if (ext === "mp4") tableType = "mp4";
+
+      if (!tableType) {
+        toast.error(
+          "Format non supporté. Autorisés : png, jpg, pdf, mp3, mp4."
+        );
+        setUploading(false);
+        setIsSubmitting(false);
+        return;
+      }
+
+      const folder = "clients/briefs";
+      const resourceType = "raw";
+      const sig = await getSignature({ folder, resourceType });
+      const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${resourceType}/upload`;
+
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("api_key", sig.apiKey);
+      fd.append("timestamp", String(sig.timestamp));
+      fd.append("upload_preset", sig.uploadPreset);
+      fd.append("signature", sig.signature);
+      fd.append("folder", sig.folder);
+
+      const res = await fetch(endpoint, { method: "POST", body: fd });
+      const json = await res.json();
+
+      if (json.error) throw new Error(json.error?.message || "Upload failed");
+      fileUrl = json.secure_url;
+    } catch (error) {
+      console.error("Upload failed:", error);
+      toast.error("Erreur lors de l'upload du document.");
+      setUploading(false);
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       await createBrief({
+        title: values.title,
         periodFrom: values.period.from.toISOString(),
         periodTo: values.period.to.toISOString(),
         target: values.target,
@@ -197,16 +264,22 @@ export default function BriefForm() {
         tvTypes: values.tvTypes?.length ? values.tvTypes : undefined,
         displayTypes: values.displayTypes || undefined,
         radioTypes: values.radioTypes?.length ? values.radioTypes : undefined,
+        url: fileUrl,
         brief: values.brief,
       });
 
       toast.success("Succès", {
         description: "Le formulaire a été envoyé correctement.",
       });
+      form.reset();
+      setFile(null);
     } catch {
       toast.error("Erreur", {
         description: "Veuillez remplir tous les champs du formulaire.",
       });
+    } finally {
+      setUploading(false);
+      setIsSubmitting(false);
     }
   }
 
@@ -216,6 +289,26 @@ export default function BriefForm() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-lg font-semibold">
+                      Nom de la campagne
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Définissez le nom de la campagne"
+                        className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -313,8 +406,8 @@ export default function BriefForm() {
                         Territoire
                       </FormLabel>
                       <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5">
@@ -394,8 +487,7 @@ export default function BriefForm() {
                       <FormLabel className="text-lg font-semibold">
                         Objectifs
                       </FormLabel>
-                      <Popover
-                      >
+                      <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
@@ -415,7 +507,7 @@ export default function BriefForm() {
                                   </span>
                                 ) : (
                                   <div className="flex gap-1 flex-wrap">
-                                    {field.value.map((objectif) => (
+                                    {field.value.map((objectif: string) => (
                                       <Badge
                                         key={objectif}
                                         className="bg-primary text-white rounded-sm px-2 py-1 text-sm"
@@ -516,7 +608,7 @@ export default function BriefForm() {
                                   </span>
                                 ) : (
                                   <div className="flex gap-1 flex-wrap">
-                                    {field.value.map((mediaType) => (
+                                    {field.value.map((mediaType: string) => (
                                       <Badge
                                         key={mediaType}
                                         className="bg-primary text-white rounded-sm px-2 py-1 text-sm"
@@ -611,7 +703,7 @@ export default function BriefForm() {
                                     </span>
                                   ) : (
                                     <div className="flex gap-1 flex-wrap">
-                                      {field.value?.map((val) => (
+                                      {field.value?.map((val: string) => (
                                         <Badge
                                           key={val}
                                           className="bg-primary text-white rounded-sm px-2 py-1 text-sm"
@@ -724,8 +816,7 @@ export default function BriefForm() {
                     name="radioTypes"
                     render={({ field }) => (
                       <FormItem>
-                        <Popover
-                        >
+                        <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
@@ -746,7 +837,7 @@ export default function BriefForm() {
                                     </span>
                                   ) : (
                                     <div className="flex gap-1 flex-wrap">
-                                      {field.value?.map((val) => (
+                                      {field.value?.map((val: string) => (
                                         <Badge
                                           key={val}
                                           className="bg-primary text-white rounded-sm px-2 py-1 text-sm"
@@ -821,6 +912,58 @@ export default function BriefForm() {
 
               <FormField
                 control={form.control}
+                name="url"
+                render={({ field }) => (
+                  <FormItem className="flex-1 min-w-[170px]">
+                    <FormLabel className="text-lg font-semibold">
+                      Importez votre brief
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          readOnly
+                          value={field.value || ""}
+                          placeholder="Sélectionnez le document"
+                          className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white cursor-pointer"
+                          onClick={() =>
+                            document.getElementById("hiddenBriefInput")?.click()
+                          }
+                        />
+                        <SvgUploder
+                          className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                          onClick={() =>
+                            document.getElementById("hiddenBriefInput")?.click()
+                          }
+                        />
+                        <input
+                          id="hiddenBriefInput"
+                          type="file"
+                          accept="application/pdf,image/png,image/jpeg,audio/mpeg,video/mp4"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0] ?? null;
+                            if (f && f.size > 10 * 1024 * 1024) {
+                              toast.error(
+                                "Le fichier est trop volumineux (max 10 Mo)."
+                              );
+                              e.target.value = "";
+                              setFile(null);
+                              field.onChange("");
+                              return;
+                            }
+                            setFile(f);
+                            if (f) field.onChange(f.name);
+                          }}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="brief"
                 render={({ field }) => (
                   <FormItem>
@@ -844,6 +987,8 @@ export default function BriefForm() {
                   props={{
                     text: "Enregistrer la campagne",
                     onClick: form.handleSubmit(onSubmit),
+                    disabled: uploading || isSubmitting,
+                    loading: isSubmitting,
                   }}
                   variant="submit"
                 />

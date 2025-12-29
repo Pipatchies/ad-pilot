@@ -10,6 +10,7 @@ export const getMediaFilesByCampaign = query({
       .query("medias")
       .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
       .filter((q) => q.neq(q.field("deleted"), true))
+      .order("desc")
       .collect();
 
     return medias;
