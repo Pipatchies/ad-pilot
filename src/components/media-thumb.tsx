@@ -11,6 +11,7 @@ export type MediaThumbProps = {
   height?: number;
   alt: string;
   variant?: "thumbnail" | "card";
+  _id?: string;
 };
 
 const sizes = {

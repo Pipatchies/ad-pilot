@@ -59,6 +59,22 @@ export const updateMediaMetadata = mutation({
           )
         )
       ),
+      type: v.optional(
+        v.union(
+          v.literal("png"),
+          v.literal("jpg"),
+          v.literal("mp3"),
+          v.literal("mp4"),
+          v.literal("pdf")
+        )
+      ),
+      url: v.optional(v.string()),
+      publicId: v.optional(v.string()),
+      resourceType: v.optional(
+        v.union(v.literal("image"), v.literal("video"), v.literal("raw"))
+      ),
+      width: v.optional(v.number()),
+      height: v.optional(v.number()),
     }),
   },
   handler: async (ctx, args) => {
