@@ -1,6 +1,66 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
 
+export const getAllInvoices = query({
+  handler: async (ctx) => {
+    const invoices = await ctx.db
+      .query("invoices")
+      .filter((q) => q.neq(q.field("deleted"), true))
+      .collect();
+    return invoices;
+  },
+});
+
+export const getAllAgencyInvoices = query({
+  handler: async (ctx) => {
+    const invoices = await ctx.db
+      .query("invoices")
+      .filter((q) => q.neq(q.field("deleted"), true))
+      .collect();
+
+    const agencyInvoices = invoices.filter((invoice) => !invoice.vendorName);
+
+    const enriched = await Promise.all(
+      agencyInvoices.map(async (invoice) => {
+        const campaign = await ctx.db.get(invoice.campaignId);
+        const organization = await ctx.db.get(invoice.organizationId);
+        return {
+          ...invoice,
+          campaignTitle: campaign?.title ?? "Campagne inconnue",
+          organizationName: organization?.name ?? "Organisation inconnue",
+        };
+      })
+    );
+
+    return enriched;
+  },
+});
+
+export const getAllVendorInvoices = query({
+  handler: async (ctx) => {
+    const invoices = await ctx.db
+      .query("invoices")
+      .filter((q) => q.neq(q.field("deleted"), true))
+      .collect();
+    
+    const vendorInvoices = invoices.filter((invoice) => invoice.vendorName);
+
+    const enriched = await Promise.all(
+      vendorInvoices.map(async (invoice) => {
+        const campaign = await ctx.db.get(invoice.campaignId);
+        const organization = await ctx.db.get(invoice.organizationId);
+        return {
+          ...invoice,
+          campaignTitle: campaign?.title ?? "Campagne inconnue",
+          organizationName: organization?.name ?? "Organisation inconnue",
+        };
+      })
+    );
+
+    return enriched;
+  },
+});
+
 export const getInvoicesByOrganization = query({
   args: {
     organizationId: v.id("organizations"),
