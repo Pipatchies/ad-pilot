@@ -27,6 +27,7 @@ import type * as mutations_documents from "../mutations/documents.js";
 import type * as mutations_invoices from "../mutations/invoices.js";
 import type * as mutations_medias from "../mutations/medias.js";
 import type * as mutations_organizations from "../mutations/organizations.js";
+import type * as mutations_quotes from "../mutations/quotes.js";
 import type * as mutations_users from "../mutations/users.js";
 import type * as queries_briefs from "../queries/briefs.js";
 import type * as queries_campaigns from "../queries/campaigns.js";
@@ -60,6 +61,7 @@ declare const fullApi: ApiFromModules<{
   "mutations/invoices": typeof mutations_invoices;
   "mutations/medias": typeof mutations_medias;
   "mutations/organizations": typeof mutations_organizations;
+  "mutations/quotes": typeof mutations_quotes;
   "mutations/users": typeof mutations_users;
   "queries/briefs": typeof queries_briefs;
   "queries/campaigns": typeof queries_campaigns;
