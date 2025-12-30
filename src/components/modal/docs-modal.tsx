@@ -32,7 +32,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 
 interface DocumentModalProps {
   onSuccess?: () => void;
-  onAddDocument: (documents: Document) => void;
+  onAddDocument?: (documents: Document) => void;
   defaultOrganizationId?: string;
   defaultCampaignId?: string;
 }
