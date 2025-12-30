@@ -13,4 +13,6 @@ export type Document = {
   campaignId?: Id<"campaigns">;
   organizationId?: Id<"organizations">;
   _creationTime?: number;
+  campaignTitle?: string;
+  organizationName?: string;
 };

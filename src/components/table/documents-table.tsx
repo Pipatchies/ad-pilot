@@ -14,6 +14,8 @@ import { api } from "../../../convex/_generated/api";
 
 interface DocumentsTableProps {
   documents: Document[];
+  showCampaign?: boolean;
+  showClient?: boolean;
   globalFilter?: string;
   headerClassName?: string;
   readOnly?: boolean;
@@ -21,6 +23,8 @@ interface DocumentsTableProps {
 
 export default function DocumentsTable({
   documents,
+  showCampaign = false,
+  showClient = false,
   globalFilter,
   headerClassName,
   readOnly,
@@ -34,6 +38,32 @@ export default function DocumentsTable({
       header: sortableHeader("Titre du document"),
       cell: ({ row }) => row.getValue("title"),
     },
+  ...(showClient
+      ? [
+          {
+            accessorKey: "organizationName",
+            header: sortableHeader("Client"),
+            cell: ({ row }: { row: any }) => (
+              <span className="font-bold">
+                {row.getValue("organizationName")}
+              </span>
+            ),
+          },
+        ]
+      : []),
+       ...(showCampaign
+      ? [
+          {
+            accessorKey: "campaignTitle",
+            header: sortableHeader("Campagne"),
+            cell: ({ row }: { row: any }) => (
+              <span className="font-bold underline">
+                {row.getValue("campaignTitle")}
+              </span>
+            ),
+          },
+        ]
+      : []),
     {
       accessorKey: "type",
       header: sortableHeader("Type de fichier"),
