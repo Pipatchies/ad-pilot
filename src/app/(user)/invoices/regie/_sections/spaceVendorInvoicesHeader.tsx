@@ -22,7 +22,7 @@ export default function SpaceVendorInvoicesHeader({
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <Typography variant="h2" className="mb-0">
-          Factures agence
+          Factures régie
         </Typography>
         <SearchBar
           variant="full"
