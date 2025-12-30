@@ -17,13 +17,10 @@ export default function SpaceVendorInvoicesHeader({
   return (
     <section>
       <Typography variant="h1" className="mb-6">
-        Les factures
+        Factures régie
       </Typography>
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <Typography variant="h2" className="mb-0">
-          Factures régie
-        </Typography>
         <SearchBar
           variant="full"
           onQueryChange={onQueryChange}
