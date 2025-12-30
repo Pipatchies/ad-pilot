@@ -7,6 +7,7 @@ import { SidebarTrigger } from "./ui/sidebar";
 import SvgSearch from "./icons/Search";
 import SvgNotification from "./icons/Notification";
 import SvgCrayon from "./icons/Crayon";
+import SvgFacture from "./icons/Facture";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import {
@@ -69,6 +70,18 @@ export default function Topbar() {
       </div>
 
       <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-4 items-end sm:items-center text-sm">
+        {role === "client" && (
+          <CtaButton
+            props={{
+              text: "Demander un devis",
+              url: "/request-quote",
+              target: "self",
+            }}
+            icon={<SvgFacture />}
+            className="flex items-center border px-3 py-1 text-xs sm:text-sm fill-primary hover:fill-white"
+            variant="default"
+          />
+        )}
         <CtaButton
           props={ctaProps}
           icon={<SvgCrayon />}
