@@ -2,10 +2,7 @@
 import React from "react";
 import DocumentsTable from "@/components/table/documents-table";
 import { useQuery } from "convex/react";
-import { Id } from "../../../../../../../convex/_generated/dataModel";
-import { api } from "../../../../../../../convex/_generated/api";
-import { useParams } from "next/navigation";
-
+import { api } from "../../../../../convex/_generated/api";
 
 type DocumentsTableProps = {
   globalFilter: string;
@@ -17,12 +14,7 @@ export default function SpaceDocumentsTable({
   dateSort,
 }: DocumentsTableProps) {
   
-    const params = useParams();
-    const campaignId = params?.id as Id<"campaigns">;
-  
-    const documents = useQuery(api.queries.documents.getDocumentsByCampaign, {
-      campaignId,
-    });
+  const documents = useQuery(api.queries.documents.getAllDocuments);
 
   const documentsData = documents?.map((doc) => ({
     ...doc,
@@ -34,9 +26,9 @@ export default function SpaceDocumentsTable({
         <DocumentsTable
           documents={documentsData}
           globalFilter={globalFilter}
-          showCampaign={false}
-          showClient={false}
-          readOnly={true}
+          showCampaign={true}
+          showClient={true}
+          readOnly={false}
         />
       </div>
     </section>

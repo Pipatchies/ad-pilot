@@ -191,7 +191,7 @@ export default defineSchema({
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
     deleted: v.optional(v.boolean()),
-  }).index("by_campaignId", ["campaignId"]),
+  }).index("by_campaignId", ["campaignId"]).index("by_organizationId", ["organizationId"]),
 
   invoices: defineTable({
     title: v.string(),
