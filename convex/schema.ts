@@ -191,7 +191,9 @@ export default defineSchema({
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
     deleted: v.optional(v.boolean()),
-  }).index("by_campaignId", ["campaignId"]).index("by_organizationId", ["organizationId"]),
+  })
+    .index("by_campaignId", ["campaignId"])
+    .index("by_organizationId", ["organizationId"]),
 
   invoices: defineTable({
     title: v.string(),
@@ -242,4 +244,20 @@ export default defineSchema({
     targetId: v.id("targets"),
     fileUrl: v.optional(v.string()),
   }),
+
+  quote: defineTable({
+    medias: v.array(
+      v.object({
+        type: v.string(),
+        regie: v.string(),
+        format: v.string(),
+        quantity: v.string(),
+        period: v.object({
+          from: v.optional(v.string()),
+          to: v.optional(v.string()),
+        }),
+      })
+    ),
+    organizationId: v.optional(v.id("organizations")),
+  }).index("by_organizationId", ["organizationId"]),
 });

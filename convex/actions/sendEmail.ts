@@ -115,3 +115,67 @@ export const sendAccountCreatedEmail = internalAction({
     return { success: true, messageId: info.messageId, link };
   },
 });
+
+export const sendQuoteEmail = internalAction({
+  args: {
+    medias: v.array(
+      v.object({
+        type: v.string(),
+        regie: v.string(),
+        format: v.string(),
+        quantity: v.string(),
+        period: v.object({
+          from: v.optional(v.string()),
+          to: v.optional(v.string()),
+        }),
+      })
+    ),
+    clientName: v.optional(v.string()),
+    recipients: v.array(v.string()),
+  },
+  handler: async (_, args) => {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    const mediasText = args.medias
+      .map((m, i) => {
+        const from = m.period.from ? formatDateFR(m.period.from) : "N/A";
+        const to = m.period.to ? formatDateFR(m.period.to) : "N/A";
+        return `
+Média #${i + 1}
+- Type : ${m.type}
+- Régie : ${m.regie}
+- Format : ${m.format}
+- Quantité : ${m.quantity}
+- Période : ${from} au ${to}
+`;
+      })
+      .join("\n");
+
+    const text = `
+Une nouvelle demande de devis a été soumise :
+
+Client : ${args.clientName || "Non spécifié"}
+
+Détails de la demande :
+${mediasText}
+      `;
+
+    const mailOptions = {
+      from: "no-reply@agenceverywell.fr",
+      to: args.recipients,
+      subject: "Nouvelle demande de devis client",
+      text,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return { success: true, messageId: info.messageId };
+  },
+});
