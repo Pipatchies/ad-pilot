@@ -38,19 +38,6 @@ export default function DocumentsTable({
       header: sortableHeader("Titre du document"),
       cell: ({ row }) => row.getValue("title"),
     },
-  ...(showClient
-      ? [
-          {
-            accessorKey: "organizationName",
-            header: sortableHeader("Client"),
-            cell: ({ row }: { row: any }) => (
-              <span className="font-bold">
-                {row.getValue("organizationName")}
-              </span>
-            ),
-          },
-        ]
-      : []),
        ...(showCampaign
       ? [
           {
@@ -59,6 +46,19 @@ export default function DocumentsTable({
             cell: ({ row }: { row: any }) => (
               <span className="font-bold underline">
                 {row.getValue("campaignTitle")}
+              </span>
+            ),
+          },
+        ]
+      : []),
+      ...(showClient
+      ? [
+          {
+            accessorKey: "organizationName",
+            header: sortableHeader("Client"),
+            cell: ({ row }: { row: any }) => (
+              <span className="font-bold">
+                {row.getValue("organizationName")}
               </span>
             ),
           },
