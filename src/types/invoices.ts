@@ -16,4 +16,5 @@ export type Invoice = {
   organizationId?: Id<"organizations">;
   campaignId?: Id<"campaigns">;
   campaign?: string;
+  organizationName?: string;
 };

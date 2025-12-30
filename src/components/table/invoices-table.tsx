@@ -17,6 +17,7 @@ interface Props {
   invoices: Invoice[];
   variant: "agency" | "vendor";
   showCampaign?: boolean;
+  showClient?: boolean;
   globalFilter?: string;
   headerClassName?: string;
   dateSort?: "asc" | "desc";
@@ -27,6 +28,7 @@ export default function InvoicesTable({
   invoices,
   variant,
   showCampaign = false,
+  showClient = false,
   globalFilter,
   headerClassName,
   dateSort,
@@ -59,7 +61,7 @@ export default function InvoicesTable({
         ]
       : []),
 
-    ...(showCampaign
+  ...(showCampaign
       ? [
           {
             accessorKey: "campaign",
@@ -67,6 +69,20 @@ export default function InvoicesTable({
             cell: ({ row }: { row: Row<Invoice> }) => (
               <span className="font-bold underline">
                 {row.getValue("campaign")}
+              </span>
+            ),
+          },
+        ]
+      : []),
+
+    ...(showClient
+      ? [
+          {
+            accessorKey: "organizationName",
+            header: sortableHeader("Client"),
+            cell: ({ row }: { row: Row<Invoice> }) => (
+              <span className="font-bold">
+                {row.getValue("organizationName")}
               </span>
             ),
           },
