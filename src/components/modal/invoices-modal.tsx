@@ -17,7 +17,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAction } from "convex/react";
+import { Id } from "@/../convex/_generated/dataModel";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import {
   Select,
@@ -41,7 +42,10 @@ const invoiceTypes = [
 ];
 
 interface InvoiceModalProps {
-  onAddInvoice: (invoices: Invoice) => void;
+  onSuccess?: () => void;
+  onAddInvoice?: (invoice: Invoice) => void;
+  defaultOrganizationId?: string;
+  defaultCampaignId?: string;
 }
 
 const CtaProps = {
@@ -49,13 +53,37 @@ const CtaProps = {
   icon: <SvgPlus />,
 };
 
-export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
+export default function InvoiceModal({
+  onSuccess,
+  onAddInvoice,
+  defaultOrganizationId,
+  defaultCampaignId,
+}: InvoiceModalProps) {
   const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
+  const createInvoice = useMutation(api.mutations.invoices.createInvoice);
 
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [selectedOrgId, setSelectedOrgId] = useState<string>(
+    defaultOrganizationId || ""
+  );
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string>(
+    defaultCampaignId || ""
+  );
+
+  const organizations = useQuery(
+    api.queries.organizations.getAllOrganizationsWithLastConnection
+  );
+
+  const campaigns = useQuery(
+    api.queries.campaigns.getCampaignsByOrganization,
+    selectedOrgId
+      ? { organizationId: selectedOrgId as Id<"organizations"> }
+      : "skip"
+  );
 
   const formSchema = z.object({
     title: z.string().min(1, "Le numéro de facture est requis"),
@@ -103,6 +131,13 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
       return;
     }
 
+    if (!onAddInvoice) {
+      if (!selectedOrgId || !selectedCampaignId) {
+        toast.error("Veuillez sélectionner une organisation et une campagne.");
+        return;
+      }
+    }
+
     const folder = `campaigns/invoices`;
 
     setUploading(true);
@@ -126,7 +161,7 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
 
       if (json.error) throw new Error(json.error?.message || "Upload failed");
 
-      onAddInvoice({
+      const invoiceData = {
         title: values.title,
         invoiceType: values.invoiceType,
         agencyInvoice: values.agencyInvoice,
@@ -142,14 +177,31 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
         url: json.secure_url,
         publicId: json.public_id,
         resourceType,
-      });
+      };
 
-      toast.success("Facture ajoutée avec succès !");
+      if (onAddInvoice) {
+        onAddInvoice({
+          ...invoiceData,
+          // @ts-ignore
+          date: new Date().toISOString(),
+        });
+        toast.success("Facture prête à être enregistrée !");
+      } else {
+        await createInvoice({
+          ...invoiceData,
+          campaignId: selectedCampaignId as Id<"campaigns">,
+          organizationId: selectedOrgId as Id<"organizations">,
+        });
+        toast.success("Facture ajoutée avec succès !");
+      }
+
       setFile(null);
       form.reset();
       setIsOpen(false);
-    } catch {
-      toast.error("Erreur lors de l'upload", {
+      if (onSuccess) onSuccess();
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur lors de l'upload ou de la création", {
         description: "Échec de l'enregistrement.",
       });
     } finally {
@@ -163,6 +215,59 @@ export default function InvoiceModal({ onAddInvoice }: InvoiceModalProps) {
     children: (
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {!defaultOrganizationId && !defaultCampaignId && !onAddInvoice && (
+            <div className="flex gap-4">
+              <div className="w-1/2 space-y-2">
+                <FormLabel className="text-lg font-semibold">
+                  Organisation
+                </FormLabel>
+                <Select
+                  value={selectedOrgId}
+                  onValueChange={(val) => {
+                    setSelectedOrgId(val);
+                    setSelectedCampaignId("");
+                  }}
+                >
+                  <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                    <SelectValue placeholder="Choisir l'organisation" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {organizations?.map((org) => (
+                      <SelectItem
+                        key={org.organizationId}
+                        value={org.organizationId}
+                      >
+                        {org.organizationName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="w-1/2 space-y-2">
+                <FormLabel className="text-lg font-semibold">
+                  Campagne
+                </FormLabel>
+                <Select
+                  value={selectedCampaignId}
+                  onValueChange={setSelectedCampaignId}
+                  disabled={!selectedOrgId}
+                >
+                  <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                    <SelectValue placeholder="Choisir la campagne" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {campaigns?.map((camp) => (
+                      <SelectItem key={camp._id} value={camp._id}>
+                        {camp.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
           <div className="flex gap-4">
             <FormField
               control={form.control}
