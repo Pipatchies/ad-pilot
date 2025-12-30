@@ -229,7 +229,13 @@ export default function InvoiceModal({
                   }}
                 >
                   <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                    <SelectValue placeholder="Choisir l'organisation" />
+                    <SelectValue
+                      placeholder={
+                        <span className="text-primary/50 italic">
+                          Sélectionner le client
+                        </span>
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {organizations?.map((org) => (
@@ -254,7 +260,13 @@ export default function InvoiceModal({
                   disabled={!selectedOrgId}
                 >
                   <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                    <SelectValue placeholder="Choisir la campagne" />
+                    <SelectValue
+                      placeholder={
+                        <span className="text-primary/50 italic">
+                          Sélectionner la campagne
+                        </span>
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {campaigns?.map((camp) => (
