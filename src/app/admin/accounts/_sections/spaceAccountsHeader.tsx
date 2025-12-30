@@ -12,8 +12,8 @@ type accountsHeaderProps = {
 export default function SpaceAccountsHeader({
   onQueryChange,
 }: accountsHeaderProps) {
-      const adminAccounts = useQuery(api.queries.users.getAdmin) ?? [];
-      const count = adminAccounts.length;
+      const accounts = useQuery(api.queries.users.getAllUsersWithRole) ?? [];
+      const count = accounts.length;
   return (
     <section>
       <div className="flex flex-wrap items-center justify-between">

@@ -3,6 +3,43 @@ import { internalQuery } from "../_generated/server";
 import { query } from "../_generated/server";
 import { v } from "convex/values";
 
+export const getAllUsersWithRole = query({
+  args: {},
+  handler: async (ctx) => {
+    const users = await ctx.db
+      .query("users")
+      .filter((q) => q.neq(q.field("deleted"), true))
+      .collect();
+
+    const accounts = [];
+
+    for (const user of users) {
+      if (!user.roleId) continue;
+
+      const role = await ctx.db.get(user.roleId);
+      if (!role) continue;
+
+      if (role) {
+        const name = user.name ?? "";
+        const lastname = user.lastname ?? "";
+        const id =
+          name.trim().toLowerCase() + (lastname.trim()[0]?.toLowerCase() ?? "");
+
+        accounts.push({
+          userId: user._id,
+          name,
+          lastname,
+          email: user.email ?? "",
+          role: role.label,
+          id,
+        });
+      }
+    }
+
+    return accounts;
+  },
+});
+
 export const getUserById = internalQuery({
   args: {
     userId: v.id("users"),
