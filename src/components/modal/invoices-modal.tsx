@@ -86,6 +86,8 @@ export default function InvoiceModal({
   );
 
   const formSchema = z.object({
+    organizationId: z.string().optional(),
+    campaignId: z.string().optional(),
     title: z.string().min(1, "Le numéro de facture est requis"),
     invoiceType: z.enum(["agency", "vendor"], {
       required_error: "Veuillez sélectionner un type de facture",
@@ -112,6 +114,8 @@ export default function InvoiceModal({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      organizationId: "",
+      campaignId: "",
       title: "",
       invoiceType: undefined,
       agencyInvoice: "",
@@ -182,10 +186,8 @@ export default function InvoiceModal({
       if (onAddInvoice) {
         onAddInvoice({
           ...invoiceData,
-          // @ts-ignore
-          date: new Date().toISOString(),
         });
-        toast.success("Facture prête à être enregistrée !");
+        toast.success("Facture ajoutée avec succès !");
       } else {
         await createInvoice({
           ...invoiceData,
@@ -219,7 +221,7 @@ export default function InvoiceModal({
             <div className="flex gap-4">
               <div className="w-1/2 space-y-2">
                 <FormLabel className="text-lg font-semibold">
-                  Organisation
+                  Client
                 </FormLabel>
                 <Select
                   value={selectedOrgId}
@@ -232,7 +234,7 @@ export default function InvoiceModal({
                     <SelectValue
                       placeholder={
                         <span className="text-primary/50 italic">
-                          Sélectionner le client
+                          Sélectionnez le client
                         </span>
                       }
                     />
@@ -263,7 +265,7 @@ export default function InvoiceModal({
                     <SelectValue
                       placeholder={
                         <span className="text-primary/50 italic">
-                          Sélectionner la campagne
+                          Sélectionnez la campagne
                         </span>
                       }
                     />
@@ -316,7 +318,7 @@ export default function InvoiceModal({
                         <SelectValue
                           placeholder={
                             <span className="text-primary/50 italic">
-                              Choisir le type
+                              Choisissez le type
                             </span>
                           }
                         />
