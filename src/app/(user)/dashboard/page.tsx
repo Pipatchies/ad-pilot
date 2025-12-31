@@ -26,7 +26,8 @@ export default function Dashboard() {
 
   const campaignData =
     campaigns
-      ?.map((campaign) => ({
+      ?.filter((c) => !c.archived && new Date(c.endDate) >= new Date())
+      .map((campaign) => ({
         title: campaign.title,
         description: campaign.subtitle,
         startDate: new Date(campaign.startDate),
@@ -69,12 +70,19 @@ export default function Dashboard() {
   return (
     <section className="flex flex-col gap-10">
       <Typography variant="h1">Tableau de bord</Typography>
-      <CampaignGantt campaigns={campaigns || []} />
+      <CampaignGantt
+        campaigns={
+          campaigns?.filter(
+            (c) => !c.archived && new Date(c.endDate) >= new Date()
+          ) || []
+        }
+      />
       <LatestFiles
         title="Campagnes en cours"
         // cta={ctaProps[0]}
         data={campaignData}
         variant="campaign"
+        emptyMessage={campaigns ? "Aucune campagne en cours." : undefined}
       />
       <LatestFiles
         title="Les derniers documents"
