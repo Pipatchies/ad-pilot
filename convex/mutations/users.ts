@@ -58,7 +58,7 @@ export const deleteUser = mutation({
       .collect();
     for (const a of accounts) await ctx.db.delete(a._id);
 
-    await ctx.db.patch(userId, { deleted: true });
+    await ctx.db.delete(userId);
     return { ok: true };
   },
 });

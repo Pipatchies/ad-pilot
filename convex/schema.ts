@@ -16,7 +16,6 @@ export default defineSchema({
     roleId: v.optional(v.id("roles")),
     organizationId: v.optional(v.id("organizations")),
     lastConnectionTime: v.optional(v.number()),
-    deleted: v.optional(v.boolean()),
   })
     .index("email", ["email"])
     .index("phone", ["phone"])
