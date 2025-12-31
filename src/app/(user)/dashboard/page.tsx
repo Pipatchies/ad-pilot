@@ -1,12 +1,14 @@
-"use client"
+"use client";
 import Typography from "@/components/typography";
 import React from "react";
 import LatestFiles from "@/components/latest-files";
+import CampaignGantt from "@/components/dashboard/CampaignGantt";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 
-const organizationId: Id<"organizations"> = "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" as Id<"organizations">;
+const organizationId: Id<"organizations"> =
+  "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" as Id<"organizations">;
 
 const docData = [
   {
@@ -29,7 +31,6 @@ const docData = [
   },
 ];
 
-
 export default function Dashboard() {
   const campaigns = useQuery(api.queries.campaigns.getCampaignsByOrganization, {
     organizationId,
@@ -40,29 +41,33 @@ export default function Dashboard() {
   });
 
   const campaignData =
-    campaigns?.map((campaign) => ({
-      title: campaign.title,
-      description: campaign.subtitle,
-      startDate: new Date(campaign.startDate),
-      endDate: new Date(campaign.endDate),
-      status: campaign.status?.[0]?.label || "Inconnue",
-      mediaTypes: campaign.mediaTypes,
-    })).sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
-    .slice(0, 3) ?? [];
+    campaigns
+      ?.map((campaign) => ({
+        title: campaign.title,
+        description: campaign.subtitle,
+        startDate: new Date(campaign.startDate),
+        endDate: new Date(campaign.endDate),
+        status: campaign.status?.[0]?.label || "Inconnue",
+        mediaTypes: campaign.mediaTypes,
+      }))
+      .sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
+      .slice(0, 3) ?? [];
 
-    const invoicesData = invoices?.map((invoice) => ({
-      title: invoice.title,
-      description: invoice.invoiceType,
-      startDate: new Date(invoice.startDate),
-      campaignTitle: invoice.campaignTitle,
-    })).sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
-    .slice(0, 3) ?? [];
+  const invoicesData =
+    invoices
+      ?.map((invoice) => ({
+        title: invoice.title,
+        description: invoice.invoiceType,
+        startDate: new Date(invoice.startDate),
+        campaignTitle: invoice.campaignTitle,
+      }))
+      .sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
+      .slice(0, 3) ?? [];
 
-    return (
+  return (
     <section className="flex flex-col gap-10">
-      <Typography variant="h1">
-        Tableau de bord
-      </Typography>
+      <Typography variant="h1">Tableau de bord</Typography>
+      <CampaignGantt campaigns={campaigns || []} />
       <LatestFiles
         title="Campagnes en cours"
         // cta={ctaProps[0]}
@@ -83,5 +88,5 @@ export default function Dashboard() {
         className="mb-10"
       />
     </section>
-    )
+  );
 }
