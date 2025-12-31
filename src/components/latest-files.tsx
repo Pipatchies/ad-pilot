@@ -19,6 +19,7 @@ type Props = {
   variant: "media" | "default" | "campaign";
   className?: string;
   hideEditIcon?: boolean;
+  emptyMessage?: string;
 };
 
 export default function LatestFiles({
@@ -28,6 +29,7 @@ export default function LatestFiles({
   variant,
   className = "",
   hideEditIcon = false,
+  emptyMessage,
 }: Props) {
   return (
     <div className={`space-y-4 ${className}`}>
@@ -43,17 +45,26 @@ export default function LatestFiles({
           />
         )}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {data.map((item, index) => (
-          <div key={index} className="w-full">
-            <DetailsCard
-              variant={variant}
-              hideEditIcon={hideEditIcon}
-              {...item}
-            />
+
+      {data.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {data.map((item, index) => (
+            <div key={index} className="w-full">
+              <DetailsCard
+                variant={variant}
+                hideEditIcon={hideEditIcon}
+                {...item}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        emptyMessage && (
+          <div className="flex h-[150px] w-full items-center justify-center rounded-lg bg-muted/40 text-primary text-sm">
+            {emptyMessage}
           </div>
-        ))}
-      </div>
+        )
+      )}
     </div>
   );
 }
