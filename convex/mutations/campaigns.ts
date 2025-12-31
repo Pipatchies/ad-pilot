@@ -176,7 +176,7 @@ export const duplicateCampaign = mutation({
     const original = await ctx.db.get(campaignId);
     if (!original) throw new Error("Campaign not found");
 
-    const { _id, _creationTime, archived, ...rest } = original;
+    const { _id, _creationTime, archived: _archived, ...rest } = original;
 
     const duplicatedData = {
       ...rest,

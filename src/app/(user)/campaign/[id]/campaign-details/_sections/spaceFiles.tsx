@@ -71,6 +71,7 @@ export default function SpaceFiles() {
         data={mediaData}
         variant="media"
         hideEditIcon={true}
+        emptyMessage={medias ? "Aucun média n'a été importé." : undefined}
       />
       <LatestFiles
         title="Les derniers documents"
@@ -80,6 +81,7 @@ export default function SpaceFiles() {
         }}
         data={docData}
         variant="default"
+        emptyMessage={documents ? "Aucun document n'a été importé." : undefined}
       />
       <LatestFiles
         title="Les dernières factures"
@@ -90,6 +92,7 @@ export default function SpaceFiles() {
         data={invoiceData}
         variant="default"
         className="mb-10"
+        emptyMessage={invoices ? "Aucune facture n'a été importée." : undefined}
       />
     </section>
   );

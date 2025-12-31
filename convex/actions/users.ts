@@ -27,7 +27,7 @@ export const adminCreateAdmin = action({
         payload: "Cet email est déjà utilisé par un autre utilisateur.",
       });
     }
-    
+
     const adminId = await getAuthUserId(ctx);
     if (!adminId) throw new ConvexError("UNAUTHENTICATED");
 
@@ -88,7 +88,6 @@ export const adminCreateClient = action({
       { name: args.organizationName, logo: args.logo }
     );
 
-    let userId: string;
     const { user } = await createAccount(ctx, {
       provider: "password",
       account: {
@@ -103,7 +102,7 @@ export const adminCreateClient = action({
         organizationId,
       } as any,
     });
-    userId = user._id;
+    const userId = user._id;
 
     if (args.sendEmail) {
       await ctx.runAction(internal.actions.sendEmail.sendAccountCreatedEmail, {
