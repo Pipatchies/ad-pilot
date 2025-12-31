@@ -8,6 +8,7 @@ import {
   addWeeks,
   parseISO,
   endOfWeek,
+  endOfDay,
   eachDayOfInterval,
   differenceInDays,
   isSameDay,
@@ -63,7 +64,7 @@ export default function CampaignGantt({ campaigns }: CampaignGanttProps) {
     const end = media.periodTo || campaignEnd;
     return {
       start: parseISO(start),
-      end: parseISO(end),
+      end: endOfDay(parseISO(end)),
     };
   };
 
@@ -237,7 +238,8 @@ export default function CampaignGantt({ campaigns }: CampaignGanttProps) {
                       {position && (
                         <div
                           className={cn(
-                            "bg-destructive/20 flex items-center justify-between px-1 text-xs font-medium text-secondary h-6 mx-1 shadow-sm overflow-hidden relative",
+                            "flex items-center justify-between px-1 text-xs font-medium text-secondary h-6 mx-1 shadow-sm overflow-hidden relative",
+                            "bg-destructive/20",
                             !isContinuesLeft && "rounded-l-full",
                             !isContinuesRight && "rounded-r-full"
                           )}
@@ -245,25 +247,27 @@ export default function CampaignGantt({ campaigns }: CampaignGanttProps) {
                             ...position,
                           }}
                         >
-                          <div
-                            className={cn(
-                              "h-full bg-destructive absolute top-0 left-0 bottom-0 z-0 flex items-center justify-end px-4",
-                              !isContinuesLeft && "rounded-l-full",
-                              !isContinuesRight &&
-                                segmentWidth === 100 &&
-                                "rounded-r-full"
-                            )}
-                            style={{
-                              width: `${segmentWidth}%`,
-                              maxWidth: "100%",
-                            }}
-                          >
-                            {showText && (
-                              <span className="text-white text-[10px] font-bold drop-shadow-sm whitespace-nowrap">
-                                {Math.round(globalTimeProgress)}%
-                              </span>
-                            )}
-                          </div>
+                          {segmentWidth > 0 && (
+                            <div
+                              className={cn(
+                                "h-full bg-destructive absolute top-0 left-0 bottom-0 z-0 flex items-center justify-end px-4",
+                                !isContinuesLeft && "rounded-l-full",
+                                !isContinuesRight &&
+                                  segmentWidth === 100 &&
+                                  "rounded-r-full"
+                              )}
+                              style={{
+                                width: `${segmentWidth}%`,
+                                maxWidth: "100%",
+                              }}
+                            >
+                              {showText && (
+                                <span className="text-white text-[10px] font-bold drop-shadow-sm whitespace-nowrap">
+                                  {Math.round(globalTimeProgress)}%
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
