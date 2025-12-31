@@ -5,49 +5,51 @@ import React from "react";
 import SvgUsers from "@/components/icons/Users";
 import SvgGrandeTelevision from "@/components/icons/GrandeTelevision";
 
-interface ReportCardProps {
-    grp: number;
-    coverage: number;
-    contacts: number;
-    repetitions: number;
+interface ReportItem {
+  icon: string;
+  title: string;
+  info: string | number;
 }
 
-export default function ReportCard({grp, coverage, contacts, repetitions}: ReportCardProps) {
+interface ReportCardProps {
+  items: ReportItem[];
+}
+
+const getIcon = (iconName: string) => {
+  switch (iconName.toLowerCase()) {
+    case "tv":
+    case "television":
+    case "grp":
+      return <SvgGrandeTelevision className="h-[46] w-[59] fill-[#a5a4bf]" />;
+    case "cible":
+    case "target":
+    case "coverage":
+      return <SvgCible />;
+    case "users":
+    case "contacts":
+      return <SvgUsers />;
+    case "megaphone":
+    case "repetitions":
+      return <SvgMegaphone />;
+    default:
+      return <SvgGrandeTelevision className="h-[46] w-[59] fill-[#a5a4bf]" />;
+  }
+};
+
+export default function ReportCard({ items }: ReportCardProps) {
   return (
     <section>
       <Card className="w-full rounded-sm shadow-around bg-white border-none text-primary px-8 py-15">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 place-items-center">
-          <div className="flex items-center space-x-4">
-            <SvgGrandeTelevision className="h-[46] w-[59] fill-[#a5a4bf]" />
-            <div>
-              <div className="text-3xl font-[800]">{grp}</div>
-              <div className="text-xl">GRP</div>
+          {items.map((item, index) => (
+            <div key={index} className="flex items-center space-x-4">
+              {getIcon(item.icon)}
+              <div>
+                <div className="text-3xl font-[800]">{item.info}</div>
+                <div className="text-xl">{item.title}</div>
+              </div>
             </div>
-          </div>
-
-          <div className="flex items-center space-x-4">
-              <SvgCible />
-            <div>
-              <div className="text-3xl font-[800]">{coverage} %</div>
-              <div className="text-xl">Couverture</div>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-4">
-              <SvgUsers />
-            <div>
-              <div className="text-3xl font-[800]">{contacts} M</div>
-              <div className="text-xl">Contacts</div>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-4">
-              <SvgMegaphone />
-            <div>
-              <div className="text-3xl font-[800]">{repetitions}</div>
-              <div className="text-xl">Répétitions</div>
-            </div>
-          </div>
+          ))}
         </div>
       </Card>
     </section>

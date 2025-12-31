@@ -148,7 +148,13 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
     title: "Ajouter un média",
     children: (
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            e.stopPropagation();
+            form.handleSubmit(onSubmit)(e);
+          }}
+          className="space-y-4"
+        >
           <div className="flex gap-4">
             <FormField
               control={form.control}
@@ -249,7 +255,11 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
       <CtaButton
         props={{
           text: "Enregistrer",
-          onClick: form.handleSubmit(onSubmit),
+          onClick: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit(onSubmit)(e);
+          },
           disabled: uploading || isSubmitting,
           loading: isSubmitting,
         }}

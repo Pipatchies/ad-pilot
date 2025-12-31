@@ -18,9 +18,10 @@ export default function SpaceRecap() {
   const params = useParams();
   const campaignId = params?.id as Id<"campaigns">;
 
-  const campaign = useQuery(api.queries.campaigns.getCampaignById, {
-    campaignId,
-  });
+  const campaign = useQuery(
+    api.queries.campaigns.getCampaignById,
+    campaignId ? { campaignId } : "skip"
+  );
 
   if (!campaign) {
     return <div>Chargement...</div>;

@@ -50,7 +50,7 @@ interface SubItem {
   label: string;
   icon: React.ReactNode;
   url: string;
-};
+}
 
 interface SidebarProps {
   variant: UserRole;
@@ -104,57 +104,61 @@ export default function MenuSidebar({ variant }: SidebarProps) {
   ];
 
   const userMenuItems: MenuItem[] = [
-    ...(campaigns?.map((campaign) => ({
-      label: campaign.title,
-      icon: <SvgDocument />,
-      url: `/campaign/${campaign._id}`,
-      subItems: [
-        {
-          label: "La campagne",
-          icon: <SvgFusee />,
-          url: `/campaign/${campaign._id}/campaign-details`,
-        },
-        {
-          label: "Les cibles",
-          icon: <SvgProfil />,
-          url: `/campaign/${campaign._id}/targets`,
-        },
-        {
-          label: "Bibliothèque",
-          icon: <SvgImageSmall />,
-          url: `/campaign/${campaign._id}/librairy`,
-        },
-        {
-          label: "Analyse digitale",
-          icon: <SvgStatistiques />,
-          url: `/campaign/${campaign._id}/digital`,
-        },
-        {
-          label: "Factures",
-          icon: <SvgFacture />,
-          url: `/campaign/${campaign._id}/invoices`,
-        },
-        {
-          label: "Documents",
-          icon: <SvgDocument />,
-          url: `/campaign/${campaign._id}/documents`,
-        },
-      ],
-    } as MenuItem)) ?? []),
+    ...(campaigns
+      ?.filter((c) => !c.archived && new Date(c.endDate) >= new Date())
+      .map(
+        (campaign) =>
+          ({
+            label: campaign.title,
+            icon: <SvgDocument />,
+            url: `/campaign/${campaign._id}`,
+            subItems: [
+              {
+                label: "La campagne",
+                icon: <SvgFusee />,
+                url: `/campaign/${campaign._id}/campaign-details`,
+              },
+              {
+                label: "Les cibles",
+                icon: <SvgProfil />,
+                url: `/campaign/${campaign._id}/targets`,
+              },
+              {
+                label: "Bibliothèque",
+                icon: <SvgImageSmall />,
+                url: `/campaign/${campaign._id}/librairy`,
+              },
+              {
+                label: "Analyse digitale",
+                icon: <SvgStatistiques />,
+                url: `/campaign/${campaign._id}/digital`,
+              },
+              {
+                label: "Factures",
+                icon: <SvgFacture />,
+                url: `/campaign/${campaign._id}/invoices`,
+              },
+              {
+                label: "Documents",
+                icon: <SvgDocument />,
+                url: `/campaign/${campaign._id}/documents`,
+              },
+            ],
+          } as MenuItem)
+      ) ?? []),
     ...userStaticItems,
   ];
 
   const getDashboardUrl = (variant: UserRole): string => {
-  return variant === 'admin' ? '/adminDashboard' : '/dashboard';
-};
-
-const getBottomMenuItem = (variant: UserRole): MenuItem | null => {
-    return variant === 'admin' ? adminMenuItemsBottom : null;
+    return variant === "admin" ? "/adminDashboard" : "/dashboard";
   };
 
-const menuItems = variant === 'admin' 
-    ? adminMenuItemsTop : userMenuItems;
-  
+  const getBottomMenuItem = (variant: UserRole): MenuItem | null => {
+    return variant === "admin" ? adminMenuItemsBottom : null;
+  };
+
+  const menuItems = variant === "admin" ? adminMenuItemsTop : userMenuItems;
+
   const bottomMenuItem = getBottomMenuItem(variant);
   const dashboardUrl = getDashboardUrl(variant);
 
@@ -280,36 +284,35 @@ const menuItems = variant === 'admin'
               </SidebarMenuItem>
             )
           )}
-          
         </SidebarMenu>
 
         {bottomMenuItem && (
           <SidebarMenu className="py-2 border-t border-white/20 mt-auto">
-                    <SidebarMenuItem className="py-1">
-                      <SidebarMenuButton
-                        asChild
-                        className={cn(
-                          "whitespace-nowrap p-8",
-                          isActive(bottomMenuItem.url)
-                            ? "bg-black/40 border-l-4 border-destructive rounded-none"
-                            : "bg-black/20 rounded-none"
-                        )}
-                      >
-                        <Link href={bottomMenuItem.url}>
-                          <span
-                            className={cn(
-                              isActive(bottomMenuItem.url)
-                                ? "fill-destructive"
-                                : "fill-[#A5A4BF]"
-                            )}
-                          >
-                            {bottomMenuItem.icon}
-                          </span>
-                          <Typography variant="h5">{bottomMenuItem.label}</Typography>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
+            <SidebarMenuItem className="py-1">
+              <SidebarMenuButton
+                asChild
+                className={cn(
+                  "whitespace-nowrap p-8",
+                  isActive(bottomMenuItem.url)
+                    ? "bg-black/40 border-l-4 border-destructive rounded-none"
+                    : "bg-black/20 rounded-none"
+                )}
+              >
+                <Link href={bottomMenuItem.url}>
+                  <span
+                    className={cn(
+                      isActive(bottomMenuItem.url)
+                        ? "fill-destructive"
+                        : "fill-[#A5A4BF]"
+                    )}
+                  >
+                    {bottomMenuItem.icon}
+                  </span>
+                  <Typography variant="h5">{bottomMenuItem.label}</Typography>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         )}
       </SidebarContent>
     </Sidebar>

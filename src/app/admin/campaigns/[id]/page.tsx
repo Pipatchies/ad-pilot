@@ -7,15 +7,16 @@ const ctaProps = {
   text: "Enregistrer les modifications",
 };
 
-export default function EditCampaignPage({
+export default async function EditCampaignPage({
   params,
 }: {
-  params: { id: Id<"campaigns"> };
+  params: Promise<{ id: Id<"campaigns"> }>;
 }) {
+  const { id } = await params;
   return (
     <section className="space-y-6">
-      <SpaceCampaignHeader campaignId={params.id} />
-      <CampaignForm campaignId={params.id} />
+      <SpaceCampaignHeader campaignId={id} />
+      <CampaignForm campaignId={id} />
     </section>
   );
 }

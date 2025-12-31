@@ -216,13 +216,17 @@ export default function InvoiceModal({
     title: "Ajouter une facture",
     children: (
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            e.stopPropagation();
+            form.handleSubmit(onSubmit)(e);
+          }}
+          className="space-y-4"
+        >
           {!defaultOrganizationId && !defaultCampaignId && !onAddInvoice && (
             <div className="flex gap-4">
               <div className="w-1/2 space-y-2">
-                <FormLabel className="text-lg font-semibold">
-                  Client
-                </FormLabel>
+                <FormLabel className="text-lg font-semibold">Client</FormLabel>
                 <Select
                   value={selectedOrgId}
                   onValueChange={(val) => {
@@ -587,7 +591,11 @@ export default function InvoiceModal({
       <CtaButton
         props={{
           text: "Enregistrer",
-          onClick: form.handleSubmit(onSubmit),
+          onClick: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit(onSubmit)(e);
+          },
           disabled: uploading || isSubmitting,
           loading: isSubmitting,
         }}

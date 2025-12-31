@@ -42,7 +42,12 @@ const CtaProps = {
   icon: <SvgPlus />,
 };
 
-export default function DocModal({ onAddDocument, onSuccess, defaultOrganizationId, defaultCampaignId }: DocumentModalProps) {
+export default function DocModal({
+  onAddDocument,
+  onSuccess,
+  defaultOrganizationId,
+  defaultCampaignId,
+}: DocumentModalProps) {
   const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
   const createDocument = useMutation(api.mutations.documents.createDocument);
 
@@ -52,22 +57,22 @@ export default function DocModal({ onAddDocument, onSuccess, defaultOrganization
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [selectedOrgId, setSelectedOrgId] = useState<string>(
-      defaultOrganizationId || ""
-    );
-    const [selectedCampaignId, setSelectedCampaignId] = useState<string>(
-      defaultCampaignId || ""
-    );
-  
-    const organizations = useQuery(
-      api.queries.organizations.getAllOrganizationsWithLastConnection
-    );
-  
-    const campaigns = useQuery(
-      api.queries.campaigns.getCampaignsByOrganization,
-      selectedOrgId
-        ? { organizationId: selectedOrgId as Id<"organizations"> }
-        : "skip"
-    );
+    defaultOrganizationId || ""
+  );
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string>(
+    defaultCampaignId || ""
+  );
+
+  const organizations = useQuery(
+    api.queries.organizations.getAllOrganizationsWithLastConnection
+  );
+
+  const campaigns = useQuery(
+    api.queries.campaigns.getCampaignsByOrganization,
+    selectedOrgId
+      ? { organizationId: selectedOrgId as Id<"organizations"> }
+      : "skip"
+  );
 
   const formSchema = z.object({
     organizationId: z.string().optional(),
@@ -144,8 +149,8 @@ export default function DocModal({ onAddDocument, onSuccess, defaultOrganization
 
       if (onAddDocument) {
         onAddDocument({
-                  ...documentsData,
-                });
+          ...documentsData,
+        });
         toast.success("Document ajouté avec succès !");
       } else {
         await createDocument({
@@ -175,72 +180,76 @@ export default function DocModal({ onAddDocument, onSuccess, defaultOrganization
     title: "Ajouter un document",
     children: (
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            e.stopPropagation();
+            form.handleSubmit(onSubmit)(e);
+          }}
+          className="space-y-4"
+        >
           {!defaultOrganizationId && !defaultCampaignId && !onAddDocument && (
-                      <div className="flex gap-4">
-                        <div className="w-1/2 space-y-2">
-                          <FormLabel className="text-lg font-semibold">
-                            Client
-                          </FormLabel>
-                          <Select
-                            value={selectedOrgId}
-                            onValueChange={(val) => {
-                              setSelectedOrgId(val);
-                              setSelectedCampaignId("");
-                            }}
-                          >
-                            <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                              <SelectValue
-                                placeholder={
-                                  <span className="text-primary/50 italic">
-                                    Sélectionnez le client
-                                  </span>
-                                }
-                              />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {organizations?.map((org) => (
-                                <SelectItem
-                                  key={org.organizationId}
-                                  value={org.organizationId}
-                                >
-                                  {org.organizationName}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-          
-                        <div className="w-1/2 space-y-2">
-                          <FormLabel className="text-lg font-semibold">
-                            Campagne
-                          </FormLabel>
-                          <Select
-                            value={selectedCampaignId}
-                            onValueChange={setSelectedCampaignId}
-                            disabled={!selectedOrgId}
-                          >
-                            <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                              <SelectValue
-                                placeholder={
-                                  <span className="text-primary/50 italic">
-                                    Sélectionnez la campagne
-                                  </span>
-                                }
-                              />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {campaigns?.map((camp) => (
-                                <SelectItem key={camp._id} value={camp._id}>
-                                  {camp.title}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    )}
-          
+            <div className="flex gap-4">
+              <div className="w-1/2 space-y-2">
+                <FormLabel className="text-lg font-semibold">Client</FormLabel>
+                <Select
+                  value={selectedOrgId}
+                  onValueChange={(val) => {
+                    setSelectedOrgId(val);
+                    setSelectedCampaignId("");
+                  }}
+                >
+                  <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                    <SelectValue
+                      placeholder={
+                        <span className="text-primary/50 italic">
+                          Sélectionnez le client
+                        </span>
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {organizations?.map((org) => (
+                      <SelectItem
+                        key={org.organizationId}
+                        value={org.organizationId}
+                      >
+                        {org.organizationName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="w-1/2 space-y-2">
+                <FormLabel className="text-lg font-semibold">
+                  Campagne
+                </FormLabel>
+                <Select
+                  value={selectedCampaignId}
+                  onValueChange={setSelectedCampaignId}
+                  disabled={!selectedOrgId}
+                >
+                  <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                    <SelectValue
+                      placeholder={
+                        <span className="text-primary/50 italic">
+                          Sélectionnez la campagne
+                        </span>
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {campaigns?.map((camp) => (
+                      <SelectItem key={camp._id} value={camp._id}>
+                        {camp.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
           <FormField
             control={form.control}
             name="title"
@@ -306,7 +315,11 @@ export default function DocModal({ onAddDocument, onSuccess, defaultOrganization
       <CtaButton
         props={{
           text: "Enregistrer",
-          onClick: form.handleSubmit(onSubmit),
+          onClick: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit(onSubmit)(e);
+          },
           disabled: uploading || isSubmitting,
           loading: isSubmitting,
         }}
