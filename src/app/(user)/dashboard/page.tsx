@@ -10,31 +10,15 @@ import { Id } from "../../../../convex/_generated/dataModel";
 const organizationId: Id<"organizations"> =
   "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" as Id<"organizations">;
 
-const docData = [
-  {
-    title: "Document lorem ipsum",
-    description: "Type de document",
-    startDate: new Date("2025-01-13"),
-    campaignTitle: "Titre lorem ipsumne",
-  },
-  {
-    title: "Document lorem ipsum",
-    description: "Type de document",
-    startDate: new Date("2025-01-13"),
-    campaignTitle: "Titre lorem ipsumne",
-  },
-  {
-    title: "Document lorem ipsum",
-    description: "Type de document",
-    startDate: new Date("2025-01-13"),
-    campaignTitle: "Titre lorem ipsumne",
-  },
-];
-
 export default function Dashboard() {
   const campaigns = useQuery(api.queries.campaigns.getCampaignsByOrganization, {
     organizationId,
   });
+
+  const documents =
+    useQuery(api.queries.documents.getDocumentsByOrganization, {
+      organizationId,
+    }) || [];
 
   const invoices = useQuery(api.queries.invoices.getInvoicesByOrganization, {
     organizationId,
@@ -53,11 +37,29 @@ export default function Dashboard() {
       .sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
       .slice(0, 3) ?? [];
 
+  const documentsData = Array.isArray(documents)
+    ? documents
+        .map((doc) => ({
+          title: doc.title,
+          description: "Type : " + doc.type.toUpperCase(),
+          startDate: new Date(doc._creationTime),
+          campaignTitle: doc.campaignTitle,
+          url: doc.url,
+          type: doc.type,
+        }))
+        .slice(0, 3)
+    : [];
+
   const invoicesData =
     invoices
       ?.map((invoice) => ({
         title: invoice.title,
-        description: invoice.invoiceType,
+        description:
+          invoice.invoiceType === "agency"
+            ? "Agence"
+            : invoice.invoiceType === "vendor"
+            ? "Régie"
+            : invoice.invoiceType,
         startDate: new Date(invoice.startDate),
         campaignTitle: invoice.campaignTitle,
       }))
@@ -77,7 +79,7 @@ export default function Dashboard() {
       <LatestFiles
         title="Les derniers documents"
         // cta={ctaProps[1]}
-        data={docData}
+        data={documentsData}
         variant="default"
       />
       <LatestFiles
