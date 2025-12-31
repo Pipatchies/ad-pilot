@@ -11,13 +11,16 @@ import { api } from "../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../convex/_generated/dataModel";
 import { calculateBroadcastProgress } from "@/lib/utils";
 
-const campaignId: Id<"campaigns"> =
-  "jn7cedad56bmbav5fnk28ys6zn7jtrgf" as Id<"campaigns">;
+import { useParams } from "next/navigation";
 
 export default function SpaceRecap() {
-  const campaign = useQuery(api.queries.campaigns.getCampaignById, {
-    campaignId,
-  });
+  const params = useParams();
+  const campaignId = params?.id as Id<"campaigns">;
+
+  const campaign = useQuery(
+    api.queries.campaigns.getCampaignById,
+    campaignId ? { campaignId } : "skip"
+  );
 
   if (!campaign) {
     return <div>Chargement...</div>;
@@ -52,16 +55,6 @@ export default function SpaceRecap() {
 
   return (
     <section className="space-y-15">
-      <Typography variant="h1">{campaign.title}</Typography>
-
-      <div className="flex flex-wrap gap-x-3 items-center">
-        <Domaine />
-        <Television />
-        <Typography className="m-0" variant="h4">
-          {campaign.subtitle}
-        </Typography>
-      </div>
-
       <Typography variant="h2">Récap de la campagne</Typography>
 
       <div className="flex flex-col space-y-6">

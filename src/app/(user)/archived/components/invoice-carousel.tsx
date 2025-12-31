@@ -11,52 +11,17 @@ import {
 import { Button } from "@/components/ui/button";
 import SvgTallDown from "@/components/icons/TallDown";
 
-const invoicesCardsData = [
-  {
-    title: "Facture N°123456789",
-    description: "Facture d'acompte",
-    startDate: new Date("2025-01-13"),
-    sendBy: "Verywell",
-    slug: "invoice-1",
-  },
-  {
-    title: "Facture N°123456789",
-    description: "Facture d'acompte",
-    startDate: new Date("2025-01-13"),
-    sendBy: "Régie",
-    slug: "invoice-2",
-  },
-  {
-    title: "Facture N°123456789",
-    description: "Facture d'acompte",
-    startDate: new Date("2025-01-13"),
-    sendBy: "Régie",
-    slug: "invoice-3",
-  },
-  {
-    title: "Facture N°123456789",
-    description: "Facture d'acompte",
-    startDate: new Date("2025-01-13"),
-    sendBy: "Régie",
-    slug: "invoice-4",
-  },
-  {
-    title: "Facture N°123456789",
-    description: "Facture d'acompte",
-    startDate: new Date("2025-01-13"),
-    sendBy: "Verywell",
-    slug: "invoice-5",
-  },
-  {
-    title: "Facture N°123456789",
-    description: "Facture d'acompte",
-    startDate: new Date("2025-01-13"),
-    sendBy: "Verywell",
-    slug: "invoice-6",
-  },
-];
+interface InvoiceCarouselProps {
+  invoices: {
+    title: string;
+    description: string;
+    startDate: Date;
+    sendBy: string;
+    slug: string;
+  }[];
+}
 
-export default function InvoiceCarousel() {
+export default function InvoiceCarousel({ invoices }: InvoiceCarouselProps) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
@@ -76,50 +41,50 @@ export default function InvoiceCarousel() {
 
   return (
     <section>
-        <div className="relative flex items-center justify-between w-full">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fill-[#E1DFE6] hover:bg-white cursor-pointer pr-10 active:fill-[#A5A4BF]"
-        onClick={() => api?.scrollPrev()}
-        aria-label="Précédent"
-      >
-        <SvgTallDown className="rotate-90 size-10" />
-      </Button>
+      <div className="relative flex items-center justify-between w-full">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="fill-[#E1DFE6] hover:bg-white cursor-pointer pr-10 active:fill-[#A5A4BF]"
+          onClick={() => api?.scrollPrev()}
+          aria-label="Précédent"
+        >
+          <SvgTallDown className="rotate-90 size-10" />
+        </Button>
 
-      <Carousel
-        setApi={setApi}
-        className="w-full"
-        opts={{
-          align: "start",
-          loop: true,
-        }}
-      >
-        <CarouselContent>
-          {invoicesCardsData.map((invoice, index) => (
-            <CarouselItem
-              key={index}
-              className="pl-6 md:basis-1/2 lg:basis-1/3"
-            >
-              <InvoiceCards
-                data={[invoice]}
-                variant="invoice"
-                className="h-full"
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+        <Carousel
+          setApi={setApi}
+          className="w-full"
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+        >
+          <CarouselContent>
+            {invoices.map((invoice, index) => (
+              <CarouselItem
+                key={index}
+                className="pl-6 md:basis-1/2 lg:basis-1/3"
+              >
+                <InvoiceCards
+                  data={[invoice]}
+                  variant="invoice"
+                  className="h-full"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fill-[#E1DFE6] hover:bg-white cursor-pointer pl-10 active:fill-[#A5A4BF]"
-        onClick={() => api?.scrollNext()}
-        aria-label="Suivant"
-      >
-        <SvgTallDown className="rotate-270 size-10" />
-      </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="fill-[#E1DFE6] hover:bg-white cursor-pointer pl-10 active:fill-[#A5A4BF]"
+          onClick={() => api?.scrollNext()}
+          aria-label="Suivant"
+        >
+          <SvgTallDown className="rotate-270 size-10" />
+        </Button>
       </div>
 
       <div className="flex justify-center gap-1 mt-4">
