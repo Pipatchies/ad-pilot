@@ -11,7 +11,6 @@ export const getAllOrganizationsWithLastConnection = query({
 
     const users = await ctx.db
       .query("users")
-      .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
 
     const lastByOrganization = new Map<string, number | undefined>();
@@ -67,7 +66,6 @@ export const getOrganizationDetails = query({
       .withIndex("by_organizationId", (q) =>
         q.eq("organizationId", args.organizationId)
       )
-      .filter((q) => q.neq(q.field("deleted"), true))
       .first();
 
     const campaigns = await ctx.db
