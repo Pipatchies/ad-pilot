@@ -221,7 +221,7 @@ export default function CampaignForm({
           }
         : undefined,
     });
-  }, [existingCampaign]);
+  }, [existingCampaign, form]);
 
   useEffect(() => {
     if (!existingMedias) return;
@@ -240,6 +240,8 @@ export default function CampaignForm({
 
   // Keep budgetMedia in sync with mediaTypes
   const mediaTypesWatch = form.watch("mediaTypes");
+
+  const mediaTypesString = JSON.stringify(mediaTypesWatch);
 
   useEffect(() => {
     const selected = mediaTypesWatch ?? [];
@@ -260,7 +262,7 @@ export default function CampaignForm({
     });
 
     form.setValue("budgetMedia", updated, { shouldValidate: true });
-  }, [JSON.stringify(mediaTypesWatch)]);
+  }, [mediaTypesString, form, mediaTypesWatch]);
 
   // ---------------- SUBMIT ----------------
 
@@ -406,7 +408,7 @@ export default function CampaignForm({
       });
       form.reset(defaultValues);
       router.push(`/admin/dashboard`);
-    } catch (err) {
+    } catch (_err) {
       toast.error("Erreur", {
         description: "Impossible d'enregistrer la campagne.",
       });

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { Domaine, Television } from "@/components/icons";
 import Typography from "@/components/typography";
@@ -11,19 +11,19 @@ import { api } from "../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../convex/_generated/dataModel";
 import { calculateBroadcastProgress } from "@/lib/utils";
 
-const campaignId: Id<"campaigns"> = "jn7cedad56bmbav5fnk28ys6zn7jtrgf" as Id<"campaigns">;
+const campaignId: Id<"campaigns"> =
+  "jn7cedad56bmbav5fnk28ys6zn7jtrgf" as Id<"campaigns">;
 
 export default function SpaceRecap() {
+  const campaign = useQuery(api.queries.campaigns.getCampaignById, {
+    campaignId,
+  });
 
-  const campaign = useQuery(api.queries.campaigns.getCampaignbyId, {
-  campaignId,
-});
+  if (!campaign) {
+    return <div>Chargement...</div>;
+  }
 
-if (!campaign) {
-  return <div>Chargement...</div>;
-}
-
-const stepCardData =
+  const stepCardData =
     campaign.status?.map((step) => ({
       id: step.id,
       label: step.label,
@@ -38,7 +38,10 @@ const stepCardData =
       amount: media.amount,
     })) ?? [];
 
-    const { progress, daysRemaining } = calculateBroadcastProgress(campaign.startDate, campaign.endDate);
+  const { progress, daysRemaining } = calculateBroadcastProgress(
+    campaign.startDate,
+    campaign.endDate
+  );
 
   const broadcastData = {
     daysRemaining,
@@ -54,7 +57,9 @@ const stepCardData =
       <div className="flex flex-wrap gap-x-3 items-center">
         <Domaine />
         <Television />
-        <Typography className="m-0" variant="h4">{campaign.subtitle}</Typography>
+        <Typography className="m-0" variant="h4">
+          {campaign.subtitle}
+        </Typography>
       </div>
 
       <Typography variant="h2">Récap de la campagne</Typography>

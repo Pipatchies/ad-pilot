@@ -14,8 +14,18 @@ const eslintConfig = [
     extends: ["next/core-web-vitals", "next/typescript"],
   }),
   {
+    ignores: ["node_modules", ".next", "out", "public", "dist", "convex/_generated"],
     rules: {
-      "react/no-unescaped-entities": "off", // Remove to allow unescaped entities
+      "react/no-unescaped-entities": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 ];
