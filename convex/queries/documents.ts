@@ -45,6 +45,16 @@ export const getDocumentsByOrganization = query({
       .filter((q) => q.neq(q.field("deleted"), true))
       .order("desc")
       .collect();
-    return documents;
+
+    const enriched = await Promise.all(
+      documents.map(async (doc) => {
+        const campaign = doc.campaignId ? await ctx.db.get(doc.campaignId) : null;
+        return {
+          ...doc,
+          campaignTitle: campaign?.title ?? "Campagne inconnue",
+        };
+      })
+    );
+    return enriched;
   },
 });
