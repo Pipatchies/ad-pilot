@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import CtaButton from "@/components/cta-button";
 import Typography from "@/components/typography";
 import { useQuery } from "convex/react";
@@ -10,9 +10,15 @@ const ctaProps = {
   text: "Enregistrer les modifications",
 };
 
-export default function SpaceCampaignHeader({ campaignId }: { campaignId: Id<"campaigns"> }) {
-    
-  const campaign = useQuery(api.queries.campaigns.getCampaignById, { campaignId: campaignId });
+export default function SpaceCampaignHeader({
+  campaignId,
+}: {
+  campaignId: Id<"campaigns">;
+}) {
+  const campaign = useQuery(
+    api.queries.campaigns.getCampaignById,
+    campaignId ? { campaignId } : "skip"
+  );
 
   return (
     <div className="flex flex-wrap items-center justify-between">
