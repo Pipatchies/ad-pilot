@@ -150,7 +150,7 @@ export default function MenuSidebar({ variant }: SidebarProps) {
   ];
 
   const getDashboardUrl = (variant: UserRole): string => {
-    return variant === "admin" ? "/adminDashboard" : "/dashboard";
+    return variant === "admin" ? "/admin/dashboard" : "/dashboard";
   };
 
   const getBottomMenuItem = (variant: UserRole): MenuItem | null => {
