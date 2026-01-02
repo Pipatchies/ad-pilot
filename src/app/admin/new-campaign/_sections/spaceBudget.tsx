@@ -20,12 +20,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import SvgCalendrier from "@/components/icons/Calendrier";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import React from "react";
 
 const mediaTypes = [
   { label: "Digital", value: "digital" },
@@ -35,6 +40,8 @@ const mediaTypes = [
   { label: "Cinéma", value: "cinema" },
   { label: "Presse", value: "press" },
 ];
+
+import BudgetInput from "@/components/budget-input";
 
 export default function SpaceBudget() {
   const { control, watch } = useFormContext();
@@ -63,16 +70,12 @@ export default function SpaceBudget() {
             <FormItem className="flex-1 min-w-[150px]">
               <FormLabel className="text-lg">Budget total</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
+                <BudgetInput
                   placeholder="Budget en €"
                   className="w-1/3 !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                  value={field.value || ""}
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value === "" ? 0 : Number(e.target.value)
-                    )
-                  }
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
                 />
               </FormControl>
               <FormMessage />
@@ -84,10 +87,11 @@ export default function SpaceBudget() {
         <div className="space-y-8">
           {budgetFields.map((row, index) => (
             <div key={row.id}>
-              {index > 0 && <div className="border-t border-gray-300 my-8"></div>}
+              {index > 0 && (
+                <div className="border-t border-gray-300 my-8"></div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                
                 {/* MEDIA TYPE */}
                 <FormField
                   control={control}
@@ -125,16 +129,12 @@ export default function SpaceBudget() {
                     <FormItem>
                       <FormLabel className="text-lg">Budget</FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
+                        <BudgetInput
                           placeholder="Budget en €"
                           className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value === "" ? undefined : Number(e.target.value)
-                            )
-                          }
-                          value={field.value === 0 ? "" : field.value}
+                          value={field.value}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
                         />
                       </FormControl>
                       <FormMessage />
@@ -175,12 +175,18 @@ export default function SpaceBudget() {
                             className={cn(
                               "w-full rounded-sm py-2 px-5 flex items-center justify-between cursor-pointer bg-white",
                               "border",
-                              fieldState.error ? "border-destructive" : "border-[#A5A4BF]"
+                              fieldState.error
+                                ? "border-destructive"
+                                : "border-[#A5A4BF]"
                             )}
                           >
                             <span className="text-base italic">
                               {field.value?.from && field.value?.to
-                                ? `${format(field.value.from, "dd/MM/yyyy", { locale: fr })} - ${format(field.value.to, "dd/MM/yyyy", { locale: fr })}`
+                                ? `${format(field.value.from, "dd/MM/yyyy", {
+                                    locale: fr,
+                                  })} - ${format(field.value.to, "dd/MM/yyyy", {
+                                    locale: fr,
+                                  })}`
                                 : "Sélectionner la période"}
                             </span>
                             <SvgCalendrier />
@@ -247,7 +253,6 @@ export default function SpaceBudget() {
                     </FormItem>
                   )}
                 />
-
               </div>
             </div>
           ))}

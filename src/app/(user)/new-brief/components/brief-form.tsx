@@ -48,6 +48,7 @@ import { api } from "../../../../../convex/_generated/api";
 import { DocumentFileType } from "@/types/docs";
 import CtaButton from "@/components/cta-button";
 import SvgUploder from "@/components/icons/Uploder";
+import BudgetInput from "@/components/budget-input";
 
 const objectifs = [
   { label: "Notoriété", value: "notoriete" },
@@ -407,7 +408,7 @@ export default function BriefForm() {
                       </FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5">
@@ -460,18 +461,12 @@ export default function BriefForm() {
                         Budget
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
+                        <BudgetInput
                           placeholder="Précisez votre budget"
                           className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value === ""
-                                ? undefined
-                                : Number(e.target.value)
-                            )
-                          }
+                          value={field.value}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
                         />
                       </FormControl>
                       <FormMessage />
