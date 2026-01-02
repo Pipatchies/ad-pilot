@@ -100,7 +100,7 @@ export default function DetailsCard({
             <Typography variant="h3" className="mb-0">
               {title}
             </Typography>
-            <CardDescription className="italic text-primary">
+            <CardDescription className="italic text-primary group-hover:text-white transition-colors">
               {description}
             </CardDescription>
           </>
@@ -113,7 +113,7 @@ export default function DetailsCard({
             <Typography variant="h3" className="mb-0">
               {title}
             </Typography>
-            <CardDescription className="italic text-primary">
+            <CardDescription className="italic text-primary group-hover:text-white transition-colors">
               {description}
             </CardDescription>
           </>
