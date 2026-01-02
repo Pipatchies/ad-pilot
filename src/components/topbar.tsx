@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import CtaButton from "./cta-button";
 import { ChevronDown } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -34,6 +35,7 @@ const CtaData = {
 };
 
 export default function Topbar() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const me = useQuery(api.queries.users.me);
   const { signOut } = useAuthActions();
@@ -123,7 +125,10 @@ export default function Topbar() {
                   </a>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => signOut()}
+                  onClick={async () => {
+                    await signOut();
+                    router.push("/signin");
+                  }}
                   className="text-destructive focus:text-destructive cursor-pointer"
                 >
                   Se déconnecter
