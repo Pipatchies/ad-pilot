@@ -37,6 +37,9 @@ const formSchema = z.object({
   title: z.string().min(1),
   subtitle: z.string().min(1),
   mediaTypes: z.array(z.string()).min(1),
+  tvTypes: z.array(z.string()).optional(),
+  radioTypes: z.array(z.string()).optional(),
+  displayTypes: z.string().optional(),
   budgetTotal: z.number().nonnegative(),
 
   budgetMedia: z.array(
@@ -100,6 +103,9 @@ const defaultValues = {
   title: "",
   subtitle: "",
   mediaTypes: [],
+  tvTypes: [],
+  radioTypes: [],
+  displayTypes: "",
   budgetTotal: 0,
   budgetMedia: [
     {
@@ -196,6 +202,9 @@ export default function CampaignForm({
       title: existingCampaign.title,
       subtitle: existingCampaign.subtitle,
       mediaTypes: existingCampaign.mediaTypes,
+      tvTypes: existingCampaign.tvTypes ?? [],
+      radioTypes: existingCampaign.radioTypes ?? [],
+      displayTypes: existingCampaign.displayTypes ?? "",
       budgetTotal: existingCampaign.totalBudget,
       budgetMedia: existingCampaign.budgetMedia.map((b) => ({
         type: b.type as MediaType,
@@ -288,6 +297,9 @@ export default function CampaignForm({
         title: values.title,
         subtitle: values.subtitle,
         mediaTypes: values.mediaTypes as MediaType[],
+        tvTypes: values.tvTypes,
+        radioTypes: values.radioTypes,
+        displayTypes: values.displayTypes,
         startDate,
         endDate,
         totalBudget: values.budgetTotal,
@@ -428,6 +440,9 @@ export default function CampaignForm({
           title: values.title,
           subtitle: values.subtitle,
           mediaTypes: values.mediaTypes as MediaType[],
+          tvTypes: values.tvTypes,
+          radioTypes: values.radioTypes,
+          displayTypes: values.displayTypes,
           totalBudget: values.budgetTotal,
           budgetMedia: values.budgetMedia.map((b) => ({
             type: b.type as MediaType,

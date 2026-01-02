@@ -16,6 +16,9 @@ export const createCampaign = mutation({
         v.literal("press")
       )
     ),
+    tvTypes: v.optional(v.array(v.string())),
+    radioTypes: v.optional(v.array(v.string())),
+    displayTypes: v.optional(v.string()),
     startDate: v.string(),
     endDate: v.string(),
     totalBudget: v.number(),
@@ -95,6 +98,9 @@ export const updateCampaign = mutation({
           )
         )
       ),
+      tvTypes: v.optional(v.array(v.string())),
+      radioTypes: v.optional(v.array(v.string())),
+      displayTypes: v.optional(v.string()),
 
       startDate: v.optional(v.string()),
       endDate: v.optional(v.string()),
