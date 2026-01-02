@@ -12,7 +12,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const showBackButton = /^\/admin\/(targets|librairy|archived|clients)\/[^\/]+$/.test(
+  const showBackButton = /^\/admin\/(targets|librairy|archived|clients|documents|invoices|campaigns)\/[^\/]+$/.test(
     pathname
   );
   return (
