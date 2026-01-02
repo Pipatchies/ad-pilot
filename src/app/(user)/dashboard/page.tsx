@@ -6,11 +6,15 @@ import CampaignGantt from "@/components/dashboard/CampaignGantt";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { useParams } from "next/navigation";
 
 const organizationId: Id<"organizations"> =
   "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" as Id<"organizations">;
 
 export default function Dashboard() {
+  const params = useParams();
+  const campaignId = params?.id as Id<"campaigns">;
+
   const campaigns = useQuery(api.queries.campaigns.getCampaignsByOrganization, {
     organizationId,
   });
@@ -67,6 +71,19 @@ export default function Dashboard() {
       .sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
       .slice(0, 3) ?? [];
 
+  const ctaData = [
+    {
+      text: "Voir tous les documents",
+      url: "documents",
+      target: "self",
+    },
+    {
+      text: "Voir toutes les factures",
+      url: "invoices",
+      target: "self",
+    },
+  ];
+
   return (
     <section className="flex flex-col gap-10">
       <Typography variant="h1">Tableau de bord</Typography>
@@ -86,13 +103,20 @@ export default function Dashboard() {
       />
       <LatestFiles
         title="Les derniers documents"
-        // cta={ctaProps[1]}
+        cta={{
+          ...ctaData[0],
+          url: `/campaign/${campaignId}/${ctaData[0].url}`,
+        }}
+
         data={documentsData}
         variant="default"
       />
       <LatestFiles
         title="Les dernières factures"
-        // cta={ctaProps[2]}
+        cta={{
+          ...ctaData[1],
+          url: `/campaign/${campaignId}/${ctaData[1].url}`,
+        }} 
         data={invoicesData.slice(0, 3)}
         variant="default"
         className="mb-10"
