@@ -7,11 +7,8 @@ import {
 
 const isRoot = createRouteMatcher(["/"]);
 // const isSignIn = createRouteMatcher(["/signin"]);
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "/admin(.*)",
-
-]);
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/admin(.*)", "/(.*)"]);
+const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default convexAuthNextjsMiddleware(async (req, { convexAuth }) => {
   const isLoggedIn = await convexAuth.isAuthenticated();
@@ -24,9 +21,31 @@ export default convexAuthNextjsMiddleware(async (req, { convexAuth }) => {
     return nextjsMiddlewareRedirect(req, "/signin");
   }
 
-  // if (isSignIn(req) && isLoggedIn) {
-  //   return nextjsMiddlewareRedirect(req, "/dashboard");
-  // }
+  if (isAdminRoute(req) && isLoggedIn) {
+    const token = await convexAuth.getToken();
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_CONVEX_URL}/api/query`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          path: "queries/users:me",
+          args: {},
+          format: "json",
+        }),
+      }
+    );
+
+    const data = await response.json();
+    const user = data.value;
+
+    if (user?.role !== "admin") {
+      return nextjsMiddlewareRedirect(req, "/dashboard");
+    }
+  }
 
   return NextResponse.next();
 });
@@ -34,4 +53,3 @@ export default convexAuthNextjsMiddleware(async (req, { convexAuth }) => {
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)"],
 };
-
