@@ -119,7 +119,14 @@ export default defineSchema({
         })
       )
     ),
-    digitalReportUrl: v.optional(v.string()),
+    digitalAnalysis: v.optional(
+      v.object({
+        url: v.string(),
+        name: v.string(),
+        publicId: v.optional(v.string()),
+        resourceType: v.optional(v.string()),
+      })
+    ),
     report: v.optional(
       v.object({
         status: v.optional(

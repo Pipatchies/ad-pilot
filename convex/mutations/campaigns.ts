@@ -52,6 +52,14 @@ export const createCampaign = mutation({
         deadline: v.string(),
       })
     ),
+    digitalAnalysis: v.optional(
+      v.object({
+        url: v.string(),
+        publicId: v.optional(v.string()),
+        resourceType: v.optional(v.string()),
+        name: v.string(),
+      })
+    ),
     archived: v.boolean(),
     organizationId: v.id("organizations"),
   },
@@ -162,6 +170,14 @@ export const updateCampaign = mutation({
 
       archived: v.optional(v.boolean()),
       organizationId: v.optional(v.id("organizations")),
+      digitalAnalysis: v.optional(
+        v.object({
+          url: v.string(),
+          publicId: v.optional(v.string()),
+          resourceType: v.optional(v.string()),
+          name: v.string(),
+        })
+      ),
     }),
   },
 

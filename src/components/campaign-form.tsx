@@ -28,6 +28,7 @@ import SpaceTarget from "../app/admin/new-campaign/_sections/spaceTargets";
 import SpaceMedias from "../app/admin/new-campaign/_sections/spaceMedias";
 import SpaceDocuments from "../app/admin/new-campaign/_sections/spaceDocuments";
 import SpaceInvoices from "../app/admin/new-campaign/_sections/spaceInvoices";
+import SpaceDigital from "../app/admin/new-campaign/_sections/spaceDigital";
 import SpaceCampaignReport from "@/app/admin/new-campaign/_sections/spaceCampaignReport";
 
 // ---------------- SCHEMA ----------------
@@ -94,6 +95,15 @@ const formSchema = z.object({
         .optional(),
     })
     .optional(),
+
+  digitalAnalysis: z
+    .object({
+      url: z.string(),
+      publicId: z.string().optional(),
+      resourceType: z.string().optional(),
+      name: z.string(),
+    })
+    .optional(),
 });
 
 // ---------------- DEFAULT VALUES ----------------
@@ -134,6 +144,7 @@ const defaultValues = {
     document: "",
     kpi: [],
   },
+  digitalAnalysis: undefined,
 };
 
 export default function CampaignForm({
@@ -229,6 +240,7 @@ export default function CampaignForm({
             kpi: existingCampaign.report.kpi ?? [],
           }
         : undefined,
+      digitalAnalysis: existingCampaign.digitalAnalysis,
     });
   }, [existingCampaign, form]);
 
@@ -324,7 +336,47 @@ export default function CampaignForm({
         })),
 
         archived: false,
+        digitalAnalysis: values.digitalAnalysis
+          ? {
+              url: values.digitalAnalysis.url,
+              name: values.digitalAnalysis.name,
+              publicId: values.digitalAnalysis.publicId,
+              resourceType: values.digitalAnalysis.resourceType,
+            }
+          : undefined,
       });
+
+      // Move Digital Analysis if needed
+      if (
+        values.digitalAnalysis &&
+        values.digitalAnalysis.publicId &&
+        values.digitalAnalysis.resourceType
+      ) {
+        const originalPublicId = values.digitalAnalysis.publicId;
+        if (originalPublicId.includes("temp")) {
+          const newPublicId = `campaigns/${campaignId}/digital/${originalPublicId
+            .split("/")
+            .pop()}`;
+          const renamed = await moveMediaToCampaign({
+            publicId: originalPublicId,
+            newPublicId,
+            resourceType: values.digitalAnalysis.resourceType as
+              | "image"
+              | "video"
+              | "raw",
+          });
+
+          await updateCampaign({
+            campaignId,
+            patch: {
+              digitalAnalysis: {
+                url: renamed.secure_url,
+                name: values.digitalAnalysis.name,
+              },
+            },
+          });
+        }
+      }
 
       // Save medias
       await Promise.all(
@@ -469,8 +521,48 @@ export default function CampaignForm({
               }
             : undefined,
           archived: values.report?.status === "archived",
+          digitalAnalysis: values.digitalAnalysis
+            ? {
+                url: values.digitalAnalysis.url,
+                name: values.digitalAnalysis.name,
+                publicId: values.digitalAnalysis.publicId,
+                resourceType: values.digitalAnalysis.resourceType,
+              }
+            : undefined,
         },
       });
+
+      // Digital Analysis Move (for Update case)
+      if (
+        values.digitalAnalysis &&
+        values.digitalAnalysis.publicId &&
+        values.digitalAnalysis.resourceType &&
+        values.digitalAnalysis.publicId.includes("temp")
+      ) {
+        const originalPublicId = values.digitalAnalysis.publicId;
+        const newPublicId = `campaigns/${campaignId}/digital/${originalPublicId
+          .split("/")
+          .pop()}`;
+
+        const renamed = await moveMediaToCampaign({
+          publicId: originalPublicId,
+          newPublicId,
+          resourceType: values.digitalAnalysis.resourceType as
+            | "image"
+            | "video"
+            | "raw",
+        });
+
+        await updateCampaign({
+          campaignId,
+          patch: {
+            digitalAnalysis: {
+              url: renamed.secure_url,
+              name: values.digitalAnalysis.name,
+            },
+          },
+        });
+      }
 
       // Save NEW medias
       const mediasToSave = formMedias.filter(
@@ -600,6 +692,8 @@ export default function CampaignForm({
           <SpaceSteps />
 
           <SpaceTarget />
+
+          <SpaceDigital campaignId={campaignId} />
 
           <SpaceMedias formMedias={formMedias} setFormMedias={setFormMedias} />
 
