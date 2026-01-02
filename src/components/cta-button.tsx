@@ -25,6 +25,10 @@ const CtaButton = React.forwardRef<HTMLButtonElement, Props>(
       linkProps.target = props.target;
     }
 
+    if (props.download) {
+      linkProps.download = props.download;
+    }
+
     const text =
       userType === "client"
         ? props.text

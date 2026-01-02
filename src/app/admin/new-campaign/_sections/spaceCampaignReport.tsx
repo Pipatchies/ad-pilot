@@ -113,7 +113,7 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                   value={field.value ?? ""}
                 >
                   <FormControl>
-                    <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                    <SelectTrigger className="w-full text-base rounded-sm border border-[#A5A4BF] p-5 bg-white cursor-pointer hover:bg-white">
                       <SelectValue
                         placeholder={
                           <span className="text-primary/50 italic">
@@ -152,7 +152,7 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                           : ""
                       }
                       placeholder="Importer le fichier PDF"
-                      className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white cursor-pointer"
+                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white cursor-pointer hover:bg-white"
                       onClick={() =>
                         document.getElementById("hiddenDocumentInput")?.click()
                       }
@@ -213,7 +213,7 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                               : ""
                           }
                           placeholder="Icône"
-                          className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white cursor-pointer"
+                          className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white cursor-pointer hover:bg-white"
                           onClick={() =>
                             document
                               .getElementById(`hiddenLogoInput-${index}`)
@@ -257,7 +257,7 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                     <FormControl>
                       <Input
                         placeholder="Renseignez titre KPI"
-                        className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                        className="w-full !text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
                         {...field}
                       />
                     </FormControl>
@@ -275,7 +275,7 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                     <FormControl>
                       <Input
                         placeholder="Renseignez info KPI"
-                        className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                        className="w-full !text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
                         {...field}
                       />
                     </FormControl>

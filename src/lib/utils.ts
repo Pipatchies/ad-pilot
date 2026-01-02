@@ -47,11 +47,25 @@ export function getIconFromType(type: string) {
         width: 26,
         height: 26,
       };
-    case "affichage":
+    case "ooh":
       return {
         name: "panneau",
         url: "/icons/panneau-daffichage.svg",
         width: 15,
+        height: 26,
+      };
+    case "cinema":
+      return {
+        name: "cinema",
+        url: "/icons/cinema.svg",
+        width: 26,
+        height: 26,
+      };
+    case "presse":
+      return {
+        name: "presse",
+        url: "/icons/presse.svg",
+        width: 26,
         height: 26,
       };
     default:

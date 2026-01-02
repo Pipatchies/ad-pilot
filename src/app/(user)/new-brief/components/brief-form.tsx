@@ -48,6 +48,7 @@ import { api } from "../../../../../convex/_generated/api";
 import { DocumentFileType } from "@/types/docs";
 import CtaButton from "@/components/cta-button";
 import SvgUploder from "@/components/icons/Uploder";
+import BudgetInput from "@/components/budget-input";
 
 const objectifs = [
   { label: "Notoriété", value: "notoriete" },
@@ -300,7 +301,7 @@ export default function BriefForm() {
                     <FormControl>
                       <Input
                         placeholder="Définissez le nom de la campagne"
-                        className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                        className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                         {...field}
                       />
                     </FormControl>
@@ -333,10 +334,10 @@ export default function BriefForm() {
                           >
                             <span
                               className={cn(
-                                "text-base italic",
+                                "text-base",
                                 field.value?.from && field.value?.to
                                   ? "text-primary"
-                                  : "text-primary/50"
+                                  : "text-primary/50 italic"
                               )}
                             >
                               {field.value?.from && !field.value?.to
@@ -388,7 +389,7 @@ export default function BriefForm() {
                       <FormControl>
                         <Input
                           placeholder="Renseignez votre cible"
-                          className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                          className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                           {...field}
                         />
                       </FormControl>
@@ -407,10 +408,10 @@ export default function BriefForm() {
                       </FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5">
+                          <SelectTrigger className="w-full text-base rounded-sm border border-[#A5A4BF] p-5 cursor-pointer hover:bg-white">
                             <SelectValue
                               placeholder={
                                 <span className="text-primary/50 italic">
@@ -442,7 +443,7 @@ export default function BriefForm() {
                       <FormControl>
                         <Input
                           placeholder="Précisez les villes"
-                          className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                          className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
                           {...field}
                         />
                       </FormControl>
@@ -460,18 +461,12 @@ export default function BriefForm() {
                         Budget
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
+                        <BudgetInput
                           placeholder="Précisez votre budget"
-                          className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value === ""
-                                ? undefined
-                                : Number(e.target.value)
-                            )
-                          }
+                          className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                          value={field.value}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
                         />
                       </FormControl>
                       <FormMessage />
@@ -494,9 +489,9 @@ export default function BriefForm() {
                               variant="ghost"
                               role="combobox"
                               className={cn(
-                                "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50",
+                                "w-full p-5 text-base border border-[#A5A4BF] rounded-sm justify-between cursor-pointer hover:bg-white hover:text-primary/50",
                                 !field.value.length
-                                  ? "text-primary/50"
+                                  ? "text-primary/50 italic"
                                   : "text-primary"
                               )}
                             >
@@ -594,9 +589,9 @@ export default function BriefForm() {
                               variant="ghost"
                               role="combobox"
                               className={cn(
-                                "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50",
+                                "w-full p-5 text-base border border-[#A5A4BF] rounded-sm justify-between cursor-pointer hover:bg-white hover:text-primary/50",
                                 !field.value.length
-                                  ? "text-primary/50"
+                                  ? "text-primary/50 italic"
                                   : "text-primary"
                               )}
                             >
@@ -689,7 +684,7 @@ export default function BriefForm() {
                                 variant="ghost"
                                 role="combobox"
                                 className={cn(
-                                  "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50",
+                                  "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent cursor-pointer hover:border-[#A5A4BF] hover:text-primary/50",
                                   !field.value?.length
                                     ? "text-primary/50"
                                     : "text-primary"
@@ -785,7 +780,7 @@ export default function BriefForm() {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger className="w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm">
+                            <SelectTrigger className="w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm cursor-pointer">
                               <SelectValue
                                 placeholder={
                                   <span className="text-primary/50 italic">
@@ -823,7 +818,7 @@ export default function BriefForm() {
                                 variant="ghost"
                                 role="combobox"
                                 className={cn(
-                                  "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent hover:border-[#A5A4BF] hover:text-primary/50",
+                                  "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between hover:bg-transparent cursor-pointer hover:border-[#A5A4BF] hover:text-primary/50",
                                   !field.value?.length
                                     ? "text-primary/50"
                                     : "text-primary"

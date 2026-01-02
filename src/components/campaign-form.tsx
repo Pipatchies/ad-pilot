@@ -28,21 +28,31 @@ import SpaceTarget from "../app/admin/new-campaign/_sections/spaceTargets";
 import SpaceMedias from "../app/admin/new-campaign/_sections/spaceMedias";
 import SpaceDocuments from "../app/admin/new-campaign/_sections/spaceDocuments";
 import SpaceInvoices from "../app/admin/new-campaign/_sections/spaceInvoices";
+import SpaceDigital from "../app/admin/new-campaign/_sections/spaceDigital";
 import SpaceCampaignReport from "@/app/admin/new-campaign/_sections/spaceCampaignReport";
 
 // ---------------- SCHEMA ----------------
 
 const formSchema = z.object({
-  organization: z.string().min(1),
-  title: z.string().min(1),
-  subtitle: z.string().min(1),
-  mediaTypes: z.array(z.string()).min(1),
-  budgetTotal: z.number().nonnegative(),
+  organization: z.string().min(1, { message: "Le client est requis" }),
+  title: z.string().min(1, { message: "Le titre est requis" }),
+  subtitle: z.string().optional(),
+  mediaTypes: z
+    .array(z.string())
+    .min(1, { message: "Au moins un média est requis" }),
+  tvTypes: z.array(z.string()).optional(),
+  radioTypes: z.array(z.string()).optional(),
+  displayTypes: z.string().optional(),
+  budgetTotal: z
+    .number()
+    .nonnegative({ message: "Le budget doit être positif" }),
 
   budgetMedia: z.array(
     z.object({
-      type: z.string().min(1),
-      amount: z.number().nonnegative(),
+      type: z.string().min(1, { message: "Le type est requis" }),
+      amount: z
+        .number()
+        .nonnegative({ message: "Le montant doit être positif" }),
       pourcent: z.number().or(z.string()),
       period: z
         .object({
@@ -52,17 +62,17 @@ const formSchema = z.object({
         .refine((p) => p.from && p.to, {
           message: "La période est requise",
         }),
-      title: z.string().min(1),
-      details: z.string().min(1),
+      title: z.string().optional(),
+      details: z.string().optional(),
     })
   ),
 
   status: z
     .array(
       z.object({
-        label: z.string().min(1),
-        state: z.string().min(1),
-        deadline: z.date().nullable(),
+        label: z.string().min(1, { message: "Le nom est requis" }),
+        state: z.string().min(1, { message: "L'état est requis" }),
+        deadline: z.date().optional(),
       })
     )
     .length(5),
@@ -70,11 +80,11 @@ const formSchema = z.object({
   targetLine: z
     .array(
       z.object({
-        target: z.string().min(1),
-        csvFiles: z.string().min(1),
+        target: z.string().optional(),
+        csvFiles: z.string().optional(),
       })
     )
-    .min(1),
+    .optional(),
 
   report: z
     .object({
@@ -91,6 +101,15 @@ const formSchema = z.object({
         .optional(),
     })
     .optional(),
+
+  digitalAnalysis: z
+    .object({
+      url: z.string(),
+      publicId: z.string().optional(),
+      resourceType: z.string().optional(),
+      name: z.string(),
+    })
+    .optional(),
 });
 
 // ---------------- DEFAULT VALUES ----------------
@@ -100,6 +119,9 @@ const defaultValues = {
   title: "",
   subtitle: "",
   mediaTypes: [],
+  tvTypes: [],
+  radioTypes: [],
+  displayTypes: "",
   budgetTotal: 0,
   budgetMedia: [
     {
@@ -120,7 +142,7 @@ const defaultValues = {
   ].map((label) => ({
     label,
     state: "",
-    deadline: null,
+    deadline: undefined,
   })),
   targetLine: [{ target: "", csvFiles: "" }],
   report: {
@@ -128,6 +150,7 @@ const defaultValues = {
     document: "",
     kpi: [],
   },
+  digitalAnalysis: undefined,
 };
 
 export default function CampaignForm({
@@ -196,6 +219,9 @@ export default function CampaignForm({
       title: existingCampaign.title,
       subtitle: existingCampaign.subtitle,
       mediaTypes: existingCampaign.mediaTypes,
+      tvTypes: existingCampaign.tvTypes ?? [],
+      radioTypes: existingCampaign.radioTypes ?? [],
+      displayTypes: existingCampaign.displayTypes ?? "",
       budgetTotal: existingCampaign.totalBudget,
       budgetMedia: existingCampaign.budgetMedia.map((b) => ({
         type: b.type as MediaType,
@@ -211,7 +237,7 @@ export default function CampaignForm({
       status: existingCampaign.status.map((s) => ({
         label: s.label,
         state: s.state as any,
-        deadline: s.deadline ? new Date(s.deadline) : null,
+        deadline: s.deadline ? new Date(s.deadline) : undefined,
       })),
       report: existingCampaign.report
         ? {
@@ -220,6 +246,7 @@ export default function CampaignForm({
             kpi: existingCampaign.report.kpi ?? [],
           }
         : undefined,
+      digitalAnalysis: existingCampaign.digitalAnalysis,
     });
   }, [existingCampaign, form]);
 
@@ -288,6 +315,9 @@ export default function CampaignForm({
         title: values.title,
         subtitle: values.subtitle,
         mediaTypes: values.mediaTypes as MediaType[],
+        tvTypes: values.tvTypes,
+        radioTypes: values.radioTypes,
+        displayTypes: values.displayTypes,
         startDate,
         endDate,
         totalBudget: values.budgetTotal,
@@ -312,7 +342,47 @@ export default function CampaignForm({
         })),
 
         archived: false,
+        digitalAnalysis: values.digitalAnalysis
+          ? {
+              url: values.digitalAnalysis.url,
+              name: values.digitalAnalysis.name,
+              publicId: values.digitalAnalysis.publicId,
+              resourceType: values.digitalAnalysis.resourceType,
+            }
+          : undefined,
       });
+
+      // Move Digital Analysis if needed
+      if (
+        values.digitalAnalysis &&
+        values.digitalAnalysis.publicId &&
+        values.digitalAnalysis.resourceType
+      ) {
+        const originalPublicId = values.digitalAnalysis.publicId;
+        if (originalPublicId.includes("temp")) {
+          const newPublicId = `campaigns/${campaignId}/digital/${originalPublicId
+            .split("/")
+            .pop()}`;
+          const renamed = await moveMediaToCampaign({
+            publicId: originalPublicId,
+            newPublicId,
+            resourceType: values.digitalAnalysis.resourceType as
+              | "image"
+              | "video"
+              | "raw",
+          });
+
+          await updateCampaign({
+            campaignId,
+            patch: {
+              digitalAnalysis: {
+                url: renamed.secure_url,
+                name: values.digitalAnalysis.name,
+              },
+            },
+          });
+        }
+      }
 
       // Save medias
       await Promise.all(
@@ -428,6 +498,9 @@ export default function CampaignForm({
           title: values.title,
           subtitle: values.subtitle,
           mediaTypes: values.mediaTypes as MediaType[],
+          tvTypes: values.tvTypes,
+          radioTypes: values.radioTypes,
+          displayTypes: values.displayTypes,
           totalBudget: values.budgetTotal,
           budgetMedia: values.budgetMedia.map((b) => ({
             type: b.type as MediaType,
@@ -454,8 +527,48 @@ export default function CampaignForm({
               }
             : undefined,
           archived: values.report?.status === "archived",
+          digitalAnalysis: values.digitalAnalysis
+            ? {
+                url: values.digitalAnalysis.url,
+                name: values.digitalAnalysis.name,
+                publicId: values.digitalAnalysis.publicId,
+                resourceType: values.digitalAnalysis.resourceType,
+              }
+            : undefined,
         },
       });
+
+      // Digital Analysis Move (for Update case)
+      if (
+        values.digitalAnalysis &&
+        values.digitalAnalysis.publicId &&
+        values.digitalAnalysis.resourceType &&
+        values.digitalAnalysis.publicId.includes("temp")
+      ) {
+        const originalPublicId = values.digitalAnalysis.publicId;
+        const newPublicId = `campaigns/${campaignId}/digital/${originalPublicId
+          .split("/")
+          .pop()}`;
+
+        const renamed = await moveMediaToCampaign({
+          publicId: originalPublicId,
+          newPublicId,
+          resourceType: values.digitalAnalysis.resourceType as
+            | "image"
+            | "video"
+            | "raw",
+        });
+
+        await updateCampaign({
+          campaignId,
+          patch: {
+            digitalAnalysis: {
+              url: renamed.secure_url,
+              name: values.digitalAnalysis.name,
+            },
+          },
+        });
+      }
 
       // Save NEW medias
       const mediasToSave = formMedias.filter(
@@ -576,7 +689,10 @@ export default function CampaignForm({
           onSubmit={form.handleSubmit(campaignId ? onUpdate : onSubmit)}
           className="space-y-6"
         >
-          <SpaceOrganizations organizations={organizations} />
+          <SpaceOrganizations
+            organizations={organizations}
+            disabled={!!campaignId}
+          />
 
           <SpaceInfos />
 
@@ -585,6 +701,8 @@ export default function CampaignForm({
           <SpaceSteps />
 
           <SpaceTarget />
+
+          <SpaceDigital campaignId={campaignId} />
 
           <SpaceMedias formMedias={formMedias} setFormMedias={setFormMedias} />
 

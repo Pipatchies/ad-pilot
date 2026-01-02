@@ -5,7 +5,7 @@ import { v } from "convex/values";
 export const createCampaign = mutation({
   args: {
     title: v.string(),
-    subtitle: v.string(),
+    subtitle: v.optional(v.string()),
     mediaTypes: v.array(
       v.union(
         v.literal("ooh"),
@@ -16,6 +16,9 @@ export const createCampaign = mutation({
         v.literal("press")
       )
     ),
+    tvTypes: v.optional(v.array(v.string())),
+    radioTypes: v.optional(v.array(v.string())),
+    displayTypes: v.optional(v.string()),
     startDate: v.string(),
     endDate: v.string(),
     totalBudget: v.number(),
@@ -47,6 +50,14 @@ export const createCampaign = mutation({
           v.literal("upcoming")
         ),
         deadline: v.string(),
+      })
+    ),
+    digitalAnalysis: v.optional(
+      v.object({
+        url: v.string(),
+        publicId: v.optional(v.string()),
+        resourceType: v.optional(v.string()),
+        name: v.string(),
       })
     ),
     archived: v.boolean(),
@@ -95,6 +106,9 @@ export const updateCampaign = mutation({
           )
         )
       ),
+      tvTypes: v.optional(v.array(v.string())),
+      radioTypes: v.optional(v.array(v.string())),
+      displayTypes: v.optional(v.string()),
 
       startDate: v.optional(v.string()),
       endDate: v.optional(v.string()),
@@ -156,6 +170,14 @@ export const updateCampaign = mutation({
 
       archived: v.optional(v.boolean()),
       organizationId: v.optional(v.id("organizations")),
+      digitalAnalysis: v.optional(
+        v.object({
+          url: v.string(),
+          publicId: v.optional(v.string()),
+          resourceType: v.optional(v.string()),
+          name: v.string(),
+        })
+      ),
     }),
   },
 

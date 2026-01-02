@@ -55,7 +55,7 @@ export default defineSchema({
 
   campaigns: defineTable({
     title: v.string(),
-    subtitle: v.string(),
+    subtitle: v.optional(v.string()),
     mediaTypes: v.array(
       v.union(
         v.literal("ooh"),
@@ -66,6 +66,9 @@ export default defineSchema({
         v.literal("press")
       )
     ),
+    tvTypes: v.optional(v.array(v.string())),
+    radioTypes: v.optional(v.array(v.string())),
+    displayTypes: v.optional(v.string()),
     startDate: v.string(),
     endDate: v.string(),
     totalBudget: v.number(),
@@ -116,7 +119,14 @@ export default defineSchema({
         })
       )
     ),
-    digitalReportUrl: v.optional(v.string()),
+    digitalAnalysis: v.optional(
+      v.object({
+        url: v.string(),
+        name: v.string(),
+        publicId: v.optional(v.string()),
+        resourceType: v.optional(v.string()),
+      })
+    ),
     report: v.optional(
       v.object({
         status: v.optional(

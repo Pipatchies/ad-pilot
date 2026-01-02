@@ -6,7 +6,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../../convex/_generated/dataModel";
 
-const ctaProps = [
+const ctaData = [
   { text: "Voir la bibliothèque", url: "librairy", target: "self" },
   { text: "Voir tous les documents", url: "documents", target: "self" },
   { text: "Voir toutes les factures", url: "invoices", target: "self" },
@@ -65,8 +65,8 @@ export default function SpaceFiles() {
       <LatestFiles
         title="Les dernières ressources médias"
         cta={{
-          ...ctaProps[0],
-          url: `/campaign/${campaignId}/${ctaProps[0].url}`,
+          ...ctaData[0],
+          url: `/campaign/${campaignId}/${ctaData[0].url}`,
         }}
         data={mediaData}
         variant="media"
@@ -76,8 +76,8 @@ export default function SpaceFiles() {
       <LatestFiles
         title="Les derniers documents"
         cta={{
-          ...ctaProps[1],
-          url: `/campaign/${campaignId}/${ctaProps[1].url}`,
+          ...ctaData[1],
+          url: `/campaign/${campaignId}/${ctaData[1].url}`,
         }}
         data={docData}
         variant="default"
@@ -86,8 +86,8 @@ export default function SpaceFiles() {
       <LatestFiles
         title="Les dernières factures"
         cta={{
-          ...ctaProps[2],
-          url: `/campaign/${campaignId}/${ctaProps[2].url}`,
+          ...ctaData[2],
+          url: `/campaign/${campaignId}/${ctaData[2].url}`,
         }}
         data={invoiceData}
         variant="default"
