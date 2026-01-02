@@ -104,8 +104,8 @@ export default function MenuSidebar({ variant }: SidebarProps) {
   ];
 
   const userMenuItems: MenuItem[] = [
-    ...(campaigns
-      ?.filter((c) => !c.archived && new Date(c.endDate) >= new Date())
+    ...(campaigns ?? [])
+      .filter((c) => !c.archived && new Date(c.endDate) >= new Date())
       .map(
         (campaign) =>
           ({
@@ -128,11 +128,15 @@ export default function MenuSidebar({ variant }: SidebarProps) {
                 icon: <SvgImageSmall />,
                 url: `/campaign/${campaign._id}/librairy`,
               },
-              {
-                label: "Analyse digitale",
-                icon: <SvgStatistiques />,
-                url: `/campaign/${campaign._id}/digital`,
-              },
+              ...(campaign.digitalAnalysis
+                ? [
+                    {
+                      label: "Analyse digitale",
+                      icon: <SvgStatistiques />,
+                      url: `/campaign/${campaign._id}/digital`,
+                    },
+                  ]
+                : []),
               {
                 label: "Factures",
                 icon: <SvgFacture />,
@@ -145,7 +149,7 @@ export default function MenuSidebar({ variant }: SidebarProps) {
               },
             ],
           } as MenuItem)
-      ) ?? []),
+      ),
     ...userStaticItems,
   ];
 
