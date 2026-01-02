@@ -15,6 +15,7 @@ type Props = {
     startDate?: Date;
     age?: string;
     subject?: string;
+    url?: string;
   }[];
   variant: "media" | "default" | "campaign";
   className?: string;
@@ -53,6 +54,7 @@ export default function LatestFiles({
               <DetailsCard
                 variant={variant}
                 hideEditIcon={hideEditIcon}
+                url={item.url}
                 {...item}
               />
             </div>

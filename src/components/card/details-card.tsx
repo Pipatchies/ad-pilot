@@ -18,6 +18,8 @@ import SvgCrayon from "../icons/Crayon";
 import { Id } from "@/../convex/_generated/dataModel";
 import { MediaType } from "@/types/medias";
 
+import Link from "next/link";
+
 type DetailsCardProps = {
   title: string;
   description?: string;
@@ -33,6 +35,7 @@ type DetailsCardProps = {
   variant: "default" | "campaign" | "media" | "target" | "archived" | "invoice";
   media?: MediaThumbProps;
   hideEditIcon?: boolean;
+  url?: string;
 };
 
 export default function DetailsCard({
@@ -50,14 +53,17 @@ export default function DetailsCard({
   variant,
   media,
   hideEditIcon = false,
+  url,
 }: DetailsCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  return (
+  const CardContentWrapper = (
     <Card
       className={cn(
-        "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2 relative",
-        variant === "media" && ""
+        "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2 relative transition-all duration-200",
+        variant === "media" && "",
+        url &&
+          "cursor-pointer group transition border border-transparent hover:border-primary hover:bg-primary hover:text-white hover:scale-100 dark:hover:text-black"
       )}
     >
       {variant === "media" && media?._id && !hideEditIcon && (
@@ -214,6 +220,10 @@ export default function DetailsCard({
                   alt={icon.name}
                   width={icon.width}
                   height={icon.height}
+                  className={cn(
+                    url &&
+                      "transition-all group-hover:brightness-0 group-hover:invert"
+                  )}
                 />
               )
             );
@@ -235,4 +245,14 @@ export default function DetailsCard({
       )}
     </Card>
   );
+
+  if (url) {
+    return (
+      <Link href={url} className="block w-full h-full">
+        {CardContentWrapper}
+      </Link>
+    );
+  }
+
+  return CardContentWrapper;
 }

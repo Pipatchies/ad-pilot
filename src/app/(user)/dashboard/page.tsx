@@ -34,6 +34,7 @@ export default function Dashboard() {
         endDate: new Date(campaign.endDate),
         status: campaign.status?.[0]?.label || "Inconnue",
         mediaTypes: campaign.mediaTypes,
+        url: `/campaign/${campaign._id}/campaign-details`,
       }))
       .sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
       .slice(0, 3) ?? [];
@@ -45,7 +46,6 @@ export default function Dashboard() {
           description: "Type : " + doc.type.toUpperCase(),
           startDate: new Date(doc._creationTime),
           campaignTitle: doc.campaignTitle,
-          url: doc.url,
           type: doc.type,
         }))
         .slice(0, 3)
