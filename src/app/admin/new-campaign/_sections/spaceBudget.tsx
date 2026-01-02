@@ -50,7 +50,7 @@ export default function SpaceBudget() {
 
   const mediaTypesWatch = watch("mediaTypes");
 
-  const { fields: budgetFields} = useFieldArray({
+  const { fields: budgetFields } = useFieldArray({
     control,
     name: "budgetMedia",
   });
@@ -84,7 +84,7 @@ export default function SpaceBudget() {
               <FormControl>
                 <BudgetInput
                   placeholder="Budget en €"
-                  className="w-1/3 !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                  className="w-1/3 !text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
                   value={field.value}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
@@ -116,8 +116,14 @@ export default function SpaceBudget() {
                         value={field.value ?? ""}
                       >
                         <FormControl>
-                          <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                            <SelectValue placeholder="Type de média" />
+                          <SelectTrigger className="w-full text-base rounded-sm border border-[#A5A4BF] p-5 bg-white cursor-pointer hover:bg-white">
+                            <SelectValue
+                              placeholder={
+                                <span className="italic text-primary/50">
+                                  Type de média
+                                </span>
+                              }
+                            />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -143,7 +149,7 @@ export default function SpaceBudget() {
                       <FormControl>
                         <BudgetInput
                           placeholder="Budget en €"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                          className="w-full !text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
                           value={field.value}
                           onChange={field.onChange}
                           onBlur={field.onBlur}
@@ -164,7 +170,7 @@ export default function SpaceBudget() {
                       <FormControl>
                         <Input
                           placeholder="Part en € ou en %"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                          className="w-full !text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
                           {...field}
                         />
                       </FormControl>
@@ -192,7 +198,14 @@ export default function SpaceBudget() {
                                 : "border-[#A5A4BF]"
                             )}
                           >
-                            <span className="text-base italic">
+                            <span
+                              className={cn(
+                                "text-base",
+                                field.value?.from && field.value?.to
+                                  ? "text-primary"
+                                  : "text-primary/50 italic"
+                              )}
+                            >
                               {field.value?.from && field.value?.to
                                 ? `${format(field.value.from, "dd/MM/yyyy", {
                                     locale: fr,
@@ -238,7 +251,7 @@ export default function SpaceBudget() {
                       <FormControl>
                         <Input
                           placeholder="Titre"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                          className="w-full !text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
                           {...field}
                         />
                       </FormControl>
@@ -257,7 +270,7 @@ export default function SpaceBudget() {
                       <FormControl>
                         <Input
                           placeholder="Détail"
-                          className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                          className="w-full !text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
                           {...field}
                         />
                       </FormControl>

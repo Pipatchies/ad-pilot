@@ -1,6 +1,11 @@
 "use client";
 
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -29,14 +34,15 @@ export default function SpaceTarget() {
       <CardContent>
         {/* Header */}
         <div className="flex flex-wrap gap-4 mb-2">
-          <div className="flex-1 min-w-[170px] text-lg">Intitulé de la cible</div>
+          <div className="flex-1 min-w-[170px] text-lg">
+            Intitulé de la cible
+          </div>
           <div className="flex-1 min-w-[170px] text-lg">Fichier CSV</div>
         </div>
 
         {/* Lines */}
         {fields.map((row, index) => (
           <div key={row.id} className="flex flex-wrap gap-4 mb-4">
-
             {/* TARGET LABEL */}
             <FormField
               control={control}
@@ -47,8 +53,10 @@ export default function SpaceTarget() {
                     <Input
                       placeholder="Renseignez l'intitulé"
                       className={cn(
-                        "w-full rounded-sm border bg-white italic p-5",
-                        fieldState.error ? "border-destructive" : "border-[#A5A4BF]"
+                        "w-full rounded-sm border bg-white placeholder:italic placeholder:text-primary/50 p-5",
+                        fieldState.error
+                          ? "border-destructive"
+                          : "border-[#A5A4BF]"
                       )}
                       {...field}
                     />
@@ -69,8 +77,10 @@ export default function SpaceTarget() {
                       <Input
                         placeholder="Importer le fichier CSV"
                         className={cn(
-                          "rounded-sm border bg-white italic p-5 pr-12",
-                          fieldState.error ? "border-destructive" : "border-[#A5A4BF]"
+                          "rounded-sm border bg-white placeholder:italic placeholder:text-primary/50 p-5 pr-12",
+                          fieldState.error
+                            ? "border-destructive"
+                            : "border-[#A5A4BF]"
                         )}
                         {...field}
                       />
@@ -81,7 +91,6 @@ export default function SpaceTarget() {
                 </FormItem>
               )}
             />
-
           </div>
         ))}
 

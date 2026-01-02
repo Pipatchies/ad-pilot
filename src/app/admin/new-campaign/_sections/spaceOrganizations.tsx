@@ -1,9 +1,21 @@
 "use client";
 
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Typography from "@/components/typography";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { useFormContext } from "react-hook-form";
 
@@ -37,17 +49,28 @@ export default function ClientSection({ organizations }: Props) {
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger
-                    className={`w-1/3 text-base italic rounded-sm border p-5 bg-white ${
-                      fieldState.error ? "border-destructive" : "border-[#A5A4BF]"
+                    className={`w-1/3 text-base rounded-sm border p-5 bg-white cursor-pointer hover:bg-white ${
+                      fieldState.error
+                        ? "border-destructive"
+                        : "border-[#A5A4BF]"
                     }`}
                   >
-                    <SelectValue placeholder="Sélectionnez un client" />
+                    <SelectValue
+                      placeholder={
+                        <span className="italic text-primary/50">
+                          Sélectionnez un client
+                        </span>
+                      }
+                    />
                   </SelectTrigger>
                 </FormControl>
 
                 <SelectContent>
                   {organizations.map((org) => (
-                    <SelectItem key={org.organizationId} value={org.organizationId}>
+                    <SelectItem
+                      key={org.organizationId}
+                      value={org.organizationId}
+                    >
                       {org.organizationName}
                     </SelectItem>
                   ))}

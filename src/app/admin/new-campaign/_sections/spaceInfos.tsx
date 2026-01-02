@@ -85,7 +85,7 @@ export default function SpaceInfos() {
                 <FormControl>
                   <Input
                     placeholder="Renseignez le nom de la campagne"
-                    className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                    className="w-full !text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
                     {...field}
                   />
                 </FormControl>
@@ -104,7 +104,7 @@ export default function SpaceInfos() {
                 <FormControl>
                   <Input
                     placeholder="Renseignez le sous-titre"
-                    className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                    className="w-full !text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
                     {...field}
                   />
                 </FormControl>
@@ -130,9 +130,9 @@ export default function SpaceInfos() {
                           variant="ghost"
                           role="combobox"
                           className={cn(
-                            "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between bg-white",
+                            "w-full p-5 text-base border border-[#A5A4BF] rounded-sm justify-between bg-white cursor-pointer hover:bg-white hover:text-primary/50",
                             !field.value?.length
-                              ? "text-primary/50"
+                              ? "text-primary/50 italic"
                               : "text-primary"
                           )}
                         >
@@ -213,7 +213,7 @@ export default function SpaceInfos() {
                             variant="ghost"
                             role="combobox"
                             className={cn(
-                              "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between bg-white",
+                              "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between bg-white cursor-pointer hover:bg-white hover:text-primary/50",
                               !field.value?.length
                                 ? "text-primary/50"
                                 : "text-primary"
@@ -307,9 +307,9 @@ export default function SpaceInfos() {
                             variant="ghost"
                             role="combobox"
                             className={cn(
-                              "w-full p-5 text-base italic border border-[#A5A4BF] rounded-sm justify-between bg-white",
+                              "w-full p-5 text-base border border-[#A5A4BF] rounded-sm justify-between bg-white cursor-pointer hover:bg-white hover:text-primary/50",
                               !field.value?.length
-                                ? "text-primary/50"
+                                ? "text-primary/50 italic"
                                 : "text-primary"
                             )}
                           >
@@ -400,8 +400,14 @@ export default function SpaceInfos() {
                       value={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
-                          <SelectValue placeholder="Type d'affichage" />
+                        <SelectTrigger className="w-full text-base rounded-sm border border-[#A5A4BF] p-5 bg-white cursor-pointer hover:bg-white">
+                          <SelectValue
+                            placeholder={
+                              <span className="text-primary/50 italic">
+                                Type d'affichage
+                              </span>
+                            }
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
