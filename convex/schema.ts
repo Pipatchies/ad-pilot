@@ -55,7 +55,7 @@ export default defineSchema({
 
   campaigns: defineTable({
     title: v.string(),
-    subtitle: v.string(),
+    subtitle: v.optional(v.string()),
     mediaTypes: v.array(
       v.union(
         v.literal("ooh"),

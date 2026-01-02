@@ -28,9 +28,10 @@ interface Props {
     createdAt: number;
     lastConnectionTime: number;
   }[];
+  disabled?: boolean;
 }
 
-export default function ClientSection({ organizations }: Props) {
+export default function ClientSection({ organizations, disabled }: Props) {
   const { control } = useFormContext();
 
   return (
@@ -46,7 +47,11 @@ export default function ClientSection({ organizations }: Props) {
           render={({ field, fieldState }) => (
             <FormItem>
               <FormLabel className="text-lg">Le client</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                disabled={disabled}
+              >
                 <FormControl>
                   <SelectTrigger
                     className={`w-1/3 text-base rounded-sm border p-5 bg-white cursor-pointer hover:bg-white ${

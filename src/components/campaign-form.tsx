@@ -34,19 +34,25 @@ import SpaceCampaignReport from "@/app/admin/new-campaign/_sections/spaceCampaig
 // ---------------- SCHEMA ----------------
 
 const formSchema = z.object({
-  organization: z.string().min(1),
-  title: z.string().min(1),
-  subtitle: z.string().min(1),
-  mediaTypes: z.array(z.string()).min(1),
+  organization: z.string().min(1, { message: "Le client est requis" }),
+  title: z.string().min(1, { message: "Le titre est requis" }),
+  subtitle: z.string().optional(),
+  mediaTypes: z
+    .array(z.string())
+    .min(1, { message: "Au moins un média est requis" }),
   tvTypes: z.array(z.string()).optional(),
   radioTypes: z.array(z.string()).optional(),
   displayTypes: z.string().optional(),
-  budgetTotal: z.number().nonnegative(),
+  budgetTotal: z
+    .number()
+    .nonnegative({ message: "Le budget doit être positif" }),
 
   budgetMedia: z.array(
     z.object({
-      type: z.string().min(1),
-      amount: z.number().nonnegative(),
+      type: z.string().min(1, { message: "Le type est requis" }),
+      amount: z
+        .number()
+        .nonnegative({ message: "Le montant doit être positif" }),
       pourcent: z.number().or(z.string()),
       period: z
         .object({
@@ -56,17 +62,17 @@ const formSchema = z.object({
         .refine((p) => p.from && p.to, {
           message: "La période est requise",
         }),
-      title: z.string().min(1),
-      details: z.string().min(1),
+      title: z.string().optional(),
+      details: z.string().optional(),
     })
   ),
 
   status: z
     .array(
       z.object({
-        label: z.string().min(1),
-        state: z.string().min(1),
-        deadline: z.date().nullable(),
+        label: z.string().min(1, { message: "Le nom est requis" }),
+        state: z.string().min(1, { message: "L'état est requis" }),
+        deadline: z.date().optional(),
       })
     )
     .length(5),
@@ -74,11 +80,11 @@ const formSchema = z.object({
   targetLine: z
     .array(
       z.object({
-        target: z.string().min(1),
-        csvFiles: z.string().min(1),
+        target: z.string().optional(),
+        csvFiles: z.string().optional(),
       })
     )
-    .min(1),
+    .optional(),
 
   report: z
     .object({
@@ -136,7 +142,7 @@ const defaultValues = {
   ].map((label) => ({
     label,
     state: "",
-    deadline: null,
+    deadline: undefined,
   })),
   targetLine: [{ target: "", csvFiles: "" }],
   report: {
@@ -231,7 +237,7 @@ export default function CampaignForm({
       status: existingCampaign.status.map((s) => ({
         label: s.label,
         state: s.state as any,
-        deadline: s.deadline ? new Date(s.deadline) : null,
+        deadline: s.deadline ? new Date(s.deadline) : undefined,
       })),
       report: existingCampaign.report
         ? {
@@ -683,7 +689,10 @@ export default function CampaignForm({
           onSubmit={form.handleSubmit(campaignId ? onUpdate : onSubmit)}
           className="space-y-6"
         >
-          <SpaceOrganizations organizations={organizations} />
+          <SpaceOrganizations
+            organizations={organizations}
+            disabled={!!campaignId}
+          />
 
           <SpaceInfos />
 

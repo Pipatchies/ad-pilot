@@ -56,7 +56,7 @@ export default function SpaceSteps() {
         </div>
 
         {Array.from({ length: 5 }).map((_, index) => (
-          <div key={index} className="flex flex-wrap gap-4 mb-4">
+          <div key={index} className="flex flex-wrap gap-4 mb-4 items-start">
             {/* LABEL */}
             <FormField
               control={control}

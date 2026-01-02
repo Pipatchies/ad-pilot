@@ -5,7 +5,7 @@ import { v } from "convex/values";
 export const createCampaign = mutation({
   args: {
     title: v.string(),
-    subtitle: v.string(),
+    subtitle: v.optional(v.string()),
     mediaTypes: v.array(
       v.union(
         v.literal("ooh"),
