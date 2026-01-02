@@ -5,28 +5,25 @@ import LatestFiles from "@/components/latest-files";
 import CampaignGantt from "@/components/dashboard/CampaignGantt";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
-import { useParams } from "next/navigation";
-
-const organizationId: Id<"organizations"> =
-  "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" as Id<"organizations">;
-
 export default function Dashboard() {
-  const params = useParams();
-  const campaignId = params?.id as Id<"campaigns">;
+  const user = useQuery(api.queries.users.me);
+  const organizationId = user?.organizationId;
 
-  const campaigns = useQuery(api.queries.campaigns.getCampaignsByOrganization, {
-    organizationId,
-  });
+  const campaigns = useQuery(
+    api.queries.campaigns.getCampaignsByOrganization,
+    organizationId ? { organizationId } : "skip"
+  );
 
   const documents =
-    useQuery(api.queries.documents.getDocumentsByOrganization, {
-      organizationId,
-    }) || [];
+    useQuery(
+      api.queries.documents.getDocumentsByOrganization,
+      organizationId ? { organizationId } : "skip"
+    ) || [];
 
-  const invoices = useQuery(api.queries.invoices.getInvoicesByOrganization, {
-    organizationId,
-  });
+  const invoices = useQuery(
+    api.queries.invoices.getInvoicesByOrganization,
+    organizationId ? { organizationId } : "skip"
+  );
 
   const campaignData =
     campaigns
@@ -105,9 +102,8 @@ export default function Dashboard() {
         title="Les derniers documents"
         cta={{
           ...ctaData[0],
-          url: `/campaign/${campaignId}/${ctaData[0].url}`,
+          url: `/${ctaData[0].url}`,
         }}
-
         data={documentsData}
         variant="default"
       />
@@ -115,8 +111,8 @@ export default function Dashboard() {
         title="Les dernières factures"
         cta={{
           ...ctaData[1],
-          url: `/campaign/${campaignId}/${ctaData[1].url}`,
-        }} 
+          url: `/${ctaData[1].url}`,
+        }}
         data={invoicesData.slice(0, 3)}
         variant="default"
         className="mb-10"

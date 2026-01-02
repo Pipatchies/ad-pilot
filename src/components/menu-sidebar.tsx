@@ -34,9 +34,6 @@ import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import SvgConfiguration from "./icons/Configuration";
 
-const organizationId: Id<"organizations"> =
-  "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" as Id<"organizations">;
-
 type UserRole = "admin" | "user";
 
 interface MenuItem {
@@ -57,9 +54,13 @@ interface SidebarProps {
 }
 
 export default function MenuSidebar({ variant }: SidebarProps) {
-  const campaigns = useQuery(api.queries.campaigns.getCampaignsByOrganization, {
-    organizationId,
-  });
+  const user = useQuery(api.queries.users.me);
+  const organizationId = user?.organizationId;
+
+  const campaigns = useQuery(
+    api.queries.campaigns.getCampaignsByOrganization,
+    organizationId ? { organizationId } : "skip"
+  );
 
   const adminMenuItemsTop: MenuItem[] = [
     {

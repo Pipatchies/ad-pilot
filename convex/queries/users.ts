@@ -110,6 +110,7 @@ export const me = query({
       ...user,
       role: role?.name ?? "unknown",
       sessionId,
+      organizationId: user.organizationId,
     };
   },
 });

@@ -103,7 +103,7 @@ useEffect(() => {
             height={200}
             priority
           />
-          <h1 className="text-2xl font-bold">Bienvenue, {user.role} ! 🎉</h1>
+          <h1 className="text-2xl font-bold">Bienvenue, {user.name} ! 🎉</h1>
           <p className="text-gray-500">
             Vous êtes connecté.
           </p>
