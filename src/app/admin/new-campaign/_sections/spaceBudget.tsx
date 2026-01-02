@@ -42,16 +42,28 @@ const mediaTypes = [
 ];
 
 import BudgetInput from "@/components/budget-input";
+import { TriangleAlert } from "lucide-react";
+import SvgPlus from "@/components/icons/Plus";
 
 export default function SpaceBudget() {
   const { control, watch } = useFormContext();
 
   const mediaTypesWatch = watch("mediaTypes");
 
-  const { fields: budgetFields } = useFieldArray({
+  const { fields: budgetFields} = useFieldArray({
     control,
     name: "budgetMedia",
   });
+
+  const budgetTotal = watch("budgetTotal");
+  const budgetMedia = watch("budgetMedia");
+
+  const totalMedia = budgetMedia?.reduce(
+    (acc: number, curr: any) => acc + (Number(curr.amount) || 0),
+    0
+  );
+
+  const isTotalMismatch = budgetTotal > 0 && totalMedia !== budgetTotal;
 
   return (
     <Card className="w-full rounded-sm bg-card/20 text-primary px-5 py-10 shadow-none border-none">
@@ -256,6 +268,15 @@ export default function SpaceBudget() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="flex items-center justify-between">
+          {isTotalMismatch && (
+            <div className="text-destructive flex items-center gap-2 italic">
+              <TriangleAlert size={16} />
+              <span>Le montant total ne correspond pas au budget total</span>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
