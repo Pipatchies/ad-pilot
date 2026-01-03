@@ -1,6 +1,5 @@
 import CtaButton from "@/components/cta-button";
 import Typography from "@/components/typography";
-import React from "react";
 import CampaignForm from "../../../components/campaign-form";
 
 const ctaProps = {
