@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "convex/queries/invoices.ts",
-    "src/app/ConvexClientProvider.tsx",
+    "src/app/providers/ConvexClientProvider.tsx",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
