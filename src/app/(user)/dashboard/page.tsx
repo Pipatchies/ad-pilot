@@ -2,7 +2,7 @@
 import Typography from "@/components/typography";
 import React from "react";
 import LatestFiles from "@/components/latest-files";
-import CampaignGantt from "@/components/dashboard/CampaignGantt";
+import CampaignGantt from "@/app/(user)/dashboard/components/CampaignGantt";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 export default function Dashboard() {
