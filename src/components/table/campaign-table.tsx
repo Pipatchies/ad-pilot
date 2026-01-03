@@ -29,9 +29,10 @@ export default function CampaignTable({
   hideClientColumn = false,
   hideStepColumn = false,
 }: CampaignTableProps) {
-
   const deleteCampaign = useMutation(api.mutations.campaigns.deleteCampaign);
-  const duplicateCampaign = useMutation(api.mutations.campaigns.duplicateCampaign);
+  const duplicateCampaign = useMutation(
+    api.mutations.campaigns.duplicateCampaign
+  );
 
   async function handleDuplicate(campaignId: Id<"campaigns">) {
     try {
@@ -42,7 +43,6 @@ export default function CampaignTable({
     }
   }
 
-  
   const columns: ColumnDef<Campaign>[] = [
     {
       accessorKey: "title",
@@ -71,8 +71,12 @@ export default function CampaignTable({
             accessorKey: "status",
             header: sortableHeader("Étape"),
             cell: ({ row }) => {
-              const s = row.original.status.at(-1);
-              return s ? s.label : "—";
+              const current = row.original.status.find(
+                (s) => s.state === "current"
+              );
+              if (current) return current.label;
+              const last = row.original.status.at(-1);
+              return last ? last.label : "—";
             },
           } as ColumnDef<Campaign>,
         ]
