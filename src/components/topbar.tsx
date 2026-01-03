@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { useAuthActions } from "@convex-dev/auth/react";
+import { useUser } from "../app/providers/user-provider";
 
 const CtaData = {
   client: {
@@ -37,7 +38,7 @@ const CtaData = {
 export default function Topbar() {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const me = useQuery(api.queries.users.me);
+  const { user: me } = useUser();
   const { signOut } = useAuthActions();
 
   const role = me?.role === "admin" ? "admin" : "client";

@@ -144,13 +144,7 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                   <div className="relative">
                     <Input
                       readOnly
-                      value={
-                        field.value
-                          ? typeof field.value === "string"
-                            ? field.value
-                            : field.value.name
-                          : ""
-                      }
+                      value={file ? file.name : ""}
                       placeholder="Importer le fichier PDF"
                       className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white cursor-pointer hover:bg-white"
                       onClick={() =>
@@ -201,48 +195,28 @@ export default function SpaceReport({ campaignId }: { campaignId?: string }) {
                 name={`report.kpi.${index}.icon`}
                 render={({ field }) => (
                   <FormItem className="flex-1 min-w-[170px]">
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          readOnly
-                          value={
-                            field.value
-                              ? typeof field.value === "string"
-                                ? field.value
-                                : field.value.name
-                              : ""
-                          }
-                          placeholder="Icône"
-                          className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 bg-white cursor-pointer hover:bg-white"
-                          onClick={() =>
-                            document
-                              .getElementById(`hiddenLogoInput-${index}`)
-                              ?.click()
-                          }
-                        />
-                        <SvgUploder
-                          className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                          onClick={() =>
-                            document
-                              .getElementById(`hiddenLogoInput-${index}`)
-                              ?.click()
-                          }
-                        />
-                        <input
-                          id={`hiddenLogoInput-${index}`}
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => {
-                            const f = e.target.files?.[0] ?? null;
-                            if (f) {
-                              setFile(f); // Note: setFile overrides the main file state but it's local only for potential display? logic. Actually handleUpload uses passed file arg.
-                              handleUpload(f, field.onChange);
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || ""}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full text-base rounded-sm border border-[#A5A4BF] p-5 bg-white cursor-pointer hover:bg-white text-primary">
+                          <SelectValue
+                            placeholder={
+                              <span className="text-primary/50 italic">
+                                Choisir l'icône
+                              </span>
                             }
-                          }}
-                        />
-                      </div>
-                    </FormControl>
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="text-base border border-[#A5A4BF]">
+                        <SelectItem value="cible">Cible</SelectItem>
+                        <SelectItem value="television">Télévision</SelectItem>
+                        <SelectItem value="megaphone">Mégaphone</SelectItem>
+                        <SelectItem value="users">Utilisateurs</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

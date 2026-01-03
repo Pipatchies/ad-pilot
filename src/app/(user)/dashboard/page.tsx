@@ -2,11 +2,12 @@
 import Typography from "@/components/typography";
 import React from "react";
 import LatestFiles from "@/components/latest-files";
-import CampaignGantt from "@/components/dashboard/CampaignGantt";
+import CampaignGantt from "@/app/(user)/dashboard/components/CampaignGantt";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { useUser } from "@/app/providers/user-provider";
 export default function Dashboard() {
-  const user = useQuery(api.queries.users.me);
+  const { user } = useUser();
   const organizationId = user?.organizationId;
 
   const campaigns = useQuery(

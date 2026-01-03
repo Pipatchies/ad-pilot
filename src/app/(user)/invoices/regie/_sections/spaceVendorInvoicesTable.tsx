@@ -3,9 +3,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
 import InvoicesTable from "@/components/table/invoices-table";
 import { Id } from "../../../../../../convex/_generated/dataModel";
-
-const organizationId: Id<"organizations"> =
-  "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" as Id<"organizations">;
+import { useUser } from "@/app/providers/user-provider";
 
 type VendorInvoicesTableProps = {
   globalFilter: string;
@@ -16,23 +14,18 @@ export default function SpaceVendorInvoicesTable({
   globalFilter,
   dateSort,
 }: VendorInvoicesTableProps) {
+  const { user } = useUser();
+  const organizationId = user?.organizationId as Id<"organizations">;
+
   const invoices = useQuery(
     api.queries.invoices.getVendorInvoicesByOrganization,
-    {
-      organizationId,
-    }
+    organizationId ? { organizationId } : "skip"
   );
 
   const invoicesData =
     invoices?.map((invoice) => ({
-      title: invoice.title,
-      agencyInvoice: invoice.agencyInvoice,
-      vendorName: invoice.vendorName,
+      ...invoice,
       campaign: invoice.campaignTitle,
-      htprice: invoice.htprice,
-      ttcprice: invoice.ttcprice,
-      startDate: invoice.startDate,
-      dueDate: invoice.dueDate,
     })) ?? [];
 
   return (
@@ -44,6 +37,7 @@ export default function SpaceVendorInvoicesTable({
           showCampaign={true}
           globalFilter={globalFilter}
           dateSort={dateSort}
+          readOnly={true}
         />
       </div>
     </section>

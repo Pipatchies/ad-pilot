@@ -241,11 +241,23 @@ export default function MediaModal({ onAddMedia }: MediaModalProps) {
                   className="hidden"
                   onChange={(e) => {
                     const f = e.target.files?.[0] ?? null;
+                    const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+                    if (f && f.size > MAX_FILE_SIZE) {
+                      toast.error("Le fichier est trop volumineux", {
+                        description: "Le poids maximum autorisé est de 500 Mo.",
+                      });
+                      e.target.value = ""; 
+                      setFile(null);
+                      return;
+                    }
                     setFile(f);
                   }}
                 />
               </div>
             </FormControl>
+            <p className="text-sm text-destructive italic">
+              Poids max. 500 Mo
+            </p>
             <FormMessage />
           </FormItem>
         </form>
