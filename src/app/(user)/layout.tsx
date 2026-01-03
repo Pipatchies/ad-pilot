@@ -5,7 +5,7 @@ import Topbar from "@/components/topbar";
 import { usePathname } from "next/navigation";
 import BackButton from "@/components/back-button";
 import { Authenticated } from "convex/react";
-import { UserProvider } from "@/components/providers/user-provider";
+import { UserProvider } from "@/app/providers/user-provider";
 
 export default function ClientLayout({
   children,

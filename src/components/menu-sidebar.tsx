@@ -33,6 +33,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import SvgConfiguration from "./icons/Configuration";
+import { useUser } from "../app/providers/user-provider";
 
 type UserRole = "admin" | "user";
 
@@ -54,7 +55,7 @@ interface SidebarProps {
 }
 
 export default function MenuSidebar({ variant }: SidebarProps) {
-  const user = useQuery(api.queries.users.me);
+  const { user } = useUser();
   const organizationId = user?.organizationId;
 
   const campaigns = useQuery(

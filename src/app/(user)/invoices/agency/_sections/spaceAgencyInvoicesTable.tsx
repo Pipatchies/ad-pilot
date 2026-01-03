@@ -1,10 +1,9 @@
-"use client"
+"use client";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
 import { Id } from "../../../../../../convex/_generated/dataModel";
 import InvoicesTable from "@/components/table/invoices-table";
-
-const organizationId: Id<"organizations"> = "kx7ee0k4v7v16x8b28adt9dr7n7kefs4" as Id<"organizations">;
+import { useUser } from "@/app/providers/user-provider";
 
 type AgencyInvoicesTableProps = {
   globalFilter: string;
@@ -12,35 +11,35 @@ type AgencyInvoicesTableProps = {
 };
 
 export default function SpaceAgencyInvoicesTable({
-    globalFilter,
-    dateSort
-}: AgencyInvoicesTableProps
-) {
+  globalFilter,
+  dateSort,
+}: AgencyInvoicesTableProps) {
+  const { user } = useUser();
+  const organizationId = user?.organizationId as Id<"organizations">;
 
-  const invoices = useQuery(api.queries.invoices.getAgencyInvoicesByOrganization, {
-  organizationId,
-});
+  const invoices = useQuery(
+    api.queries.invoices.getAgencyInvoicesByOrganization,
+    organizationId ? { organizationId } : "skip"
+  );
 
-const invoicesData = invoices?.map((invoice) => ({
-  title: invoice.title,
-  campaign: invoice.campaignTitle,
-  htprice: invoice.htprice,
-  ttcprice: invoice.ttcprice,
-  startDate: invoice.startDate,
-  dueDate: invoice.dueDate,
-})) ?? [];
-
+  const invoicesData =
+    invoices?.map((invoice) => ({
+      ...invoice,
+      campaign: invoice.campaignTitle,
+    })) ?? [];
 
   return (
-    <section><div className="overflow-x-auto">
-            <InvoicesTable 
-            invoices={invoicesData}
-            variant="agency"
-            showCampaign={true}
-            globalFilter={globalFilter}
-            dateSort={dateSort}
-            />
-          </div>
-          </section>
-  )
+    <section>
+      <div className="overflow-x-auto">
+        <InvoicesTable
+          invoices={invoicesData}
+          variant="agency"
+          showCampaign={true}
+          globalFilter={globalFilter}
+          dateSort={dateSort}
+          readOnly={true}
+        />
+      </div>
+    </section>
+  );
 }
