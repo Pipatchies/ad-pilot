@@ -26,20 +26,20 @@ export default function SearchBar({
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [sortLabel, setSortLabel] = useState(
-    defaultDateSort === "desc" ? "Du plus récent au plus ancien" : "Du plus ancien au plus récent"
+    defaultDateSort === "desc"
+      ? "Du plus récent au plus ancien"
+      : "Du plus ancien au plus récent"
   );
 
   useEffect(() => {
     onQueryChange(query);
   }, [query, onQueryChange]);
 
-
   const pickSort = (label: string, dir: "desc" | "asc") => {
     setSortLabel(label);
     onDateSortChange?.(dir);
     setIsOpen(false);
   };
-
 
   return (
     <div className="flex flex-col md:flex-row items-center gap-6 py-2 w-full max-w-2xl">
@@ -55,28 +55,30 @@ export default function SearchBar({
       </div>
 
       {variant === "full" && (
-        <div className="w-full md:w-72">
+        <div className="w-full md:w-72 relative">
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full justify-between border-primary"
+                className="w-full justify-between border-primary cursor-pointer"
               >
                 <span>{sortLabel}</span>
                 <ChevronDown className="h-4 w-4 color-primary transition-transform group-data-[state=open]/collapsible:rotate-180" />
               </Button>
             </CollapsibleTrigger>
-            <CollapsibleContent className="mt-1 border border-primary rounded-md overflow-hidden">
+            <CollapsibleContent className="absolute z-10 w-full bg-white mt-1 border border-primary rounded-md overflow-hidden shadow-lg">
               <Button
                 variant="ghost"
-                className="w-full justify-start rounded-none"
-                onClick={() => pickSort("Du plus récent au plus ancien", "desc")}
+                className="w-full justify-start rounded-none cursor-pointer"
+                onClick={() =>
+                  pickSort("Du plus récent au plus ancien", "desc")
+                }
               >
                 Du plus récent au plus ancien
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start rounded-none"
+                className="w-full justify-start rounded-none cursor-pointer"
                 onClick={() => pickSort("Du plus ancien au plus récent", "asc")}
               >
                 Du plus ancien au plus récent
