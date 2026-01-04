@@ -39,6 +39,12 @@ type DetailsCardProps = {
   hideEditIcon?: boolean;
   hideDeleteIcon?: boolean;
   url?: string;
+  fileData?: {
+    url: string;
+    type: string;
+    publicId: string;
+    title: string;
+  };
 };
 
 export default function DetailsCard({
@@ -58,16 +64,26 @@ export default function DetailsCard({
   hideEditIcon = false,
   hideDeleteIcon = false,
   url,
+  fileData,
 }: DetailsCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const deleteMedia = useMutation(api.mutations.medias.deleteMedia);
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (fileData) {
+      e.stopPropagation();
+      e.preventDefault();
+      setIsModalOpen(true);
+    }
+  };
+
   const CardContentWrapper = (
     <Card
+      onClick={fileData ? handleCardClick : undefined}
       className={cn(
         "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2 relative transition-all duration-200",
         variant === "media" && "",
-        url &&
+        (url || fileData) &&
           "cursor-pointer group transition border border-transparent hover:border-primary hover:bg-primary hover:text-white hover:scale-100 dark:hover:text-black"
       )}
     >
@@ -98,7 +114,12 @@ export default function DetailsCard({
         {variant === "media" && (
           <>
             <div
-              onClick={() => media?.url && setIsModalOpen(true)}
+              onClick={(e) => {
+                if (media?.url) {
+                  e.stopPropagation();
+                  setIsModalOpen(true);
+                }
+              }}
               className={cn(
                 "flex items-start gap-4 mb-2",
                 media?.url &&
@@ -244,7 +265,7 @@ export default function DetailsCard({
           })}
         </CardFooter>
       )}
-      {isModalOpen && media?.url && (
+      {isModalOpen && media?.url && variant === "media" && (
         <MediaViewerModal
           isOpen={isModalOpen}
           mediaItem={{
@@ -252,6 +273,20 @@ export default function DetailsCard({
             url: media.url,
             type: media.type || "pdf",
             publicId: media.publicId,
+            resourceType: "raw",
+          }}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
+
+      {isModalOpen && fileData && (
+        <MediaViewerModal
+          isOpen={isModalOpen}
+          mediaItem={{
+            title: fileData.title,
+            url: fileData.url,
+            type: (fileData.type as any) || "pdf",
+            publicId: fileData.publicId,
             resourceType: "raw",
           }}
           onClose={() => setIsModalOpen(false)}

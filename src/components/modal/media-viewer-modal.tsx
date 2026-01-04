@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useCallback, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import SvgUploder from "@/components/icons/Uploder";
 import { CldImage } from "next-cloudinary";
 
@@ -40,23 +41,33 @@ export default function MediaViewerModal({
     [isOpen, onClose, hasNext, onNext, hasPrev, onPrev]
   );
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      setMounted(false);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [handleKeyDown]);
 
   if (!isOpen || !mediaItem || !mediaItem.url) return null;
+  if (!mounted) return null;
 
   const downloadUrl = mediaItem.url.includes("/upload/")
-      ? mediaItem.url.replace("/upload/", "/upload/fl_attachment/")
-      : mediaItem.url;
+    ? mediaItem.url.replace("/upload/", "/upload/fl_attachment/")
+    : mediaItem.url;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
       {/* Close Button */}
       <button
-        onClick={onClose}
-        className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2 z-[101]"
       >
         <X className="w-8 h-8 md:w-10 md:h-10 text-white cursor-pointer" />
       </button>
@@ -64,15 +75,21 @@ export default function MediaViewerModal({
       {/* Navigation Left */}
       {hasPrev && onPrev && (
         <button
-          onClick={onPrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-2"
+          onClick={(e) => {
+            e.stopPropagation();
+            onPrev();
+          }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 p-2 z-[101]"
         >
           <SvgTallDown className="rotate-90 size-10 fill-white cursor-pointer" />
         </button>
       )}
 
       {/* Main Content */}
-      <div className="relative flex flex-col items-center justify-center w-fit h-auto max-w-[95vw] max-h-[95vh] bg-black overflow-hidden shadow-2xl">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative flex flex-col items-center justify-center w-fit h-auto max-w-[95vw] max-h-[95vh] bg-black overflow-hidden shadow-2xl"
+      >
         <div className="relative w-auto h-auto flex items-center justify-center">
           {renderContent(mediaItem)}
         </div>
@@ -87,6 +104,7 @@ export default function MediaViewerModal({
             download
             className="text-white/80 hover:text-white transition-colors p-2"
             title="Télécharger"
+            onClick={(e) => e.stopPropagation()}
           >
             <SvgUploder className="w-6 h-6 text-white cursor-pointer" />
           </a>
@@ -96,13 +114,17 @@ export default function MediaViewerModal({
       {/* Navigation Right */}
       {hasNext && onNext && (
         <button
-          onClick={onNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-2"
+          onClick={(e) => {
+            e.stopPropagation();
+            onNext();
+          }}
+          className="absolute right-4 top-1/2 -translate-y-1/2 p-2 z-[101]"
         >
           <SvgTallDown className="rotate-270 size-10 fill-white cursor-pointer" />
         </button>
       )}
-    </div>
+    </div>,
+    document.body
   );
 }
 

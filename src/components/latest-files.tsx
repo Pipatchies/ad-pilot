@@ -16,6 +16,12 @@ type Props = {
     age?: string;
     subject?: string;
     url?: string;
+    fileData?: {
+      url: string;
+      type: string;
+      publicId: string;
+      title: string;
+    };
   }[];
   variant: "media" | "default" | "campaign";
   className?: string;
@@ -55,6 +61,7 @@ export default function LatestFiles({
                 variant={variant}
                 hideEditIcon={hideEditIcon}
                 url={item.url}
+                fileData={item.fileData}
                 {...item}
               />
             </div>

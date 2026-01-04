@@ -49,6 +49,12 @@ export default function Dashboard() {
           startDate: new Date(doc._creationTime),
           campaignTitle: doc.campaignTitle,
           type: doc.type,
+          fileData: {
+            url: doc.url,
+            type: doc.type,
+            publicId: doc.publicId,
+            title: doc.title,
+          },
         }))
         .slice(0, 3)
     : [];
@@ -65,6 +71,12 @@ export default function Dashboard() {
             : invoice.invoiceType,
         startDate: new Date(invoice.startDate),
         campaignTitle: invoice.campaignTitle,
+        fileData: {
+          url: invoice.url,
+          type: "pdf",
+          publicId: invoice.publicId,
+          title: invoice.title,
+        },
       }))
       .sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
       .slice(0, 3) ?? [];
