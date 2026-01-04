@@ -8,7 +8,8 @@ export const createInvoice = mutation({
     title: v.string(),
     invoiceType: v.union(v.literal("agency"), v.literal("vendor")),
     agencyInvoice: v.optional(v.string()),
-    vendorName: v.optional(v.string()),
+    vendorName: v.optional(v.string()), // Deprecated
+    vendorId: v.optional(v.id("vendors")),
     htprice: v.number(),
     ttcprice: v.number(),
     startDate: v.string(),
@@ -40,7 +41,8 @@ export const updateInvoice = mutation({
         v.union(v.literal("agency"), v.literal("vendor"))
       ),
       agencyInvoice: v.optional(v.string()),
-      vendorName: v.optional(v.string()),
+      vendorName: v.optional(v.string()), // Deprecated
+      vendorId: v.optional(v.id("vendors")),
       url: v.optional(v.string()),
       publicId: v.optional(v.string()),
       resourceType: v.optional(v.literal("raw")),

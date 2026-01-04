@@ -208,7 +208,8 @@ export default defineSchema({
     title: v.string(),
     invoiceType: v.union(v.literal("agency"), v.literal("vendor")),
     agencyInvoice: v.optional(v.string()),
-    vendorName: v.optional(v.string()),
+    vendorName: v.optional(v.string()), // Deprecated, use vendorId where possible
+    vendorId: v.optional(v.id("vendors")),
     htprice: v.number(),
     ttcprice: v.number(),
     startDate: v.string(),
@@ -225,7 +226,10 @@ export default defineSchema({
 
   vendors: defineTable({
     name: v.string(),
-    userId: v.id("users"),
+    contactName: v.optional(v.string()),
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    userId: v.optional(v.id("users")),
   }),
 
   targets: defineTable({
