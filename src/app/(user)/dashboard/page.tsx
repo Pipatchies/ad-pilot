@@ -113,10 +113,10 @@ export default function Dashboard() {
       />
       <LatestFiles
         title="Les derniers documents"
-        cta={{
-          ...ctaData[0],
-          url: `/${ctaData[0].url}`,
-        }}
+        // cta={{
+        //   ...ctaData[0],
+        //   url: `/${ctaData[0].url}`,
+        // }}
         data={documentsData}
         variant="default"
       />
