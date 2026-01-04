@@ -28,9 +28,6 @@ export default function AdminDashboard() {
         .filter((icon): icon is NonNullable<typeof icon> => icon !== null) ||
       [];
 
-    // Determine status label based on next upcoming step or general state
-    // If there's a current step, use that. Otherwise 'Brief' or similar.
-    // For now, let's look for a "current" step or default to the first one.
     const currentStep =
       campaign.status?.find((s) => s.state === "current")?.label ||
       campaign.status?.[0]?.label ||
@@ -38,11 +35,12 @@ export default function AdminDashboard() {
 
     return {
       title: campaign.title,
-      description: campaign.organizationName, // Added by the query enrichment
+      description: campaign.organizationName,
       startDate: new Date(campaign.startDate),
       endDate: new Date(campaign.endDate),
       status: currentStep,
       icons: icons,
+      url: `/admin/campaigns/${campaign._id}`,
     };
   });
 
