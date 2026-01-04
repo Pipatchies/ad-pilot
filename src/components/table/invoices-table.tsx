@@ -185,7 +185,7 @@ export default function InvoicesTable({
               }}
             >
               <SelectTrigger
-                className={`w-[130px] h-8 border-none font-medium ${
+                className={`w-[130px] h-8 border-none font-medium text-base ${
                   currentStatus === "paid"
                     ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
                     : "bg-amber-100 text-amber-700 hover:bg-amber-200"
@@ -194,10 +194,10 @@ export default function InvoicesTable({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pending" className="text-amber-700">
+                <SelectItem value="pending" className="text-amber-700 text-base">
                   En attente
                 </SelectItem>
-                <SelectItem value="paid" className="text-emerald-700">
+                <SelectItem value="paid" className="text-emerald-700 text-base">
                   Réglée
                 </SelectItem>
               </SelectContent>
@@ -210,8 +210,8 @@ export default function InvoicesTable({
             variant="secondary"
             className={`${
               currentStatus === "paid"
-                ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
-                : "bg-amber-100 text-amber-700 hover:bg-amber-100"
+                ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100 text-base"
+                : "bg-amber-100 text-amber-700 hover:bg-amber-100 text-base"
             }`}
           >
             {currentStatus === "paid" ? "Réglée" : "En attente"}
