@@ -52,6 +52,7 @@ export default function SpaceInvoices({
               invoices={agencyInvoices}
               variant="agency"
               headerClassName="border-b border-solid border-[#A5A4BF]"
+              isAdmin={true}
             />
           )}
         </div>
@@ -71,6 +72,7 @@ export default function SpaceInvoices({
               invoices={vendorInvoices}
               variant="vendor"
               headerClassName="border-b border-solid border-[#A5A4BF]"
+              isAdmin={true}
             />
           )}
         </div>

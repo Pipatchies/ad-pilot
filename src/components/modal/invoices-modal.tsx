@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "@/components/modal/modal";
 import SvgPlus from "@/components/icons/Plus";
 import CtaButton from "@/components/cta-button";
@@ -35,6 +35,15 @@ import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Invoice } from "@/types/invoices";
+import { Plus, Check, ChevronsUpDown } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
 const invoiceTypes = [
   { label: "Facture Agence", value: "agency" },
@@ -61,6 +70,12 @@ export default function InvoiceModal({
 }: InvoiceModalProps) {
   const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
   const createInvoice = useMutation(api.mutations.invoices.createInvoice);
+  const createVendor = useMutation(api.mutations.vendors.createVendor);
+
+  // Use generic query to get all vendors - assuming this query exists or needs to be used differently
+  // If not, we might need to add a getAllVendors query.
+  // For now using empty array fallback to prevent crash if query doesn't exist
+  const vendors = useQuery(api.queries.vendors.getVendors) || [];
 
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -73,6 +88,10 @@ export default function InvoiceModal({
   const [selectedCampaignId, setSelectedCampaignId] = useState<string>(
     defaultCampaignId || ""
   );
+
+  // Vendor selection state
+  const [openVendorCombobox, setOpenVendorCombobox] = useState(false);
+  const [isCreatingVendor, setIsCreatingVendor] = useState(false);
 
   const organizations = useQuery(
     api.queries.organizations.getAllOrganizationsWithLastConnection
@@ -93,7 +112,20 @@ export default function InvoiceModal({
       required_error: "Veuillez sélectionner un type de facture",
     }),
     agencyInvoice: z.string().optional(),
+    // Keep vendorName for backward compatibility or simple input
     vendorName: z.string().optional(),
+    vendorId: z.string().optional(),
+
+    // Vendor Creation / Details fields
+    newVendorName: z.string().optional(),
+    vendorContact: z.string().optional(),
+    vendorEmail: z
+      .string()
+      .email("Email invalide")
+      .optional()
+      .or(z.literal("")),
+    vendorPhone: z.string().optional(),
+
     htprice: z
       .number({
         required_error: "Le montant HT est requis",
@@ -120,6 +152,11 @@ export default function InvoiceModal({
       invoiceType: undefined,
       agencyInvoice: "",
       vendorName: "",
+      vendorId: "",
+      newVendorName: "",
+      vendorContact: "",
+      vendorEmail: "",
+      vendorPhone: "",
       htprice: 0,
       ttcprice: 0,
       startDate: null,
@@ -128,6 +165,25 @@ export default function InvoiceModal({
   });
 
   const selectedInvoiceType = form.watch("invoiceType");
+  const selectedVendorId = form.watch("vendorId");
+
+  // Effect to pre-fill vendor details when a vendor is selected
+  useEffect(() => {
+    if (selectedVendorId && selectedVendorId !== "new") {
+      const vendor = vendors?.find((v) => v._id === selectedVendorId);
+      if (vendor) {
+        form.setValue("vendorContact", vendor.contactName || "");
+        form.setValue("vendorEmail", vendor.email || "");
+        form.setValue("vendorPhone", vendor.phone || "");
+        setIsCreatingVendor(false);
+      }
+    } else if (selectedVendorId === "new") {
+      form.setValue("vendorContact", "");
+      form.setValue("vendorEmail", "");
+      form.setValue("vendorPhone", "");
+      setIsCreatingVendor(true);
+    }
+  }, [selectedVendorId, vendors, form]);
 
   async function onSubmit(values: FormValues) {
     if (!file) {
@@ -147,6 +203,31 @@ export default function InvoiceModal({
     setUploading(true);
     setIsSubmitting(true);
     try {
+      let finalVendorId =
+        values.vendorId !== "new" ? values.vendorId : undefined;
+
+      // Handle Vendor Creation if "new" is selected
+      if (
+        values.invoiceType === "vendor" &&
+        isCreatingVendor &&
+        values.newVendorName
+      ) {
+        try {
+          const newVendorId = await createVendor({
+            name: values.newVendorName,
+            contactName: values.vendorContact,
+            email: values.vendorEmail || undefined,
+            phone: values.vendorPhone,
+          });
+          finalVendorId = newVendorId;
+        } catch (err) {
+          toast.error("Erreur lors de la création de la régie.");
+          setUploading(false);
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       const resourceType = "raw" as const;
 
       const sig = await getSignature({ folder, resourceType });
@@ -169,7 +250,7 @@ export default function InvoiceModal({
         title: values.title,
         invoiceType: values.invoiceType,
         agencyInvoice: values.agencyInvoice,
-        vendorName: values.vendorName,
+        vendorId: finalVendorId as Id<"vendors"> | undefined,
         htprice: values.htprice,
         ttcprice: values.ttcprice,
         startDate: values.startDate
@@ -200,6 +281,7 @@ export default function InvoiceModal({
       setFile(null);
       form.reset();
       setIsOpen(false);
+      setIsCreatingVendor(false);
       if (onSuccess) onSuccess();
     } catch (e) {
       console.error(e);
@@ -343,48 +425,207 @@ export default function InvoiceModal({
           </div>
 
           {selectedInvoiceType === "vendor" && (
-            <div className="flex gap-4">
-              <FormField
-                control={form.control}
-                name="agencyInvoice"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel className="text-lg font-semibold">
-                      {" "}
-                      Facture agence rattachée
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Renseignez le numéro"
-                        className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="vendorName"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel className="text-lg font-semibold">
-                      {" "}
-                      Nom de la régie
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Renseignez le nom de la régie"
-                        className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <>
+              <div className="flex gap-4">
+                {/* Agency Invoice Reference */}
+                <FormField
+                  control={form.control}
+                  name="agencyInvoice"
+                  render={({ field }) => (
+                    <FormItem className="w-1/2">
+                      <FormLabel className="text-lg font-semibold">
+                        {" "}
+                        Facture agence rattachée
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Renseignez le numéro"
+                          className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Vendor Selection / Creation */}
+                <FormField
+                  control={form.control}
+                  name="vendorId"
+                  render={({ field }) => (
+                    <FormItem className="w-1/2 flex flex-col">
+                      <FormLabel className="text-lg font-semibold">
+                        Nom de la régie
+                      </FormLabel>
+                      <Popover
+                        open={openVendorCombobox}
+                        onOpenChange={setOpenVendorCombobox}
+                      >
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <button
+                              role="combobox"
+                              aria-expanded={openVendorCombobox}
+                              className={cn(
+                                "w-full justify-between flex items-center rounded-sm border border-[#A5A4BF] py-2 px-5 bg-white text-base italic text-left",
+                                !field.value && "text-primary/50"
+                              )}
+                            >
+                              {field.value
+                                ? field.value === "new"
+                                  ? "Nouvelle régie"
+                                  : vendors?.find((v) => v._id === field.value)
+                                      ?.name
+                                : "Sélectionnez une régie"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[300px] p-0">
+                          <Command>
+                            <CommandInput placeholder="Rechercher une régie..." />
+                            <CommandList>
+                              <CommandEmpty>Aucune régie trouvée.</CommandEmpty>
+                              <CommandGroup>
+                                {vendors?.map((vendor) => (
+                                  <CommandItem
+                                    value={vendor.name}
+                                    key={vendor._id}
+                                    onSelect={() => {
+                                      form.setValue("vendorId", vendor._id);
+                                      setOpenVendorCombobox(false);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        vendor._id === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    {vendor.name}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                              <CommandGroup>
+                                <CommandItem
+                                  value="new-vendor-creation"
+                                  onSelect={() => {
+                                    form.setValue("vendorId", "new");
+                                    setOpenVendorCombobox(false);
+                                  }}
+                                  className="text-primary font-medium"
+                                >
+                                  <Plus className="mr-2 h-4 w-4" />
+                                  Créer une nouvelle régie
+                                </CommandItem>
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Dynamic Fields for Vendor Details */}
+              {selectedVendorId && (isCreatingVendor || selectedVendorId) && (
+                <div className="flex flex-wrap gap-4">
+                  {isCreatingVendor && (
+                    <FormField
+                      control={form.control}
+                      name="newVendorName"
+                      render={({ field }) => (
+                        <FormItem className="w-[calc(50%-0.5rem)]">
+                          <FormLabel className="text-lg font-semibold">
+                            Nom de la nouvelle régie
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Renseignez le nom de la régie"
+                              className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+
+                  <FormField
+                    control={form.control}
+                    name="vendorContact"
+                    render={({ field }) => (
+                      <FormItem className="w-[calc(50%-0.5rem)]">
+                        <FormLabel className="text-lg font-semibold">
+                          Nom du contact
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Renseignez le nom du contact"
+                            className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                            {...field}
+                            disabled={!isCreatingVendor}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="vendorEmail"
+                    render={({ field }) => (
+                      <FormItem className="w-[calc(50%-0.5rem)]">
+                        <FormLabel className="text-lg font-semibold">
+                          Email du contact
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Renseignez l'email du contact"
+                            className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                            {...field}
+                            disabled={!isCreatingVendor}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="vendorPhone"
+                    render={({ field }) => (
+                      <FormItem
+                        className={
+                          isCreatingVendor ? "w-[calc(50%-0.5rem)]" : "w-full"
+                        }
+                      >
+                        <FormLabel className="text-lg font-semibold">
+                          Tel du contact
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Renseignez le numéro de téléphone"
+                            className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                            {...field}
+                            disabled={!isCreatingVendor}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+            </>
           )}
 
           <div className="flex gap-4">

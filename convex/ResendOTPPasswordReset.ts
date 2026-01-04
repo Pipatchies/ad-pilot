@@ -9,11 +9,11 @@ export const ResendOTPPasswordReset = Resend({
     const random: RandomReader = { read: (b) => crypto.getRandomValues(b) };
     return generateRandomString(random, "0123456789", 8);
   },
-  async sendVerificationRequest({ identifier: _email, provider, token }) {
+  async sendVerificationRequest({ identifier: email, provider, token }) {
     const resend = new ResendAPI(provider.apiKey);
     const { error } = await resend.emails.send({
       from: "Ad-pilot <onboarding@resend.dev>",
-      to: "ariane.bertaud@gmail.com",
+      to: email,
       subject: "Reset your password",
       text: "Your password reset code is " + token,
     });

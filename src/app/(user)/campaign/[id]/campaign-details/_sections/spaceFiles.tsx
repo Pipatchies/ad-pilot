@@ -45,6 +45,12 @@ export default function SpaceFiles() {
       title: doc.title,
       description: doc.type,
       startDate: new Date(doc._creationTime),
+      fileData: {
+        url: doc.url,
+        type: doc.type,
+        publicId: doc.publicId,
+        title: doc.title,
+      },
     })) ?? [];
 
   // Fetch Invoices
@@ -58,6 +64,12 @@ export default function SpaceFiles() {
       description:
         invoice.invoiceType === "agency" ? "Facture Agence" : "Facture Régie",
       startDate: new Date(invoice.startDate),
+      fileData: {
+        url: invoice.url,
+        type: "pdf",
+        publicId: invoice.publicId,
+        title: invoice.title,
+      },
     })) ?? [];
 
   return (

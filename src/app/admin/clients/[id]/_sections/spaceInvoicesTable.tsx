@@ -1,15 +1,17 @@
-import SearchBar from '@/components/search-bar'
-import InvoicesTable from '@/components/table/invoices-table'
-import Typography from '@/components/typography'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Invoice } from '@/types/invoices'
-import React from 'react'
+import SearchBar from "@/components/search-bar";
+import InvoicesTable from "@/components/table/invoices-table";
+import Typography from "@/components/typography";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Invoice } from "@/types/invoices";
+import React from "react";
 
 interface SpaceInvoicesTableProps {
-  invoices: Invoice[]
+  invoices: Invoice[];
 }
 
-export default function SpaceInvoicesTable({ invoices }: SpaceInvoicesTableProps) {
+export default function SpaceInvoicesTable({
+  invoices,
+}: SpaceInvoicesTableProps) {
   const [searchQuery, setSearchQuery] = React.useState("");
 
   const agencyInvoices = invoices.filter((i) => i.invoiceType === "agency");
@@ -45,6 +47,7 @@ export default function SpaceInvoicesTable({ invoices }: SpaceInvoicesTableProps
               headerClassName="border-b border-solid border-[#A5A4BF]"
               globalFilter={searchQuery}
               showCampaign={true}
+              isAdmin={true}
             />
           )}
         </div>
@@ -66,10 +69,11 @@ export default function SpaceInvoicesTable({ invoices }: SpaceInvoicesTableProps
               headerClassName="border-b border-solid border-[#A5A4BF]"
               globalFilter={searchQuery}
               showCampaign={true}
+              isAdmin={true}
             />
           )}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

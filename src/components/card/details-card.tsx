@@ -17,8 +17,10 @@ import UpdateMediaModal from "../modal/update/update-media-modal";
 import SvgCrayon from "../icons/Crayon";
 import { Id } from "@/../convex/_generated/dataModel";
 import { MediaType } from "@/types/medias";
-
 import Link from "next/link";
+import DeleteModal from "../modal/delete-modal";
+import { useMutation } from "convex/react";
+import { api } from "@/../convex/_generated/api";
 
 type DetailsCardProps = {
   title: string;
@@ -35,7 +37,14 @@ type DetailsCardProps = {
   variant: "default" | "campaign" | "media" | "target" | "archived" | "invoice";
   media?: MediaThumbProps;
   hideEditIcon?: boolean;
+  hideDeleteIcon?: boolean;
   url?: string;
+  fileData?: {
+    url: string;
+    type: string;
+    publicId: string;
+    title: string;
+  };
 };
 
 export default function DetailsCard({
@@ -53,38 +62,64 @@ export default function DetailsCard({
   variant,
   media,
   hideEditIcon = false,
+  hideDeleteIcon = false,
   url,
+  fileData,
 }: DetailsCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const deleteMedia = useMutation(api.mutations.medias.deleteMedia);
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (fileData) {
+      e.stopPropagation();
+      e.preventDefault();
+      setIsModalOpen(true);
+    }
+  };
 
   const CardContentWrapper = (
     <Card
+      onClick={fileData ? handleCardClick : undefined}
       className={cn(
         "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2 relative transition-all duration-200",
         variant === "media" && "",
-        url &&
+        (url || fileData) &&
           "cursor-pointer group transition border border-transparent hover:border-primary hover:bg-primary hover:text-white hover:scale-100 dark:hover:text-black"
       )}
     >
-      {variant === "media" && media?._id && !hideEditIcon && (
-        <div className="absolute top-8 right-6 z-10">
-          <UpdateMediaModal
-            mediaId={media._id as Id<"medias">}
-            defaultValues={{
-              title: title,
-              mediaTypes: (mediaTypes as MediaType[]) || [],
-            }}
-            trigger={
-              <SvgCrayon className="w-5 h-5 cursor-pointer hover:opacity-70" />
-            }
-          />
+      {variant === "media" && media?._id && (
+        <div className="absolute top-8 right-6 z-10 flex items-center gap-2">
+          {!hideEditIcon && (
+            <UpdateMediaModal
+              mediaId={media._id as Id<"medias">}
+              defaultValues={{
+                title: title,
+                mediaTypes: (mediaTypes as MediaType[]) || [],
+              }}
+              trigger={
+                <SvgCrayon className="w-5 h-5 cursor-pointer hover:opacity-70" />
+              }
+            />
+          )}
+          {!hideDeleteIcon && (
+            <DeleteModal
+              onConfirm={() =>
+                deleteMedia({ mediaId: media._id as Id<"medias"> })
+              }
+            />
+          )}
         </div>
       )}
       <CardHeader>
         {variant === "media" && (
           <>
             <div
-              onClick={() => media?.url && setIsModalOpen(true)}
+              onClick={(e) => {
+                if (media?.url) {
+                  e.stopPropagation();
+                  setIsModalOpen(true);
+                }
+              }}
               className={cn(
                 "flex items-start gap-4 mb-2",
                 media?.url &&
@@ -230,7 +265,7 @@ export default function DetailsCard({
           })}
         </CardFooter>
       )}
-      {isModalOpen && media?.url && (
+      {isModalOpen && media?.url && variant === "media" && (
         <MediaViewerModal
           isOpen={isModalOpen}
           mediaItem={{
@@ -238,6 +273,20 @@ export default function DetailsCard({
             url: media.url,
             type: media.type || "pdf",
             publicId: media.publicId,
+            resourceType: "raw",
+          }}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
+
+      {isModalOpen && fileData && (
+        <MediaViewerModal
+          isOpen={isModalOpen}
+          mediaItem={{
+            title: fileData.title,
+            url: fileData.url,
+            type: (fileData.type as any) || "pdf",
+            publicId: fileData.publicId,
             resourceType: "raw",
           }}
           onClose={() => setIsModalOpen(false)}

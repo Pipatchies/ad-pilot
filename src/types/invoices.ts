@@ -13,8 +13,15 @@ export type Invoice = {
   url?: string;
   publicId?: string;
   resourceType?: "raw";
+  status?: "paid" | "pending";
   organizationId?: Id<"organizations">;
   campaignId?: Id<"campaigns">;
   campaign?: string;
   organizationName?: string;
 };
+
+export interface InvoiceWithVendor extends Invoice {
+  vendorContact?: string;
+  vendorEmail?: string;
+  vendorPhone?: string;
+}

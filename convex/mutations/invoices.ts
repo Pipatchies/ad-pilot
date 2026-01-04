@@ -8,7 +8,8 @@ export const createInvoice = mutation({
     title: v.string(),
     invoiceType: v.union(v.literal("agency"), v.literal("vendor")),
     agencyInvoice: v.optional(v.string()),
-    vendorName: v.optional(v.string()),
+    vendorName: v.optional(v.string()), // Deprecated
+    vendorId: v.optional(v.id("vendors")),
     htprice: v.number(),
     ttcprice: v.number(),
     startDate: v.string(),
@@ -18,6 +19,7 @@ export const createInvoice = mutation({
     resourceType: v.union(v.literal("raw")),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
+    status: v.optional(v.union(v.literal("paid"), v.literal("pending"))),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -40,10 +42,12 @@ export const updateInvoice = mutation({
         v.union(v.literal("agency"), v.literal("vendor"))
       ),
       agencyInvoice: v.optional(v.string()),
-      vendorName: v.optional(v.string()),
+      vendorName: v.optional(v.string()), // Deprecated
+      vendorId: v.optional(v.id("vendors")),
       url: v.optional(v.string()),
       publicId: v.optional(v.string()),
       resourceType: v.optional(v.literal("raw")),
+      status: v.optional(v.union(v.literal("paid"), v.literal("pending"))),
     }),
   },
   handler: async (ctx, args) => {

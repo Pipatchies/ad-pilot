@@ -208,7 +208,8 @@ export default defineSchema({
     title: v.string(),
     invoiceType: v.union(v.literal("agency"), v.literal("vendor")),
     agencyInvoice: v.optional(v.string()),
-    vendorName: v.optional(v.string()),
+    vendorName: v.optional(v.string()), // Deprecated, use vendorId where possible
+    vendorId: v.optional(v.id("vendors")),
     htprice: v.number(),
     ttcprice: v.number(),
     startDate: v.string(),
@@ -219,13 +220,17 @@ export default defineSchema({
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
     deleted: v.optional(v.boolean()),
+    status: v.optional(v.union(v.literal("paid"), v.literal("pending"))),
   })
     .index("by_organizationId", ["organizationId"])
     .index("by_campaignId", ["campaignId"]),
 
   vendors: defineTable({
     name: v.string(),
-    userId: v.id("users"),
+    contactName: v.optional(v.string()),
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    userId: v.optional(v.id("users")),
   }),
 
   targets: defineTable({

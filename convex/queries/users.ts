@@ -114,3 +114,37 @@ export const me = query({
     };
   },
 });
+
+export const getEffectiveUser = query({
+  args: { impersonatedUserId: v.optional(v.id("users")) },
+  handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx);
+    if (!authUserId) return null;
+
+    let targetUserId = authUserId;
+
+    if (args.impersonatedUserId) {
+      // Security check: Only admins can impersonate
+      const me = await ctx.db.get(authUserId);
+      if (me && me.roleId) {
+        const myRole = await ctx.db.get(me.roleId);
+        if (myRole?.name === "admin") {
+          targetUserId = args.impersonatedUserId;
+        }
+      }
+    }
+
+    const user = await ctx.db.get(targetUserId);
+    if (!user) return null;
+
+    const sessionId = await getAuthSessionId(ctx);
+    const role = user.roleId ? await ctx.db.get(user.roleId) : null;
+
+    return {
+      ...user,
+      role: role?.name ?? "unknown",
+      sessionId,
+      organizationId: user.organizationId,
+    };
+  },
+});

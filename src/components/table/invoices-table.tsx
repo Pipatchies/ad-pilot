@@ -1,20 +1,31 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { DataTable, sortableHeader } from "@/components/table/data-table";
 import SvgEyeIcon from "@/components/icons/EyeIcon";
 import SvgUploder from "@/components/icons/Uploder";
 import UpdateInvoiceModal from "@/components/modal/update/update-invoice-modal";
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { Invoice } from "@/types/invoices";
+import { Invoice, InvoiceWithVendor } from "@/types/invoices";
 import SvgCorbeille from "../icons/Corbeille";
 import DeleteModal from "../modal/delete-modal";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import MediaViewerModal from "@/components/modal/media-viewer-modal";
+import VendorDetailsModal from "@/components/modal/vendor-details-modal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 interface Props {
-  invoices: Invoice[];
+  invoices: InvoiceWithVendor[];
   variant: "agency" | "vendor";
   showCampaign?: boolean;
   showClient?: boolean;
@@ -22,6 +33,7 @@ interface Props {
   headerClassName?: string;
   dateSort?: "asc" | "desc";
   readOnly?: boolean;
+  isAdmin?: boolean;
 }
 
 export default function InvoicesTable({
@@ -33,11 +45,18 @@ export default function InvoicesTable({
   headerClassName,
   dateSort,
   readOnly,
+  isAdmin = false,
 }: Props) {
+  const router = useRouter();
   const deleteInvoice = useMutation(api.mutations.invoices.deleteInvoice);
+  const updateInvoice = useMutation(api.mutations.invoices.updateInvoice);
   const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
 
-  const columns: ColumnDef<Invoice>[] = [
+  // State for Vendor Details Modal
+  const [selectedVendorForModal, setSelectedVendorForModal] =
+    useState<InvoiceWithVendor | null>(null);
+
+  const columns: ColumnDef<InvoiceWithVendor>[] = [
     {
       accessorKey: "title",
       header: sortableHeader("N° de facture"),
@@ -52,8 +71,11 @@ export default function InvoicesTable({
           {
             accessorKey: "vendorName",
             header: sortableHeader("Régie"),
-            cell: ({ row }: { row: Row<Invoice> }) => (
-              <span className="font-bold underline">
+            cell: ({ row }: { row: Row<InvoiceWithVendor> }) => (
+              <span
+                className="font-bold underline cursor-pointer hover:text-primary/80"
+                onClick={() => setSelectedVendorForModal(row.original)}
+              >
                 {row.getValue("vendorName")}
               </span>
             ),
@@ -61,14 +83,24 @@ export default function InvoicesTable({
         ]
       : []),
 
-  ...(showCampaign
+    ...(showCampaign
       ? [
           {
             accessorKey: "campaign",
             header: sortableHeader("Campagne"),
-            cell: ({ row }: { row: Row<Invoice> }) => (
-              <span className="font-bold underline">
-                {row.getValue("campaign")}
+            cell: ({ row }: { row: Row<InvoiceWithVendor> }) => (
+              <span
+                className="font-bold underline cursor-pointer hover:text-primary/80"
+                onClick={() => {
+                  const campaignId = row.original.campaignId;
+                  if (isAdmin) {
+                    router.push(`/admin/campaigns/${campaignId}`);
+                  } else {
+                    router.push(`/campaign/${campaignId}`);
+                  }
+                }}
+              >
+                {row.original.campaign || row.getValue("campaign") || "-"}
               </span>
             ),
           },
@@ -80,8 +112,14 @@ export default function InvoicesTable({
           {
             accessorKey: "organizationName",
             header: sortableHeader("Client"),
-            cell: ({ row }: { row: Row<Invoice> }) => (
-              <span className="font-bold">
+            cell: ({ row }: { row: Row<InvoiceWithVendor> }) => (
+              <span
+                className="font-bold cursor-pointer hover:text-primary/80 underline"
+                onClick={() => {
+                  const orgId = row.original.organizationId;
+                  router.push(`/admin/clients/${orgId}`);
+                }}
+              >
                 {row.getValue("organizationName")}
               </span>
             ),
@@ -122,9 +160,70 @@ export default function InvoicesTable({
     },
 
     {
+      accessorKey: "status",
+      header: sortableHeader("Etat"),
+      cell: ({ row }) => {
+        const invoice = row.original;
+        const currentStatus = invoice.status || "pending";
+
+        if (isAdmin && !readOnly) {
+          return (
+            <Select
+              defaultValue={currentStatus}
+              onValueChange={async (value) => {
+                try {
+                  await updateInvoice({
+                    invoiceId: invoice._id!,
+                    patch: {
+                      status: value as "paid" | "pending",
+                    },
+                  });
+                  toast.success("Statut mis à jour");
+                } catch (error) {
+                  toast.error("Erreur lors de la mise à jour");
+                }
+              }}
+            >
+              <SelectTrigger
+                className={`w-[130px] h-8 border-none font-medium text-base ${
+                  currentStatus === "paid"
+                    ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                    : "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                }`}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending" className="text-amber-700 text-base">
+                  En attente
+                </SelectItem>
+                <SelectItem value="paid" className="text-emerald-700 text-base">
+                  Réglée
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          );
+        }
+
+        return (
+          <Badge
+            variant="secondary"
+            className={`${
+              currentStatus === "paid"
+                ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100 text-base"
+                : "bg-amber-100 text-amber-700 hover:bg-amber-100 text-base"
+            }`}
+          >
+            {currentStatus === "paid" ? "Réglée" : "En attente"}
+          </Badge>
+        );
+      },
+    },
+
+    {
       id: "actions",
       header: "",
-      cell: ({ row }: { row: Row<Invoice> }) => (
+      cell: ({ row }: { row: Row<InvoiceWithVendor> }) => (
         <div className="flex justify-end gap-4">
           <button
             onClick={() => setViewingInvoice(row.original)}
@@ -205,6 +304,17 @@ export default function InvoicesTable({
             invoices.length - 1
           }
           hasPrev={invoices.findIndex((i) => i._id === viewingInvoice._id) > 0}
+        />
+      )}
+
+      {selectedVendorForModal && (
+        <VendorDetailsModal
+          isOpen={!!selectedVendorForModal}
+          onClose={() => setSelectedVendorForModal(null)}
+          vendorName={selectedVendorForModal.vendorName || "Régie inconnue"}
+          vendorContact={selectedVendorForModal.vendorContact}
+          vendorEmail={selectedVendorForModal.vendorEmail}
+          vendorPhone={selectedVendorForModal.vendorPhone}
         />
       )}
     </>

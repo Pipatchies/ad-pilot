@@ -35,8 +35,8 @@ export default function ArchivedCampaign() {
         </Typography>
       </div>
       <div className="space-y-20">
-        <SpaceRecap />
         <SpaceReport />
+        <SpaceRecap />
         <SpaceInvoices />
       </div>
     </section>

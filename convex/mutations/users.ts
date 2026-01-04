@@ -1,5 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { mutation } from "../_generated/server";
+import { mutation, internalMutation } from "../_generated/server";
 import { v } from "convex/values";
 
 export const updateUser = mutation({
@@ -13,11 +13,16 @@ export const updateUser = mutation({
       image: v.optional(v.string()),
       roleId: v.optional(v.id("roles")),
       organizationId: v.optional(v.id("organizations")),
+      password: v.optional(v.string()),
     }),
   },
   handler: async (ctx, { userId, patch }) => {
     const authUserId = await getAuthUserId(ctx);
     if (!authUserId) throw new Error("Unauthorized");
+
+    if (patch.password) {
+      delete (patch as any).password;
+    }
 
     if (patch.email) {
       const newEmail = patch.email;
@@ -35,8 +40,29 @@ export const updateUser = mutation({
         }
       }
     }
-    await ctx.db.patch(userId, patch);
+
+    const { password, ...userPatch } = patch;
+    await ctx.db.patch(userId, userPatch);
     return { ok: true };
+  },
+});
+
+export const updateUserPasswordInternal = internalMutation({
+  args: {
+    userId: v.id("users"),
+    hashedPassword: v.string(),
+  },
+  handler: async (ctx, { userId, hashedPassword }) => {
+    const accounts = await ctx.db
+      .query("authAccounts")
+      .withIndex("userIdAndProvider", (q) => q.eq("userId", userId))
+      .collect();
+
+    for (const acc of accounts) {
+      if (acc.provider === "password") {
+        await ctx.db.patch(acc._id, { secret: hashedPassword });
+      }
+    }
   },
 });
 

@@ -4,6 +4,7 @@ import { v, ConvexError } from "convex/values";
 import { getAuthUserId, createAccount } from "@convex-dev/auth/server";
 import { api, internal } from "../_generated/api";
 import { Id } from "../_generated/dataModel";
+import crypto from "node:crypto";
 
 export const adminCreateAdmin = action({
   args: {
@@ -100,6 +101,8 @@ export const adminCreateClient = action({
         lastname: args.lastname,
         roleId: args.roleId,
         organizationId,
+        organizationName: args.organizationName,
+        logo: args.logo,
       } as any,
     });
     const userId = user._id;
@@ -112,5 +115,29 @@ export const adminCreateClient = action({
     }
 
     return { userId, organizationId };
+  },
+});
+
+export const updateUserPassword = action({
+  args: {
+    userId: v.id("users"),
+    password: v.string(),
+  },
+  handler: async (ctx, { userId, password }) => {
+    const authUserId = await getAuthUserId(ctx);
+    if (!authUserId) throw new ConvexError("UNAUTHENTICATED");
+    const salt = crypto.randomBytes(32).toString("hex");
+    const key = crypto.scryptSync(password, salt, 64, {
+      N: 16384,
+      r: 16,
+      p: 1,
+      maxmem: 64 * 1024 * 1024, // 64 MB
+    });
+    const hashedPassword = `${salt}:${key.toString("hex")}`;
+
+    await ctx.runMutation(internal.mutations.users.updateUserPasswordInternal, {
+      userId,
+      hashedPassword,
+    });
   },
 });
