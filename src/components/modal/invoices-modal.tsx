@@ -468,7 +468,7 @@ export default function InvoiceModal({
                               role="combobox"
                               aria-expanded={openVendorCombobox}
                               className={cn(
-                                "w-full justify-between flex items-center rounded-sm border border-[#A5A4BF] py-2.5 px-5 bg-white text-base italic text-left",
+                                "w-full justify-between flex items-center rounded-sm border border-[#A5A4BF] py-2 px-5 bg-white text-base italic text-left",
                                 !field.value && "text-primary/50"
                               )}
                             >

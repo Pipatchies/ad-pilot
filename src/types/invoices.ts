@@ -18,3 +18,9 @@ export type Invoice = {
   campaign?: string;
   organizationName?: string;
 };
+
+export interface InvoiceWithVendor extends Invoice {
+  vendorContact?: string;
+  vendorEmail?: string;
+  vendorPhone?: string;
+}

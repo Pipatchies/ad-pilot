@@ -39,3 +39,4 @@ export { default as Statistiques } from "./Statistiques";
 export { default as Television } from "./Television";
 export { default as Uploder } from "./Uploder";
 export { default as Verywell } from "./Verywell";
+export { default as Phone } from "./Phone";

@@ -24,10 +24,19 @@ export const getAllAgencyInvoices = query({
       agencyInvoices.map(async (invoice) => {
         const campaign = await ctx.db.get(invoice.campaignId);
         const organization = await ctx.db.get(invoice.organizationId);
+        let vendor = null;
+        if (invoice.vendorId) {
+          vendor = await ctx.db.get(invoice.vendorId);
+        }
+
         return {
           ...invoice,
           campaignTitle: campaign?.title ?? "Campagne inconnue",
           organizationName: organization?.name ?? "Organisation inconnue",
+          vendorName: vendor ? vendor.name : invoice.vendorName,
+          vendorContact: vendor?.contactName,
+          vendorEmail: vendor?.email,
+          vendorPhone: vendor?.phone,
         };
       })
     );
@@ -42,17 +51,31 @@ export const getAllVendorInvoices = query({
       .query("invoices")
       .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
-    
-    const vendorInvoices = invoices.filter((invoice) => invoice.vendorName);
+
+    // We want invoices that ARE vendor invoices.
+    // Previously implementation filtered by `vendorName`.
+    // Now we should check `invoiceType === 'vendor'` OR `vendorName` OR `vendorId`.
+    // But to be safe and consistent with previous code:
+    const vendorInvoices = invoices.filter(
+      (invoice) => invoice.invoiceType === "vendor" || invoice.vendorName
+    );
 
     const enriched = await Promise.all(
       vendorInvoices.map(async (invoice) => {
         const campaign = await ctx.db.get(invoice.campaignId);
         const organization = await ctx.db.get(invoice.organizationId);
+        let vendor = null;
+        if (invoice.vendorId) {
+          vendor = await ctx.db.get(invoice.vendorId);
+        }
         return {
           ...invoice,
           campaignTitle: campaign?.title ?? "Campagne inconnue",
           organizationName: organization?.name ?? "Organisation inconnue",
+          vendorName: vendor ? vendor.name : invoice.vendorName,
+          vendorContact: vendor?.contactName,
+          vendorEmail: vendor?.email,
+          vendorPhone: vendor?.phone,
         };
       })
     );
@@ -77,9 +100,17 @@ export const getInvoicesByOrganization = query({
     const enriched = await Promise.all(
       invoices.map(async (invoice) => {
         const campaign = await ctx.db.get(invoice.campaignId);
+        let vendor = null;
+        if (invoice.vendorId) {
+          vendor = await ctx.db.get(invoice.vendorId);
+        }
         return {
           ...invoice,
           campaignTitle: campaign?.title ?? "Campagne inconnue",
+          vendorName: vendor ? vendor.name : invoice.vendorName,
+          vendorContact: vendor?.contactName,
+          vendorEmail: vendor?.email,
+          vendorPhone: vendor?.phone,
         };
       })
     );
@@ -130,14 +161,24 @@ export const getVendorInvoicesByOrganization = query({
       .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
 
-    const vendorInvoices = invoices.filter((invoice) => invoice.vendorName);
+    const vendorInvoices = invoices.filter(
+      (invoice) => invoice.invoiceType === "vendor" || invoice.vendorName
+    );
 
     const enriched = await Promise.all(
       vendorInvoices.map(async (invoice) => {
         const campaign = await ctx.db.get(invoice.campaignId);
+        let vendor = null;
+        if (invoice.vendorId) {
+          vendor = await ctx.db.get(invoice.vendorId);
+        }
         return {
           ...invoice,
           campaignTitle: campaign?.title ?? "Campagne inconnue",
+          vendorName: vendor ? vendor.name : invoice.vendorName,
+          vendorContact: vendor?.contactName,
+          vendorEmail: vendor?.email,
+          vendorPhone: vendor?.phone,
         };
       })
     );
