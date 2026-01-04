@@ -1,5 +1,6 @@
 import { query } from "../_generated/server";
 import { v } from "convex/values";
+import { Id } from "../_generated/dataModel";
 
 export const getAllOrganizationsWithLastConnection = query({
   args: {},
@@ -9,17 +10,22 @@ export const getAllOrganizationsWithLastConnection = query({
       .filter((q) => q.neq(q.field("deleted"), true))
       .collect();
 
-    const users = await ctx.db
-      .query("users")
-      .collect();
+    const users = await ctx.db.query("users").collect();
 
     const lastByOrganization = new Map<string, number | undefined>();
+    const userByOrganization = new Map<string, Id<"users">>();
+
     for (const user of users) {
       const organizationId = user.organizationId;
       if (!organizationId) continue;
       const t = user.lastConnectionTime ?? 0;
       const prev = lastByOrganization.get(organizationId) ?? 0;
       if (t > prev) lastByOrganization.set(organizationId, t);
+
+      // Keep track of at least one user for this organization (prefer one with some activity or just the first)
+      if (!userByOrganization.has(organizationId)) {
+        userByOrganization.set(organizationId, user._id);
+      }
     }
 
     const organizationsWithStatus = await Promise.all(
@@ -45,6 +51,7 @@ export const getAllOrganizationsWithLastConnection = query({
           step: hasActiveCampaign ? "Campagne en cours" : "En veille",
           createdAt: organization._creationTime,
           lastConnectionTime: lastByOrganization.get(organization._id) ?? 0,
+          userId: userByOrganization.get(organization._id),
         };
       })
     );

@@ -10,6 +10,7 @@ import { api } from "../../../convex/_generated/api";
 import DeleteModal from "../modal/delete-modal";
 import UpdateClientModal from "@/components/modal/update/update-client-modal";
 import { useRouter } from "next/navigation";
+import EyeIcon from "@/components/icons/EyeIcon";
 
 type ClientAccount = {
   organizationId: Id<"organizations">;
@@ -18,6 +19,7 @@ type ClientAccount = {
   step: string;
   createdAt: number;
   lastConnectionTime: number;
+  userId?: Id<"users">;
 };
 
 interface ClientAccountsProps {
@@ -89,6 +91,24 @@ export default function ClientAccountsTable({
             className="flex justify-end gap-4"
             onClick={(e) => e.stopPropagation()}
           >
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (data.userId) {
+                  localStorage.setItem(
+                    "convex_impersonating_user",
+                    data.userId
+                  );
+                  window.dispatchEvent(new Event("impersonation-change"));
+                  router.push("/dashboard");
+                }
+              }}
+              className="hover:bg-gray-100 rounded-full transition-colors"
+              title="Voir en tant que ce client"
+              disabled={!data.userId}
+            >
+              <EyeIcon />
+            </button>
             <UpdateClientModal
               organizationId={data.organizationId}
               organizationName={data.organizationName}

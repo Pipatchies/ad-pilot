@@ -5,7 +5,26 @@ import Topbar from "@/components/topbar";
 import { usePathname } from "next/navigation";
 import BackButton from "@/components/back-button";
 import { Authenticated } from "convex/react";
-import { UserProvider } from "@/app/providers/user-provider";
+import { UserProvider, useUser } from "@/app/providers/user-provider";
+
+function ImpersonationBanner() {
+  const { isImpersonating, stopImpersonating, user } = useUser();
+  if (!isImpersonating) return null;
+
+  return (
+    <div className="bg-primary text-white p-2 absolute top-[72px] left-0 right-0 z-50 flex justify-center items-center gap-4 shadow-md">
+      <p className="font-medium">
+        Vue Client : Vous voyez le tableau de bord de {user?.name}
+      </p>
+      <button
+        onClick={stopImpersonating}
+        className="px-3 py-1 bg-white text-primary rounded hover:bg-gray-100 text-sm font-semibold transition-colors"
+      >
+        Quitter la vue
+      </button>
+    </div>
+  );
+}
 
 export default function ClientLayout({
   children,
@@ -26,6 +45,7 @@ export default function ClientLayout({
             <div className="flex flex-col min-h-screen w-full">
               <header className="sticky top-0 z-50 border-b border-gray-200 sm:px-6 py-4 shadow-topbar bg-white ">
                 <Topbar />
+                <ImpersonationBanner />
               </header>
               {showBackButton ? (
                 <main className="lg:py-20 px-6 py-10 w-full">
