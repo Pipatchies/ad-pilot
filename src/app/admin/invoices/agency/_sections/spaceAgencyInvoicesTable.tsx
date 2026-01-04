@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
 import InvoicesTable from "@/components/table/invoices-table";
@@ -9,30 +9,30 @@ type AgencyInvoicesTableProps = {
 };
 
 export default function SpaceAgencyInvoicesTable({
-    globalFilter,
-    dateSort
-}: AgencyInvoicesTableProps
-) {
+  globalFilter,
+  dateSort,
+}: AgencyInvoicesTableProps) {
+  const invoices = useQuery(api.queries.invoices.getAllAgencyInvoices);
 
-  const invoices = useQuery(api.queries.invoices.getAllAgencyInvoices)
-
-const invoicesData = invoices?.map((invoice) => ({
-  ...invoice,
-  campaign: invoice.campaignTitle,
-})) ?? [];
-
+  const invoicesData =
+    invoices?.map((invoice) => ({
+      ...invoice,
+      campaign: invoice.campaignTitle,
+    })) ?? [];
 
   return (
-    <section><div className="overflow-x-auto">
-            <InvoicesTable 
-            invoices={invoicesData}
-            variant="agency"
-            showCampaign={true}
-            showClient={true}
-            globalFilter={globalFilter}
-            dateSort={dateSort}
-            />
-          </div>
-          </section>
-  )
+    <section>
+      <div className="overflow-x-auto">
+        <InvoicesTable
+          invoices={invoicesData}
+          variant="agency"
+          showCampaign={true}
+          showClient={true}
+          globalFilter={globalFilter}
+          dateSort={dateSort}
+          isAdmin={true}
+        />
+      </div>
+    </section>
+  );
 }
