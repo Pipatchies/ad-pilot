@@ -17,8 +17,10 @@ import UpdateMediaModal from "../modal/update/update-media-modal";
 import SvgCrayon from "../icons/Crayon";
 import { Id } from "@/../convex/_generated/dataModel";
 import { MediaType } from "@/types/medias";
-
 import Link from "next/link";
+import DeleteModal from "../modal/delete-modal";
+import { useMutation } from "convex/react";
+import { api } from "@/../convex/_generated/api";
 
 type DetailsCardProps = {
   title: string;
@@ -35,6 +37,7 @@ type DetailsCardProps = {
   variant: "default" | "campaign" | "media" | "target" | "archived" | "invoice";
   media?: MediaThumbProps;
   hideEditIcon?: boolean;
+  hideDeleteIcon?: boolean;
   url?: string;
 };
 
@@ -53,9 +56,11 @@ export default function DetailsCard({
   variant,
   media,
   hideEditIcon = false,
+  hideDeleteIcon = false,
   url,
 }: DetailsCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const deleteMedia = useMutation(api.mutations.medias.deleteMedia);
 
   const CardContentWrapper = (
     <Card
@@ -66,18 +71,27 @@ export default function DetailsCard({
           "cursor-pointer group transition border border-transparent hover:border-primary hover:bg-primary hover:text-white hover:scale-100 dark:hover:text-black"
       )}
     >
-      {variant === "media" && media?._id && !hideEditIcon && (
-        <div className="absolute top-8 right-6 z-10">
-          <UpdateMediaModal
-            mediaId={media._id as Id<"medias">}
-            defaultValues={{
-              title: title,
-              mediaTypes: (mediaTypes as MediaType[]) || [],
-            }}
-            trigger={
-              <SvgCrayon className="w-5 h-5 cursor-pointer hover:opacity-70" />
-            }
-          />
+      {variant === "media" && media?._id && (
+        <div className="absolute top-8 right-6 z-10 flex items-center gap-2">
+          {!hideEditIcon && (
+            <UpdateMediaModal
+              mediaId={media._id as Id<"medias">}
+              defaultValues={{
+                title: title,
+                mediaTypes: (mediaTypes as MediaType[]) || [],
+              }}
+              trigger={
+                <SvgCrayon className="w-5 h-5 cursor-pointer hover:opacity-70" />
+              }
+            />
+          )}
+          {!hideDeleteIcon && (
+            <DeleteModal
+              onConfirm={() =>
+                deleteMedia({ mediaId: media._id as Id<"medias"> })
+              }
+            />
+          )}
         </div>
       )}
       <CardHeader>
