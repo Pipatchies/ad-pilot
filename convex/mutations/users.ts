@@ -1,7 +1,8 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation } from "../_generated/server";
 import { v } from "convex/values";
-
+// @ts-ignore
+import { Scrypt } from "@oslojs/crypto/scrypt";
 export const updateUser = mutation({
   args: {
     userId: v.id("users"),
@@ -13,11 +14,29 @@ export const updateUser = mutation({
       image: v.optional(v.string()),
       roleId: v.optional(v.id("roles")),
       organizationId: v.optional(v.id("organizations")),
+      password: v.optional(v.string()),
     }),
   },
   handler: async (ctx, { userId, patch }) => {
     const authUserId = await getAuthUserId(ctx);
     if (!authUserId) throw new Error("Unauthorized");
+
+    if (patch.password) {
+      const scrypt = new Scrypt(16384, 8, 1, 32);
+      const hashedPassword = await scrypt.hash(patch.password);
+
+      const accounts = await ctx.db
+        .query("authAccounts")
+        .withIndex("userIdAndProvider", (q) => q.eq("userId", userId))
+        .collect();
+
+      for (const acc of accounts) {
+        if (acc.provider === "password") {
+          await ctx.db.patch(acc._id, { secret: hashedPassword });
+        }
+      }
+      delete (patch as any).password;
+    }
 
     if (patch.email) {
       const newEmail = patch.email;
@@ -35,7 +54,9 @@ export const updateUser = mutation({
         }
       }
     }
-    await ctx.db.patch(userId, patch);
+
+    const { password, ...userPatch } = patch;
+    await ctx.db.patch(userId, userPatch);
     return { ok: true };
   },
 });
