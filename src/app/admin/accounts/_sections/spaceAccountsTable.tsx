@@ -10,7 +10,7 @@ type Props = {
 export default function SpaceAccountsTable({
   globalFilter,
 }: Props) {
-  const adminAccounts = useQuery(api.queries.users.getAllUsersWithRole);
+  const adminAccounts = useQuery(api.queries.users.getAdmin);
 
   if (!adminAccounts) {
     return <p>Chargement...</p>;

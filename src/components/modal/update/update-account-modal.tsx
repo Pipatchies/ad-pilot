@@ -207,7 +207,7 @@ export default function UpdateAccountModal({
           triggerType === "button" ? (
             <SvgCrayon />
           ) : (
-            <SvgCrayon className="cursor-pointer" />
+            <SvgCrayonBig className="cursor-pointer" />
           ),
         text: triggerText,
       }}
