@@ -19,6 +19,7 @@ export const createInvoice = mutation({
     resourceType: v.union(v.literal("raw")),
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
+    status: v.optional(v.union(v.literal("paid"), v.literal("pending"))),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -46,6 +47,7 @@ export const updateInvoice = mutation({
       url: v.optional(v.string()),
       publicId: v.optional(v.string()),
       resourceType: v.optional(v.literal("raw")),
+      status: v.optional(v.union(v.literal("paid"), v.literal("pending"))),
     }),
   },
   handler: async (ctx, args) => {

@@ -13,6 +13,7 @@ export type Invoice = {
   url?: string;
   publicId?: string;
   resourceType?: "raw";
+  status?: "paid" | "pending";
   organizationId?: Id<"organizations">;
   campaignId?: Id<"campaigns">;
   campaign?: string;

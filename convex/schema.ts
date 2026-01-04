@@ -220,6 +220,7 @@ export default defineSchema({
     campaignId: v.id("campaigns"),
     organizationId: v.id("organizations"),
     deleted: v.optional(v.boolean()),
+    status: v.optional(v.union(v.literal("paid"), v.literal("pending"))),
   })
     .index("by_organizationId", ["organizationId"])
     .index("by_campaignId", ["campaignId"]),

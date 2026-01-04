@@ -14,7 +14,15 @@ import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import MediaViewerModal from "@/components/modal/media-viewer-modal";
 import VendorDetailsModal from "@/components/modal/vendor-details-modal";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 interface Props {
   invoices: InvoiceWithVendor[];
@@ -41,6 +49,7 @@ export default function InvoicesTable({
 }: Props) {
   const router = useRouter();
   const deleteInvoice = useMutation(api.mutations.invoices.deleteInvoice);
+  const updateInvoice = useMutation(api.mutations.invoices.updateInvoice);
   const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
 
   // State for Vendor Details Modal
@@ -91,9 +100,7 @@ export default function InvoicesTable({
                   }
                 }}
               >
-                {row.original.campaign || 
-                  row.getValue("campaign") ||
-                  "-"}
+                {row.original.campaign || row.getValue("campaign") || "-"}
               </span>
             ),
           },
@@ -149,6 +156,67 @@ export default function InvoicesTable({
       cell: ({ row }) => {
         const ts = row.getValue("dueDate") as number;
         return ts ? new Date(ts).toLocaleDateString("fr-FR") : "-";
+      },
+    },
+
+    {
+      accessorKey: "status",
+      header: sortableHeader("Etat"),
+      cell: ({ row }) => {
+        const invoice = row.original;
+        const currentStatus = invoice.status || "pending";
+
+        if (isAdmin && !readOnly) {
+          return (
+            <Select
+              defaultValue={currentStatus}
+              onValueChange={async (value) => {
+                try {
+                  await updateInvoice({
+                    invoiceId: invoice._id!,
+                    patch: {
+                      status: value as "paid" | "pending",
+                    },
+                  });
+                  toast.success("Statut mis à jour");
+                } catch (error) {
+                  toast.error("Erreur lors de la mise à jour");
+                }
+              }}
+            >
+              <SelectTrigger
+                className={`w-[130px] h-8 border-none font-medium ${
+                  currentStatus === "paid"
+                    ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                    : "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                }`}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending" className="text-amber-700">
+                  En attente
+                </SelectItem>
+                <SelectItem value="paid" className="text-emerald-700">
+                  Réglée
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          );
+        }
+
+        return (
+          <Badge
+            variant="secondary"
+            className={`${
+              currentStatus === "paid"
+                ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
+                : "bg-amber-100 text-amber-700 hover:bg-amber-100"
+            }`}
+          >
+            {currentStatus === "paid" ? "Réglée" : "En attente"}
+          </Badge>
+        );
       },
     },
 
