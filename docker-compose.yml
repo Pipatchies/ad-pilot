@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: ad-pilot-app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - 3400:3000
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.local
