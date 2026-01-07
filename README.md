@@ -49,7 +49,7 @@ update -->
 - **TypeScript**
 - **Clerk** : gestion de l'authentification (connexion uniquement à ce stade)
 - **Convex** : backend en place (setup réalisé, pas encore utilisé)
-- **Tailwind CSS** 
+- **Tailwind CSS**
 - **React Hook Form + Zod** : gestion de formulaires
 
 ---
@@ -87,6 +87,7 @@ NEXT_PUBLIC_CONVEX_URL=...
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_..."
 ```
+
 🔑 La clé Clerk est disponible sur https://dashboard.clerk.com
 🌐 L’URL Convex est fournie lors du setup via npx convex init
 
@@ -129,7 +130,7 @@ npx convex dev
 
 ➡️ Pour créer un schéma (table de données) :
 
-```bash	
+```bash
 // convex/schema.ts
 import { defineSchema, defineTable } from "convex/server"
 import { v } from "convex/values"
@@ -164,6 +165,7 @@ export const createCampaign = mutation({
   },
 })
 ```
+
 ➡️ Pour appeler une fonction côté front :
 
 ```bash
@@ -182,10 +184,25 @@ export function CreateCampaignButton() {
 }
 ```
 
-
 ## 📌 À venir
 
 - Intégration des données avec Convex
 
 - Interface dashboard admin
 
+---
+
+## 🐳 Docker (Environnement de développement)
+
+Pour lancer l'application avec Docker :
+
+1. Assurez-vous d'avoir [Docker](https://www.docker.com/) et [Docker Compose](https://docs.docker.com/compose/) installés.
+2. Créez un fichier `.env.local` vérifiez que les variables sont correctes.
+3. Lancez la commande :
+
+```bash
+docker-compose up
+```
+
+L'application sera accessible sur [http://localhost:3000](http://localhost:3000).
+Le volume est monté, donc les changements dans le code source seront reflétés immédiatement (hot-reload).
