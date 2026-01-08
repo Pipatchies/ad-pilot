@@ -5,6 +5,7 @@
   "scripts": {
     "icons:build": "npx @svgr/cli --typescript --out-dir src/components/icons public/icons",
     "icons:watch": "npx @svgr/cli --typescript --out-dir src/components/icons public/icons --watch",
+    "seed": "npx convex run seed:main",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
