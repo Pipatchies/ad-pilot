@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
+import { useQuery } from 'convex/react';
+import { api } from '@/../convex/_generated/api';
 
 export default function Page() {
   const me = useQuery(api.queries.users.me);
@@ -16,4 +16,3 @@ export default function Page() {
     </div>
   );
 }
-

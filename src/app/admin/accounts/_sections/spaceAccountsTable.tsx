@@ -1,15 +1,13 @@
-"use client"
-import { useQuery } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
-import AdminAccountsTable from "@/components/table/admin-accounts-table";
+'use client';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../../convex/_generated/api';
+import AdminAccountsTable from '@/components/table/admin-accounts-table';
 
 type Props = {
   globalFilter: string;
 };
 
-export default function SpaceAccountsTable({
-  globalFilter,
-}: Props) {
+export default function SpaceAccountsTable({ globalFilter }: Props) {
   const adminAccounts = useQuery(api.queries.users.getAdmin);
 
   if (!adminAccounts) {
@@ -18,9 +16,7 @@ export default function SpaceAccountsTable({
 
   return (
     <section>
-      <AdminAccountsTable adminAccounts={adminAccounts}
-      globalFilter={globalFilter}
- />
+      <AdminAccountsTable adminAccounts={adminAccounts} globalFilter={globalFilter} />
     </section>
   );
 }

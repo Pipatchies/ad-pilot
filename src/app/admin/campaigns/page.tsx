@@ -1,11 +1,10 @@
-import React from "react";
-import SpaceCampaigns from "./_sections/spaceCampaigns";
+import React from 'react';
+import SpaceCampaigns from './_sections/spaceCampaigns';
 
 export default function CampaignsPage() {
   return (
-  <section>
-    <SpaceCampaigns />
-  </section>
-  )
+    <section>
+      <SpaceCampaigns />
+    </section>
+  );
 }
-

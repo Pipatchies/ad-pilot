@@ -1,28 +1,27 @@
-"use client";
-import React from "react";
-import InvoiceCarousel from "../../components/invoice-carousel";
-import Typography from "@/components/typography";
-import { useParams } from "next/navigation";
-import { useQuery } from "convex/react";
-import { api } from "../../../../../../convex/_generated/api";
-import { Id } from "../../../../../../convex/_generated/dataModel";
+'use client';
+import React from 'react';
+import InvoiceCarousel from '../../components/invoice-carousel';
+import Typography from '@/components/typography';
+import { useParams } from 'next/navigation';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../../../convex/_generated/api';
+import { Id } from '../../../../../../convex/_generated/dataModel';
 
 export default function SpaceInvoices() {
   const params = useParams();
-  const campaignId = params?.id as Id<"campaigns">;
+  const campaignId = params?.id as Id<'campaigns'>;
 
   const invoices = useQuery(
     api.queries.invoices.getInvoicesByCampaign,
-    campaignId ? { campaignId } : "skip"
+    campaignId ? { campaignId } : 'skip',
   );
 
   const invoiceData =
     invoices?.map((invoice) => ({
       title: invoice.title,
-      description:
-        invoice.invoiceType === "agency" ? "Facture Agence" : "Facture Régie",
+      description: invoice.invoiceType === 'agency' ? 'Facture Agence' : 'Facture Régie',
       startDate: new Date(invoice.startDate),
-      sendBy: invoice.invoiceType === "agency" ? "Verywell" : "Régie",
+      sendBy: invoice.invoiceType === 'agency' ? 'Verywell' : 'Régie',
       slug: invoice._id,
     })) ?? [];
 
@@ -31,9 +30,9 @@ export default function SpaceInvoices() {
   }
 
   return (
-    <section className="space-y-6">
+    <section className='space-y-6'>
       <div>
-        <Typography variant="h2" className="mb-0">
+        <Typography variant='h2' className='mb-0'>
           Les factures
         </Typography>
       </div>

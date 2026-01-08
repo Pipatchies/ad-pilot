@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function calculateBroadcastProgress(startDateString: string, endDateString: string) {
@@ -14,10 +14,7 @@ export function calculateBroadcastProgress(startDateString: string, endDateStrin
   const elapsed = today.getTime() - startDate.getTime();
   const remaining = endDate.getTime() - today.getTime();
 
-  const progress = Math.min(
-    100,
-    Math.max(0, Math.round((elapsed / totalDuration) * 100))
-  );
+  const progress = Math.min(100, Math.max(0, Math.round((elapsed / totalDuration) * 100)));
 
   const daysRemaining = Math.max(0, Math.ceil(remaining / (1000 * 60 * 60 * 24)));
 
@@ -26,45 +23,45 @@ export function calculateBroadcastProgress(startDateString: string, endDateStrin
 
 export function getIconFromType(type: string) {
   switch (type) {
-    case "tv":
+    case 'tv':
       return {
-        name: "television",
-        url: "/icons/television.svg",
+        name: 'television',
+        url: '/icons/television.svg',
         width: 26,
         height: 20,
       };
-    case "radio":
+    case 'radio':
       return {
-        name: "radio",
-        url: "/icons/radio.svg",
+        name: 'radio',
+        url: '/icons/radio.svg',
         width: 28,
         height: 27,
       };
-    case "digital":
+    case 'digital':
       return {
-        name: "digital",
-        url: "/icons/domaine.svg",
+        name: 'digital',
+        url: '/icons/domaine.svg',
         width: 26,
         height: 26,
       };
-    case "ooh":
+    case 'ooh':
       return {
-        name: "panneau",
-        url: "/icons/panneau-daffichage.svg",
+        name: 'panneau',
+        url: '/icons/panneau-daffichage.svg',
         width: 15,
         height: 26,
       };
-    case "cinema":
+    case 'cinema':
       return {
-        name: "cinema",
-        url: "/icons/cinema.svg",
+        name: 'cinema',
+        url: '/icons/cinema.svg',
         width: 26,
         height: 26,
       };
-    case "presse":
+    case 'presse':
       return {
-        name: "presse",
-        url: "/icons/presse.svg",
+        name: 'presse',
+        url: '/icons/presse.svg',
         width: 26,
         height: 26,
       };
@@ -74,10 +71,10 @@ export function getIconFromType(type: string) {
 }
 
 export function formatDateFR(isoDate: string): string {
-  return new Date(isoDate).toLocaleDateString("fr-FR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  return new Date(isoDate).toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 }
 

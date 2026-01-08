@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import {
   Form,
   FormField,
@@ -12,26 +12,26 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useMutation, useAction } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import { Id } from "@/../convex/_generated/dataModel";
-import SvgUploder from "@/components/icons/Uploder";
-import Modal from "@/components/modal/modal";
-import CtaButton from "../../cta-button";
-import SvgCrayonBig from "../../icons/CrayonBig";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useMutation, useAction } from 'convex/react';
+import { api } from '@/../convex/_generated/api';
+import { Id } from '@/../convex/_generated/dataModel';
+import SvgUploder from '@/components/icons/Uploder';
+import Modal from '@/components/modal/modal';
+import CtaButton from '../../cta-button';
+import SvgCrayonBig from '../../icons/CrayonBig';
 
 const formSchema = z.object({
-  title: z.string().min(1, "Le titre est requis"),
-  htprice: z.coerce.number().min(0, "Le montant HT doit être positif"),
-  ttcprice: z.coerce.number().min(0, "Le montant TTC doit être positif"),
-  startDate: z.string().min(1, "La date est requise"),
+  title: z.string().min(1, 'Le titre est requis'),
+  htprice: z.coerce.number().min(0, 'Le montant HT doit être positif'),
+  ttcprice: z.coerce.number().min(0, 'Le montant TTC doit être positif'),
+  startDate: z.string().min(1, 'La date est requise'),
   dueDate: z.string().min(1, "L'échéance est requise"),
 });
 
 type UpdateInvoiceModalProps = {
-  invoiceId: Id<"invoices">;
+  invoiceId: Id<'invoices'>;
   defaultValues: {
     title: string;
     htprice: number;
@@ -41,10 +41,7 @@ type UpdateInvoiceModalProps = {
   };
 };
 
-export default function UpdateInvoiceModal({
-  invoiceId,
-  defaultValues,
-}: UpdateInvoiceModalProps) {
+export default function UpdateInvoiceModal({ invoiceId, defaultValues }: UpdateInvoiceModalProps) {
   const updateInvoice = useMutation(api.mutations.invoices.updateInvoice);
   const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
 
@@ -60,11 +57,11 @@ export default function UpdateInvoiceModal({
       htprice: defaultValues.htprice,
       ttcprice: defaultValues.ttcprice,
       startDate: defaultValues.startDate
-        ? new Date(defaultValues.startDate).toISOString().split("T")[0]
-        : "",
+        ? new Date(defaultValues.startDate).toISOString().split('T')[0]
+        : '',
       dueDate: defaultValues.dueDate
-        ? new Date(defaultValues.dueDate).toISOString().split("T")[0]
-        : "",
+        ? new Date(defaultValues.dueDate).toISOString().split('T')[0]
+        : '',
     },
   });
 
@@ -74,27 +71,27 @@ export default function UpdateInvoiceModal({
     try {
       let url: string | undefined;
       let publicId: string | undefined;
-      let resourceType: "raw" | undefined;
+      let resourceType: 'raw' | undefined;
 
       if (file) {
         const folder = `campaigns/invoices`;
-        const rType = "raw" as const;
+        const rType = 'raw' as const;
 
         const sig = await getSignature({ folder, resourceType: rType });
         const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
 
         const fd = new FormData();
-        fd.append("file", file);
-        fd.append("api_key", sig.apiKey);
-        fd.append("timestamp", String(sig.timestamp));
-        fd.append("upload_preset", sig.uploadPreset);
-        fd.append("signature", sig.signature);
-        fd.append("folder", sig.folder);
+        fd.append('file', file);
+        fd.append('api_key', sig.apiKey);
+        fd.append('timestamp', String(sig.timestamp));
+        fd.append('upload_preset', sig.uploadPreset);
+        fd.append('signature', sig.signature);
+        fd.append('folder', sig.folder);
 
-        const res = await fetch(endpoint, { method: "POST", body: fd });
+        const res = await fetch(endpoint, { method: 'POST', body: fd });
         const json = await res.json();
 
-        if (json.error) throw new Error(json.error?.message || "Upload failed");
+        if (json.error) throw new Error(json.error?.message || 'Upload failed');
 
         url = json.secure_url;
         publicId = json.public_id;
@@ -115,11 +112,11 @@ export default function UpdateInvoiceModal({
         },
       });
 
-      toast.success("Facture mise à jour");
+      toast.success('Facture mise à jour');
       setIsOpen(false);
       setFile(null);
     } catch {
-      toast.error("Échec de la mise à jour");
+      toast.error('Échec de la mise à jour');
     } finally {
       setUploading(false);
       setIsSubmitting(false);
@@ -127,39 +124,43 @@ export default function UpdateInvoiceModal({
   }
 
   const modalData = {
-    title: "Modifier la facture",
-    className: "!max-w-4xl",
+    title: 'Modifier la facture',
+    className: '!max-w-4xl',
     children: (
-      <div className="w-full">
+      <div className='w-full'>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
               control={form.control}
-              name="title"
+              name='title'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-lg font-semibold">Titre</FormLabel>
+                  <FormLabel className='text-lg font-semibold'>Titre</FormLabel>
                   <FormControl>
-                    <Input placeholder="Titre de la facture" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer" {...field} />
+                    <Input
+                      placeholder='Titre de la facture'
+                      className='!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="flex gap-4">
+            <div className='flex gap-4'>
               <FormField
                 control={form.control}
-                name="htprice"
+                name='htprice'
                 render={({ field }) => (
-                  <FormItem className="w-1/2">
-                    <FormLabel className="text-lg font-semibold">Montant HT</FormLabel>
+                  <FormItem className='w-1/2'>
+                    <FormLabel className='text-lg font-semibold'>Montant HT</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
+                        type='number'
+                        step='0.01'
+                        placeholder='0.00'
+                        className='!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer'
                         {...field}
                       />
                     </FormControl>
@@ -169,16 +170,16 @@ export default function UpdateInvoiceModal({
               />
               <FormField
                 control={form.control}
-                name="ttcprice"
+                name='ttcprice'
                 render={({ field }) => (
-                  <FormItem className="w-1/2">
-                    <FormLabel className="text-lg font-semibold">Montant TTC</FormLabel>
+                  <FormItem className='w-1/2'>
+                    <FormLabel className='text-lg font-semibold'>Montant TTC</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
+                        type='number'
+                        step='0.01'
+                        placeholder='0.00'
+                        className='!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer'
                         {...field}
                       />
                     </FormControl>
@@ -188,15 +189,19 @@ export default function UpdateInvoiceModal({
               />
             </div>
 
-            <div className="flex gap-4">
+            <div className='flex gap-4'>
               <FormField
                 control={form.control}
-                name="startDate"
+                name='startDate'
                 render={({ field }) => (
-                  <FormItem className="w-1/2">
-                    <FormLabel className="text-lg font-semibold">Date de facturation</FormLabel>
+                  <FormItem className='w-1/2'>
+                    <FormLabel className='text-lg font-semibold'>Date de facturation</FormLabel>
                     <FormControl>
-                      <Input type="date" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer" {...field} />
+                      <Input
+                        type='date'
+                        className='!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -204,12 +209,16 @@ export default function UpdateInvoiceModal({
               />
               <FormField
                 control={form.control}
-                name="dueDate"
+                name='dueDate'
                 render={({ field }) => (
-                  <FormItem className="w-1/2">
-                    <FormLabel className="text-lg font-semibold">Date d'échéance</FormLabel>
+                  <FormItem className='w-1/2'>
+                    <FormLabel className='text-lg font-semibold'>Date d'échéance</FormLabel>
                     <FormControl>
-                      <Input type="date" className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer" {...field} />
+                      <Input
+                        type='date'
+                        className='!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -218,33 +227,27 @@ export default function UpdateInvoiceModal({
             </div>
 
             <FormItem>
-              <FormLabel className="text-lg font-semibold">
-                Mettre à jour le fichier
-              </FormLabel>
+              <FormLabel className='text-lg font-semibold'>Mettre à jour le fichier</FormLabel>
               <FormControl>
-                <div className="relative">
+                <div className='relative'>
                   <Input
                     readOnly
-                    value={file ? file.name : ""}
-                    placeholder="Sélectionnez un nouveau fichier"
-                    className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
-                    onClick={() =>
-                      document.getElementById("updateInvoiceFileInput")?.click()
-                    }
+                    value={file ? file.name : ''}
+                    placeholder='Sélectionnez un nouveau fichier'
+                    className='!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer'
+                    onClick={() => document.getElementById('updateInvoiceFileInput')?.click()}
                   />
 
                   <SvgUploder
-                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                    onClick={() =>
-                      document.getElementById("updateInvoiceFileInput")?.click()
-                    }
+                    className='absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer'
+                    onClick={() => document.getElementById('updateInvoiceFileInput')?.click()}
                   />
 
                   <input
-                    id="updateInvoiceFileInput"
-                    type="file"
-                    accept="application/pdf"
-                    className="hidden"
+                    id='updateInvoiceFileInput'
+                    type='file'
+                    accept='application/pdf'
+                    className='hidden'
                     onChange={(e) => {
                       const f = e.target.files?.[0] ?? null;
                       setFile(f);
@@ -261,12 +264,12 @@ export default function UpdateInvoiceModal({
     footer: (
       <CtaButton
         props={{
-          text: "Mettre à jour",
+          text: 'Mettre à jour',
           onClick: form.handleSubmit(onSubmit),
           disabled: uploading || isSubmitting,
           loading: isSubmitting,
         }}
-        variant="submit"
+        variant='submit'
       />
     ),
   };
@@ -276,8 +279,8 @@ export default function UpdateInvoiceModal({
       open={isOpen}
       onOpenChange={setIsOpen}
       preventAutoClose={true}
-      variant="icon"
-      cta={{ icon: <SvgCrayonBig className="cursor-pointer" /> }}
+      variant='icon'
+      cta={{ icon: <SvgCrayonBig className='cursor-pointer' /> }}
       data={modalData}
     />
   );

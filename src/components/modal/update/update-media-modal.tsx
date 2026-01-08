@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import {
   Form,
   FormField,
@@ -12,37 +12,33 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useMutation, useAction } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import { Id } from "@/../convex/_generated/dataModel";
-import Modal from "@/components/modal/modal";
-import CtaButton from "../../cta-button";
-import SvgCrayonBig from "../../icons/CrayonBig";
-import SvgUploder from "@/components/icons/Uploder";
-import loadCrayon from "../../icons/Crayon";
-import SvgCrayon from "../../icons/Crayon";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useMutation, useAction } from 'convex/react';
+import { api } from '@/../convex/_generated/api';
+import { Id } from '@/../convex/_generated/dataModel';
+import Modal from '@/components/modal/modal';
+import CtaButton from '../../cta-button';
+import SvgCrayonBig from '../../icons/CrayonBig';
+import SvgUploder from '@/components/icons/Uploder';
+import loadCrayon from '../../icons/Crayon';
+import SvgCrayon from '../../icons/Crayon';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  MEDIA_TYPE_LABELS,
-  MEDIA_TYPE_VALUES,
-  MediaType,
-} from "@/types/medias";
+} from '@/components/ui/select';
+import { MEDIA_TYPE_LABELS, MEDIA_TYPE_VALUES, MediaType } from '@/types/medias';
 
 const formSchema = z.object({
-  title: z.string().min(1, "Le titre est requis"),
+  title: z.string().min(1, 'Le titre est requis'),
   mediaType: z.enum(MEDIA_TYPE_VALUES),
 });
 
 type UpdateMediaModalProps = {
-  mediaId: Id<"medias">;
+  mediaId: Id<'medias'>;
   defaultValues: {
     title: string;
     mediaTypes: MediaType[];
@@ -67,7 +63,7 @@ export default function UpdateMediaModal({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: defaultValues.title,
-      mediaType: defaultValues.mediaTypes[0] || "digital",
+      mediaType: defaultValues.mediaTypes[0] || 'digital',
     },
   });
 
@@ -77,8 +73,8 @@ export default function UpdateMediaModal({
     try {
       let url: string | undefined;
       let publicId: string | undefined;
-      let resourceType: "image" | "video" | "raw" | undefined;
-      let type: "png" | "jpg" | "mp3" | "mp4" | "pdf" | undefined;
+      let resourceType: 'image' | 'video' | 'raw' | undefined;
+      let type: 'png' | 'jpg' | 'mp3' | 'mp4' | 'pdf' | undefined;
       let width: number | undefined;
       let height: number | undefined;
 
@@ -87,34 +83,34 @@ export default function UpdateMediaModal({
 
         // Determine resource type based on file
         const fileType = file.type;
-        let rType: "image" | "video" | "raw" = "image";
-        if (fileType.startsWith("video/")) rType = "video";
-        else if (fileType.startsWith("image/")) rType = "image";
-        else rType = "raw";
+        let rType: 'image' | 'video' | 'raw' = 'image';
+        if (fileType.startsWith('video/')) rType = 'video';
+        else if (fileType.startsWith('image/')) rType = 'image';
+        else rType = 'raw';
 
         // Determine simple type for DB
-        const ext = file.name.split(".").pop()?.toLowerCase();
-        if (ext === "pdf") type = "pdf";
-        else if (ext === "png") type = "png";
-        else if (["jpg", "jpeg"].includes(ext || "")) type = "jpg";
-        else if (ext === "mp3") type = "mp3";
-        else if (ext === "mp4") type = "mp4";
+        const ext = file.name.split('.').pop()?.toLowerCase();
+        if (ext === 'pdf') type = 'pdf';
+        else if (ext === 'png') type = 'png';
+        else if (['jpg', 'jpeg'].includes(ext || '')) type = 'jpg';
+        else if (ext === 'mp3') type = 'mp3';
+        else if (ext === 'mp4') type = 'mp4';
 
         const sig = await getSignature({ folder, resourceType: rType });
         const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
 
         const fd = new FormData();
-        fd.append("file", file);
-        fd.append("api_key", sig.apiKey);
-        fd.append("timestamp", String(sig.timestamp));
-        fd.append("upload_preset", sig.uploadPreset);
-        fd.append("signature", sig.signature);
-        fd.append("folder", sig.folder);
+        fd.append('file', file);
+        fd.append('api_key', sig.apiKey);
+        fd.append('timestamp', String(sig.timestamp));
+        fd.append('upload_preset', sig.uploadPreset);
+        fd.append('signature', sig.signature);
+        fd.append('folder', sig.folder);
 
-        const res = await fetch(endpoint, { method: "POST", body: fd });
+        const res = await fetch(endpoint, { method: 'POST', body: fd });
         const json = await res.json();
 
-        if (json.error) throw new Error(json.error?.message || "Upload failed");
+        if (json.error) throw new Error(json.error?.message || 'Upload failed');
 
         url = json.secure_url;
         publicId = json.public_id;
@@ -137,11 +133,11 @@ export default function UpdateMediaModal({
         },
       });
 
-      toast.success("Média mis à jour");
+      toast.success('Média mis à jour');
       setIsOpen(false);
       setFile(null);
     } catch {
-      toast.error("Échec de la mise à jour");
+      toast.error('Échec de la mise à jour');
     } finally {
       setUploading(false);
       setIsSubmitting(false);
@@ -149,25 +145,23 @@ export default function UpdateMediaModal({
   }
 
   const modalData = {
-    title: "Modifier le média",
-    className: "!max-w-4xl",
+    title: 'Modifier le média',
+    className: '!max-w-4xl',
     children: (
-      <div className="w-full">
+      <div className='w-full'>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="flex gap-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+            <div className='flex gap-4'>
               <FormField
                 control={form.control}
-                name="title"
+                name='title'
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel className="text-lg font-semibold">
-                      Titre
-                    </FormLabel>
+                  <FormItem className='w-full'>
+                    <FormLabel className='text-lg font-semibold'>Titre</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Titre du média"
-                        className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
+                        placeholder='Titre du média'
+                        className='!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer'
                         {...field}
                       />
                     </FormControl>
@@ -178,19 +172,14 @@ export default function UpdateMediaModal({
 
               <FormField
                 control={form.control}
-                name="mediaType"
+                name='mediaType'
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel className="text-lg font-semibold">
-                      Type de média
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                  <FormItem className='w-full'>
+                    <FormLabel className='text-lg font-semibold'>Type de média</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 w-full">
-                          <SelectValue placeholder="Sélectionnez un type" />
+                        <SelectTrigger className='!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 w-full'>
+                          <SelectValue placeholder='Sélectionnez un type' />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -207,33 +196,29 @@ export default function UpdateMediaModal({
               />
             </div>
 
-            <FormItem className="w-full">
-              <FormLabel className="text-lg font-semibold">
+            <FormItem className='w-full'>
+              <FormLabel className='text-lg font-semibold'>
                 Mettre à jour le fichier (Optionnel)
               </FormLabel>
               <FormControl>
-                <div className="relative">
+                <div className='relative'>
                   <Input
                     readOnly
-                    value={file ? file.name : ""}
-                    placeholder="Sélectionnez un nouveau fichier"
-                    className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
-                    onClick={() =>
-                      document.getElementById("updateMediaFileInput")?.click()
-                    }
+                    value={file ? file.name : ''}
+                    placeholder='Sélectionnez un nouveau fichier'
+                    className='!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer'
+                    onClick={() => document.getElementById('updateMediaFileInput')?.click()}
                   />
 
                   <SvgUploder
-                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                    onClick={() =>
-                      document.getElementById("updateMediaFileInput")?.click()
-                    }
+                    className='absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer'
+                    onClick={() => document.getElementById('updateMediaFileInput')?.click()}
                   />
 
                   <input
-                    id="updateMediaFileInput"
-                    type="file"
-                    className="hidden"
+                    id='updateMediaFileInput'
+                    type='file'
+                    className='hidden'
                     onChange={(e) => {
                       const f = e.target.files?.[0] ?? null;
                       setFile(f);
@@ -250,12 +235,12 @@ export default function UpdateMediaModal({
     footer: (
       <CtaButton
         props={{
-          text: "Mettre à jour",
+          text: 'Mettre à jour',
           onClick: form.handleSubmit(onSubmit),
           disabled: uploading || isSubmitting,
           loading: isSubmitting,
         }}
-        variant="submit"
+        variant='submit'
       />
     ),
   };
@@ -265,8 +250,8 @@ export default function UpdateMediaModal({
       open={isOpen}
       onOpenChange={setIsOpen}
       preventAutoClose={true}
-      variant="icon"
-      cta={{ icon: trigger || <SvgCrayon className="cursor-pointer" /> }}
+      variant='icon'
+      cta={{ icon: trigger || <SvgCrayon className='cursor-pointer' /> }}
       data={modalData}
     />
   );

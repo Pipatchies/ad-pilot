@@ -1,34 +1,32 @@
-import React from 'react'
-import FolderCard from '../../../components/card/folder-card'
-import Typography from '@/components/typography'
+import React from 'react';
+import FolderCard from '../../../components/card/folder-card';
+import Typography from '@/components/typography';
 import SvgVerywell from '@/components/icons/Verywell';
 
 const folderCardData = [
   {
-    title: "Facture agence",
+    title: 'Facture agence',
     icon: <SvgVerywell />,
-    url: "/invoices/agency"
+    url: '/invoices/agency',
   },
   {
-    title: "Facture régie",
-    url: "/invoices/regie"
+    title: 'Facture régie',
+    url: '/invoices/regie',
   },
 ];
 
 export default function Invoices() {
   return (
     <section>
-        <Typography variant="h1" className='lg:mb-20'> Les factures</Typography>
-    <div className="flex flex-wrap sm:items-center sm:justify-between gap-6 mb-6">
+      <Typography variant='h1' className='lg:mb-20'>
+        {' '}
+        Les factures
+      </Typography>
+      <div className='flex flex-wrap sm:items-center sm:justify-between gap-6 mb-6'>
         {folderCardData.map((data, index) => (
-        <FolderCard
-          key={index}
-          title={data.title}
-          icon={data.icon}
-          url={data.url}
-        />
-      ))}
+          <FolderCard key={index} title={data.title} icon={data.icon} url={data.url} />
+        ))}
       </div>
     </section>
-  )
+  );
 }

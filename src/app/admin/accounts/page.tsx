@@ -1,11 +1,10 @@
-import React from "react";
-import SpaceAccounts from "./_sections/spaceAccounts";
+import React from 'react';
+import SpaceAccounts from './_sections/spaceAccounts';
 
 export default function AccountsPage() {
   return (
-  <section>
-    <SpaceAccounts />
-  </section>
-  )
+    <section>
+      <SpaceAccounts />
+    </section>
+  );
 }
-

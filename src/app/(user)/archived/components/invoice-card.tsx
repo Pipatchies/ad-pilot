@@ -1,5 +1,5 @@
-import DetailsCard from "@/components/card/details-card";
-import Link from "next/link";
+import DetailsCard from '@/components/card/details-card';
+import Link from 'next/link';
 
 type Props = {
   data: {
@@ -10,21 +10,17 @@ type Props = {
     slug: string;
   }[];
   className?: string;
-  variant: "invoice";
+  variant: 'invoice';
 };
 
-export default function InvoiceCards({
-  data,
-  variant,
-  className = "",
-}: Props) {
+export default function InvoiceCards({ data, variant, className = '' }: Props) {
   return (
-      <div className={className}>
-        {data.map((item, index) => (
-            <Link key={index} href={`/archived/${item.slug}`} className="block h-full">
-            <DetailsCard variant={variant} {...item} />
-            </Link>
-        ))}
-      </div>
+    <div className={className}>
+      {data.map((item, index) => (
+        <Link key={index} href={`/archived/${item.slug}`} className='block h-full'>
+          <DetailsCard variant={variant} {...item} />
+        </Link>
+      ))}
+    </div>
   );
 }

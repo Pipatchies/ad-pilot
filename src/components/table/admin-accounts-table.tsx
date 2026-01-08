@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,8 +8,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import SvgSmallDown from "@/components/icons/SmallDown";
+} from '@/components/ui/table';
+import SvgSmallDown from '@/components/icons/SmallDown';
 
 import {
   ColumnDef,
@@ -19,15 +19,15 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
-} from "@tanstack/react-table";
-import DeleteModal from "@/components/modal/delete-modal";
-import { useMutation } from "convex/react";
-import { Id } from "@/../convex/_generated/dataModel";
-import { api } from "@/../convex/_generated/api";
-import UpdateAccountModal from "@/components/modal/update/update-account-modal";
+} from '@tanstack/react-table';
+import DeleteModal from '@/components/modal/delete-modal';
+import { useMutation } from 'convex/react';
+import { Id } from '@/../convex/_generated/dataModel';
+import { api } from '@/../convex/_generated/api';
+import UpdateAccountModal from '@/components/modal/update/update-account-modal';
 
 type AdminAccount = {
-  userId: Id<"users">;
+  userId: Id<'users'>;
   name: string;
   lastname: string;
   email: string;
@@ -40,12 +40,12 @@ interface AdminAccountsProps {
   globalFilter?: string;
 }
 
-function SortIcon({ isSorted }: { isSorted: false | "asc" | "desc" }) {
-  if (!isSorted) return <SvgSmallDown className="w-4 h-4 opacity-40" />;
+function SortIcon({ isSorted }: { isSorted: false | 'asc' | 'desc' }) {
+  if (!isSorted) return <SvgSmallDown className='w-4 h-4 opacity-40' />;
   return (
     <SvgSmallDown
       className={`w-4 h-4 transition-transform duration-200 block mx-auto" ${
-        isSorted === "asc" ? "rotate-0" : "rotate-180"
+        isSorted === 'asc' ? 'rotate-0' : 'rotate-180'
       }`}
     />
   );
@@ -53,7 +53,7 @@ function SortIcon({ isSorted }: { isSorted: false | "asc" | "desc" }) {
 
 export default function AdminAccountsTable({
   adminAccounts,
-  globalFilter = "",
+  globalFilter = '',
 }: AdminAccountsProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -61,81 +61,79 @@ export default function AdminAccountsTable({
 
   const columns: ColumnDef<AdminAccount>[] = [
     {
-      accessorKey: "name",
+      accessorKey: 'name',
       header: ({ column }) => (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1 text-base font-bold text-primary"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='flex items-center gap-1 text-base font-bold text-primary'
         >
           Prénom <SortIcon isSorted={column.getIsSorted()} />
         </button>
       ),
-      cell: ({ row }) => row.getValue("name"),
+      cell: ({ row }) => row.getValue('name'),
     },
     {
-      accessorKey: "lastname",
+      accessorKey: 'lastname',
       header: ({ column }) => (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1 text-base font-bold text-primary"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='flex items-center gap-1 text-base font-bold text-primary'
         >
           Nom <SortIcon isSorted={column.getIsSorted()} />
         </button>
       ),
-      cell: ({ row }) => row.getValue("lastname"),
+      cell: ({ row }) => row.getValue('lastname'),
     },
     {
-      accessorKey: "email",
+      accessorKey: 'email',
       header: ({ column }) => (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1 text-base font-bold text-primary"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='flex items-center gap-1 text-base font-bold text-primary'
         >
           Email <SortIcon isSorted={column.getIsSorted()} />
         </button>
       ),
-      cell: ({ row }) => row.getValue("email"),
+      cell: ({ row }) => row.getValue('email'),
     },
     {
-      accessorKey: "role",
+      accessorKey: 'role',
       header: ({ column }) => (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1 text-base font-bold text-primary"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='flex items-center gap-1 text-base font-bold text-primary'
         >
           Rôle <SortIcon isSorted={column.getIsSorted()} />
         </button>
       ),
-      cell: ({ row }) => row.getValue("role"),
+      cell: ({ row }) => row.getValue('role'),
     },
     {
-      accessorKey: "id",
+      accessorKey: 'id',
       header: ({ column }) => (
         <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1 text-base font-bold text-primary"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='flex items-center gap-1 text-base font-bold text-primary'
         >
           Identifiant <SortIcon isSorted={column.getIsSorted()} />
         </button>
       ),
-      cell: ({ row }) => row.getValue("id"),
+      cell: ({ row }) => row.getValue('id'),
     },
     {
-      id: "actions",
-      header: () => <span className="sr-only">Actions</span>,
+      id: 'actions',
+      header: () => <span className='sr-only'>Actions</span>,
       cell: ({ row }) => {
         const data = row.original;
         return (
-          <div className="flex justify-end gap-4">
+          <div className='flex justify-end gap-4'>
             <UpdateAccountModal
               userId={data.userId}
               firstname={data.name}
               lastname={data.lastname}
               email={data.email}
             />
-            <DeleteModal
-              onConfirm={() => deleteAccount({ userId: data.userId })}
-            />
+            <DeleteModal onConfirm={() => deleteAccount({ userId: data.userId })} />
           </div>
         );
       },
@@ -157,17 +155,14 @@ export default function AdminAccountsTable({
   });
 
   return (
-    <div className="w-full overflow-x-auto">
-      <Table className="min-w-[700px]">
+    <div className='w-full overflow-x-auto'>
+      <Table className='min-w-[700px]'>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="border-none">
+            <TableRow key={headerGroup.id} className='border-none'>
               {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
+                  {flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}
             </TableRow>
@@ -176,7 +171,7 @@ export default function AdminAccountsTable({
         <TableBody>
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="text-lg h-15 border-[#A5A4BF]">
+              <TableRow key={row.id} className='text-lg h-15 border-[#A5A4BF]'>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -186,7 +181,7 @@ export default function AdminAccountsTable({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="text-center py-4">
+              <TableCell colSpan={columns.length} className='text-center py-4'>
                 Aucun résultat
               </TableCell>
             </TableRow>

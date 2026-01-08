@@ -1,6 +1,6 @@
-import { authTables } from "@convex-dev/auth/server";
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
+import { authTables } from '@convex-dev/auth/server';
+import { defineSchema, defineTable } from 'convex/server';
+import { v } from 'convex/values';
 
 export default defineSchema({
   ...authTables,
@@ -13,13 +13,13 @@ export default defineSchema({
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
     lastname: v.optional(v.string()),
-    roleId: v.optional(v.id("roles")),
-    organizationId: v.optional(v.id("organizations")),
+    roleId: v.optional(v.id('roles')),
+    organizationId: v.optional(v.id('organizations')),
     lastConnectionTime: v.optional(v.number()),
   })
-    .index("email", ["email"])
-    .index("phone", ["phone"])
-    .index("by_organizationId", ["organizationId"]),
+    .index('email', ['email'])
+    .index('phone', ['phone'])
+    .index('by_organizationId', ['organizationId']),
 
   organizations: defineTable({
     name: v.string(),
@@ -50,21 +50,21 @@ export default defineSchema({
     url: v.optional(v.string()),
     brief: v.string(),
     deleted: v.optional(v.boolean()),
-    organizationId: v.optional(v.id("organizations")),
-  }).index("by_organizationId", ["organizationId"]),
+    organizationId: v.optional(v.id('organizations')),
+  }).index('by_organizationId', ['organizationId']),
 
   campaigns: defineTable({
     title: v.string(),
     subtitle: v.optional(v.string()),
     mediaTypes: v.array(
       v.union(
-        v.literal("ooh"),
-        v.literal("tv"),
-        v.literal("radio"),
-        v.literal("digital"),
-        v.literal("cinema"),
-        v.literal("press")
-      )
+        v.literal('ooh'),
+        v.literal('tv'),
+        v.literal('radio'),
+        v.literal('digital'),
+        v.literal('cinema'),
+        v.literal('press'),
+      ),
     ),
     tvTypes: v.optional(v.array(v.string())),
     radioTypes: v.optional(v.array(v.string())),
@@ -75,12 +75,12 @@ export default defineSchema({
     budgetMedia: v.array(
       v.object({
         type: v.union(
-          v.literal("ooh"),
-          v.literal("tv"),
-          v.literal("radio"),
-          v.literal("digital"),
-          v.literal("cinema"),
-          v.literal("press")
+          v.literal('ooh'),
+          v.literal('tv'),
+          v.literal('radio'),
+          v.literal('digital'),
+          v.literal('cinema'),
+          v.literal('press'),
         ),
         amount: v.number(),
         pourcent: v.union(v.number(), v.string()),
@@ -89,35 +89,31 @@ export default defineSchema({
         periodTo: v.optional(v.string()),
         title: v.optional(v.string()),
         details: v.optional(v.string()),
-      })
+      }),
     ),
     status: v.array(
       v.object({
         id: v.number(),
         label: v.string(),
-        state: v.union(
-          v.literal("completed"),
-          v.literal("current"),
-          v.literal("upcoming")
-        ),
+        state: v.union(v.literal('completed'), v.literal('current'), v.literal('upcoming')),
         deadline: v.string(),
-      })
+      }),
     ),
     diffusions: v.optional(
       v.array(
         v.object({
           mediaType: v.union(
-            v.literal("ooh"),
-            v.literal("tv"),
-            v.literal("radio"),
-            v.literal("digital"),
-            v.literal("cinema"),
-            v.literal("press")
+            v.literal('ooh'),
+            v.literal('tv'),
+            v.literal('radio'),
+            v.literal('digital'),
+            v.literal('cinema'),
+            v.literal('press'),
           ),
           startDate: v.string(),
           endDate: v.string(),
-        })
-      )
+        }),
+      ),
     ),
     digitalAnalysis: v.optional(
       v.object({
@@ -125,13 +121,11 @@ export default defineSchema({
         name: v.string(),
         publicId: v.optional(v.string()),
         resourceType: v.optional(v.string()),
-      })
+      }),
     ),
     report: v.optional(
       v.object({
-        status: v.optional(
-          v.union(v.literal("current"), v.literal("archived"))
-        ),
+        status: v.optional(v.union(v.literal('current'), v.literal('archived'))),
         document: v.optional(v.string()),
         kpi: v.optional(
           v.array(
@@ -139,98 +133,90 @@ export default defineSchema({
               icon: v.string(),
               title: v.string(),
               info: v.string(),
-            })
-          )
+            }),
+          ),
         ),
-      })
+      }),
     ),
     deleted: v.optional(v.boolean()),
     archived: v.boolean(),
-    organizationId: v.id("organizations"),
-  }).index("by_organizationId", ["organizationId"]),
+    organizationId: v.id('organizations'),
+  }).index('by_organizationId', ['organizationId']),
 
   medias: defineTable({
     title: v.string(),
     mediaTypes: v.array(
       v.union(
-        v.literal("ooh"),
-        v.literal("tv"),
-        v.literal("radio"),
-        v.literal("digital"),
-        v.literal("cinema"),
-        v.literal("press")
-      )
+        v.literal('ooh'),
+        v.literal('tv'),
+        v.literal('radio'),
+        v.literal('digital'),
+        v.literal('cinema'),
+        v.literal('press'),
+      ),
     ),
     type: v.union(
-      v.literal("png"),
-      v.literal("jpg"),
-      v.literal("mp3"),
-      v.literal("mp4"),
-      v.literal("pdf")
+      v.literal('png'),
+      v.literal('jpg'),
+      v.literal('mp3'),
+      v.literal('mp4'),
+      v.literal('pdf'),
     ),
     url: v.string(),
     publicId: v.string(),
-    resourceType: v.union(
-      v.literal("image"),
-      v.literal("video"),
-      v.literal("raw")
-    ),
+    resourceType: v.union(v.literal('image'), v.literal('video'), v.literal('raw')),
     width: v.optional(v.number()),
     height: v.optional(v.number()),
-    campaignId: v.id("campaigns"),
+    campaignId: v.id('campaigns'),
     deleted: v.optional(v.boolean()),
-  }).index("by_campaignId", ["campaignId"]),
+  }).index('by_campaignId', ['campaignId']),
 
   documents: defineTable({
     title: v.string(),
     type: v.union(
-      v.literal("png"),
-      v.literal("jpg"),
-      v.literal("mp3"),
-      v.literal("mp4"),
-      v.literal("pdf")
+      v.literal('png'),
+      v.literal('jpg'),
+      v.literal('mp3'),
+      v.literal('mp4'),
+      v.literal('pdf'),
     ),
     url: v.string(),
     publicId: v.string(),
-    resourceType: v.union(
-      v.literal("image"),
-      v.literal("video"),
-      v.literal("raw")
-    ),
-    campaignId: v.id("campaigns"),
-    organizationId: v.id("organizations"),
+    resourceType: v.union(v.literal('image'), v.literal('video'), v.literal('raw')),
+    campaignId: v.id('campaigns'),
+    organizationId: v.id('organizations'),
     deleted: v.optional(v.boolean()),
   })
-    .index("by_campaignId", ["campaignId"])
-    .index("by_organizationId", ["organizationId"]),
+    .index('by_campaignId', ['campaignId'])
+    .index('by_organizationId', ['organizationId']),
 
   invoices: defineTable({
     title: v.string(),
-    invoiceType: v.union(v.literal("agency"), v.literal("vendor")),
+    invoiceType: v.union(v.literal('agency'), v.literal('vendor')),
     agencyInvoice: v.optional(v.string()),
     vendorName: v.optional(v.string()), // Deprecated, use vendorId where possible
-    vendorId: v.optional(v.id("vendors")),
+    vendorId: v.optional(v.id('vendors')),
     htprice: v.number(),
     ttcprice: v.number(),
     startDate: v.string(),
     dueDate: v.string(),
     url: v.string(),
     publicId: v.string(),
-    resourceType: v.union(v.literal("raw")),
-    campaignId: v.id("campaigns"),
-    organizationId: v.id("organizations"),
+    resourceType: v.union(v.literal('raw')),
+    campaignId: v.id('campaigns'),
+    organizationId: v.id('organizations'),
     deleted: v.optional(v.boolean()),
-    status: v.optional(v.union(v.literal("paid"), v.literal("pending"))),
+    status: v.optional(v.union(v.literal('paid'), v.literal('pending'))),
   })
-    .index("by_organizationId", ["organizationId"])
-    .index("by_campaignId", ["campaignId"]),
+    .index('by_organizationId', ['organizationId'])
+    .index('by_campaignId', ['campaignId']),
 
   vendors: defineTable({
     name: v.string(),
     contactName: v.optional(v.string()),
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
-    userId: v.optional(v.id("users")),
+    userId: v.optional(v.id('users')),
   }),
 
   targets: defineTable({
@@ -249,13 +235,13 @@ export default defineSchema({
         legend: v.string(),
         percentage: v.number(),
         key: v.number(),
-      })
+      }),
     ),
   }),
 
   campaignTargets: defineTable({
-    campaignId: v.id("campaigns"),
-    targetId: v.id("targets"),
+    campaignId: v.id('campaigns'),
+    targetId: v.id('targets'),
     fileUrl: v.optional(v.string()),
   }),
 
@@ -270,8 +256,8 @@ export default defineSchema({
           from: v.optional(v.string()),
           to: v.optional(v.string()),
         }),
-      })
+      }),
     ),
-    organizationId: v.optional(v.id("organizations")),
-  }).index("by_organizationId", ["organizationId"]),
+    organizationId: v.optional(v.id('organizations')),
+  }).index('by_organizationId', ['organizationId']),
 });

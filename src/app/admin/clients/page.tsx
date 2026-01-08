@@ -1,12 +1,11 @@
-import React from "react";
+import React from 'react';
 
-import SpaceClients from "./_sections/spaceClients";
-
+import SpaceClients from './_sections/spaceClients';
 
 export default function Clients() {
   return (
-    <section className="flex flex-col gap-2">
-      <SpaceClients/>
+    <section className='flex flex-col gap-2'>
+      <SpaceClients />
     </section>
   );
 }

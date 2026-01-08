@@ -1,19 +1,19 @@
-import { query } from "../_generated/server";
-import { v } from "convex/values";
-import { Id } from "../_generated/dataModel";
+import { query } from '../_generated/server';
+import { v } from 'convex/values';
+import { Id } from '../_generated/dataModel';
 
 export const getAllOrganizationsWithLastConnection = query({
   args: {},
   handler: async (ctx) => {
     const organizations = await ctx.db
-      .query("organizations")
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('organizations')
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
 
-    const users = await ctx.db.query("users").collect();
+    const users = await ctx.db.query('users').collect();
 
     const lastByOrganization = new Map<string, number | undefined>();
-    const userByOrganization = new Map<string, Id<"users">>();
+    const userByOrganization = new Map<string, Id<'users'>>();
 
     for (const user of users) {
       const organizationId = user.organizationId;
@@ -31,11 +31,9 @@ export const getAllOrganizationsWithLastConnection = query({
     const organizationsWithStatus = await Promise.all(
       organizations.map(async (organization) => {
         const campaigns = await ctx.db
-          .query("campaigns")
-          .withIndex("by_organizationId", (q) =>
-            q.eq("organizationId", organization._id)
-          )
-          .filter((q) => q.neq(q.field("deleted"), true))
+          .query('campaigns')
+          .withIndex('by_organizationId', (q) => q.eq('organizationId', organization._id))
+          .filter((q) => q.neq(q.field('deleted'), true))
           .collect();
 
         const hasActiveCampaign = campaigns.some((campaign) => {
@@ -47,13 +45,13 @@ export const getAllOrganizationsWithLastConnection = query({
         return {
           organizationId: organization._id,
           organizationName: organization.name,
-          logo: organization.logo ?? "",
-          step: hasActiveCampaign ? "Campagne en cours" : "En veille",
+          logo: organization.logo ?? '',
+          step: hasActiveCampaign ? 'Campagne en cours' : 'En veille',
           createdAt: organization._creationTime,
           lastConnectionTime: lastByOrganization.get(organization._id) ?? 0,
           userId: userByOrganization.get(organization._id),
         };
-      })
+      }),
     );
 
     return organizationsWithStatus;
@@ -62,38 +60,32 @@ export const getAllOrganizationsWithLastConnection = query({
 
 export const getOrganizationDetails = query({
   args: {
-    organizationId: v.id("organizations"),
+    organizationId: v.id('organizations'),
   },
   handler: async (ctx, args) => {
     const organization = await ctx.db.get(args.organizationId);
-    if (!organization) throw new Error("Organization not found");
+    if (!organization) throw new Error('Organization not found');
 
     const user = await ctx.db
-      .query("users")
-      .withIndex("by_organizationId", (q) =>
-        q.eq("organizationId", args.organizationId)
-      )
+      .query('users')
+      .withIndex('by_organizationId', (q) => q.eq('organizationId', args.organizationId))
       .first();
 
     const campaigns = await ctx.db
-      .query("campaigns")
-      .withIndex("by_organizationId", (q) =>
-        q.eq("organizationId", args.organizationId)
-      )
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('campaigns')
+      .withIndex('by_organizationId', (q) => q.eq('organizationId', args.organizationId))
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
 
     const invoicesData = await ctx.db
-      .query("invoices")
-      .withIndex("by_organizationId", (q) =>
-        q.eq("organizationId", args.organizationId)
-      )
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('invoices')
+      .withIndex('by_organizationId', (q) => q.eq('organizationId', args.organizationId))
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
 
     const invoices = await Promise.all(
       invoicesData.map(async (invoice) => {
-        let campaignName = "—";
+        let campaignName = '—';
         if (invoice.campaignId) {
           const campaign = await ctx.db.get(invoice.campaignId);
           if (campaign) {
@@ -104,7 +96,7 @@ export const getOrganizationDetails = query({
           ...invoice,
           campaign: campaignName,
         };
-      })
+      }),
     );
 
     return {

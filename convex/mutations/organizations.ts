@@ -1,7 +1,7 @@
 // convex/organizations.ts
-import { getAuthUserId } from "@convex-dev/auth/server";
-import { internalMutation, mutation } from "../_generated/server";
-import { v } from "convex/values";
+import { getAuthUserId } from '@convex-dev/auth/server';
+import { internalMutation, mutation } from '../_generated/server';
+import { v } from 'convex/values';
 
 export const createOrganization = internalMutation({
   args: {
@@ -9,7 +9,7 @@ export const createOrganization = internalMutation({
     logo: v.string(),
   },
   handler: async (ctx, args) => {
-    const organizationId = await ctx.db.insert("organizations", {
+    const organizationId = await ctx.db.insert('organizations', {
       ...args,
     });
     return organizationId;
@@ -18,7 +18,7 @@ export const createOrganization = internalMutation({
 
 export const updateOrganization = mutation({
   args: {
-    organizationId: v.id("organizations"),
+    organizationId: v.id('organizations'),
     patch: v.object({
       name: v.string(),
       logo: v.string(),
@@ -26,7 +26,7 @@ export const updateOrganization = mutation({
   },
   handler: async (ctx, { organizationId, patch }) => {
     const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Unauthorized");
+    if (!userId) throw new Error('Unauthorized');
 
     await ctx.db.patch(organizationId, patch);
     return { ok: true };
@@ -34,10 +34,10 @@ export const updateOrganization = mutation({
 });
 
 export const deleteOrganization = mutation({
-  args: { organizationId: v.id("organizations") },
+  args: { organizationId: v.id('organizations') },
   handler: async (ctx, { organizationId }) => {
     const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Unauthorized");
+    if (!userId) throw new Error('Unauthorized');
 
     await ctx.db.patch(organizationId, { deleted: true });
     return { ok: true };

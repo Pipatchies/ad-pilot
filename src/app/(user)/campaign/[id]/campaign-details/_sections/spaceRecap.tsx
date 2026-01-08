@@ -1,26 +1,26 @@
-"use client";
-import React from "react";
-import Typography from "@/components/typography";
-import StepCard from "@/components/card/step-card";
-import BudgetCard from "@/components/card/budget-card";
-import ChartCard from "@/components/card/chart-card";
-import BroadcastCard from "@/components/card/broadcast-card";
-import { useQuery } from "convex/react";
-import { api } from "../../../../../../../convex/_generated/api";
-import { Id } from "../../../../../../../convex/_generated/dataModel";
-import { calculateBroadcastProgress } from "@/lib/utils";
-import { useParams } from "next/navigation";
-import { getIconFromType } from "@/lib/utils";
-import Image from "next/image";
-import { MEDIA_TYPE_LABELS } from "@/types/medias";
+'use client';
+import React from 'react';
+import Typography from '@/components/typography';
+import StepCard from '@/components/card/step-card';
+import BudgetCard from '@/components/card/budget-card';
+import ChartCard from '@/components/card/chart-card';
+import BroadcastCard from '@/components/card/broadcast-card';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../../../../convex/_generated/api';
+import { Id } from '../../../../../../../convex/_generated/dataModel';
+import { calculateBroadcastProgress } from '@/lib/utils';
+import { useParams } from 'next/navigation';
+import { getIconFromType } from '@/lib/utils';
+import Image from 'next/image';
+import { MEDIA_TYPE_LABELS } from '@/types/medias';
 
 export default function SpaceRecap() {
   const params = useParams();
-  const campaignId = params?.id as Id<"campaigns">;
+  const campaignId = params?.id as Id<'campaigns'>;
 
   const campaign = useQuery(
     api.queries.campaigns.getCampaignById,
-    campaignId ? { campaignId } : "skip"
+    campaignId ? { campaignId } : 'skip',
   );
 
   if (!campaign) {
@@ -44,21 +44,21 @@ export default function SpaceRecap() {
 
   const { progress, daysRemaining } = calculateBroadcastProgress(
     campaign.startDate,
-    campaign.endDate
+    campaign.endDate,
   );
 
   const broadcastData = {
     daysRemaining,
-    startDate: new Date(campaign.startDate).toLocaleDateString("fr-FR"),
-    endDate: new Date(campaign.endDate).toLocaleDateString("fr-FR"),
+    startDate: new Date(campaign.startDate).toLocaleDateString('fr-FR'),
+    endDate: new Date(campaign.endDate).toLocaleDateString('fr-FR'),
     progress,
   };
 
   return (
-    <section className="space-y-15">
-      <Typography variant="h1">{campaign.title}</Typography>
+    <section className='space-y-15'>
+      <Typography variant='h1'>{campaign.title}</Typography>
 
-      <div className="flex flex-wrap gap-x-3 items-center">
+      <div className='flex flex-wrap gap-x-3 items-center'>
         {campaign.mediaTypes?.map((type, index) => {
           const icon = getIconFromType(type);
           return (
@@ -73,30 +73,30 @@ export default function SpaceRecap() {
             )
           );
         })}
-        <Typography className="m-0" variant="h4">
+        <Typography className='m-0' variant='h4'>
           {campaign.subtitle}
         </Typography>
       </div>
 
-      <Typography variant="h2">Récap de la campagne</Typography>
+      <Typography variant='h2'>Récap de la campagne</Typography>
 
-      <div className="flex flex-col space-y-6">
+      <div className='flex flex-col space-y-6'>
         {/* Étapes + Budget */}
-        <div className="flex flex-wrap gap-3 w-full">
-          <div className="grow">
+        <div className='flex flex-wrap gap-3 w-full'>
+          <div className='grow'>
             <StepCard steps={stepCardData} />
           </div>
-          <div className="basis-1/3 grow max-w-fit">
+          <div className='basis-1/3 grow max-w-fit'>
             <BudgetCard totalBudget={budgetCardData} />
           </div>
         </div>
 
         {/* Graphique + Diffusion */}
-        <div className="flex flex-wrap gap-3 w-full">
-          <div className="basis-1/3 grow max-w-fit">
+        <div className='flex flex-wrap gap-3 w-full'>
+          <div className='basis-1/3 grow max-w-fit'>
             <ChartCard mediaData={mediaData} />
           </div>
-          <div className="grow">
+          <div className='grow'>
             <BroadcastCard broadcastData={broadcastData} />
           </div>
         </div>

@@ -1,26 +1,20 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import Typography from "../typography";
-import Image from "next/image";
-import { cn, getIconFromType } from "@/lib/utils";
-import MediaThumb, { MediaThumbProps } from "../media-thumb";
-import MediaViewerModal from "../modal/media-viewer-modal";
-import UpdateMediaModal from "../modal/update/update-media-modal";
-import SvgCrayon from "../icons/Crayon";
-import { Id } from "@/../convex/_generated/dataModel";
-import { MediaType } from "@/types/medias";
-import Link from "next/link";
-import DeleteModal from "../modal/delete-modal";
-import { useMutation } from "convex/react";
-import { api } from "@/../convex/_generated/api";
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card';
+import Typography from '../typography';
+import Image from 'next/image';
+import { cn, getIconFromType } from '@/lib/utils';
+import MediaThumb, { MediaThumbProps } from '../media-thumb';
+import MediaViewerModal from '../modal/media-viewer-modal';
+import UpdateMediaModal from '../modal/update/update-media-modal';
+import SvgCrayon from '../icons/Crayon';
+import { Id } from '@/../convex/_generated/dataModel';
+import { MediaType } from '@/types/medias';
+import Link from 'next/link';
+import DeleteModal from '../modal/delete-modal';
+import { useMutation } from 'convex/react';
+import { api } from '@/../convex/_generated/api';
 
 type DetailsCardProps = {
   title: string;
@@ -34,7 +28,7 @@ type DetailsCardProps = {
   mediaTypes?: string[];
   age?: string;
   subject?: string;
-  variant: "default" | "campaign" | "media" | "target" | "archived" | "invoice";
+  variant: 'default' | 'campaign' | 'media' | 'target' | 'archived' | 'invoice';
   media?: MediaThumbProps;
   hideEditIcon?: boolean;
   hideDeleteIcon?: boolean;
@@ -81,37 +75,31 @@ export default function DetailsCard({
     <Card
       onClick={fileData ? handleCardClick : undefined}
       className={cn(
-        "text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2 relative transition-all duration-200",
-        variant === "media" && "",
+        'text-primary bg-card/50 max-h-[250px] py-10 shadow-none border-none gap-y-4 w-full flex justify-center gap-2 relative transition-all duration-200',
+        variant === 'media' && '',
         (url || fileData) &&
-          "cursor-pointer group transition border border-transparent hover:border-primary hover:bg-primary hover:text-white hover:scale-100 dark:hover:text-black"
+          'cursor-pointer group transition border border-transparent hover:border-primary hover:bg-primary hover:text-white hover:scale-100 dark:hover:text-black',
       )}
     >
-      {variant === "media" && media?._id && (
-        <div className="absolute top-8 right-6 z-10 flex items-center gap-2">
+      {variant === 'media' && media?._id && (
+        <div className='absolute top-8 right-6 z-10 flex items-center gap-2'>
           {!hideEditIcon && (
             <UpdateMediaModal
-              mediaId={media._id as Id<"medias">}
+              mediaId={media._id as Id<'medias'>}
               defaultValues={{
                 title: title,
                 mediaTypes: (mediaTypes as MediaType[]) || [],
               }}
-              trigger={
-                <SvgCrayon className="w-5 h-5 cursor-pointer hover:opacity-70" />
-              }
+              trigger={<SvgCrayon className='w-5 h-5 cursor-pointer hover:opacity-70' />}
             />
           )}
           {!hideDeleteIcon && (
-            <DeleteModal
-              onConfirm={() =>
-                deleteMedia({ mediaId: media._id as Id<"medias"> })
-              }
-            />
+            <DeleteModal onConfirm={() => deleteMedia({ mediaId: media._id as Id<'medias'> })} />
           )}
         </div>
       )}
       <CardHeader>
-        {variant === "media" && (
+        {variant === 'media' && (
           <>
             <div
               onClick={(e) => {
@@ -121,130 +109,121 @@ export default function DetailsCard({
                 }
               }}
               className={cn(
-                "flex items-start gap-4 mb-2",
-                media?.url &&
-                  "cursor-pointer hover:opacity-80 transition-opacity"
+                'flex items-start gap-4 mb-2',
+                media?.url && 'cursor-pointer hover:opacity-80 transition-opacity',
               )}
             >
-              <MediaThumb
-                publicId={media?.publicId}
-                type={media?.type}
-                alt={title}
-              />
+              <MediaThumb publicId={media?.publicId} type={media?.type} alt={title} />
             </div>
-            <Typography variant="h3" className="mb-0">
+            <Typography variant='h3' className='mb-0'>
               {title}
             </Typography>
-            <CardDescription className="italic text-primary group-hover:text-white transition-colors">
+            <CardDescription className='italic text-primary group-hover:text-white transition-colors'>
               {description}
             </CardDescription>
           </>
         )}
-        {(variant === "campaign" ||
-          variant === "default" ||
-          variant === "archived" ||
-          variant === "invoice") && (
+        {(variant === 'campaign' ||
+          variant === 'default' ||
+          variant === 'archived' ||
+          variant === 'invoice') && (
           <>
-            <Typography variant="h3" className="mb-0">
+            <Typography variant='h3' className='mb-0'>
               {title}
             </Typography>
-            <CardDescription className="italic text-primary group-hover:text-white transition-colors">
+            <CardDescription className='italic text-primary group-hover:text-white transition-colors'>
               {description}
             </CardDescription>
           </>
         )}
-        {variant === "target" && (
+        {variant === 'target' && (
           <>
-            <Typography variant="h3" className="mb-0">
+            <Typography variant='h3' className='mb-0'>
               {title}
             </Typography>
           </>
         )}
       </CardHeader>
       <CardContent>
-        {variant === "campaign" && (
-          <ul className="space-y-1">
+        {variant === 'campaign' && (
+          <ul className='space-y-1'>
             <li>
-              <span className="underline">Date de lancement :</span>{" "}
+              <span className='underline'>Date de lancement :</span>{' '}
               {startDate?.toLocaleDateString()}
             </li>
             <li>
-              <span className="underline">Date de fin :</span>{" "}
-              {endDate?.toLocaleDateString()}
+              <span className='underline'>Date de fin :</span> {endDate?.toLocaleDateString()}
             </li>
             <li>
-              <span className="underline">Etape :</span> {status}
+              <span className='underline'>Etape :</span> {status}
             </li>
           </ul>
         )}
 
-        {variant === "default" && (
-          <ul className="space-y-1">
+        {variant === 'default' && (
+          <ul className='space-y-1'>
             {campaignTitle && (
               <li>
-                <span className="underline">Campagne</span> : {campaignTitle}
+                <span className='underline'>Campagne</span> : {campaignTitle}
               </li>
             )}
             <li>
-              <span className="underline">Date</span> :{" "}
-              {startDate?.toLocaleDateString()}
+              <span className='underline'>Date</span> : {startDate?.toLocaleDateString()}
             </li>
           </ul>
         )}
 
-        {variant === "media" && (
+        {variant === 'media' && (
           <>
-            <ul className="space-y-1">
+            <ul className='space-y-1'>
               <li>
-                <span className="underline">Date</span> :{" "}
-                {startDate?.toLocaleDateString()}
+                <span className='underline'>Date</span> : {startDate?.toLocaleDateString()}
               </li>
             </ul>
           </>
         )}
 
-        {variant === "target" && (
+        {variant === 'target' && (
           <>
-            <ul className="space-y-1">
+            <ul className='space-y-1'>
               <li>
-                <span className="underline">Tranche d'âge</span> : {age}
+                <span className='underline'>Tranche d'âge</span> : {age}
               </li>
               <li>
-                <span className="underline">Sujet</span> : {subject}
+                <span className='underline'>Sujet</span> : {subject}
               </li>
             </ul>
           </>
         )}
 
-        {variant === "archived" && (
-          <ul className="space-y-1">
+        {variant === 'archived' && (
+          <ul className='space-y-1'>
             <li>
-              <span className="underline">Date de lancement :</span>{" "}
+              <span className='underline'>Date de lancement :</span>{' '}
               {startDate?.toLocaleDateString()}
             </li>
             <li>
-              <span className="underline">Date d'archivage :</span>{" "}
+              <span className='underline'>Date d'archivage :</span>{' '}
               {archivedDate?.toLocaleDateString()}
             </li>
           </ul>
         )}
 
-        {variant === "invoice" && (
-          <ul className="space-y-1">
+        {variant === 'invoice' && (
+          <ul className='space-y-1'>
             <li>
-              <span className="underline">Date :</span>{" "}
-              {startDate?.toLocaleDateString()}
+              <span className='underline'>Date :</span> {startDate?.toLocaleDateString()}
             </li>
             <li>
-              <span className="underline">Emetteur :</span> {sendBy}
+              <span className='underline'>Emetteur :</span> {sendBy}
             </li>
           </ul>
         )}
       </CardContent>
 
-      {variant === "campaign" && mediaTypes && mediaTypes.length > 0 && (
-        <CardFooter className="flex items-end gap-x-2">
-          <span className="underline">Médias :</span>
+      {variant === 'campaign' && mediaTypes && mediaTypes.length > 0 && (
+        <CardFooter className='flex items-end gap-x-2'>
+          <span className='underline'>Médias :</span>
           {mediaTypes.map((type, index) => {
             const icon = getIconFromType(type);
             return (
@@ -256,8 +235,7 @@ export default function DetailsCard({
                   width={icon.width}
                   height={icon.height}
                   className={cn(
-                    url &&
-                      "transition-all group-hover:brightness-0 group-hover:invert"
+                    url && 'transition-all group-hover:brightness-0 group-hover:invert',
                   )}
                 />
               )
@@ -265,15 +243,15 @@ export default function DetailsCard({
           })}
         </CardFooter>
       )}
-      {isModalOpen && media?.url && variant === "media" && (
+      {isModalOpen && media?.url && variant === 'media' && (
         <MediaViewerModal
           isOpen={isModalOpen}
           mediaItem={{
             title: title,
             url: media.url,
-            type: media.type || "pdf",
+            type: media.type || 'pdf',
             publicId: media.publicId,
-            resourceType: "raw",
+            resourceType: 'raw',
           }}
           onClose={() => setIsModalOpen(false)}
         />
@@ -285,9 +263,9 @@ export default function DetailsCard({
           mediaItem={{
             title: fileData.title,
             url: fileData.url,
-            type: (fileData.type as any) || "pdf",
+            type: (fileData.type as any) || 'pdf',
             publicId: fileData.publicId,
-            resourceType: "raw",
+            resourceType: 'raw',
           }}
           onClose={() => setIsModalOpen(false)}
         />
@@ -297,7 +275,7 @@ export default function DetailsCard({
 
   if (url) {
     return (
-      <Link href={url} className="block w-full h-full">
+      <Link href={url} className='block w-full h-full'>
         {CardContentWrapper}
       </Link>
     );

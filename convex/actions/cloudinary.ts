@@ -1,8 +1,8 @@
-"use node";
-import { v } from "convex/values";
-import crypto from "crypto";
-import { action, internalAction } from "../_generated/server";
-import { v2 as cloudinary } from "cloudinary";
+'use node';
+import { v } from 'convex/values';
+import crypto from 'crypto';
+import { action, internalAction } from '../_generated/server';
+import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -35,12 +35,12 @@ export const getUploadSignature = action({
     const toSign = Object.keys(params)
       .sort()
       .map((k) => `${k}=${params[k]}`)
-      .join("&");
+      .join('&');
 
     const signature = crypto
-      .createHash("sha1")
+      .createHash('sha1')
       .update(toSign + api_secret)
-      .digest("hex");
+      .digest('hex');
 
     return {
       cloudName: cloud_name,
@@ -49,7 +49,7 @@ export const getUploadSignature = action({
       signature,
       uploadPreset: upload_preset,
       folder: args.folder,
-      resourceType: args.resourceType ?? "auto",
+      resourceType: args.resourceType ?? 'auto',
       publicId: args.publicId,
     };
   },
@@ -84,8 +84,8 @@ export const destroyMedia = internalAction({
       });
       return res;
     } catch (error) {
-      console.error("Error destroying media in Cloudinary:", error);
-      throw new Error("Cloudinary destroy failed");
+      console.error('Error destroying media in Cloudinary:', error);
+      throw new Error('Cloudinary destroy failed');
     }
   },
 });

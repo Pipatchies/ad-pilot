@@ -1,5 +1,5 @@
-import { v } from "convex/values";
-import { mutation } from "../_generated/server";
+import { v } from 'convex/values';
+import { mutation } from '../_generated/server';
 
 export const createVendor = mutation({
   args: {
@@ -7,10 +7,10 @@ export const createVendor = mutation({
     contactName: v.optional(v.string()),
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
-    userId: v.optional(v.id("users")),
+    userId: v.optional(v.id('users')),
   },
   handler: async (ctx, args) => {
-    const vendorId = await ctx.db.insert("vendors", {
+    const vendorId = await ctx.db.insert('vendors', {
       name: args.name,
       contactName: args.contactName,
       email: args.email,
@@ -23,12 +23,12 @@ export const createVendor = mutation({
 
 export const updateVendor = mutation({
   args: {
-    id: v.id("vendors"),
+    id: v.id('vendors'),
     name: v.string(),
     contactName: v.optional(v.string()),
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
-    userId: v.optional(v.id("users")),
+    userId: v.optional(v.id('users')),
   },
   handler: async (ctx, args) => {
     const { id, ...rest } = args;

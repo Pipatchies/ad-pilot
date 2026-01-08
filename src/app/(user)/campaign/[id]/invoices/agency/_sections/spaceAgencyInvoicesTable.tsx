@@ -1,13 +1,13 @@
-"use client";
-import { useQuery } from "convex/react";
-import { Id } from "../../../../../../../../convex/_generated/dataModel";
-import { useParams } from "next/navigation";
-import { api } from "../../../../../../../../convex/_generated/api";
-import InvoicesTable from "@/components/table/invoices-table";
+'use client';
+import { useQuery } from 'convex/react';
+import { Id } from '../../../../../../../../convex/_generated/dataModel';
+import { useParams } from 'next/navigation';
+import { api } from '../../../../../../../../convex/_generated/api';
+import InvoicesTable from '@/components/table/invoices-table';
 
 type AgencyInvoicesTableProps = {
   globalFilter: string;
-  dateSort: "asc" | "desc";
+  dateSort: 'asc' | 'desc';
 };
 
 export default function SpaceAgencyInvoicesByCampTable({
@@ -15,7 +15,7 @@ export default function SpaceAgencyInvoicesByCampTable({
   dateSort,
 }: AgencyInvoicesTableProps) {
   const params = useParams();
-  const campaignId = params?.id as Id<"campaigns">;
+  const campaignId = params?.id as Id<'campaigns'>;
 
   const invoices = useQuery(api.queries.invoices.getAgencyInvoicesByCampaign, {
     campaignId,
@@ -27,7 +27,7 @@ export default function SpaceAgencyInvoicesByCampTable({
     <section>
       <InvoicesTable
         invoices={invoicesData}
-        variant="agency"
+        variant='agency'
         showCampaign={false}
         globalFilter={globalFilter}
         dateSort={dateSort}

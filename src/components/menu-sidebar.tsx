@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { ChevronDown } from "lucide-react";
+import React from 'react';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -13,29 +13,25 @@ import {
   SidebarMenuButton,
   SidebarMenuSub,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "@/components/ui/collapsible";
-import Typography from "./typography";
-import SvgFusee from "./icons/Fusee";
-import { cn } from "@/lib/utils";
-import SvgProfil from "./icons/Profil";
-import SvgImageSmall from "./icons/ImageSmall";
-import SvgStatistiques from "./icons/Statistiques";
-import SvgFacture from "./icons/Facture";
-import SvgDocument from "./icons/Document";
-import Link from "next/link";
-import SvgPictoArchive from "./icons/PictoArchive";
-import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
-import { Id } from "../../convex/_generated/dataModel";
-import SvgConfiguration from "./icons/Configuration";
-import { useUser } from "../app/providers/user-provider";
+} from '@/components/ui/sidebar';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import Typography from './typography';
+import SvgFusee from './icons/Fusee';
+import { cn } from '@/lib/utils';
+import SvgProfil from './icons/Profil';
+import SvgImageSmall from './icons/ImageSmall';
+import SvgStatistiques from './icons/Statistiques';
+import SvgFacture from './icons/Facture';
+import SvgDocument from './icons/Document';
+import Link from 'next/link';
+import SvgPictoArchive from './icons/PictoArchive';
+import { useQuery } from 'convex/react';
+import { api } from '../../convex/_generated/api';
+import { Id } from '../../convex/_generated/dataModel';
+import SvgConfiguration from './icons/Configuration';
+import { useUser } from '../app/providers/user-provider';
 
-type UserRole = "admin" | "user";
+type UserRole = 'admin' | 'user';
 
 interface MenuItem {
   label: string;
@@ -60,48 +56,48 @@ export default function MenuSidebar({ variant }: SidebarProps) {
 
   const campaigns = useQuery(
     api.queries.campaigns.getCampaignsByOrganization,
-    organizationId ? { organizationId } : "skip"
+    organizationId ? { organizationId } : 'skip',
   );
 
   const adminMenuItemsTop: MenuItem[] = [
     {
-      label: "Clients",
+      label: 'Clients',
       icon: <SvgProfil />,
-      url: "/admin/clients",
+      url: '/admin/clients',
     },
     {
-      label: "Campagnes",
+      label: 'Campagnes',
       icon: <SvgFusee />,
-      url: "/admin/campaigns",
+      url: '/admin/campaigns',
     },
     {
-      label: "Factures",
+      label: 'Factures',
       icon: <SvgFacture />,
-      url: "/admin/invoices",
+      url: '/admin/invoices',
     },
     {
-      label: "Documents",
+      label: 'Documents',
       icon: <SvgDocument />,
-      url: "/admin/documents",
+      url: '/admin/documents',
     },
   ];
 
   const adminMenuItemsBottom: MenuItem = {
-    label: "Comptes",
+    label: 'Comptes',
     icon: <SvgConfiguration />,
-    url: "/admin/accounts",
+    url: '/admin/accounts',
   };
 
   const userStaticItems: MenuItem[] = [
     {
-      label: "Campagnes archivées",
+      label: 'Campagnes archivées',
       icon: <SvgPictoArchive />,
-      url: "/archived",
+      url: '/archived',
     },
     {
-      label: "Factures",
+      label: 'Factures',
       icon: <SvgFacture />,
-      url: "/invoices",
+      url: '/invoices',
     },
   ];
 
@@ -116,54 +112,54 @@ export default function MenuSidebar({ variant }: SidebarProps) {
             url: `/campaign/${campaign._id}`,
             subItems: [
               {
-                label: "La campagne",
+                label: 'La campagne',
                 icon: <SvgFusee />,
                 url: `/campaign/${campaign._id}/campaign-details`,
               },
               {
-                label: "Les cibles",
+                label: 'Les cibles',
                 icon: <SvgProfil />,
                 url: `/campaign/${campaign._id}/targets`,
               },
               {
-                label: "Bibliothèque",
+                label: 'Bibliothèque',
                 icon: <SvgImageSmall />,
                 url: `/campaign/${campaign._id}/librairy`,
               },
               ...(campaign.digitalAnalysis
                 ? [
                     {
-                      label: "Analyse digitale",
+                      label: 'Analyse digitale',
                       icon: <SvgStatistiques />,
                       url: `/campaign/${campaign._id}/digital`,
                     },
                   ]
                 : []),
               {
-                label: "Factures",
+                label: 'Factures',
                 icon: <SvgFacture />,
                 url: `/campaign/${campaign._id}/invoices`,
               },
               {
-                label: "Documents",
+                label: 'Documents',
                 icon: <SvgDocument />,
                 url: `/campaign/${campaign._id}/documents`,
               },
             ],
-          } as MenuItem)
+          }) as MenuItem,
       ),
     ...userStaticItems,
   ];
 
   const getDashboardUrl = (variant: UserRole): string => {
-    return variant === "admin" ? "/admin/dashboard" : "/dashboard";
+    return variant === 'admin' ? '/admin/dashboard' : '/dashboard';
   };
 
   const getBottomMenuItem = (variant: UserRole): MenuItem | null => {
-    return variant === "admin" ? adminMenuItemsBottom : null;
+    return variant === 'admin' ? adminMenuItemsBottom : null;
   };
 
-  const menuItems = variant === "admin" ? adminMenuItemsTop : userMenuItems;
+  const menuItems = variant === 'admin' ? adminMenuItemsTop : userMenuItems;
 
   const bottomMenuItem = getBottomMenuItem(variant);
   const dashboardUrl = getDashboardUrl(variant);
@@ -179,80 +175,67 @@ export default function MenuSidebar({ variant }: SidebarProps) {
   };
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="bg-sidebar px-4 py-3.25">
+    <Sidebar collapsible='icon'>
+      <SidebarHeader className='bg-sidebar px-4 py-3.25'>
         <div>
           <Link href={dashboardUrl}>
-            <Image
-              src="/logo-ad-pilot.png"
-              alt="ADPILOT"
-              width={163}
-              height={46}
-            />
+            <Image src='/logo-ad-pilot.png' alt='ADPILOT' width={163} height={46} />
           </Link>
         </div>
       </SidebarHeader>
-      <SidebarContent className="bg-sidebar-primary overflow-y-auto scrollbar-none">
-        <SidebarMenu className="py-2">
+      <SidebarContent className='bg-sidebar-primary overflow-y-auto scrollbar-none'>
+        <SidebarMenu className='py-2'>
           {menuItems.map((item, index) =>
             item.subItems ? (
-              <Collapsible key={index} className="group/collapsible">
-                <SidebarMenuItem className="py-1">
+              <Collapsible key={index} className='group/collapsible'>
+                <SidebarMenuItem className='py-1'>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
                       className={cn(
-                        "flex items-center justify-between w-full rounded-none p-8 bg-black/20 transition-all",
-                        isGroupActive(item.subItems) &&
-                          "bg-black/40 border-l-4 border-destructive"
+                        'flex items-center justify-between w-full rounded-none p-8 bg-black/20 transition-all',
+                        isGroupActive(item.subItems) && 'bg-black/40 border-l-4 border-destructive',
                       )}
                     >
-                      <div className="flex items-center gap-2">
+                      <div className='flex items-center gap-2'>
                         {item.icon && (
                           <span
                             className={cn(
-                              isGroupActive(item.subItems)
-                                ? "fill-destructive"
-                                : "fill-[#A5A4BF]"
+                              isGroupActive(item.subItems) ? 'fill-destructive' : 'fill-[#A5A4BF]',
                             )}
                           >
                             {item.icon}
                           </span>
                         )}
-                        <Typography
-                          variant="h5"
-                          className="transition-all duration-200"
-                        >
+                        <Typography variant='h5' className='transition-all duration-200'>
                           {item.label}
                         </Typography>
                       </div>
-                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                      <ChevronDown className='h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180' />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <SidebarMenuSub className="p-0 ml-8 mr-0 my-2 border-none">
+                    <SidebarMenuSub className='p-0 ml-8 mr-0 my-2 border-none'>
                       {item.subItems.map((sub, subIndex) => (
-                        <SidebarMenuSubItem key={subIndex} className="py-1">
+                        <SidebarMenuSubItem key={subIndex} className='py-1'>
                           <SidebarMenuButton
                             asChild
                             className={
                               isActive(sub.url)
-                                ? "bg-black/40 rounded-none p-8"
-                                : "bg-black/20 rounded-none p-8"
+                                ? 'bg-black/40 rounded-none p-8'
+                                : 'bg-black/20 rounded-none p-8'
                             }
                           >
                             <Link href={sub.url}>
                               {sub.icon && (
                                 <span
                                   className={cn(
-                                    isActive(sub.url)
-                                      ? "fill-destructive"
-                                      : "fill-[#A5A4BF]"
+                                    isActive(sub.url) ? 'fill-destructive' : 'fill-[#A5A4BF]',
                                   )}
                                 >
                                   {sub.icon}
                                 </span>
                               )}
-                              <Typography variant="h6">{sub.label}</Typography>
+                              <Typography variant='h6'>{sub.label}</Typography>
                             </Link>
                           </SidebarMenuButton>
                         </SidebarMenuSubItem>
@@ -262,59 +245,53 @@ export default function MenuSidebar({ variant }: SidebarProps) {
                 </SidebarMenuItem>
               </Collapsible>
             ) : (
-              <SidebarMenuItem key={index} className="py-1">
+              <SidebarMenuItem key={index} className='py-1'>
                 <SidebarMenuButton
                   asChild
                   className={cn(
-                    "whitespace-nowrap p-8",
+                    'whitespace-nowrap p-8',
                     isActive(item.url)
-                      ? "bg-black/40 border-l-4 rounded-none border-destructive"
-                      : "bg-black/20 rounded-none"
+                      ? 'bg-black/40 border-l-4 rounded-none border-destructive'
+                      : 'bg-black/20 rounded-none',
                   )}
                 >
                   <Link href={item.url}>
                     {item.icon && (
                       <span
-                        className={cn(
-                          isActive(item.url)
-                            ? "fill-destructive"
-                            : "fill-[#A5A4BF]"
-                        )}
+                        className={cn(isActive(item.url) ? 'fill-destructive' : 'fill-[#A5A4BF]')}
                       >
                         {item.icon}
                       </span>
                     )}
-                    <Typography variant="h5">{item.label}</Typography>
+                    <Typography variant='h5'>{item.label}</Typography>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            )
+            ),
           )}
         </SidebarMenu>
 
         {bottomMenuItem && (
-          <SidebarMenu className="py-2 border-t border-white/20 mt-auto">
-            <SidebarMenuItem className="py-1">
+          <SidebarMenu className='py-2 border-t border-white/20 mt-auto'>
+            <SidebarMenuItem className='py-1'>
               <SidebarMenuButton
                 asChild
                 className={cn(
-                  "whitespace-nowrap p-8",
+                  'whitespace-nowrap p-8',
                   isActive(bottomMenuItem.url)
-                    ? "bg-black/40 border-l-4 border-destructive rounded-none"
-                    : "bg-black/20 rounded-none"
+                    ? 'bg-black/40 border-l-4 border-destructive rounded-none'
+                    : 'bg-black/20 rounded-none',
                 )}
               >
                 <Link href={bottomMenuItem.url}>
                   <span
                     className={cn(
-                      isActive(bottomMenuItem.url)
-                        ? "fill-destructive"
-                        : "fill-[#A5A4BF]"
+                      isActive(bottomMenuItem.url) ? 'fill-destructive' : 'fill-[#A5A4BF]',
                     )}
                   >
                     {bottomMenuItem.icon}
                   </span>
-                  <Typography variant="h5">{bottomMenuItem.label}</Typography>
+                  <Typography variant='h5'>{bottomMenuItem.label}</Typography>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

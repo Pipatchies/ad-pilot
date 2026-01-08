@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import SvgSliderVideo from "./icons/SliderVideo";
+import { useRef, useState } from 'react';
+import SvgSliderVideo from './icons/SliderVideo';
 
 interface VideoPlayerProps {
   url: string;
@@ -17,7 +17,7 @@ export default function VideoPlayer({ url, className }: VideoPlayerProps) {
   };
 
   return (
-    <div className="relative flex items-center justify-center group">
+    <div className='relative flex items-center justify-center group'>
       <video
         ref={videoRef}
         src={url}
@@ -28,9 +28,9 @@ export default function VideoPlayer({ url, className }: VideoPlayerProps) {
         onEnded={() => setIsPlaying(false)}
       />
       {!isPlaying && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <button onClick={handlePlay} className="cursor-pointer">
-            <SvgSliderVideo className="w-24 h-24 fill-white drop-shadow-2xl" />
+        <div className='absolute inset-0 flex items-center justify-center'>
+          <button onClick={handlePlay} className='cursor-pointer'>
+            <SvgSliderVideo className='w-24 h-24 fill-white drop-shadow-2xl' />
           </button>
         </div>
       )}

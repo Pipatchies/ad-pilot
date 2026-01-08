@@ -1,5 +1,5 @@
-import DetailsCard from "@/components/card/details-card";
-import Link from "next/link";
+import DetailsCard from '@/components/card/details-card';
+import Link from 'next/link';
 
 type Props = {
   data: {
@@ -10,23 +10,19 @@ type Props = {
     slug: string;
   }[];
   className?: string;
-  variant: "archived";
+  variant: 'archived';
 };
 
-export default function ArchivedCards({
-  data,
-  variant,
-  className = "",
-}: Props) {
+export default function ArchivedCards({ data, variant, className = '' }: Props) {
   return (
-      <div className={`flex gap-5 flex-wrap w-full ${className}`}>
-        {data.map((item, index) => (
-          <div key={index} className="w-full xl:basis-1/4 grow">
-            <Link href={`/archived/${item.slug}`} className="block h-full">
+    <div className={`flex gap-5 flex-wrap w-full ${className}`}>
+      {data.map((item, index) => (
+        <div key={index} className='w-full xl:basis-1/4 grow'>
+          <Link href={`/archived/${item.slug}`} className='block h-full'>
             <DetailsCard variant={variant} {...item} />
-            </Link>
-          </div>
-        ))}
-      </div>
+          </Link>
+        </div>
+      ))}
+    </div>
   );
 }
