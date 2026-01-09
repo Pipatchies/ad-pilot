@@ -11,7 +11,8 @@
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test": "vitest run"
   },
   "dependencies": {
     "@auth/core": "0.37.0",

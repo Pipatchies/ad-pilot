@@ -9,9 +9,6 @@ pre-commit:
       glob: '*.{js,ts,jsx,tsx}'
       run: pnpm eslint '{staged_files}' --fix
       stage_fixed: true
-    frontend-test:
-      glob: '*.{js,ts,jsx,tsx}'
-      run: pnpm vitest related {staged_files} --run
 
 commit-msg:
   commands:
