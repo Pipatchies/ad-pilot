@@ -1,5 +1,4 @@
 import Typography from '@/components/typography';
-import React, { useState } from 'react';
 import AccountModal from '../../../../components/modal/account-modal';
 import SearchBar from '@/components/search-bar';
 import { useQuery } from 'convex/react';

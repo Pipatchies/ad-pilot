@@ -27,7 +27,6 @@ import Link from 'next/link';
 import SvgPictoArchive from './icons/PictoArchive';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
-import { Id } from '../../convex/_generated/dataModel';
 import SvgConfiguration from './icons/Configuration';
 import { useUser } from '../app/providers/user-provider';
 

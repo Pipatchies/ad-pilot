@@ -75,7 +75,8 @@ export default function InvoiceModal({
   // Use generic query to get all vendors - assuming this query exists or needs to be used differently
   // If not, we might need to add a getAllVendors query.
   // For now using empty array fallback to prevent crash if query doesn't exist
-  const vendors = useQuery(api.queries.vendors.getVendors) || [];
+  const vendorsData = useQuery(api.queries.vendors.getVendors);
+  const vendors = React.useMemo(() => vendorsData || [], [vendorsData]);
 
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -201,7 +202,7 @@ export default function InvoiceModal({
             phone: values.vendorPhone,
           });
           finalVendorId = newVendorId;
-        } catch (err) {
+        } catch {
           toast.error('Erreur lors de la création de la régie.');
           setUploading(false);
           setIsSubmitting(false);
@@ -422,6 +423,7 @@ export default function InvoiceModal({
                             <button
                               role='combobox'
                               aria-expanded={openVendorCombobox}
+                              aria-controls='vendor-list-box'
                               className={cn(
                                 'w-full justify-between flex items-center rounded-sm border border-[#A5A4BF] py-2 px-5 bg-white text-base italic text-left',
                                 !field.value && 'text-primary/50',
@@ -439,7 +441,7 @@ export default function InvoiceModal({
                         <PopoverContent className='w-[300px] p-0'>
                           <Command>
                             <CommandInput placeholder='Rechercher une régie...' />
-                            <CommandList>
+                            <CommandList id='vendor-list-box'>
                               <CommandEmpty>Aucune régie trouvée.</CommandEmpty>
                               <CommandGroup>
                                 {vendors?.map((vendor) => (

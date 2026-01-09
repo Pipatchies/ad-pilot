@@ -8,7 +8,7 @@ import SvgUploder from '@/components/icons/Uploder';
 import UpdateInvoiceModal from '@/components/modal/update/update-invoice-modal';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { Invoice, InvoiceWithVendor } from '@/types/invoices';
-import SvgCorbeille from '../icons/Corbeille';
+
 import DeleteModal from '../modal/delete-modal';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
@@ -178,7 +178,7 @@ export default function InvoicesTable({
                     },
                   });
                   toast.success('Statut mis à jour');
-                } catch (error) {
+                } catch {
                   toast.error('Erreur lors de la mise à jour');
                 }
               }}

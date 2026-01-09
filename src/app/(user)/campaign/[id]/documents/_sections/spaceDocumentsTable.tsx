@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import DocumentsTable from '@/components/table/documents-table';
 import { useQuery } from 'convex/react';
 import { Id } from '../../../../../../../convex/_generated/dataModel';
@@ -8,7 +7,7 @@ import { useParams } from 'next/navigation';
 
 type DocumentsTableProps = {
   globalFilter: string;
-  dateSort: 'asc' | 'desc';
+  dateSort: 'desc' | 'asc';
 };
 
 export default function SpaceDocumentsTable({ globalFilter, dateSort }: DocumentsTableProps) {
@@ -33,6 +32,7 @@ export default function SpaceDocumentsTable({ globalFilter, dateSort }: Document
           showCampaign={false}
           showClient={false}
           readOnly={true}
+          dateSort={dateSort}
         />
       </div>
     </section>

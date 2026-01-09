@@ -1,7 +1,7 @@
 import SearchBar from '@/components/search-bar';
 import CampaignTable from '@/components/table/campaign-table';
 import Typography from '@/components/typography';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Campaign } from '@/types/campaigns';
 import React from 'react';
 

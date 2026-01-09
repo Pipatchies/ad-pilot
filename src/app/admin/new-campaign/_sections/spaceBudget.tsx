@@ -20,7 +20,6 @@ import SvgCalendrier from '@/components/icons/Calendrier';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import React from 'react';
 
 const mediaTypes = [
   { label: 'Digital', value: 'digital' },
@@ -33,12 +32,8 @@ const mediaTypes = [
 
 import BudgetInput from '@/components/budget-input';
 import { TriangleAlert } from 'lucide-react';
-import SvgPlus from '@/components/icons/Plus';
-
 export default function SpaceBudget() {
   const { control, watch } = useFormContext();
-
-  const mediaTypesWatch = watch('mediaTypes');
 
   const { fields: budgetFields } = useFieldArray({
     control,

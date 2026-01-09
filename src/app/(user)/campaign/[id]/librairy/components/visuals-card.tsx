@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import Typography from '@/components/typography';
 import SvgEyeIcon from '@/components/icons/EyeIcon';
@@ -6,7 +6,6 @@ import SvgUploder from '@/components/icons/Uploder';
 import { Media } from '@/types/medias';
 import MediaThumb from '@/components/media-thumb';
 import MediaViewerModal from '@/components/modal/media-viewer-modal';
-import { cn } from '@/lib/utils';
 
 export interface DetailsCardProps {
   title: string;

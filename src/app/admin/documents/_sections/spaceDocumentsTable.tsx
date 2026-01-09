@@ -6,7 +6,7 @@ import { api } from '../../../../../convex/_generated/api';
 
 type DocumentsTableProps = {
   globalFilter: string;
-  dateSort: 'asc' | 'desc';
+  dateSort?: 'asc' | 'desc';
 };
 
 export default function SpaceDocumentsTable({ globalFilter, dateSort }: DocumentsTableProps) {
@@ -26,6 +26,7 @@ export default function SpaceDocumentsTable({ globalFilter, dateSort }: Document
           showCampaign={true}
           showClient={true}
           readOnly={false}
+          dateSort={dateSort}
         />
       </div>
     </section>

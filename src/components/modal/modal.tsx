@@ -11,7 +11,6 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { ReactNode } from 'react';
-import { Button } from '../ui/button';
 import CtaButton from '../cta-button';
 import { cn } from '@/lib/utils';
 

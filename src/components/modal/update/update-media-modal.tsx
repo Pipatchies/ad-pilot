@@ -19,9 +19,7 @@ import { api } from '@/../convex/_generated/api';
 import { Id } from '@/../convex/_generated/dataModel';
 import Modal from '@/components/modal/modal';
 import CtaButton from '../../cta-button';
-import SvgCrayonBig from '../../icons/CrayonBig';
-import SvgUploder from '@/components/icons/Uploder';
-import loadCrayon from '../../icons/Crayon';
+
 import SvgCrayon from '../../icons/Crayon';
 import {
   Select,
@@ -31,6 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { MEDIA_TYPE_LABELS, MEDIA_TYPE_VALUES, MediaType } from '@/types/medias';
+import SvgUploder from '@/components/icons/Uploder';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Le titre est requis'),

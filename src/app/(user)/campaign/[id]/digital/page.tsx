@@ -8,10 +8,6 @@ import { useQuery } from 'convex/react';
 import { api } from '../../../../../../convex/_generated/api';
 import { Id } from '../../../../../../convex/_generated/dataModel';
 
-const CtaButtonData = {
-  text: 'Télécharger le document',
-};
-
 export default function Digital({ params }: { params: { id: string } }) {
   const campaign = useQuery(api.queries.campaigns.getCampaignById, {
     campaignId: params.id as Id<'campaigns'>,

@@ -260,5 +260,5 @@ export default function AccountModal() {
       />
     ),
   };
-  return <Modal cta={CtaProps} data={UserFormData} />;
+  return <Modal cta={CtaProps} data={UserFormData} open={isOpen} onOpenChange={setIsOpen} />;
 }

@@ -19,6 +19,7 @@ interface DocumentsTableProps {
   globalFilter?: string;
   headerClassName?: string;
   readOnly?: boolean;
+  dateSort?: 'asc' | 'desc';
 }
 
 export default function DocumentsTable({
@@ -28,6 +29,7 @@ export default function DocumentsTable({
   globalFilter,
   headerClassName,
   readOnly,
+  dateSort = 'desc',
 }: DocumentsTableProps) {
   const deleteDocument = useMutation(api.mutations.documents.deleteDocument);
   const [viewingDocument, setViewingDocument] = useState<Document | null>(null);
@@ -130,7 +132,7 @@ export default function DocumentsTable({
         globalFilter={globalFilter}
         emptyMessage='Aucun document pour le moment.'
         headerClassName={headerClassName}
-        defaultSort={{ id: '_creationTime', desc: true }}
+        defaultSort={{ id: '_creationTime', desc: dateSort === 'desc' }}
       />
 
       {viewingDocument && (
