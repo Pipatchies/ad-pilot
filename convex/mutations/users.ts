@@ -41,7 +41,7 @@ export const updateUser = mutation({
       }
     }
 
-    const { password, ...userPatch } = patch;
+    const { password: _password, ...userPatch } = patch;
     await ctx.db.patch(userId, userPatch);
     return { ok: true };
   },

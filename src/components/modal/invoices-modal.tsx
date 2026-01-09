@@ -201,7 +201,7 @@ export default function InvoiceModal({
             phone: values.vendorPhone,
           });
           finalVendorId = newVendorId;
-        } catch (err) {
+        } catch {
           toast.error('Erreur lors de la création de la régie.');
           setUploading(false);
           setIsSubmitting(false);

@@ -6,10 +6,9 @@ import { api } from '../../../../../convex/_generated/api';
 
 type DocumentsTableProps = {
   globalFilter: string;
-  dateSort: 'asc' | 'desc';
 };
 
-export default function SpaceDocumentsTable({ globalFilter, dateSort }: DocumentsTableProps) {
+export default function SpaceDocumentsTable({ globalFilter }: DocumentsTableProps) {
   const documents = useQuery(api.queries.documents.getAllDocuments);
 
   const documentsData =

@@ -24,7 +24,7 @@ import { DocumentFileType } from '@/types/docs';
 export default function SpaceReport({ campaignId }: { campaignId?: string }) {
   const { control } = useFormContext();
   const getSignature = useAction(api.actions.cloudinary.getUploadSignature);
-  const [uploading, setUploading] = useState(false);
+  const [, setUploading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
   const handleUpload = async (file: File, onChange: (value: string) => void) => {

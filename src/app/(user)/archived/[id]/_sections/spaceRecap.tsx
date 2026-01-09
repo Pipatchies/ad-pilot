@@ -1,6 +1,5 @@
 'use client';
-import React from 'react';
-import { Domaine, Television } from '@/components/icons';
+
 import Typography from '@/components/typography';
 import StepCard from '@/components/card/step-card';
 import BudgetCard from '@/components/card/budget-card';

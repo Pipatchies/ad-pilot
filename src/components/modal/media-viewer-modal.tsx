@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useCallback, useRef, useState } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { createPortal } from 'react-dom';
 import SvgUploder from '@/components/icons/Uploder';
 import { CldImage } from 'next-cloudinary';

@@ -9,8 +9,7 @@ import SvgSearch from './icons/Search';
 import SvgNotification from './icons/Notification';
 import SvgCrayon from './icons/Crayon';
 import SvgFacture from './icons/Facture';
-import { useQuery } from 'convex/react';
-import { api } from '../../convex/_generated/api';
+
 import {
   DropdownMenu,
   DropdownMenuTrigger,

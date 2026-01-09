@@ -1,11 +1,6 @@
-import React from 'react';
 import CampaignForm from '../../../../components/campaign-form';
 import { Id } from '../../../../../convex/_generated/dataModel';
 import SpaceCampaignHeader from './_sections/spaceCampaignHeader';
-
-const ctaProps = {
-  text: 'Enregistrer les modifications',
-};
 
 export default async function EditCampaignPage({
   params,

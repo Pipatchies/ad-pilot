@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Children } from 'react';
+import React from 'react';
 import Modal from '@/components/modal/modal';
 import SvgCorbeille from '@/components/icons/Corbeille';
 import { toast } from 'sonner';
