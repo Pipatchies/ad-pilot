@@ -7,9 +7,10 @@ import { useParams } from 'next/navigation';
 
 type DocumentsTableProps = {
   globalFilter: string;
+  dateSort: 'desc' | 'asc';
 };
 
-export default function SpaceDocumentsTable({ globalFilter }: DocumentsTableProps) {
+export default function SpaceDocumentsTable({ globalFilter, dateSort }: DocumentsTableProps) {
   const params = useParams();
   const campaignId = params?.id as Id<'campaigns'>;
 
@@ -31,6 +32,7 @@ export default function SpaceDocumentsTable({ globalFilter }: DocumentsTableProp
           showCampaign={false}
           showClient={false}
           readOnly={true}
+          dateSort={dateSort}
         />
       </div>
     </section>
