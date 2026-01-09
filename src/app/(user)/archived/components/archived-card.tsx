@@ -4,7 +4,7 @@ import Link from 'next/link';
 type Props = {
   data: {
     title: string;
-    description: string;
+    description?: string;
     startDate: Date;
     archivedDate: Date;
     slug: string;
