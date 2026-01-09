@@ -3,11 +3,11 @@ pre-commit:
   commands:
     frontend-format:
       glob: '*.{js,ts,jsx,tsx,json,css,md}'
-      run: pnpm prettier --write "{staged_files}"
+      run: pnpm prettier --write '{staged_files}'
       stage_fixed: true
     frontend-lint:
       glob: '*.{js,ts,jsx,tsx}'
-      run: pnpm eslint "{staged_files}" --fix
+      run: pnpm eslint '{staged_files}' --fix
       stage_fixed: true
     frontend-test:
       glob: '*.{js,ts,jsx,tsx}'

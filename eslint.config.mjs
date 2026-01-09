@@ -10,11 +10,13 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  {
+    ignores: ['node_modules', '.next', 'out', 'public', 'dist', 'convex/_generated'],
+  },
   ...compat.config({
     extends: ['next/core-web-vitals', 'next/typescript'],
   }),
   {
-    ignores: ['node_modules', '.next', 'out', 'public', 'dist', 'convex/_generated'],
     rules: {
       'react/no-unescaped-entities': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
