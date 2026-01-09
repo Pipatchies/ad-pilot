@@ -1,16 +1,16 @@
-import { CldImage } from "next-cloudinary";
-import { cn } from "@/lib/utils";
-import SvgAudio from "./icons/Audio";
+import { CldImage } from 'next-cloudinary';
+import { cn } from '@/lib/utils';
+import SvgAudio from './icons/Audio';
 
 export type MediaThumbProps = {
   publicId?: string;
   url?: string;
-  type?: "jpg" | "png" | "pdf" | "mp4" | "mp3";
+  type?: 'jpg' | 'png' | 'pdf' | 'mp4' | 'mp3';
   className?: string;
   width?: number;
   height?: number;
   alt: string;
-  variant?: "thumbnail" | "card";
+  variant?: 'thumbnail' | 'card';
   _id?: string;
 };
 
@@ -34,43 +34,40 @@ export default function MediaThumb({
   width,
   height,
   alt,
-  variant = "thumbnail",
+  variant = 'thumbnail',
 }: MediaThumbProps) {
-  let orientation: "landscape" | "portrait" | "square" = "landscape";
+  let orientation: 'landscape' | 'portrait' | 'square' = 'landscape';
 
-  if (type === "mp3") orientation = "square";
-  else if (type === "pdf") orientation = "portrait";
-  else if (type === "mp4") orientation = "landscape";
-  else if (type === "jpg" || type === "png") {
+  if (type === 'mp3') orientation = 'square';
+  else if (type === 'pdf') orientation = 'portrait';
+  else if (type === 'mp4') orientation = 'landscape';
+  else if (type === 'jpg' || type === 'png') {
     if (width && height) {
-      if (width === height) orientation = "square";
-      else orientation = width > height ? "landscape" : "portrait";
+      if (width === height) orientation = 'square';
+      else orientation = width > height ? 'landscape' : 'portrait';
     } else {
-      orientation = "landscape";
+      orientation = 'landscape';
     }
   }
 
   const selectedSize = sizes[variant][orientation];
 
   const target =
-    variant === "card"
+    variant === 'card'
       ? selectedSize
       : {
           w: width || selectedSize.w,
           h: height || selectedSize.h,
         };
 
-  const isPdf = type === "pdf";
-  const isVideo = type === "mp4";
-  const isImage = type === "jpg" || type === "png";
+  const isPdf = type === 'pdf';
+  const isVideo = type === 'mp4';
+  const isImage = type === 'jpg' || type === 'png';
 
-  if (!publicId || !type || type === "mp3") {
+  if (!publicId || !type || type === 'mp3') {
     return (
       <div
-        className={cn(
-          "bg-primary flex items-center justify-center fill-white",
-          className
-        )}
+        className={cn('bg-primary flex items-center justify-center fill-white', className)}
         style={{ width: target.w, height: target.h }}
       >
         <SvgAudio />
@@ -83,44 +80,44 @@ export default function MediaThumb({
       {isImage && (
         <CldImage
           src={publicId}
-          crop="fill"
-          gravity="auto"
-          format="auto"
-          quality="auto"
+          crop='fill'
+          gravity='auto'
+          format='auto'
+          quality='auto'
           alt={alt}
           width={target.w}
           height={target.h}
-          className="object-cover"
+          className='object-cover'
         />
       )}
 
       {isPdf && (
         <CldImage
           src={`${publicId}.pdf`}
-          rawTransformations={["pg_1"]}
-          crop="fill"
-          gravity="auto"
-          format="jpg"
-          quality="auto"
+          rawTransformations={['pg_1']}
+          crop='fill'
+          gravity='auto'
+          format='jpg'
+          quality='auto'
           alt={alt}
           width={target.w}
           height={target.h}
-          className="object-cover"
+          className='object-cover'
         />
       )}
 
       {isVideo && (
         <CldImage
           src={publicId}
-          assetType="video"
-          crop="fill"
-          gravity="auto"
-          format="jpg"
-          quality="auto"
+          assetType='video'
+          crop='fill'
+          gravity='auto'
+          format='jpg'
+          quality='auto'
           alt={alt}
           width={target.w}
           height={target.h}
-          className="object-cover"
+          className='object-cover'
         />
       )}
     </div>

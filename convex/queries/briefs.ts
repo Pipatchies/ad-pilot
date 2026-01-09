@@ -1,5 +1,5 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
-import { query } from "../_generated/server";
+import { getAuthUserId } from '@convex-dev/auth/server';
+import { query } from '../_generated/server';
 
 export const getBriefs = query({
   args: {},
@@ -12,11 +12,9 @@ export const getBriefs = query({
 
     if (user.organizationId) {
       const briefs = await ctx.db
-        .query("briefs")
-        .withIndex("by_organizationId", (q) =>
-          q.eq("organizationId", user.organizationId)
-        )
-        .filter((q) => q.neq(q.field("deleted"), true))
+        .query('briefs')
+        .withIndex('by_organizationId', (q) => q.eq('organizationId', user.organizationId))
+        .filter((q) => q.neq(q.field('deleted'), true))
         .collect();
       return briefs;
     }
@@ -35,12 +33,10 @@ export const getMyBriefs = query({
     if (!user || !user.organizationId) return [];
 
     return await ctx.db
-      .query("briefs")
-      .withIndex("by_organizationId", (q) =>
-        q.eq("organizationId", user.organizationId)
-      )
-      .filter((q) => q.neq(q.field("deleted"), true))
-      .order("desc")
+      .query('briefs')
+      .withIndex('by_organizationId', (q) => q.eq('organizationId', user.organizationId))
+      .filter((q) => q.neq(q.field('deleted'), true))
+      .order('desc')
       .collect();
   },
 });

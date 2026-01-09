@@ -1,10 +1,10 @@
-"use client";
-import LatestFiles from "@/components/latest-files";
-import Typography from "@/components/typography";
-import React from "react";
-import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { getIconFromType } from "@/lib/utils";
+'use client';
+import LatestFiles from '@/components/latest-files';
+import Typography from '@/components/typography';
+import React from 'react';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../convex/_generated/api';
+import { getIconFromType } from '@/lib/utils';
 
 export default function AdminDashboard() {
   const campaigns = useQuery(api.queries.campaigns.getActiveCampaigns) ?? [];
@@ -25,13 +25,12 @@ export default function AdminDashboard() {
           }
           return null;
         })
-        .filter((icon): icon is NonNullable<typeof icon> => icon !== null) ||
-      [];
+        .filter((icon): icon is NonNullable<typeof icon> => icon !== null) || [];
 
     const currentStep =
-      campaign.status?.find((s) => s.state === "current")?.label ||
+      campaign.status?.find((s) => s.state === 'current')?.label ||
       campaign.status?.[0]?.label ||
-      "En cours";
+      'En cours';
 
     return {
       title: campaign.title,
@@ -45,17 +44,13 @@ export default function AdminDashboard() {
   });
 
   return (
-    <section className="flex flex-col gap-10">
-      <Typography variant="h1">Tableau de bord</Typography>
+    <section className='flex flex-col gap-10'>
+      <Typography variant='h1'>Tableau de bord</Typography>
       <LatestFiles
-        title="Campagnes en cours"
+        title='Campagnes en cours'
         data={campaignData}
-        variant="campaign"
-        emptyMessage={
-          campaigns === undefined
-            ? "Chargement..."
-            : "Aucune campagne en cours."
-        }
+        variant='campaign'
+        emptyMessage={campaigns === undefined ? 'Chargement...' : 'Aucune campagne en cours.'}
       />
     </section>
   );

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import React, { useEffect, useCallback, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import SvgUploder from "@/components/icons/Uploder";
-import { CldImage } from "next-cloudinary";
+import React, { useEffect, useCallback, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import SvgUploder from '@/components/icons/Uploder';
+import { CldImage } from 'next-cloudinary';
 
-import { X } from "lucide-react";
-import SvgTallDown from "../icons/TallDown";
-import { Media } from "@/types/medias";
-import { Document } from "@/types/docs";
-import { Invoice } from "@/types/invoices";
-import VideoPlayer from "../video-player";
+import { X } from 'lucide-react';
+import SvgTallDown from '../icons/TallDown';
+import { Media } from '@/types/medias';
+import { Document } from '@/types/docs';
+import { Invoice } from '@/types/invoices';
+import VideoPlayer from '../video-player';
 
 interface MediaViewerModalProps {
   mediaItem: Media | Document | Invoice | null;
@@ -34,42 +34,42 @@ export default function MediaViewerModal({
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (!isOpen) return;
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight" && hasNext && onNext) onNext();
-      if (e.key === "ArrowLeft" && hasPrev && onPrev) onPrev();
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight' && hasNext && onNext) onNext();
+      if (e.key === 'ArrowLeft' && hasPrev && onPrev) onPrev();
     },
-    [isOpen, onClose, hasNext, onNext, hasPrev, onPrev]
+    [isOpen, onClose, hasNext, onNext, hasPrev, onPrev],
   );
 
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
       setMounted(false);
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [handleKeyDown]);
 
   if (!isOpen || !mediaItem || !mediaItem.url) return null;
   if (!mounted) return null;
 
-  const downloadUrl = mediaItem.url.includes("/upload/")
-    ? mediaItem.url.replace("/upload/", "/upload/fl_attachment/")
+  const downloadUrl = mediaItem.url.includes('/upload/')
+    ? mediaItem.url.replace('/upload/', '/upload/fl_attachment/')
     : mediaItem.url;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <div className='fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4'>
       {/* Close Button */}
       <button
         onClick={(e) => {
           e.stopPropagation();
           onClose();
         }}
-        className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2 z-[101]"
+        className='absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2 z-[101]'
       >
-        <X className="w-8 h-8 md:w-10 md:h-10 text-white cursor-pointer" />
+        <X className='w-8 h-8 md:w-10 md:h-10 text-white cursor-pointer' />
       </button>
 
       {/* Navigation Left */}
@@ -79,34 +79,32 @@ export default function MediaViewerModal({
             e.stopPropagation();
             onPrev();
           }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-2 z-[101]"
+          className='absolute left-4 top-1/2 -translate-y-1/2 p-2 z-[101]'
         >
-          <SvgTallDown className="rotate-90 size-10 fill-white cursor-pointer" />
+          <SvgTallDown className='rotate-90 size-10 fill-white cursor-pointer' />
         </button>
       )}
 
       {/* Main Content */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative flex flex-col items-center justify-center w-fit h-auto max-w-[95vw] max-h-[95vh] bg-black overflow-hidden shadow-2xl"
+        className='relative flex flex-col items-center justify-center w-fit h-auto max-w-[95vw] max-h-[95vh] bg-black overflow-hidden shadow-2xl'
       >
-        <div className="relative w-auto h-auto flex items-center justify-center">
+        <div className='relative w-auto h-auto flex items-center justify-center'>
           {renderContent(mediaItem)}
         </div>
 
         {/* Footer */}
-        <div className="w-full flex items-center justify-between bg-neutral-900/90 px-6 py-4">
-          <p className="text-white text-lg font-medium truncate max-w-[80%]">
-            {mediaItem.title}
-          </p>
+        <div className='w-full flex items-center justify-between bg-neutral-900/90 px-6 py-4'>
+          <p className='text-white text-lg font-medium truncate max-w-[80%]'>{mediaItem.title}</p>
           <a
             href={downloadUrl}
             download
-            className="text-white/80 hover:text-white transition-colors p-2"
-            title="Télécharger"
+            className='text-white/80 hover:text-white transition-colors p-2'
+            title='Télécharger'
             onClick={(e) => e.stopPropagation()}
           >
-            <SvgUploder className="w-6 h-6 text-white cursor-pointer" />
+            <SvgUploder className='w-6 h-6 text-white cursor-pointer' />
           </a>
         </div>
       </div>
@@ -118,65 +116,61 @@ export default function MediaViewerModal({
             e.stopPropagation();
             onNext();
           }}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-2 z-[101]"
+          className='absolute right-4 top-1/2 -translate-y-1/2 p-2 z-[101]'
         >
-          <SvgTallDown className="rotate-270 size-10 fill-white cursor-pointer" />
+          <SvgTallDown className='rotate-270 size-10 fill-white cursor-pointer' />
         </button>
       )}
     </div>,
-    document.body
+    document.body,
   );
 }
 
 function renderContent(item: Media | Document | Invoice) {
-  const type = "type" in item ? item.type : "pdf";
+  const type = 'type' in item ? item.type : 'pdf';
   if (!item.url) return null;
 
   switch (type) {
-    case "jpg":
-    case "png":
+    case 'jpg':
+    case 'png':
       return (
-        <div className="relative flex items-center justify-center">
+        <div className='relative flex items-center justify-center'>
           <CldImage
             src={item.publicId || item.url!}
             width={1920}
             height={1080}
-            className="max-w-[90vw] max-h-[80vh] w-auto h-auto object-contain"
+            className='max-w-[90vw] max-h-[80vh] w-auto h-auto object-contain'
             alt={item.title}
             preserveTransformations
           />
         </div>
       );
 
-    case "mp4":
+    case 'mp4':
       return (
         <VideoPlayer
           url={item.url!}
-          className="max-w-[90vw] max-h-[80vh] w-auto h-auto object-contain"
+          className='max-w-[90vw] max-h-[80vh] w-auto h-auto object-contain'
         />
       );
 
-    case "mp3":
+    case 'mp3':
       return (
-        <div className="flex flex-col items-center justify-center bg-white/10 p-12 rounded-xl">
-          <div className="text-white text-6xl mb-6">♫</div>
-          <audio controls src={item.url} className="min-w-[300px]" />
+        <div className='flex flex-col items-center justify-center bg-white/10 p-12 rounded-xl'>
+          <div className='text-white text-6xl mb-6'>♫</div>
+          <audio controls src={item.url} className='min-w-[300px]' />
         </div>
       );
 
-    case "pdf":
+    case 'pdf':
       return (
         <iframe
           src={item.url}
-          className="w-[90vw] h-[80vh] md:w-[70vw] bg-white shadow-xl"
+          className='w-[90vw] h-[80vh] md:w-[70vw] bg-white shadow-xl'
           title={item.title}
         />
       );
     default:
-      return (
-        <div className="text-white">
-          Format non supporté pour la prévisualisation.
-        </div>
-      );
+      return <div className='text-white'>Format non supporté pour la prévisualisation.</div>;
   }
 }

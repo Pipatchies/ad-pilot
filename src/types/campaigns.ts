@@ -1,10 +1,10 @@
-import { Id } from "../../convex/_generated/dataModel";
-import { MediaType } from "./medias";
+import { Id } from '../../convex/_generated/dataModel';
+import { MediaType } from './medias';
 
 export type CampaignStatus = {
   id: number;
   label: string;
-  state: "completed" | "current" | "upcoming";
+  state: 'completed' | 'current' | 'upcoming';
   deadline: string;
 };
 
@@ -20,7 +20,7 @@ export type CampaignBudgetLine = {
 };
 
 export type CampaignReport = {
-  status?: "current" | "archived";
+  status?: 'current' | 'archived';
   document?: string;
   kpi?: {
     icon: string;
@@ -31,7 +31,7 @@ export type CampaignReport = {
 
 export type Campaign = {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   mediaTypes: MediaType[];
   startDate: string;
   endDate: string;
@@ -46,8 +46,8 @@ export type Campaign = {
   digitalReportUrl?: string;
   report?: CampaignReport;
   archived: boolean;
-  organizationId: Id<"organizations">;
+  organizationId: Id<'organizations'>;
   organizationName?: string;
-  _id: Id<"campaigns">;
+  _id: Id<'campaigns'>;
   _creationTime: number;
 };

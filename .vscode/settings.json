@@ -18,9 +18,9 @@
     "titleBar.inactiveBackground": "#8c92ac99",
     "titleBar.inactiveForeground": "#15202b99"
   },
-  "peacock.color": "#8c92ac",
-//   "tailwindCSS.experimental.configFile": "src/app/globals.css",
-//   "editor.quickSuggestions": {
-//     "strings": true
-//   }
+  "peacock.color": "#8c92ac"
+  //   "tailwindCSS.experimental.configFile": "src/app/globals.css",
+  //   "editor.quickSuggestions": {
+  //     "strings": true
+  //   }
 }

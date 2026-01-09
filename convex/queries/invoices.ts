@@ -1,11 +1,11 @@
-import { v } from "convex/values";
-import { query } from "../_generated/server";
+import { v } from 'convex/values';
+import { query } from '../_generated/server';
 
 export const getAllInvoices = query({
   handler: async (ctx) => {
     const invoices = await ctx.db
-      .query("invoices")
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('invoices')
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
     return invoices;
   },
@@ -14,8 +14,8 @@ export const getAllInvoices = query({
 export const getAllAgencyInvoices = query({
   handler: async (ctx) => {
     const invoices = await ctx.db
-      .query("invoices")
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('invoices')
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
 
     const agencyInvoices = invoices.filter((invoice) => !invoice.vendorName);
@@ -31,14 +31,14 @@ export const getAllAgencyInvoices = query({
 
         return {
           ...invoice,
-          campaignTitle: campaign?.title ?? "Campagne inconnue",
-          organizationName: organization?.name ?? "Organisation inconnue",
+          campaignTitle: campaign?.title ?? 'Campagne inconnue',
+          organizationName: organization?.name ?? 'Organisation inconnue',
           vendorName: vendor ? vendor.name : invoice.vendorName,
           vendorContact: vendor?.contactName,
           vendorEmail: vendor?.email,
           vendorPhone: vendor?.phone,
         };
-      })
+      }),
     );
 
     return enriched;
@@ -48,8 +48,8 @@ export const getAllAgencyInvoices = query({
 export const getAllVendorInvoices = query({
   handler: async (ctx) => {
     const invoices = await ctx.db
-      .query("invoices")
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('invoices')
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
 
     // We want invoices that ARE vendor invoices.
@@ -57,7 +57,7 @@ export const getAllVendorInvoices = query({
     // Now we should check `invoiceType === 'vendor'` OR `vendorName` OR `vendorId`.
     // But to be safe and consistent with previous code:
     const vendorInvoices = invoices.filter(
-      (invoice) => invoice.invoiceType === "vendor" || invoice.vendorName
+      (invoice) => invoice.invoiceType === 'vendor' || invoice.vendorName,
     );
 
     const enriched = await Promise.all(
@@ -70,14 +70,14 @@ export const getAllVendorInvoices = query({
         }
         return {
           ...invoice,
-          campaignTitle: campaign?.title ?? "Campagne inconnue",
-          organizationName: organization?.name ?? "Organisation inconnue",
+          campaignTitle: campaign?.title ?? 'Campagne inconnue',
+          organizationName: organization?.name ?? 'Organisation inconnue',
           vendorName: vendor ? vendor.name : invoice.vendorName,
           vendorContact: vendor?.contactName,
           vendorEmail: vendor?.email,
           vendorPhone: vendor?.phone,
         };
-      })
+      }),
     );
 
     return enriched;
@@ -86,15 +86,13 @@ export const getAllVendorInvoices = query({
 
 export const getInvoicesByOrganization = query({
   args: {
-    organizationId: v.id("organizations"),
+    organizationId: v.id('organizations'),
   },
   handler: async (ctx, { organizationId }) => {
     const invoices = await ctx.db
-      .query("invoices")
-      .withIndex("by_organizationId", (q) =>
-        q.eq("organizationId", organizationId)
-      )
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('invoices')
+      .withIndex('by_organizationId', (q) => q.eq('organizationId', organizationId))
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
 
     const enriched = await Promise.all(
@@ -106,13 +104,13 @@ export const getInvoicesByOrganization = query({
         }
         return {
           ...invoice,
-          campaignTitle: campaign?.title ?? "Campagne inconnue",
+          campaignTitle: campaign?.title ?? 'Campagne inconnue',
           vendorName: vendor ? vendor.name : invoice.vendorName,
           vendorContact: vendor?.contactName,
           vendorEmail: vendor?.email,
           vendorPhone: vendor?.phone,
         };
-      })
+      }),
     );
 
     return enriched;
@@ -121,15 +119,13 @@ export const getInvoicesByOrganization = query({
 
 export const getAgencyInvoicesByOrganization = query({
   args: {
-    organizationId: v.id("organizations"),
+    organizationId: v.id('organizations'),
   },
   handler: async (ctx, { organizationId }) => {
     const invoices = await ctx.db
-      .query("invoices")
-      .withIndex("by_organizationId", (q) =>
-        q.eq("organizationId", organizationId)
-      )
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('invoices')
+      .withIndex('by_organizationId', (q) => q.eq('organizationId', organizationId))
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
 
     const agencyInvoices = invoices.filter((invoice) => !invoice.vendorName);
@@ -139,9 +135,9 @@ export const getAgencyInvoicesByOrganization = query({
         const campaign = await ctx.db.get(invoice.campaignId);
         return {
           ...invoice,
-          campaignTitle: campaign?.title ?? "Campagne inconnue",
+          campaignTitle: campaign?.title ?? 'Campagne inconnue',
         };
-      })
+      }),
     );
 
     return enriched;
@@ -150,19 +146,17 @@ export const getAgencyInvoicesByOrganization = query({
 
 export const getVendorInvoicesByOrganization = query({
   args: {
-    organizationId: v.id("organizations"),
+    organizationId: v.id('organizations'),
   },
   handler: async (ctx, { organizationId }) => {
     const invoices = await ctx.db
-      .query("invoices")
-      .withIndex("by_organizationId", (q) =>
-        q.eq("organizationId", organizationId)
-      )
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('invoices')
+      .withIndex('by_organizationId', (q) => q.eq('organizationId', organizationId))
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
 
     const vendorInvoices = invoices.filter(
-      (invoice) => invoice.invoiceType === "vendor" || invoice.vendorName
+      (invoice) => invoice.invoiceType === 'vendor' || invoice.vendorName,
     );
 
     const enriched = await Promise.all(
@@ -174,13 +168,13 @@ export const getVendorInvoicesByOrganization = query({
         }
         return {
           ...invoice,
-          campaignTitle: campaign?.title ?? "Campagne inconnue",
+          campaignTitle: campaign?.title ?? 'Campagne inconnue',
           vendorName: vendor ? vendor.name : invoice.vendorName,
           vendorContact: vendor?.contactName,
           vendorEmail: vendor?.email,
           vendorPhone: vendor?.phone,
         };
-      })
+      }),
     );
 
     return enriched;
@@ -189,14 +183,14 @@ export const getVendorInvoicesByOrganization = query({
 
 export const getInvoicesByCampaign = query({
   args: {
-    campaignId: v.id("campaigns"),
+    campaignId: v.id('campaigns'),
   },
   handler: async (ctx, { campaignId }) => {
     const invoices = await ctx.db
-      .query("invoices")
-      .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
-      .filter((q) => q.neq(q.field("deleted"), true))
-      .order("desc")
+      .query('invoices')
+      .withIndex('by_campaignId', (q) => q.eq('campaignId', campaignId))
+      .filter((q) => q.neq(q.field('deleted'), true))
+      .order('desc')
       .collect();
     return invoices;
   },
@@ -204,14 +198,14 @@ export const getInvoicesByCampaign = query({
 
 export const getAgencyInvoicesByCampaign = query({
   args: {
-    campaignId: v.id("campaigns"),
+    campaignId: v.id('campaigns'),
   },
   handler: async (ctx, { campaignId }) => {
     const invoices = await ctx.db
-      .query("invoices")
-      .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
-      .filter((q) => q.neq(q.field("deleted"), true))
-      .order("desc")
+      .query('invoices')
+      .withIndex('by_campaignId', (q) => q.eq('campaignId', campaignId))
+      .filter((q) => q.neq(q.field('deleted'), true))
+      .order('desc')
       .collect();
 
     const agencyInvoices = invoices.filter((invoice) => !invoice.vendorName);
@@ -222,14 +216,14 @@ export const getAgencyInvoicesByCampaign = query({
 
 export const getVendorInvoicesByCampaign = query({
   args: {
-    campaignId: v.id("campaigns"),
+    campaignId: v.id('campaigns'),
   },
   handler: async (ctx, { campaignId }) => {
     const invoices = await ctx.db
-      .query("invoices")
-      .withIndex("by_campaignId", (q) => q.eq("campaignId", campaignId))
-      .filter((q) => q.neq(q.field("deleted"), true))
-      .order("desc")
+      .query('invoices')
+      .withIndex('by_campaignId', (q) => q.eq('campaignId', campaignId))
+      .filter((q) => q.neq(q.field('deleted'), true))
+      .order('desc')
       .collect();
 
     const vendorInvoices = invoices.filter((invoice) => invoice.vendorName);

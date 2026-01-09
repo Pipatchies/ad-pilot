@@ -1,13 +1,13 @@
-"use client";
-import { useQuery } from "convex/react";
-import { api } from "../../../../../../convex/_generated/api";
-import InvoicesTable from "@/components/table/invoices-table";
-import { Id } from "../../../../../../convex/_generated/dataModel";
-import { useUser } from "@/app/providers/user-provider";
+'use client';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../../../convex/_generated/api';
+import InvoicesTable from '@/components/table/invoices-table';
+import { Id } from '../../../../../../convex/_generated/dataModel';
+import { useUser } from '@/app/providers/user-provider';
 
 type VendorInvoicesTableProps = {
   globalFilter: string;
-  dateSort: "asc" | "desc";
+  dateSort: 'asc' | 'desc';
 };
 
 export default function SpaceVendorInvoicesTable({
@@ -15,11 +15,11 @@ export default function SpaceVendorInvoicesTable({
   dateSort,
 }: VendorInvoicesTableProps) {
   const { user } = useUser();
-  const organizationId = user?.organizationId as Id<"organizations">;
+  const organizationId = user?.organizationId as Id<'organizations'>;
 
   const invoices = useQuery(
     api.queries.invoices.getVendorInvoicesByOrganization,
-    organizationId ? { organizationId } : "skip"
+    organizationId ? { organizationId } : 'skip',
   );
 
   const invoicesData =
@@ -30,10 +30,10 @@ export default function SpaceVendorInvoicesTable({
 
   return (
     <section>
-      <div className="overflow-x-auto">
+      <div className='overflow-x-auto'>
         <InvoicesTable
           invoices={invoicesData}
-          variant="vendor"
+          variant='vendor'
           showCampaign={true}
           globalFilter={globalFilter}
           dateSort={dateSort}

@@ -1,20 +1,20 @@
-"use client";
-import React from "react";
-import LatestFiles from "@/components/latest-files";
-import { useParams } from "next/navigation";
-import { useQuery } from "convex/react";
-import { api } from "../../../../../../../convex/_generated/api";
-import { Id } from "../../../../../../../convex/_generated/dataModel";
+'use client';
+import React from 'react';
+import LatestFiles from '@/components/latest-files';
+import { useParams } from 'next/navigation';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../../../../convex/_generated/api';
+import { Id } from '../../../../../../../convex/_generated/dataModel';
 
 const ctaData = [
-  { text: "Voir la bibliothèque", url: "librairy", target: "self" },
-  { text: "Voir tous les documents", url: "documents", target: "self" },
-  { text: "Voir toutes les factures", url: "invoices", target: "self" },
+  { text: 'Voir la bibliothèque', url: 'librairy', target: 'self' },
+  { text: 'Voir tous les documents', url: 'documents', target: 'self' },
+  { text: 'Voir toutes les factures', url: 'invoices', target: 'self' },
 ];
 
 export default function SpaceFiles() {
   const params = useParams();
-  const campaignId = params?.id as Id<"campaigns">;
+  const campaignId = params?.id as Id<'campaigns'>;
 
   // Fetch Medias
   const medias = useQuery(api.queries.medias.getMediaFilesByCampaign, {
@@ -61,49 +61,48 @@ export default function SpaceFiles() {
   const invoiceData =
     invoices?.slice(0, 3).map((invoice) => ({
       title: invoice.title,
-      description:
-        invoice.invoiceType === "agency" ? "Facture Agence" : "Facture Régie",
+      description: invoice.invoiceType === 'agency' ? 'Facture Agence' : 'Facture Régie',
       startDate: new Date(invoice.startDate),
       fileData: {
         url: invoice.url,
-        type: "pdf",
+        type: 'pdf',
         publicId: invoice.publicId,
         title: invoice.title,
       },
     })) ?? [];
 
   return (
-    <section className="flex flex-col gap-10">
+    <section className='flex flex-col gap-10'>
       <LatestFiles
-        title="Les dernières ressources médias"
+        title='Les dernières ressources médias'
         cta={{
           ...ctaData[0],
           url: `/campaign/${campaignId}/${ctaData[0].url}`,
         }}
         data={mediaData}
-        variant="media"
+        variant='media'
         hideEditIcon={true}
         emptyMessage={medias ? "Aucun média n'a été importé." : undefined}
       />
       <LatestFiles
-        title="Les derniers documents"
+        title='Les derniers documents'
         cta={{
           ...ctaData[1],
           url: `/campaign/${campaignId}/${ctaData[1].url}`,
         }}
         data={docData}
-        variant="default"
+        variant='default'
         emptyMessage={documents ? "Aucun document n'a été importé." : undefined}
       />
       <LatestFiles
-        title="Les dernières factures"
+        title='Les dernières factures'
         cta={{
           ...ctaData[2],
           url: `/campaign/${campaignId}/${ctaData[2].url}`,
         }}
         data={invoiceData}
-        variant="default"
-        className="mb-10"
+        variant='default'
+        className='mb-10'
         emptyMessage={invoices ? "Aucune facture n'a été importée." : undefined}
       />
     </section>

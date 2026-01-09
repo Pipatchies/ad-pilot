@@ -1,24 +1,24 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
-import { mutation, internalMutation } from "../_generated/server";
-import { v } from "convex/values";
+import { getAuthUserId } from '@convex-dev/auth/server';
+import { mutation, internalMutation } from '../_generated/server';
+import { v } from 'convex/values';
 
 export const updateUser = mutation({
   args: {
-    userId: v.id("users"),
+    userId: v.id('users'),
     patch: v.object({
       name: v.optional(v.string()),
       lastname: v.optional(v.string()),
       email: v.optional(v.string()),
       phone: v.optional(v.string()),
       image: v.optional(v.string()),
-      roleId: v.optional(v.id("roles")),
-      organizationId: v.optional(v.id("organizations")),
+      roleId: v.optional(v.id('roles')),
+      organizationId: v.optional(v.id('organizations')),
       password: v.optional(v.string()),
     }),
   },
   handler: async (ctx, { userId, patch }) => {
     const authUserId = await getAuthUserId(ctx);
-    if (!authUserId) throw new Error("Unauthorized");
+    if (!authUserId) throw new Error('Unauthorized');
 
     if (patch.password) {
       delete (patch as any).password;
@@ -28,12 +28,12 @@ export const updateUser = mutation({
       const newEmail = patch.email;
 
       const accounts = await ctx.db
-        .query("authAccounts")
-        .withIndex("userIdAndProvider", (q) => q.eq("userId", userId))
+        .query('authAccounts')
+        .withIndex('userIdAndProvider', (q) => q.eq('userId', userId))
         .collect();
 
       for (const acc of accounts) {
-        if (acc.provider === "password" || acc.provider === "email") {
+        if (acc.provider === 'password' || acc.provider === 'email') {
           if (acc.providerAccountId !== newEmail) {
             await ctx.db.patch(acc._id, { providerAccountId: newEmail });
           }
@@ -49,17 +49,17 @@ export const updateUser = mutation({
 
 export const updateUserPasswordInternal = internalMutation({
   args: {
-    userId: v.id("users"),
+    userId: v.id('users'),
     hashedPassword: v.string(),
   },
   handler: async (ctx, { userId, hashedPassword }) => {
     const accounts = await ctx.db
-      .query("authAccounts")
-      .withIndex("userIdAndProvider", (q) => q.eq("userId", userId))
+      .query('authAccounts')
+      .withIndex('userIdAndProvider', (q) => q.eq('userId', userId))
       .collect();
 
     for (const acc of accounts) {
-      if (acc.provider === "password") {
+      if (acc.provider === 'password') {
         await ctx.db.patch(acc._id, { secret: hashedPassword });
       }
     }
@@ -67,20 +67,20 @@ export const updateUserPasswordInternal = internalMutation({
 });
 
 export const deleteUser = mutation({
-  args: { userId: v.id("users") },
+  args: { userId: v.id('users') },
   handler: async (ctx, { userId }) => {
     const authUserId = await getAuthUserId(ctx);
-    if (!authUserId) throw new Error("Unauthorized");
+    if (!authUserId) throw new Error('Unauthorized');
 
     const sessions = await ctx.db
-      .query("authSessions")
-      .withIndex("userId", (q) => q.eq("userId", userId))
+      .query('authSessions')
+      .withIndex('userId', (q) => q.eq('userId', userId))
       .collect();
     for (const s of sessions) await ctx.db.delete(s._id);
 
     const accounts = await ctx.db
-      .query("authAccounts")
-      .withIndex("userIdAndProvider", (q) => q.eq("userId", userId))
+      .query('authAccounts')
+      .withIndex('userIdAndProvider', (q) => q.eq('userId', userId))
       .collect();
     for (const a of accounts) await ctx.db.delete(a._id);
 

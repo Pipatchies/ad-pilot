@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Dialog,
@@ -9,14 +9,14 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog";
-import { ReactNode } from "react";
-import { Button } from "../ui/button";
-import CtaButton from "../cta-button";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dialog';
+import { ReactNode } from 'react';
+import { Button } from '../ui/button';
+import CtaButton from '../cta-button';
+import { cn } from '@/lib/utils';
 
 type ModalProps = {
-  variant?: "button" | "icon";
+  variant?: 'button' | 'icon';
   cta: {
     text?: string;
     icon: React.ReactNode;
@@ -35,7 +35,7 @@ type ModalProps = {
 };
 
 export default function Modal({
-  variant = "button",
+  variant = 'button',
   cta,
   data,
   open,
@@ -45,42 +45,29 @@ export default function Modal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        {variant === "button" ? (
+        {variant === 'button' ? (
           <CtaButton
-            variant="trigger"
+            variant='trigger'
             props={{ text: cta.text }}
             icon={cta.icon}
-            className="cursor-pointer"
+            className='cursor-pointer'
           />
         ) : (
-          <div className="cursor-pointer hover:opacity-70">{cta.icon}</div>
+          <div className='cursor-pointer hover:opacity-70'>{cta.icon}</div>
         )}
       </DialogTrigger>
       <DialogContent
-        className={cn(
-          "w-full !max-w-4xl flex flex-col items-center py-15",
-          data.className
-        )}
+        className={cn('w-full !max-w-4xl flex flex-col items-center py-15', data.className)}
       >
         {(data.title || data.description) && (
           <DialogHeader>
-            {data.title && (
-              <DialogTitle className="font-bold text-2xl">
-                {data.title}
-              </DialogTitle>
-            )}
-            {data.description && (
-              <DialogDescription>{data.description}</DialogDescription>
-            )}
+            {data.title && <DialogTitle className='font-bold text-2xl'>{data.title}</DialogTitle>}
+            {data.description && <DialogDescription>{data.description}</DialogDescription>}
           </DialogHeader>
         )}
-        <div className="mt-4 w-full max-w-2xl">{data.children}</div>
-        <DialogFooter className="mt-6">
-          {preventAutoClose ? (
-            data.footer
-          ) : (
-            <DialogClose asChild>{data.footer}</DialogClose>
-          )}
+        <div className='mt-4 w-full max-w-2xl'>{data.children}</div>
+        <DialogFooter className='mt-6'>
+          {preventAutoClose ? data.footer : <DialogClose asChild>{data.footer}</DialogClose>}
         </DialogFooter>
       </DialogContent>
     </Dialog>

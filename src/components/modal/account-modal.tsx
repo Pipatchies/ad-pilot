@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
-import Modal from "@/components/modal/modal";
-import SvgPlus from "@/components/icons/Plus";
-import CtaButton from "@/components/cta-button";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import React from 'react';
+import Modal from '@/components/modal/modal';
+import SvgPlus from '@/components/icons/Plus';
+import CtaButton from '@/components/cta-button';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import {
   Form,
   FormField,
@@ -15,25 +15,25 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import SvgProfil from "@/components/icons/Profil";
-import SvgMail from "@/components/icons/Mail";
-import SvgLock from "@/components/icons/Lock";
-import { useAction, useQuery } from "convex/react";
-import { ConvexError } from "convex/values";
-import { api } from "@/../convex/_generated/api";
-import zxcvbn from "zxcvbn";
-import { getPasswordCriteria } from "@/lib/utils";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import SvgProfil from '@/components/icons/Profil';
+import SvgMail from '@/components/icons/Mail';
+import SvgLock from '@/components/icons/Lock';
+import { useAction, useQuery } from 'convex/react';
+import { ConvexError } from 'convex/values';
+import { api } from '@/../convex/_generated/api';
+import zxcvbn from 'zxcvbn';
+import { getPasswordCriteria } from '@/lib/utils';
 
 const CtaProps = {
-  text: "Ajouter un compte",
+  text: 'Ajouter un compte',
   icon: <SvgPlus />,
 };
 
 export default function AccountModal() {
   const roles = useQuery(api.queries.roles.getAllRoles);
-  const adminRoleId = roles?.find((r) => r.name === "admin")?._id;
+  const adminRoleId = roles?.find((r) => r.name === 'admin')?._id;
   const adminCreateUser = useAction(api.actions.users.adminCreateAdmin);
 
   const [passwordStrength, setPasswordStrength] = React.useState(0);
@@ -41,15 +41,15 @@ export default function AccountModal() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const formSchema = z.object({
-    firstname: z.string().min(1, "Le prénom est requis"),
-    lastname: z.string().min(1, "Le nom est requis"),
-    email: z.string().email("Email invalide"),
+    firstname: z.string().min(1, 'Le prénom est requis'),
+    lastname: z.string().min(1, 'Le nom est requis'),
+    email: z.string().email('Email invalide'),
     password: z
       .string()
-      .min(6, "Au moins 6 caractères")
+      .min(6, 'Au moins 6 caractères')
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/,
-        "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial"
+        'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial',
       ),
   });
 
@@ -57,10 +57,10 @@ export default function AccountModal() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "",
+      firstname: '',
+      lastname: '',
+      email: '',
+      password: '',
     },
   });
 
@@ -68,14 +68,14 @@ export default function AccountModal() {
     const strength = zxcvbn(values.password).score;
 
     if (strength < 3) {
-      toast.error("Mot de passe trop faible", {
-        description: "Veuillez choisir un mot de passe plus sécurisé.",
+      toast.error('Mot de passe trop faible', {
+        description: 'Veuillez choisir un mot de passe plus sécurisé.',
       });
       return;
     }
 
     if (!adminRoleId) {
-      toast.error("Impossible de créer le compte : rôle admin introuvable.");
+      toast.error('Impossible de créer le compte : rôle admin introuvable.');
       return;
     }
 
@@ -89,24 +89,21 @@ export default function AccountModal() {
         roleId: adminRoleId,
       });
 
-      toast.success("Compte administrateur créé !");
+      toast.success('Compte administrateur créé !');
       form.reset();
       setIsOpen(false);
     } catch (e) {
-      if (
-        e instanceof ConvexError &&
-        (e.data as any).message === "EMAIL_EXISTS"
-      ) {
-        form.setError("email", {
-          type: "manual",
-          message: (e.data as any).payload || "Cet email est déjà utilisé.",
+      if (e instanceof ConvexError && (e.data as any).message === 'EMAIL_EXISTS') {
+        form.setError('email', {
+          type: 'manual',
+          message: (e.data as any).payload || 'Cet email est déjà utilisé.',
         });
-        toast.error("Erreur de validation", {
-          description: "Cet email est déjà lié à un compte existant.",
+        toast.error('Erreur de validation', {
+          description: 'Cet email est déjà lié à un compte existant.',
         });
       } else {
-        toast.error("Erreur", {
-          description: "Échec de la création. Vérifiez les champs requis.",
+        toast.error('Erreur', {
+          description: 'Échec de la création. Vérifiez les champs requis.',
         });
       }
     } finally {
@@ -115,25 +112,25 @@ export default function AccountModal() {
   }
 
   const UserFormData = {
-    title: "Créer un compte administrateur",
+    title: 'Créer un compte administrateur',
     children: (
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="flex gap-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+          <div className='flex gap-4'>
             <FormField
               control={form.control}
-              name="firstname"
+              name='firstname'
               render={({ field }) => (
-                <FormItem className="w-1/2">
-                  <FormLabel className="text-lg font-semibold">
-                    {" "}
-                    <SvgProfil className="fill-primary" />
+                <FormItem className='w-1/2'>
+                  <FormLabel className='text-lg font-semibold'>
+                    {' '}
+                    <SvgProfil className='fill-primary' />
                     Prénom
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Votre prénom"
-                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      placeholder='Votre prénom'
+                      className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5'
                       {...field}
                     />
                   </FormControl>
@@ -143,18 +140,18 @@ export default function AccountModal() {
             />
             <FormField
               control={form.control}
-              name="lastname"
+              name='lastname'
               render={({ field }) => (
-                <FormItem className="w-1/2">
-                  <FormLabel className="text-lg font-semibold">
-                    {" "}
-                    <SvgProfil className="fill-primary" />
+                <FormItem className='w-1/2'>
+                  <FormLabel className='text-lg font-semibold'>
+                    {' '}
+                    <SvgProfil className='fill-primary' />
                     Nom
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Votre nom"
-                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      placeholder='Votre nom'
+                      className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5'
                       {...field}
                     />
                   </FormControl>
@@ -166,17 +163,17 @@ export default function AccountModal() {
 
           <FormField
             control={form.control}
-            name="email"
+            name='email'
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-semibold">
-                  <SvgMail className="fill-primary" />
+                <FormLabel className='text-lg font-semibold'>
+                  <SvgMail className='fill-primary' />
                   Email
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Renseignez votre email"
-                    className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                    placeholder='Renseignez votre email'
+                    className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5'
                     {...field}
                   />
                 </FormControl>
@@ -187,18 +184,18 @@ export default function AccountModal() {
 
           <FormField
             control={form.control}
-            name="password"
+            name='password'
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-semibold">
-                  <SvgLock className="fill-primary" />
+                <FormLabel className='text-lg font-semibold'>
+                  <SvgLock className='fill-primary' />
                   Mot de passe
                 </FormLabel>
                 <FormControl>
                   <Input
-                    type="password"
-                    placeholder="••••••••"
-                    className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                    type='password'
+                    placeholder='••••••••'
+                    className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5'
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
@@ -207,67 +204,40 @@ export default function AccountModal() {
                     }}
                   />
                 </FormControl>
-                <div className="h-2 w-full bg-gray-200 rounded mt-3">
+                <div className='h-2 w-full bg-gray-200 rounded mt-3'>
                   <div
                     className={`h-full rounded transition-all`}
                     style={{
                       width: `${(passwordStrength / 4) * 100}%`,
                       backgroundColor:
                         passwordStrength < 2
-                          ? "#dc2626"
+                          ? '#dc2626'
                           : passwordStrength === 2
-                          ? "#facc15"
-                          : "#16a34a",
+                            ? '#facc15'
+                            : '#16a34a',
                     }}
                   />
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Force :{" "}
-                  {
-                    ["Très faible", "Faible", "Moyenne", "Forte", "Très forte"][
-                      passwordStrength
-                    ]
-                  }
+                <p className='text-xs text-muted-foreground mt-1'>
+                  Force :{' '}
+                  {['Très faible', 'Faible', 'Moyenne', 'Forte', 'Très forte'][passwordStrength]}
                 </p>
 
                 {(() => {
-                  const criteria = getPasswordCriteria(form.watch("password"));
+                  const criteria = getPasswordCriteria(form.watch('password'));
                   return (
-                    <ul className="mt-2 text-sm space-y-1">
-                      <li
-                        className={
-                          criteria.hasLowercase
-                            ? "text-green-600"
-                            : "text-red-500"
-                        }
-                      >
-                        {criteria.hasLowercase ? "✅" : "❌"} Une minuscule
+                    <ul className='mt-2 text-sm space-y-1'>
+                      <li className={criteria.hasLowercase ? 'text-green-600' : 'text-red-500'}>
+                        {criteria.hasLowercase ? '✅' : '❌'} Une minuscule
                       </li>
-                      <li
-                        className={
-                          criteria.hasUppercase
-                            ? "text-green-600"
-                            : "text-red-500"
-                        }
-                      >
-                        {criteria.hasUppercase ? "✅" : "❌"} Une majuscule
+                      <li className={criteria.hasUppercase ? 'text-green-600' : 'text-red-500'}>
+                        {criteria.hasUppercase ? '✅' : '❌'} Une majuscule
                       </li>
-                      <li
-                        className={
-                          criteria.hasNumber ? "text-green-600" : "text-red-500"
-                        }
-                      >
-                        {criteria.hasNumber ? "✅" : "❌"} Un chiffre
+                      <li className={criteria.hasNumber ? 'text-green-600' : 'text-red-500'}>
+                        {criteria.hasNumber ? '✅' : '❌'} Un chiffre
                       </li>
-                      <li
-                        className={
-                          criteria.hasSpecialChar
-                            ? "text-green-600"
-                            : "text-red-500"
-                        }
-                      >
-                        {criteria.hasSpecialChar ? "✅" : "❌"} Un caractère
-                        spécial
+                      <li className={criteria.hasSpecialChar ? 'text-green-600' : 'text-red-500'}>
+                        {criteria.hasSpecialChar ? '✅' : '❌'} Un caractère spécial
                       </li>
                     </ul>
                   );
@@ -282,11 +252,11 @@ export default function AccountModal() {
     footer: (
       <CtaButton
         props={{
-          text: "Enregistrer",
+          text: 'Enregistrer',
           onClick: form.handleSubmit(onSubmit),
           loading: isSubmitting,
         }}
-        variant="submit"
+        variant='submit'
       />
     ),
   };

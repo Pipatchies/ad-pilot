@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Input } from "@/components/ui/input";
+import React from 'react';
+import { Input } from '@/components/ui/input';
 
 const BudgetInput = ({
   value,
@@ -19,15 +19,13 @@ const BudgetInput = ({
 
   return (
     <Input
-      type={isFocused ? "number" : "text"}
+      type={isFocused ? 'number' : 'text'}
       placeholder={placeholder}
       className={className}
       {...props}
-      value={
-        isFocused ? (value === 0 ? "" : value ?? "") : value ? `${value} €` : ""
-      }
+      value={isFocused ? (value === 0 ? '' : (value ?? '')) : value ? `${value} €` : ''}
       onChange={(e) => {
-        const val = e.target.value.replace(/[^0-9.]/g, "");
+        const val = e.target.value.replace(/[^0-9.]/g, '');
         onChange(val ? Number(val) : undefined);
       }}
       onFocus={() => setIsFocused(true)}

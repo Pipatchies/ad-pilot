@@ -1,11 +1,11 @@
-"use client";
-import { useQuery } from "convex/react";
-import { api } from "../../../../../../convex/_generated/api";
-import InvoicesTable from "@/components/table/invoices-table";
+'use client';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../../../convex/_generated/api';
+import InvoicesTable from '@/components/table/invoices-table';
 
 type AgencyInvoicesTableProps = {
   globalFilter: string;
-  dateSort: "asc" | "desc";
+  dateSort: 'asc' | 'desc';
 };
 
 export default function SpaceAgencyInvoicesTable({
@@ -22,10 +22,10 @@ export default function SpaceAgencyInvoicesTable({
 
   return (
     <section>
-      <div className="overflow-x-auto">
+      <div className='overflow-x-auto'>
         <InvoicesTable
           invoices={invoicesData}
-          variant="agency"
+          variant='agency'
           showCampaign={true}
           showClient={true}
           globalFilter={globalFilter}

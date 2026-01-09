@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { DataTable, sortableHeader } from "@/components/table/data-table";
-import SvgEyeIcon from "@/components/icons/EyeIcon";
-import SvgUploder from "@/components/icons/Uploder";
-import { ColumnDef } from "@tanstack/react-table";
-import { Document } from "@/types/docs";
-import MediaViewerModal from "@/components/modal/media-viewer-modal";
-import UpdateDocumentModal from "@/components/modal/update/update-document-modal";
-import DeleteModal from "../modal/delete-modal";
-import { useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { useState } from 'react';
+import { DataTable, sortableHeader } from '@/components/table/data-table';
+import SvgEyeIcon from '@/components/icons/EyeIcon';
+import SvgUploder from '@/components/icons/Uploder';
+import { ColumnDef } from '@tanstack/react-table';
+import { Document } from '@/types/docs';
+import MediaViewerModal from '@/components/modal/media-viewer-modal';
+import UpdateDocumentModal from '@/components/modal/update/update-document-modal';
+import DeleteModal from '../modal/delete-modal';
+import { useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 
 interface DocumentsTableProps {
   documents: Document[];
@@ -34,57 +34,53 @@ export default function DocumentsTable({
 
   const columns: ColumnDef<Document>[] = [
     {
-      accessorKey: "title",
-      header: sortableHeader("Titre du document"),
-      cell: ({ row }) => row.getValue("title"),
+      accessorKey: 'title',
+      header: sortableHeader('Titre du document'),
+      cell: ({ row }) => row.getValue('title'),
     },
-       ...(showCampaign
+    ...(showCampaign
       ? [
           {
-            accessorKey: "campaignTitle",
-            header: sortableHeader("Campagne"),
+            accessorKey: 'campaignTitle',
+            header: sortableHeader('Campagne'),
             cell: ({ row }: { row: any }) => (
-              <span className="font-bold underline">
-                {row.getValue("campaignTitle")}
-              </span>
+              <span className='font-bold underline'>{row.getValue('campaignTitle')}</span>
             ),
           },
         ]
       : []),
-      ...(showClient
+    ...(showClient
       ? [
           {
-            accessorKey: "organizationName",
-            header: sortableHeader("Client"),
+            accessorKey: 'organizationName',
+            header: sortableHeader('Client'),
             cell: ({ row }: { row: any }) => (
-              <span className="font-bold">
-                {row.getValue("organizationName")}
-              </span>
+              <span className='font-bold'>{row.getValue('organizationName')}</span>
             ),
           },
         ]
       : []),
     {
-      accessorKey: "type",
-      header: sortableHeader("Type de fichier"),
-      cell: ({ row }) => row.getValue("type"),
+      accessorKey: 'type',
+      header: sortableHeader('Type de fichier'),
+      cell: ({ row }) => row.getValue('type'),
     },
     {
-      accessorKey: "_creationTime",
+      accessorKey: '_creationTime',
       header: sortableHeader("Date d'import"),
       cell: ({ row }) => {
-        const ts = row.getValue("_creationTime") as number | undefined;
-        return ts ? new Date(ts).toLocaleDateString("fr-FR") : "-";
+        const ts = row.getValue('_creationTime') as number | undefined;
+        return ts ? new Date(ts).toLocaleDateString('fr-FR') : '-';
       },
     },
     {
-      id: "actions",
-      header: "",
+      id: 'actions',
+      header: '',
       cell: ({ row }) => (
-        <div className="flex justify-end gap-4">
+        <div className='flex justify-end gap-4'>
           <button
             onClick={() => setViewingDocument(row.original)}
-            className="hover:opacity-80 transition-opacity cursor-pointer"
+            className='hover:opacity-80 transition-opacity cursor-pointer'
           >
             <SvgEyeIcon />
           </button>
@@ -101,15 +97,12 @@ export default function DocumentsTable({
           {row.original.url && (
             <a
               href={
-                row.original.url.includes("/upload/")
-                  ? row.original.url.replace(
-                      "/upload/",
-                      "/upload/fl_attachment/"
-                    )
+                row.original.url.includes('/upload/')
+                  ? row.original.url.replace('/upload/', '/upload/fl_attachment/')
                   : row.original.url
               }
               download
-              className="hover:opacity-80 transition-opacity"
+              className='hover:opacity-80 transition-opacity'
             >
               <SvgUploder />
             </a>
@@ -135,9 +128,9 @@ export default function DocumentsTable({
         data={documents}
         columns={columns}
         globalFilter={globalFilter}
-        emptyMessage="Aucun document pour le moment."
+        emptyMessage='Aucun document pour le moment.'
         headerClassName={headerClassName}
-        defaultSort={{ id: "_creationTime", desc: true }}
+        defaultSort={{ id: '_creationTime', desc: true }}
       />
 
       {viewingDocument && (

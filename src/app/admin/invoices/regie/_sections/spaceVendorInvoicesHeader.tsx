@@ -1,28 +1,28 @@
-"use client";
+'use client';
 
-import SearchBar from "@/components/search-bar";
-import Typography from "@/components/typography";
+import SearchBar from '@/components/search-bar';
+import Typography from '@/components/typography';
 
 type AccountsHeaderProps = {
   onQueryChange: (q: string) => void;
-  onDateSortChange: (dir: "desc" | "asc") => void;
-  defaultDateSort?: "desc" | "asc";
+  onDateSortChange: (dir: 'desc' | 'asc') => void;
+  defaultDateSort?: 'desc' | 'asc';
 };
 
 export default function SpaceVendorInvoicesHeader({
   onQueryChange,
   onDateSortChange,
-  defaultDateSort = "desc",
+  defaultDateSort = 'desc',
 }: AccountsHeaderProps) {
   return (
     <section>
-      <Typography variant="h1" className="mb-6">
+      <Typography variant='h1' className='mb-6'>
         Factures régie
       </Typography>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6'>
         <SearchBar
-          variant="full"
+          variant='full'
           onQueryChange={onQueryChange}
           onDateSortChange={onDateSortChange}
           defaultDateSort={defaultDateSort}

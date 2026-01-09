@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 
 import {
   flexRender,
@@ -18,10 +18,10 @@ import {
   getFilteredRowModel,
   SortingState,
   useReactTable,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table';
 
-import SvgSmallDown from "@/components/icons/SmallDown";
-import { cn } from "@/lib/utils";
+import SvgSmallDown from '@/components/icons/SmallDown';
+import { cn } from '@/lib/utils';
 
 interface DataTableProps<TData, TValue> {
   data: TData[];
@@ -33,14 +33,14 @@ interface DataTableProps<TData, TValue> {
 }
 
 // Composant pour afficher l'icône de tri dans les headers
-function SortIcon({ isSorted }: { isSorted: false | "asc" | "desc" }) {
-  if (!isSorted) return <SvgSmallDown className="w-4 h-4 opacity-40" />;
+function SortIcon({ isSorted }: { isSorted: false | 'asc' | 'desc' }) {
+  if (!isSorted) return <SvgSmallDown className='w-4 h-4 opacity-40' />;
 
   return (
     <SvgSmallDown
       className={cn(
-        "w-4 h-4 transition-transform duration-200 block mx-auto",
-        isSorted === "asc" ? "rotate-0" : "rotate-180"
+        'w-4 h-4 transition-transform duration-200 block mx-auto',
+        isSorted === 'asc' ? 'rotate-0' : 'rotate-180',
       )}
     />
   );
@@ -51,8 +51,8 @@ export function sortableHeader(label: string) {
   function Header({ column }: { column: any }) {
     return (
       <button
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items-center gap-1 text-sm md:text-lg font-bold text-primary"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        className='flex items-center gap-1 text-sm md:text-lg font-bold text-primary'
       >
         {label}
         <SortIcon isSorted={column.getIsSorted()} />
@@ -66,9 +66,9 @@ export function sortableHeader(label: string) {
 export function DataTable<TData, TValue>({
   data,
   columns,
-  globalFilter = "",
+  globalFilter = '',
   defaultSort,
-  emptyMessage = "Aucune donnée disponible.",
+  emptyMessage = 'Aucune donnée disponible.',
   headerClassName,
   onRowClick,
 }: DataTableProps<TData, TValue> & {
@@ -97,16 +97,10 @@ export function DataTable<TData, TValue>({
       {/* HEADER */}
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow
-            key={headerGroup.id}
-            className={cn("border-none", headerClassName)}
-          >
+          <TableRow key={headerGroup.id} className={cn('border-none', headerClassName)}>
             {headerGroup.headers.map((header) => (
               <TableHead key={header.id}>
-                {flexRender(
-                  header.column.columnDef.header,
-                  header.getContext()
-                )}
+                {flexRender(header.column.columnDef.header, header.getContext())}
               </TableHead>
             ))}
           </TableRow>
@@ -120,9 +114,8 @@ export function DataTable<TData, TValue>({
             <TableRow
               key={row.id}
               className={cn(
-                "text-sm md:text-lg h-15 border-[#A5A4BF]",
-                onRowClick &&
-                  "cursor-pointer hover:bg-muted/50 transition-colors"
+                'text-sm md:text-lg h-15 border-[#A5A4BF]',
+                onRowClick && 'cursor-pointer hover:bg-muted/50 transition-colors',
               )}
               onClick={() => onRowClick && onRowClick(row)}
             >
@@ -135,7 +128,7 @@ export function DataTable<TData, TValue>({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={columns.length} className="text-center py-4">
+            <TableCell colSpan={columns.length} className='text-center py-4'>
               {emptyMessage}
             </TableCell>
           </TableRow>

@@ -1,8 +1,8 @@
-"use node";
-import { v } from "convex/values";
-import { internalAction } from "../_generated/server";
-import nodemailer from "nodemailer";
-import { formatDateFR } from "../../src/lib/utils";
+'use node';
+import { v } from 'convex/values';
+import { internalAction } from '../_generated/server';
+import nodemailer from 'nodemailer';
+import { formatDateFR } from '../../src/lib/utils';
 
 export const sendEmail = internalAction({
   args: {
@@ -37,27 +37,27 @@ export const sendEmail = internalAction({
     const text = `
 Un nouveau brief a été soumis :
 
-Client : ${args.clientName || "Non spécifié"}
-Titre : ${args.title || "Sans titre"}
+Client : ${args.clientName || 'Non spécifié'}
+Titre : ${args.title || 'Sans titre'}
 Période : ${formatDateFR(args.periodFrom)} au ${formatDateFR(args.periodTo)}
 Cible : ${args.target}
 Territoire : ${args.territory}
 Villes : ${args.cities}
 Budget : ${args.budget}€
-Objectifs : ${args.objectives.join(", ")}
-Médias : ${args.mediaTypes.join(", ")}
-TV types: ${args.tvTypes?.join(", ") || "N/A"}
-Display types: ${args.displayTypes || "N/A"}
-Radio types: ${args.radioTypes?.join(", ") || "N/A"}
-URL : ${args.url || "N/A"}
+Objectifs : ${args.objectives.join(', ')}
+Médias : ${args.mediaTypes.join(', ')}
+TV types: ${args.tvTypes?.join(', ') || 'N/A'}
+Display types: ${args.displayTypes || 'N/A'}
+Radio types: ${args.radioTypes?.join(', ') || 'N/A'}
+URL : ${args.url || 'N/A'}
 Brief :
 ${args.brief}
       `;
 
     const mailOptions = {
-      from: "no-reply@agenceverywell.fr",
+      from: 'no-reply@agenceverywell.fr',
       to: args.recipients,
-      subject: "Nouveau brief client",
+      subject: 'Nouveau brief client',
       text,
       attachments: args.url ? [{ path: args.url }] : [],
     };
@@ -74,7 +74,7 @@ export const sendAccountCreatedEmail = internalAction({
     appUrl: v.optional(v.string()),
   },
   handler: async (_, { to, clientName, appUrl }) => {
-    const APP_URL = appUrl ?? process.env.APP_URL ?? "http://localhost:3000";
+    const APP_URL = appUrl ?? process.env.APP_URL ?? 'http://localhost:3000';
     const link = `${APP_URL}/resetPassword`;
 
     const transporter = nodemailer.createTransport({
@@ -88,18 +88,18 @@ export const sendAccountCreatedEmail = internalAction({
     });
 
     const mailOptions = {
-      from: "no-reply@agenceverywell.fr",
+      from: 'no-reply@agenceverywell.fr',
       to,
       subject: `Votre compte ${clientName} est prêt – définissez votre mot de passe`,
       text: [
-        "Bonjour,",
-        "",
+        'Bonjour,',
+        '',
         `Votre compte pour ${clientName} a bien été créé.`,
-        "Cliquez sur ce lien pour recevoir un code et définir votre mot de passe :",
+        'Cliquez sur ce lien pour recevoir un code et définir votre mot de passe :',
         link,
-        "",
-        "Si vous n’êtes pas à l’origine de cette action, ignorez cet e-mail.",
-      ].join("\n"),
+        '',
+        'Si vous n’êtes pas à l’origine de cette action, ignorez cet e-mail.',
+      ].join('\n'),
       html: `
         <p>Bonjour,</p>
         <p>Votre compte pour <strong>${clientName}</strong> a bien été créé.</p>
@@ -128,7 +128,7 @@ export const sendQuoteEmail = internalAction({
           from: v.optional(v.string()),
           to: v.optional(v.string()),
         }),
-      })
+      }),
     ),
     clientName: v.optional(v.string()),
     recipients: v.array(v.string()),
@@ -146,8 +146,8 @@ export const sendQuoteEmail = internalAction({
 
     const mediasText = args.medias
       .map((m, i) => {
-        const from = m.period.from ? formatDateFR(m.period.from) : "N/A";
-        const to = m.period.to ? formatDateFR(m.period.to) : "N/A";
+        const from = m.period.from ? formatDateFR(m.period.from) : 'N/A';
+        const to = m.period.to ? formatDateFR(m.period.to) : 'N/A';
         return `
 Média #${i + 1}
 - Type : ${m.type}
@@ -157,21 +157,21 @@ Média #${i + 1}
 - Période : ${from} au ${to}
 `;
       })
-      .join("\n");
+      .join('\n');
 
     const text = `
 Une nouvelle demande de devis a été soumise :
 
-Client : ${args.clientName || "Non spécifié"}
+Client : ${args.clientName || 'Non spécifié'}
 
 Détails de la demande :
 ${mediasText}
       `;
 
     const mailOptions = {
-      from: "no-reply@agenceverywell.fr",
+      from: 'no-reply@agenceverywell.fr',
       to: args.recipients,
-      subject: "Nouvelle demande de devis client",
+      subject: 'Nouvelle demande de devis client',
       text,
     };
 

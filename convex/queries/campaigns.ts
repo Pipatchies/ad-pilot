@@ -1,33 +1,31 @@
-import { v } from "convex/values";
-import { query } from "../_generated/server";
+import { v } from 'convex/values';
+import { query } from '../_generated/server';
 
 export const getAllCampaigns = query({
   handler: async (ctx) => {
     return await ctx.db
-      .query("campaigns")
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('campaigns')
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
   },
 });
 
 export const getCampaignsByOrganization = query({
   args: {
-    organizationId: v.id("organizations"),
+    organizationId: v.id('organizations'),
   },
   handler: async (ctx, { organizationId }) => {
     return await ctx.db
-      .query("campaigns")
-      .withIndex("by_organizationId", (q) =>
-        q.eq("organizationId", organizationId)
-      )
-      .filter((q) => q.neq(q.field("deleted"), true))
+      .query('campaigns')
+      .withIndex('by_organizationId', (q) => q.eq('organizationId', organizationId))
+      .filter((q) => q.neq(q.field('deleted'), true))
       .collect();
   },
 });
 
 export const getCampaignById = query({
   args: {
-    campaignId: v.id("campaigns"),
+    campaignId: v.id('campaigns'),
   },
   handler: async (ctx, { campaignId }) => {
     const campaign = await ctx.db.get(campaignId);
@@ -40,13 +38,13 @@ export const getActiveCampaigns = query({
     const now = new Date().toISOString();
 
     const campaigns = await ctx.db
-      .query("campaigns")
+      .query('campaigns')
       .filter((q) =>
         q.and(
-          q.eq(q.field("archived"), false),
-          q.gte(q.field("endDate"), now),
-          q.neq(q.field("deleted"), true)
-        )
+          q.eq(q.field('archived'), false),
+          q.gte(q.field('endDate'), now),
+          q.neq(q.field('deleted'), true),
+        ),
       )
       .collect();
 
@@ -57,9 +55,9 @@ export const getActiveCampaigns = query({
 
         return {
           ...c,
-          organizationName: org?.name ?? "—",
+          organizationName: org?.name ?? '—',
         };
-      })
+      }),
     );
   },
 });
@@ -95,10 +93,8 @@ export const getActiveCampaigns = query({
 export const getArchivedCampaigns = query({
   handler: async (ctx) => {
     const campaigns = await ctx.db
-      .query("campaigns")
-      .filter((q) =>
-        q.and(q.eq(q.field("archived"), true), q.neq(q.field("deleted"), true))
-      )
+      .query('campaigns')
+      .filter((q) => q.and(q.eq(q.field('archived'), true), q.neq(q.field('deleted'), true)))
       .collect();
 
     return Promise.all(
@@ -107,9 +103,9 @@ export const getArchivedCampaigns = query({
 
         return {
           ...c,
-          organizationName: org?.name ?? "—",
+          organizationName: org?.name ?? '—',
         };
-      })
+      }),
     );
   },
 });

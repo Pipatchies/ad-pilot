@@ -1,57 +1,48 @@
-"use client";
+'use client';
 
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import Typography from "@/components/typography";
-import InvoiceModal from "@/components/modal/invoices-modal";
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import Typography from '@/components/typography';
+import InvoiceModal from '@/components/modal/invoices-modal';
 
-import { Invoice } from "@/types/invoices";
-import InvoicesTable from "@/components/table/invoices-table";
+import { Invoice } from '@/types/invoices';
+import InvoicesTable from '@/components/table/invoices-table';
 
 interface Props {
   formInvoices: Invoice[];
   setFormInvoices: React.Dispatch<React.SetStateAction<Invoice[]>>;
 }
 
-export default function SpaceInvoices({
-  formInvoices,
-  setFormInvoices,
-}: Props) {
+export default function SpaceInvoices({ formInvoices, setFormInvoices }: Props) {
   // Séparation agence / régie
-  const agencyInvoices = formInvoices.filter((i) => i.invoiceType === "agency");
+  const agencyInvoices = formInvoices.filter((i) => i.invoiceType === 'agency');
 
-  const vendorInvoices = formInvoices.filter((i) => i.invoiceType === "vendor");
+  const vendorInvoices = formInvoices.filter((i) => i.invoiceType === 'vendor');
 
   return (
-    <Card className="w-full rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10">
+    <Card className='w-full rounded-sm text-primary bg-card/20 shadow-none border-none px-5 py-10'>
       {/* HEADER */}
-      <CardHeader className="flex justify-between items-center">
-        <Typography variant="h2" className="mb-0">
+      <CardHeader className='flex justify-between items-center'>
+        <Typography variant='h2' className='mb-0'>
           Les factures
         </Typography>
 
-        <InvoiceModal
-          onAddInvoice={(invoice) =>
-            setFormInvoices((prev) => [...prev, invoice])
-          }
-        />
+        <InvoiceModal onAddInvoice={(invoice) => setFormInvoices((prev) => [...prev, invoice])} />
       </CardHeader>
 
-      <CardContent className="space-y-12">
+      <CardContent className='space-y-12'>
         {/* ---------------- AGENCY INVOICES ---------------- */}
         <div>
-          <Typography variant="h3" className="font-semibold mb-4">
+          <Typography variant='h3' className='font-semibold mb-4'>
             Factures agence
           </Typography>
 
           {agencyInvoices.length === 0 ? (
-            <p className="text-primary/60 italic">
-              Aucune facture agence pour le moment.
-            </p>
+            <p className='text-primary/60 italic'>Aucune facture agence pour le moment.</p>
           ) : (
             <InvoicesTable
               invoices={agencyInvoices}
-              variant="agency"
-              headerClassName="border-b border-solid border-[#A5A4BF]"
+              variant='agency'
+              headerClassName='border-b border-solid border-[#A5A4BF]'
               isAdmin={true}
             />
           )}
@@ -59,19 +50,17 @@ export default function SpaceInvoices({
 
         {/* ---------------- VENDOR INVOICES ---------------- */}
         <div>
-          <Typography variant="h3" className="font-semibold mb-4">
+          <Typography variant='h3' className='font-semibold mb-4'>
             Factures régie
           </Typography>
 
           {vendorInvoices.length === 0 ? (
-            <p className="text-primary/60 italic">
-              Aucune facture régie pour le moment.
-            </p>
+            <p className='text-primary/60 italic'>Aucune facture régie pour le moment.</p>
           ) : (
             <InvoicesTable
               invoices={vendorInvoices}
-              variant="vendor"
-              headerClassName="border-b border-solid border-[#A5A4BF]"
+              variant='vendor'
+              headerClassName='border-b border-solid border-[#A5A4BF]'
               isAdmin={true}
             />
           )}

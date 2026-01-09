@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -8,7 +8,7 @@
 
   --text-xs: clamp(0.65rem, 1vw, 0.75rem);
   --text-sm: clamp(0.75rem, 1.2vw, 0.875rem);
-  --text-base: clamp(0.85rem, 1.5vw, 1rem);  
+  --text-base: clamp(0.85rem, 1.5vw, 1rem);
   --text-lg: clamp(1rem, 1.8vw, 1.125rem);
   --text-xl: clamp(1.125rem, 2vw, 1.25rem);
   --text-2xl: clamp(1.25rem, 2.5vw, 1.5rem);
@@ -63,7 +63,6 @@
   }
 }
 
-
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -102,19 +101,19 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: hsl(260, 32%, 26%);
-  --card: hsl(257,12%,89%);
+  --card: hsl(257, 12%, 89%);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: hsl(260, 32%, 26%);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: hsl(257,12%,89%);
+  --secondary: hsl(257, 12%, 89%);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-  --destructive: hsl(334,100%,50%);
+  --destructive: hsl(334, 100%, 50%);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -124,10 +123,10 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.921 0 0);
-  --sidebar-foreground: oklch(1 0 0);;
+  --sidebar-foreground: oklch(1 0 0);
   --sidebar-primary: hsl(260, 32%, 26%);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: hsla(0,0%,0%,0.4);
+  --sidebar-accent: hsla(0, 0%, 0%, 0.4);
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
@@ -194,13 +193,13 @@
 }
 
 .color-chevron {
-  color: #A4AFB7;
+  color: #a4afb7;
 }
 
 .shadow-around {
-  box-shadow: 0 0 20px #0000001A;
+  box-shadow: 0 0 20px #0000001a;
 }
 
 .shadow-topbar {
-  box-shadow: 0px 2px 6px #0000000A;
+  box-shadow: 0px 2px 6px #0000000a;
 }

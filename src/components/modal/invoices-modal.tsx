@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import Modal from "@/components/modal/modal";
-import SvgPlus from "@/components/icons/Plus";
-import CtaButton from "@/components/cta-button";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import React, { useState, useEffect } from 'react';
+import Modal from '@/components/modal/modal';
+import SvgPlus from '@/components/icons/Plus';
+import CtaButton from '@/components/cta-button';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import {
   Form,
   FormField,
@@ -15,27 +15,27 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Id } from "@/../convex/_generated/dataModel";
-import { useAction, useMutation, useQuery } from "convex/react";
-import { api } from "@/../convex/_generated/api";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Id } from '@/../convex/_generated/dataModel';
+import { useAction, useMutation, useQuery } from 'convex/react';
+import { api } from '@/../convex/_generated/api';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import SvgUploder from "../icons/Uploder";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { cn } from "@/lib/utils";
-import SvgCalendrier from "../icons/Calendrier";
-import { Calendar } from "../ui/calendar";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
-import { Invoice } from "@/types/invoices";
-import { Plus, Check, ChevronsUpDown } from "lucide-react";
+} from '@/components/ui/select';
+import SvgUploder from '../icons/Uploder';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { cn } from '@/lib/utils';
+import SvgCalendrier from '../icons/Calendrier';
+import { Calendar } from '../ui/calendar';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { Invoice } from '@/types/invoices';
+import { Plus, Check, ChevronsUpDown } from 'lucide-react';
 import {
   Command,
   CommandEmpty,
@@ -43,11 +43,11 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from '@/components/ui/command';
 
 const invoiceTypes = [
-  { label: "Facture Agence", value: "agency" },
-  { label: "Facture Régie", value: "vendor" },
+  { label: 'Facture Agence', value: 'agency' },
+  { label: 'Facture Régie', value: 'vendor' },
 ];
 
 interface InvoiceModalProps {
@@ -58,7 +58,7 @@ interface InvoiceModalProps {
 }
 
 const CtaProps = {
-  text: "Ajouter une facture",
+  text: 'Ajouter une facture',
   icon: <SvgPlus />,
 };
 
@@ -82,34 +82,26 @@ export default function InvoiceModal({
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [selectedOrgId, setSelectedOrgId] = useState<string>(
-    defaultOrganizationId || ""
-  );
-  const [selectedCampaignId, setSelectedCampaignId] = useState<string>(
-    defaultCampaignId || ""
-  );
+  const [selectedOrgId, setSelectedOrgId] = useState<string>(defaultOrganizationId || '');
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string>(defaultCampaignId || '');
 
   // Vendor selection state
   const [openVendorCombobox, setOpenVendorCombobox] = useState(false);
   const [isCreatingVendor, setIsCreatingVendor] = useState(false);
 
-  const organizations = useQuery(
-    api.queries.organizations.getAllOrganizationsWithLastConnection
-  );
+  const organizations = useQuery(api.queries.organizations.getAllOrganizationsWithLastConnection);
 
   const campaigns = useQuery(
     api.queries.campaigns.getCampaignsByOrganization,
-    selectedOrgId
-      ? { organizationId: selectedOrgId as Id<"organizations"> }
-      : "skip"
+    selectedOrgId ? { organizationId: selectedOrgId as Id<'organizations'> } : 'skip',
   );
 
   const formSchema = z.object({
     organizationId: z.string().optional(),
     campaignId: z.string().optional(),
-    title: z.string().min(1, "Le numéro de facture est requis"),
-    invoiceType: z.enum(["agency", "vendor"], {
-      required_error: "Veuillez sélectionner un type de facture",
+    title: z.string().min(1, 'Le numéro de facture est requis'),
+    invoiceType: z.enum(['agency', 'vendor'], {
+      required_error: 'Veuillez sélectionner un type de facture',
     }),
     agencyInvoice: z.string().optional(),
     // Keep vendorName for backward compatibility or simple input
@@ -119,26 +111,20 @@ export default function InvoiceModal({
     // Vendor Creation / Details fields
     newVendorName: z.string().optional(),
     vendorContact: z.string().optional(),
-    vendorEmail: z
-      .string()
-      .email("Email invalide")
-      .optional()
-      .or(z.literal("")),
+    vendorEmail: z.string().email('Email invalide').optional().or(z.literal('')),
     vendorPhone: z.string().optional(),
 
     htprice: z
       .number({
-        required_error: "Le montant HT est requis",
+        required_error: 'Le montant HT est requis',
       })
-      .nonnegative({ message: "Le montant HT doit être positif" }),
+      .nonnegative({ message: 'Le montant HT doit être positif' }),
     ttcprice: z
       .number({
-        required_error: "Le montant TTC est requis",
+        required_error: 'Le montant TTC est requis',
       })
-      .nonnegative({ message: "Le montant TTC doit être positif" }),
-    startDate: z
-      .date({ required_error: "Date de facturation requise" })
-      .nullable(),
+      .nonnegative({ message: 'Le montant TTC doit être positif' }),
+    startDate: z.date({ required_error: 'Date de facturation requise' }).nullable(),
     dueDate: z.date({ required_error: "Date d'échéance requise" }).nullable(),
   });
 
@@ -146,17 +132,17 @@ export default function InvoiceModal({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      organizationId: "",
-      campaignId: "",
-      title: "",
+      organizationId: '',
+      campaignId: '',
+      title: '',
       invoiceType: undefined,
-      agencyInvoice: "",
-      vendorName: "",
-      vendorId: "",
-      newVendorName: "",
-      vendorContact: "",
-      vendorEmail: "",
-      vendorPhone: "",
+      agencyInvoice: '',
+      vendorName: '',
+      vendorId: '',
+      newVendorName: '',
+      vendorContact: '',
+      vendorEmail: '',
+      vendorPhone: '',
       htprice: 0,
       ttcprice: 0,
       startDate: null,
@@ -164,36 +150,36 @@ export default function InvoiceModal({
     },
   });
 
-  const selectedInvoiceType = form.watch("invoiceType");
-  const selectedVendorId = form.watch("vendorId");
+  const selectedInvoiceType = form.watch('invoiceType');
+  const selectedVendorId = form.watch('vendorId');
 
   // Effect to pre-fill vendor details when a vendor is selected
   useEffect(() => {
-    if (selectedVendorId && selectedVendorId !== "new") {
+    if (selectedVendorId && selectedVendorId !== 'new') {
       const vendor = vendors?.find((v) => v._id === selectedVendorId);
       if (vendor) {
-        form.setValue("vendorContact", vendor.contactName || "");
-        form.setValue("vendorEmail", vendor.email || "");
-        form.setValue("vendorPhone", vendor.phone || "");
+        form.setValue('vendorContact', vendor.contactName || '');
+        form.setValue('vendorEmail', vendor.email || '');
+        form.setValue('vendorPhone', vendor.phone || '');
         setIsCreatingVendor(false);
       }
-    } else if (selectedVendorId === "new") {
-      form.setValue("vendorContact", "");
-      form.setValue("vendorEmail", "");
-      form.setValue("vendorPhone", "");
+    } else if (selectedVendorId === 'new') {
+      form.setValue('vendorContact', '');
+      form.setValue('vendorEmail', '');
+      form.setValue('vendorPhone', '');
       setIsCreatingVendor(true);
     }
   }, [selectedVendorId, vendors, form]);
 
   async function onSubmit(values: FormValues) {
     if (!file) {
-      toast.error("Veuillez sélectionner un fichier.");
+      toast.error('Veuillez sélectionner un fichier.');
       return;
     }
 
     if (!onAddInvoice) {
       if (!selectedOrgId || !selectedCampaignId) {
-        toast.error("Veuillez sélectionner une organisation et une campagne.");
+        toast.error('Veuillez sélectionner une organisation et une campagne.');
         return;
       }
     }
@@ -203,15 +189,10 @@ export default function InvoiceModal({
     setUploading(true);
     setIsSubmitting(true);
     try {
-      let finalVendorId =
-        values.vendorId !== "new" ? values.vendorId : undefined;
+      let finalVendorId = values.vendorId !== 'new' ? values.vendorId : undefined;
 
       // Handle Vendor Creation if "new" is selected
-      if (
-        values.invoiceType === "vendor" &&
-        isCreatingVendor &&
-        values.newVendorName
-      ) {
+      if (values.invoiceType === 'vendor' && isCreatingVendor && values.newVendorName) {
         try {
           const newVendorId = await createVendor({
             name: values.newVendorName,
@@ -221,44 +202,40 @@ export default function InvoiceModal({
           });
           finalVendorId = newVendorId;
         } catch (err) {
-          toast.error("Erreur lors de la création de la régie.");
+          toast.error('Erreur lors de la création de la régie.');
           setUploading(false);
           setIsSubmitting(false);
           return;
         }
       }
 
-      const resourceType = "raw" as const;
+      const resourceType = 'raw' as const;
 
       const sig = await getSignature({ folder, resourceType });
 
       const endpoint = `https://api.cloudinary.com/v1_1/${sig.cloudName}/${sig.resourceType}/upload`;
       const fd = new FormData();
-      fd.append("file", file);
-      fd.append("api_key", sig.apiKey);
-      fd.append("timestamp", String(sig.timestamp));
-      fd.append("upload_preset", sig.uploadPreset);
-      fd.append("signature", sig.signature);
-      fd.append("folder", sig.folder);
+      fd.append('file', file);
+      fd.append('api_key', sig.apiKey);
+      fd.append('timestamp', String(sig.timestamp));
+      fd.append('upload_preset', sig.uploadPreset);
+      fd.append('signature', sig.signature);
+      fd.append('folder', sig.folder);
 
-      const res = await fetch(endpoint, { method: "POST", body: fd });
+      const res = await fetch(endpoint, { method: 'POST', body: fd });
       const json = await res.json();
 
-      if (json.error) throw new Error(json.error?.message || "Upload failed");
+      if (json.error) throw new Error(json.error?.message || 'Upload failed');
 
       const invoiceData = {
         title: values.title,
         invoiceType: values.invoiceType,
         agencyInvoice: values.agencyInvoice,
-        vendorId: finalVendorId as Id<"vendors"> | undefined,
+        vendorId: finalVendorId as Id<'vendors'> | undefined,
         htprice: values.htprice,
         ttcprice: values.ttcprice,
-        startDate: values.startDate
-          ? values.startDate.toISOString()
-          : new Date().toISOString(),
-        dueDate: values.dueDate
-          ? values.dueDate.toISOString()
-          : new Date().toISOString(),
+        startDate: values.startDate ? values.startDate.toISOString() : new Date().toISOString(),
+        dueDate: values.dueDate ? values.dueDate.toISOString() : new Date().toISOString(),
         url: json.secure_url,
         publicId: json.public_id,
         resourceType,
@@ -268,14 +245,14 @@ export default function InvoiceModal({
         onAddInvoice({
           ...invoiceData,
         });
-        toast.success("Facture ajoutée avec succès !");
+        toast.success('Facture ajoutée avec succès !');
       } else {
         await createInvoice({
           ...invoiceData,
-          campaignId: selectedCampaignId as Id<"campaigns">,
-          organizationId: selectedOrgId as Id<"organizations">,
+          campaignId: selectedCampaignId as Id<'campaigns'>,
+          organizationId: selectedOrgId as Id<'organizations'>,
         });
-        toast.success("Facture ajoutée avec succès !");
+        toast.success('Facture ajoutée avec succès !');
       }
 
       setFile(null);
@@ -295,7 +272,7 @@ export default function InvoiceModal({
   }
 
   const InvoiceFormData = {
-    title: "Ajouter une facture",
+    title: 'Ajouter une facture',
     children: (
       <Form {...form}>
         <form
@@ -303,34 +280,29 @@ export default function InvoiceModal({
             e.stopPropagation();
             form.handleSubmit(onSubmit)(e);
           }}
-          className="space-y-4"
+          className='space-y-4'
         >
           {!defaultOrganizationId && !defaultCampaignId && !onAddInvoice && (
-            <div className="flex gap-4">
-              <div className="w-1/2 space-y-2">
-                <FormLabel className="text-lg font-semibold">Client</FormLabel>
+            <div className='flex gap-4'>
+              <div className='w-1/2 space-y-2'>
+                <FormLabel className='text-lg font-semibold'>Client</FormLabel>
                 <Select
                   value={selectedOrgId}
                   onValueChange={(val) => {
                     setSelectedOrgId(val);
-                    setSelectedCampaignId("");
+                    setSelectedCampaignId('');
                   }}
                 >
-                  <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                  <SelectTrigger className='w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white'>
                     <SelectValue
                       placeholder={
-                        <span className="text-primary/50 italic">
-                          Sélectionnez le client
-                        </span>
+                        <span className='text-primary/50 italic'>Sélectionnez le client</span>
                       }
                     />
                   </SelectTrigger>
                   <SelectContent>
                     {organizations?.map((org) => (
-                      <SelectItem
-                        key={org.organizationId}
-                        value={org.organizationId}
-                      >
+                      <SelectItem key={org.organizationId} value={org.organizationId}>
                         {org.organizationName}
                       </SelectItem>
                     ))}
@@ -338,21 +310,17 @@ export default function InvoiceModal({
                 </Select>
               </div>
 
-              <div className="w-1/2 space-y-2">
-                <FormLabel className="text-lg font-semibold">
-                  Campagne
-                </FormLabel>
+              <div className='w-1/2 space-y-2'>
+                <FormLabel className='text-lg font-semibold'>Campagne</FormLabel>
                 <Select
                   value={selectedCampaignId}
                   onValueChange={setSelectedCampaignId}
                   disabled={!selectedOrgId}
                 >
-                  <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                  <SelectTrigger className='w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white'>
                     <SelectValue
                       placeholder={
-                        <span className="text-primary/50 italic">
-                          Sélectionnez la campagne
-                        </span>
+                        <span className='text-primary/50 italic'>Sélectionnez la campagne</span>
                       }
                     />
                   </SelectTrigger>
@@ -368,20 +336,17 @@ export default function InvoiceModal({
             </div>
           )}
 
-          <div className="flex gap-4">
+          <div className='flex gap-4'>
             <FormField
               control={form.control}
-              name="title"
+              name='title'
               render={({ field }) => (
-                <FormItem className="w-1/2">
-                  <FormLabel className="text-lg font-semibold">
-                    {" "}
-                    Numéro de facture
-                  </FormLabel>
+                <FormItem className='w-1/2'>
+                  <FormLabel className='text-lg font-semibold'> Numéro de facture</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Renseignez le titre"
-                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      placeholder='Renseignez le titre'
+                      className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5'
                       {...field}
                     />
                   </FormControl>
@@ -391,26 +356,21 @@ export default function InvoiceModal({
             />
             <FormField
               control={form.control}
-              name="invoiceType"
+              name='invoiceType'
               render={({ field }) => (
-                <FormItem className="flex-1 min-w-[170px]">
-                  <FormLabel className="text-lg">Type de facture</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                <FormItem className='flex-1 min-w-[170px]'>
+                  <FormLabel className='text-lg'>Type de facture</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white">
+                      <SelectTrigger className='w-full text-base italic rounded-sm border border-[#A5A4BF] p-5 bg-white'>
                         <SelectValue
                           placeholder={
-                            <span className="text-primary/50 italic">
-                              Choisissez le type
-                            </span>
+                            <span className='text-primary/50 italic'>Choisissez le type</span>
                           }
                         />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base">
+                    <SelectContent className='w-full text-base italic rounded-sm border border-[#A5A4BF] text-primary text-base'>
                       {invoiceTypes.map((m) => (
                         <SelectItem key={m.value} value={m.value}>
                           {m.label}
@@ -424,23 +384,23 @@ export default function InvoiceModal({
             />
           </div>
 
-          {selectedInvoiceType === "vendor" && (
+          {selectedInvoiceType === 'vendor' && (
             <>
-              <div className="flex gap-4">
+              <div className='flex gap-4'>
                 {/* Agency Invoice Reference */}
                 <FormField
                   control={form.control}
-                  name="agencyInvoice"
+                  name='agencyInvoice'
                   render={({ field }) => (
-                    <FormItem className="w-1/2">
-                      <FormLabel className="text-lg font-semibold">
-                        {" "}
+                    <FormItem className='w-1/2'>
+                      <FormLabel className='text-lg font-semibold'>
+                        {' '}
                         Facture agence rattachée
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Renseignez le numéro"
-                          className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                          placeholder='Renseignez le numéro'
+                          className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5'
                           {...field}
                         />
                       </FormControl>
@@ -452,39 +412,33 @@ export default function InvoiceModal({
                 {/* Vendor Selection / Creation */}
                 <FormField
                   control={form.control}
-                  name="vendorId"
+                  name='vendorId'
                   render={({ field }) => (
-                    <FormItem className="w-1/2 flex flex-col">
-                      <FormLabel className="text-lg font-semibold">
-                        Nom de la régie
-                      </FormLabel>
-                      <Popover
-                        open={openVendorCombobox}
-                        onOpenChange={setOpenVendorCombobox}
-                      >
+                    <FormItem className='w-1/2 flex flex-col'>
+                      <FormLabel className='text-lg font-semibold'>Nom de la régie</FormLabel>
+                      <Popover open={openVendorCombobox} onOpenChange={setOpenVendorCombobox}>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <button
-                              role="combobox"
+                              role='combobox'
                               aria-expanded={openVendorCombobox}
                               className={cn(
-                                "w-full justify-between flex items-center rounded-sm border border-[#A5A4BF] py-2 px-5 bg-white text-base italic text-left",
-                                !field.value && "text-primary/50"
+                                'w-full justify-between flex items-center rounded-sm border border-[#A5A4BF] py-2 px-5 bg-white text-base italic text-left',
+                                !field.value && 'text-primary/50',
                               )}
                             >
                               {field.value
-                                ? field.value === "new"
-                                  ? "Nouvelle régie"
-                                  : vendors?.find((v) => v._id === field.value)
-                                      ?.name
-                                : "Sélectionnez une régie"}
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                ? field.value === 'new'
+                                  ? 'Nouvelle régie'
+                                  : vendors?.find((v) => v._id === field.value)?.name
+                                : 'Sélectionnez une régie'}
+                              <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                             </button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[300px] p-0">
+                        <PopoverContent className='w-[300px] p-0'>
                           <Command>
-                            <CommandInput placeholder="Rechercher une régie..." />
+                            <CommandInput placeholder='Rechercher une régie...' />
                             <CommandList>
                               <CommandEmpty>Aucune régie trouvée.</CommandEmpty>
                               <CommandGroup>
@@ -493,16 +447,14 @@ export default function InvoiceModal({
                                     value={vendor.name}
                                     key={vendor._id}
                                     onSelect={() => {
-                                      form.setValue("vendorId", vendor._id);
+                                      form.setValue('vendorId', vendor._id);
                                       setOpenVendorCombobox(false);
                                     }}
                                   >
                                     <Check
                                       className={cn(
-                                        "mr-2 h-4 w-4",
-                                        vendor._id === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
+                                        'mr-2 h-4 w-4',
+                                        vendor._id === field.value ? 'opacity-100' : 'opacity-0',
                                       )}
                                     />
                                     {vendor.name}
@@ -511,14 +463,14 @@ export default function InvoiceModal({
                               </CommandGroup>
                               <CommandGroup>
                                 <CommandItem
-                                  value="new-vendor-creation"
+                                  value='new-vendor-creation'
                                   onSelect={() => {
-                                    form.setValue("vendorId", "new");
+                                    form.setValue('vendorId', 'new');
                                     setOpenVendorCombobox(false);
                                   }}
-                                  className="text-primary font-medium"
+                                  className='text-primary font-medium'
                                 >
-                                  <Plus className="mr-2 h-4 w-4" />
+                                  <Plus className='mr-2 h-4 w-4' />
                                   Créer une nouvelle régie
                                 </CommandItem>
                               </CommandGroup>
@@ -534,20 +486,20 @@ export default function InvoiceModal({
 
               {/* Dynamic Fields for Vendor Details */}
               {selectedVendorId && (isCreatingVendor || selectedVendorId) && (
-                <div className="flex flex-wrap gap-4">
+                <div className='flex flex-wrap gap-4'>
                   {isCreatingVendor && (
                     <FormField
                       control={form.control}
-                      name="newVendorName"
+                      name='newVendorName'
                       render={({ field }) => (
-                        <FormItem className="w-[calc(50%-0.5rem)]">
-                          <FormLabel className="text-lg font-semibold">
+                        <FormItem className='w-[calc(50%-0.5rem)]'>
+                          <FormLabel className='text-lg font-semibold'>
                             Nom de la nouvelle régie
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Renseignez le nom de la régie"
-                              className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                              placeholder='Renseignez le nom de la régie'
+                              className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white'
                               {...field}
                             />
                           </FormControl>
@@ -559,16 +511,14 @@ export default function InvoiceModal({
 
                   <FormField
                     control={form.control}
-                    name="vendorContact"
+                    name='vendorContact'
                     render={({ field }) => (
-                      <FormItem className="w-[calc(50%-0.5rem)]">
-                        <FormLabel className="text-lg font-semibold">
-                          Nom du contact
-                        </FormLabel>
+                      <FormItem className='w-[calc(50%-0.5rem)]'>
+                        <FormLabel className='text-lg font-semibold'>Nom du contact</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Renseignez le nom du contact"
-                            className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                            placeholder='Renseignez le nom du contact'
+                            className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white'
                             {...field}
                             disabled={!isCreatingVendor}
                           />
@@ -580,16 +530,14 @@ export default function InvoiceModal({
 
                   <FormField
                     control={form.control}
-                    name="vendorEmail"
+                    name='vendorEmail'
                     render={({ field }) => (
-                      <FormItem className="w-[calc(50%-0.5rem)]">
-                        <FormLabel className="text-lg font-semibold">
-                          Email du contact
-                        </FormLabel>
+                      <FormItem className='w-[calc(50%-0.5rem)]'>
+                        <FormLabel className='text-lg font-semibold'>Email du contact</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Renseignez l'email du contact"
-                            className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                            className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white'
                             {...field}
                             disabled={!isCreatingVendor}
                           />
@@ -601,20 +549,14 @@ export default function InvoiceModal({
 
                   <FormField
                     control={form.control}
-                    name="vendorPhone"
+                    name='vendorPhone'
                     render={({ field }) => (
-                      <FormItem
-                        className={
-                          isCreatingVendor ? "w-[calc(50%-0.5rem)]" : "w-full"
-                        }
-                      >
-                        <FormLabel className="text-lg font-semibold">
-                          Tel du contact
-                        </FormLabel>
+                      <FormItem className={isCreatingVendor ? 'w-[calc(50%-0.5rem)]' : 'w-full'}>
+                        <FormLabel className='text-lg font-semibold'>Tel du contact</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Renseignez le numéro de téléphone"
-                            className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
+                            placeholder='Renseignez le numéro de téléphone'
+                            className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white'
                             {...field}
                             disabled={!isCreatingVendor}
                           />
@@ -628,26 +570,21 @@ export default function InvoiceModal({
             </>
           )}
 
-          <div className="flex gap-4">
+          <div className='flex gap-4'>
             <FormField
               control={form.control}
-              name="htprice"
+              name='htprice'
               render={({ field }) => (
-                <FormItem className="w-1/2">
-                  <FormLabel className="text-lg font-semibold">
-                    {" "}
-                    Montant HT
-                  </FormLabel>
+                <FormItem className='w-1/2'>
+                  <FormLabel className='text-lg font-semibold'> Montant HT</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      placeholder="Renseignez le montant en €"
-                      className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                      value={field.value || ""}
+                      type='number'
+                      placeholder='Renseignez le montant en €'
+                      className='w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white'
+                      value={field.value || ''}
                       onChange={(e) =>
-                        field.onChange(
-                          e.target.value === "" ? 0 : Number(e.target.value)
-                        )
+                        field.onChange(e.target.value === '' ? 0 : Number(e.target.value))
                       }
                     />
                   </FormControl>
@@ -657,23 +594,18 @@ export default function InvoiceModal({
             />
             <FormField
               control={form.control}
-              name="ttcprice"
+              name='ttcprice'
               render={({ field }) => (
-                <FormItem className="w-1/2">
-                  <FormLabel className="text-lg font-semibold">
-                    {" "}
-                    Montant TTC
-                  </FormLabel>
+                <FormItem className='w-1/2'>
+                  <FormLabel className='text-lg font-semibold'> Montant TTC</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      placeholder="Renseignez le montant en €"
-                      className="w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white"
-                      value={field.value || ""}
+                      type='number'
+                      placeholder='Renseignez le montant en €'
+                      className='w-full !text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 bg-white'
+                      value={field.value || ''}
                       onChange={(e) =>
-                        field.onChange(
-                          e.target.value === "" ? 0 : Number(e.target.value)
-                        )
+                        field.onChange(e.target.value === '' ? 0 : Number(e.target.value))
                       }
                     />
                   </FormControl>
@@ -683,47 +615,44 @@ export default function InvoiceModal({
             />
           </div>
 
-          <div className="flex gap-4">
+          <div className='flex gap-4'>
             <FormField
               control={form.control}
-              name="startDate"
+              name='startDate'
               render={({ field }) => (
-                <FormItem className="w-1/2">
-                  <FormLabel className="text-lg font-semibold">
-                    {" "}
-                    Date de facturation
-                  </FormLabel>
+                <FormItem className='w-1/2'>
+                  <FormLabel className='text-lg font-semibold'> Date de facturation</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <button
-                        type="button"
+                        type='button'
                         className={cn(
-                          "w-full rounded-sm py-2 px-5 flex items-center justify-between",
-                          "border",
-                          field.value ? "text-primary" : "text-primary/50",
-                          "border-[#A5A4BF] bg-white"
+                          'w-full rounded-sm py-2 px-5 flex items-center justify-between',
+                          'border',
+                          field.value ? 'text-primary' : 'text-primary/50',
+                          'border-[#A5A4BF] bg-white',
                         )}
-                        aria-label="Choisir une date"
+                        aria-label='Choisir une date'
                       >
-                        <span className="text-base italic">
+                        <span className='text-base italic'>
                           {field.value
-                            ? format(field.value, "dd/MM/yyyy", {
+                            ? format(field.value, 'dd/MM/yyyy', {
                                 locale: fr,
                               })
-                            : "Sélectionnez la date"}
+                            : 'Sélectionnez la date'}
                         </span>
                         <SvgCalendrier />
                       </button>
                     </PopoverTrigger>
                     <PopoverContent
-                      className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                      align="start"
+                      className='w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]'
+                      align='start'
                     >
                       <Calendar
-                        mode="single"
+                        mode='single'
                         selected={field.value ?? undefined}
                         onSelect={(d) => field.onChange(d || null)}
-                        disabled={(date) => date < new Date("1900-01-01")}
+                        disabled={(date) => date < new Date('1900-01-01')}
                         defaultMonth={field.value ?? new Date()}
                         initialFocus
                         locale={fr}
@@ -737,44 +666,41 @@ export default function InvoiceModal({
             />
             <FormField
               control={form.control}
-              name="dueDate"
+              name='dueDate'
               render={({ field }) => (
-                <FormItem className="w-1/2">
-                  <FormLabel className="text-lg font-semibold">
-                    {" "}
-                    Date d'échéance
-                  </FormLabel>
+                <FormItem className='w-1/2'>
+                  <FormLabel className='text-lg font-semibold'> Date d'échéance</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <button
-                        type="button"
+                        type='button'
                         className={cn(
-                          "w-full rounded-sm py-2 px-5 flex items-center justify-between",
-                          "border",
-                          field.value ? "text-primary" : "text-primary/50",
-                          "border-[#A5A4BF] bg-white"
+                          'w-full rounded-sm py-2 px-5 flex items-center justify-between',
+                          'border',
+                          field.value ? 'text-primary' : 'text-primary/50',
+                          'border-[#A5A4BF] bg-white',
                         )}
-                        aria-label="Choisir une date"
+                        aria-label='Choisir une date'
                       >
-                        <span className="text-base italic">
+                        <span className='text-base italic'>
                           {field.value
-                            ? format(field.value, "dd/MM/yyyy", {
+                            ? format(field.value, 'dd/MM/yyyy', {
                                 locale: fr,
                               })
-                            : "Sélectionnez la date"}
+                            : 'Sélectionnez la date'}
                         </span>
                         <SvgCalendrier />
                       </button>
                     </PopoverTrigger>
                     <PopoverContent
-                      className="w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]"
-                      align="start"
+                      className='w-auto p-0 text-primary rounded-sm shadow border-[#A5A4BF]'
+                      align='start'
                     >
                       <Calendar
-                        mode="single"
+                        mode='single'
                         selected={field.value ?? undefined}
                         onSelect={(d) => field.onChange(d || null)}
-                        disabled={(date) => date < new Date("1900-01-01")}
+                        disabled={(date) => date < new Date('1900-01-01')}
                         defaultMonth={field.value ?? new Date()}
                         initialFocus
                         locale={fr}
@@ -789,33 +715,27 @@ export default function InvoiceModal({
           </div>
 
           <FormItem>
-            <FormLabel className="text-lg font-semibold">
-              Importer la facture
-            </FormLabel>
+            <FormLabel className='text-lg font-semibold'>Importer la facture</FormLabel>
             <FormControl>
-              <div className="relative">
+              <div className='relative'>
                 <Input
                   readOnly
-                  value={file ? file.name : ""}
-                  placeholder="Sélectionnez la facture"
-                  className="!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer"
-                  onClick={() =>
-                    document.getElementById("hiddenMediaInput")?.click()
-                  }
+                  value={file ? file.name : ''}
+                  placeholder='Sélectionnez la facture'
+                  className='!text-base md:text-base italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5 pr-12 cursor-pointer'
+                  onClick={() => document.getElementById('hiddenMediaInput')?.click()}
                 />
 
                 <SvgUploder
-                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                  onClick={() =>
-                    document.getElementById("hiddenMediaInput")?.click()
-                  }
+                  className='absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer'
+                  onClick={() => document.getElementById('hiddenMediaInput')?.click()}
                 />
 
                 <input
-                  id="hiddenMediaInput"
-                  type="file"
-                  accept="application/pdf"
-                  className="hidden"
+                  id='hiddenMediaInput'
+                  type='file'
+                  accept='application/pdf'
+                  className='hidden'
                   onChange={(e) => {
                     const f = e.target.files?.[0] ?? null;
                     setFile(f);
@@ -831,7 +751,7 @@ export default function InvoiceModal({
     footer: (
       <CtaButton
         props={{
-          text: "Enregistrer",
+          text: 'Enregistrer',
           onClick: (e: React.MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
@@ -840,7 +760,7 @@ export default function InvoiceModal({
           disabled: uploading || isSubmitting,
           loading: isSubmitting,
         }}
-        variant="submit"
+        variant='submit'
       />
     ),
   };

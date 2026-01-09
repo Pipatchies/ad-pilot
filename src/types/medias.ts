@@ -1,35 +1,28 @@
-import { Id } from "../../convex/_generated/dataModel";
+import { Id } from '../../convex/_generated/dataModel';
 
-export const TYPE_VALUES = ["jpg", "png", "pdf", "mp4", "mp3"] as const;
+export const TYPE_VALUES = ['jpg', 'png', 'pdf', 'mp4', 'mp3'] as const;
 export type MediaFileType = (typeof TYPE_VALUES)[number];
 
-export const MEDIA_TYPE_VALUES = [
-  "digital",
-  "tv",
-  "ooh",
-  "radio",
-  "cinema",
-  "press",
-] as const;
+export const MEDIA_TYPE_VALUES = ['digital', 'tv', 'ooh', 'radio', 'cinema', 'press'] as const;
 export type MediaType = (typeof MEDIA_TYPE_VALUES)[number];
 
 export const MEDIA_TYPE_LABELS: Record<MediaType, string> = {
-  digital: "Digital",
-  tv: "TV",
-  ooh: "Affichage",
-  radio: "Radio",
-  cinema: "Cinéma",
-  press: "Presse",
+  digital: 'Digital',
+  tv: 'TV',
+  ooh: 'Affichage',
+  radio: 'Radio',
+  cinema: 'Cinéma',
+  press: 'Presse',
 } as const;
 
 export type Media = {
-  _id?: Id<"medias">;
+  _id?: Id<'medias'>;
   title: string;
   url: string;
   type: MediaFileType;
   mediaTypes: MediaType[];
   publicId?: string;
-  resourceType: "image" | "video" | "raw";
+  resourceType: 'image' | 'video' | 'raw';
   width?: number;
   height?: number;
 };

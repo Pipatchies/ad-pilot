@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
-import React from "react";
-import { cn } from "@/lib/utils"; // Utilisation de ton utilitaire cn pour les classes
-import Link from "next/link";
+import React from 'react';
+import { cn } from '@/lib/utils'; // Utilisation de ton utilitaire cn pour les classes
+import Link from 'next/link';
 
 // Typage commun pour tous les éléments
 type CommonTypographyProps = {
@@ -12,29 +12,29 @@ type CommonTypographyProps = {
 
 // Typage spécial pour les liens
 type LinkTypographyProps = CommonTypographyProps & {
-  variant: "a";
+  variant: 'a';
   href: string; // `href` est obligatoire si variant est "a"
 };
 
 // Typage pour les autres éléments
 type NonLinkTypographyProps = CommonTypographyProps & {
   variant:
-    | "h1"
-    | "h2"
-    | "h3"
-    | "h4"
-    | "h5"
-    | "h6"
-    | "span"
-    | "p"
-    | "blockquote"
-    | "ul"
-    | "table"
-    | "thead"
-    | "tbody"
-    | "tr"
-    | "th"
-    | "td";
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'h5'
+    | 'h6'
+    | 'span'
+    | 'p'
+    | 'blockquote'
+    | 'ul'
+    | 'table'
+    | 'thead'
+    | 'tbody'
+    | 'tr'
+    | 'th'
+    | 'td';
 };
 
 // Union des deux types
@@ -42,23 +42,23 @@ type TypographyProps = LinkTypographyProps | NonLinkTypographyProps;
 
 // Mapping des classes pour chaque variante
 const variantClasses = {
-  h1: "text-3xl font-[900] mb-4 font-mont",
-  h2: "text-2xl font-bold mb-4 font-mont",
-  h3: "text-xl font-bold mb-4 font-mont",
-  h4: "text-xl italic mb-4 font-mont",
-  h5: "text-lg font-mont",
-  h6: "text-base font-mont",
-  p: "text-lg font-[500]",
-  blockquote: "mt-6 border-l-2 pl-6 italic",
-  ul: "ml-6 w-full xl:w-auto list-disc text-sm",
-  table: "w-full",
-  thead: "text-left font-bold",
-  tbody: "",
-  tr: "m-0 border-t p-0 even:bg-muted",
-  th: "border px-4 py-2 [&[align=center]]:text-center [&[align=right]]:text-right",
-  td: "border px-4 py-2 [&[align=center]]:text-center [&[align=right]]:text-right",
-  a: "text-primary underline",
-  span: "",
+  h1: 'text-3xl font-[900] mb-4 font-mont',
+  h2: 'text-2xl font-bold mb-4 font-mont',
+  h3: 'text-xl font-bold mb-4 font-mont',
+  h4: 'text-xl italic mb-4 font-mont',
+  h5: 'text-lg font-mont',
+  h6: 'text-base font-mont',
+  p: 'text-lg font-[500]',
+  blockquote: 'mt-6 border-l-2 pl-6 italic',
+  ul: 'ml-6 w-full xl:w-auto list-disc text-sm',
+  table: 'w-full',
+  thead: 'text-left font-bold',
+  tbody: '',
+  tr: 'm-0 border-t p-0 even:bg-muted',
+  th: 'border px-4 py-2 [&[align=center]]:text-center [&[align=right]]:text-right',
+  td: 'border px-4 py-2 [&[align=center]]:text-center [&[align=right]]:text-right',
+  a: 'text-primary underline',
+  span: '',
 };
 
 // Le composant `Typography`
@@ -70,7 +70,7 @@ const Typography: React.FC<TypographyProps> = React.memo(
     const computedClassName = cn(variantClasses[variant], className);
 
     // Cas particulier pour les liens
-    if (variant === "a") {
+    if (variant === 'a') {
       const { href } = props as LinkTypographyProps;
       return (
         <Link href={href} className={computedClassName}>
@@ -85,7 +85,7 @@ const Typography: React.FC<TypographyProps> = React.memo(
         {children}
       </Component>
     );
-  }
+  },
 );
 
 export default Typography;

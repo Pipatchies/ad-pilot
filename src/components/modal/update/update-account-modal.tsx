@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React from "react";
-import Modal from "@/components/modal/modal";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import React from 'react';
+import Modal from '@/components/modal/modal';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import {
   Form,
   FormField,
@@ -13,33 +13,31 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import CtaButton from "@/components/cta-button";
-import { useMutation, useAction } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import { Id } from "@/../convex/_generated/dataModel";
-import SvgProfil from "@/components/icons/Profil";
-import SvgMail from "@/components/icons/Mail";
-import SvgCrayonBig from "@/components/icons/CrayonBig";
-import SvgLock from "@/components/icons/Lock";
-import SvgCrayon from "@/components/icons/Crayon";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import CtaButton from '@/components/cta-button';
+import { useMutation, useAction } from 'convex/react';
+import { api } from '@/../convex/_generated/api';
+import { Id } from '@/../convex/_generated/dataModel';
+import SvgProfil from '@/components/icons/Profil';
+import SvgMail from '@/components/icons/Mail';
+import SvgCrayonBig from '@/components/icons/CrayonBig';
+import SvgLock from '@/components/icons/Lock';
+import SvgCrayon from '@/components/icons/Crayon';
 
 const formSchema = z.object({
-  firstname: z.string().min(1, "Le prénom est requis"),
-  lastname: z.string().min(1, "Le nom est requis"),
-  email: z.string().email("Email invalide"),
-  password: z.optional(
-    z.string().min(8, "Le mot de passe doit faire au moins 8 caractères")
-  ),
+  firstname: z.string().min(1, 'Le prénom est requis'),
+  lastname: z.string().min(1, 'Le nom est requis'),
+  email: z.string().email('Email invalide'),
+  password: z.optional(z.string().min(8, 'Le mot de passe doit faire au moins 8 caractères')),
 });
 
 type UpdateModalProps = {
-  userId: Id<"users">;
+  userId: Id<'users'>;
   firstname: string;
   lastname: string;
   email: string;
-  triggerType?: "button" | "icon";
+  triggerType?: 'button' | 'icon';
   triggerText?: string;
 };
 
@@ -48,8 +46,8 @@ export default function UpdateAccountModal({
   firstname,
   lastname,
   email,
-  triggerType = "icon",
-  triggerText = "Modifier",
+  triggerType = 'icon',
+  triggerText = 'Modifier',
 }: UpdateModalProps) {
   const updateUser = useMutation(api.mutations.users.updateUser);
   const updatePassword = useAction(api.actions.users.updateUserPassword);
@@ -59,8 +57,8 @@ export default function UpdateAccountModal({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { firstname, lastname, email, password: "" },
-    values: { firstname, lastname, email, password: "" },
+    defaultValues: { firstname, lastname, email, password: '' },
+    values: { firstname, lastname, email, password: '' },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -75,7 +73,7 @@ export default function UpdateAccountModal({
             lastname: values.lastname,
             email: values.email,
           },
-        })
+        }),
       );
 
       if (values.password && values.password.length > 0) {
@@ -83,43 +81,43 @@ export default function UpdateAccountModal({
           updatePassword({
             userId,
             password: values.password,
-          })
+          }),
         );
       }
 
       await Promise.all(promises);
 
-      toast.success("Compte mis à jour");
-      form.reset({ ...values, password: "" });
+      toast.success('Compte mis à jour');
+      form.reset({ ...values, password: '' });
       setIsOpen(false);
     } catch (error) {
       console.error(error);
-      toast.error("Échec de la mise à jour");
+      toast.error('Échec de la mise à jour');
     } finally {
       setIsSubmitting(false);
     }
   }
 
   const modalData = {
-    title: "Modifier le compte",
+    title: 'Modifier le compte',
     children: (
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="flex gap-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+          <div className='flex gap-4'>
             <FormField
               control={form.control}
-              name="firstname"
+              name='firstname'
               render={({ field }) => (
-                <FormItem className="w-1/2">
-                  <FormLabel className="text-lg font-semibold">
-                    {" "}
-                    <SvgProfil className="fill-primary" />
+                <FormItem className='w-1/2'>
+                  <FormLabel className='text-lg font-semibold'>
+                    {' '}
+                    <SvgProfil className='fill-primary' />
                     Prénom
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Prénom"
-                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      placeholder='Prénom'
+                      className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5'
                       {...field}
                     />
                   </FormControl>
@@ -129,18 +127,18 @@ export default function UpdateAccountModal({
             />
             <FormField
               control={form.control}
-              name="lastname"
+              name='lastname'
               render={({ field }) => (
-                <FormItem className="w-1/2">
-                  <FormLabel className="text-lg font-semibold">
-                    {" "}
-                    <SvgProfil className="fill-primary" />
+                <FormItem className='w-1/2'>
+                  <FormLabel className='text-lg font-semibold'>
+                    {' '}
+                    <SvgProfil className='fill-primary' />
                     Nom
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Nom"
-                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                      placeholder='Nom'
+                      className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5'
                       {...field}
                     />
                   </FormControl>
@@ -152,17 +150,17 @@ export default function UpdateAccountModal({
 
           <FormField
             control={form.control}
-            name="email"
+            name='email'
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-semibold">
-                  <SvgMail className="fill-primary" />
+                <FormLabel className='text-lg font-semibold'>
+                  <SvgMail className='fill-primary' />
                   Email
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="email@exemple.com"
-                    className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5"
+                    placeholder='email@exemple.com'
+                    className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-sm border-[#A5A4BF] p-5'
                     {...field}
                   />
                 </FormControl>
@@ -173,22 +171,22 @@ export default function UpdateAccountModal({
 
           <FormField
             control={form.control}
-            name="password"
+            name='password'
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg font-semibold">
-                  <SvgLock className="fill-primary" />
+                <FormLabel className='text-lg font-semibold'>
+                  <SvgLock className='fill-primary' />
                   Mot de passe
                 </FormLabel>
                 <FormControl>
-                  <div className="flex items-center">
+                  <div className='flex items-center'>
                     <Input
-                      type="password"
-                      placeholder="••••••••••••"
-                      className="!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-r-none border-[#A5A4BF] p-5 w-1/2 focus-visible:ring-0 focus-visible:ring-offset-0"
+                      type='password'
+                      placeholder='••••••••••••'
+                      className='!text-base md:text-base placeholder:italic placeholder:text-primary/50 rounded-r-none border-[#A5A4BF] p-5 w-1/2 focus-visible:ring-0 focus-visible:ring-offset-0'
                       {...field}
                     />
-                    <div className="flex items-center justify-center h-[48px] bg-primary/50 rounded-sm text-base text-white font-medium w-1/2 text-center cursor-default">
+                    <div className='flex items-center justify-center h-[48px] bg-primary/50 rounded-sm text-base text-white font-medium w-1/2 text-center cursor-default'>
                       Définir un nouveau mot de passe
                     </div>
                   </div>
@@ -203,11 +201,11 @@ export default function UpdateAccountModal({
     footer: (
       <CtaButton
         props={{
-          text: "Enregistrer",
+          text: 'Enregistrer',
           onClick: form.handleSubmit(onSubmit),
           loading: isSubmitting,
         }}
-        variant="submit"
+        variant='submit'
       />
     ),
   };
@@ -220,11 +218,7 @@ export default function UpdateAccountModal({
       variant={triggerType}
       cta={{
         icon:
-          triggerType === "button" ? (
-            <SvgCrayon />
-          ) : (
-            <SvgCrayonBig className="cursor-pointer" />
-          ),
+          triggerType === 'button' ? <SvgCrayon /> : <SvgCrayonBig className='cursor-pointer' />,
         text: triggerText,
       }}
       data={modalData}

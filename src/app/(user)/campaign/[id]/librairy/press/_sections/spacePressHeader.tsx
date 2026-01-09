@@ -1,32 +1,32 @@
-import React from "react";
-import Typography from "@/components/typography";
-import SearchBar from "@/components/search-bar";
+import React from 'react';
+import Typography from '@/components/typography';
+import SearchBar from '@/components/search-bar';
 
 interface SpacePressHeaderProps {
   onQueryChange: (query: string) => void;
-  onDateSortChange: (sort: "asc" | "desc") => void;
-  defaultDateSort?: "asc" | "desc";
+  onDateSortChange: (sort: 'asc' | 'desc') => void;
+  defaultDateSort?: 'asc' | 'desc';
 }
 
 export default function SpacePressHeader({
   onQueryChange,
   onDateSortChange,
-  defaultDateSort = "desc",
+  defaultDateSort = 'desc',
 }: SpacePressHeaderProps) {
   return (
-    <div className="flex flex-col gap-6 mb-10">
-      <div className="flex justify-between items-center">
+    <div className='flex flex-col gap-6 mb-10'>
+      <div className='flex justify-between items-center'>
         <div>
-          <Typography variant="h1" className="mb-0">
+          <Typography variant='h1' className='mb-0'>
             Visuels Presse
           </Typography>
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1">
+      <div className='flex flex-col sm:flex-row gap-4'>
+        <div className='flex-1'>
           <SearchBar
-            variant="full"
+            variant='full'
             onQueryChange={onQueryChange}
             onDateSortChange={onDateSortChange}
             defaultDateSort={defaultDateSort}

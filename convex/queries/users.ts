@@ -1,12 +1,12 @@
-import { getAuthSessionId, getAuthUserId } from "@convex-dev/auth/server";
-import { internalQuery } from "../_generated/server";
-import { query } from "../_generated/server";
-import { v } from "convex/values";
+import { getAuthSessionId, getAuthUserId } from '@convex-dev/auth/server';
+import { internalQuery } from '../_generated/server';
+import { query } from '../_generated/server';
+import { v } from 'convex/values';
 
 export const getAllUsersWithRole = query({
   args: {},
   handler: async (ctx) => {
-    const users = await ctx.db.query("users").collect();
+    const users = await ctx.db.query('users').collect();
 
     const accounts = [];
 
@@ -17,16 +17,15 @@ export const getAllUsersWithRole = query({
       if (!role) continue;
 
       if (role) {
-        const name = user.name ?? "";
-        const lastname = user.lastname ?? "";
-        const id =
-          name.trim().toLowerCase() + (lastname.trim()[0]?.toLowerCase() ?? "");
+        const name = user.name ?? '';
+        const lastname = user.lastname ?? '';
+        const id = name.trim().toLowerCase() + (lastname.trim()[0]?.toLowerCase() ?? '');
 
         accounts.push({
           userId: user._id,
           name,
           lastname,
-          email: user.email ?? "",
+          email: user.email ?? '',
           role: role.label,
           id,
         });
@@ -39,12 +38,12 @@ export const getAllUsersWithRole = query({
 
 export const getUserById = internalQuery({
   args: {
-    userId: v.id("users"),
+    userId: v.id('users'),
   },
   handler: async (ctx, args) => {
     const user = await ctx.db.get(args.userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
     return user;
   },
@@ -54,8 +53,8 @@ export const getUserByEmail = internalQuery({
   args: { email: v.string() },
   handler: async (ctx, args) => {
     return await ctx.db
-      .query("users")
-      .withIndex("email", (q) => q.eq("email", args.email))
+      .query('users')
+      .withIndex('email', (q) => q.eq('email', args.email))
       .unique();
   },
 });
@@ -63,7 +62,7 @@ export const getUserByEmail = internalQuery({
 export const getAdmin = query({
   args: {},
   handler: async (ctx) => {
-    const users = await ctx.db.query("users").collect();
+    const users = await ctx.db.query('users').collect();
 
     const adminAccounts = [];
 
@@ -73,17 +72,16 @@ export const getAdmin = query({
       const role = await ctx.db.get(user.roleId);
       if (!role) continue;
 
-      if (role.name === "admin") {
-        const name = user.name ?? "";
-        const lastname = user.lastname ?? "";
-        const id =
-          name.trim().toLowerCase() + (lastname.trim()[0]?.toLowerCase() ?? "");
+      if (role.name === 'admin') {
+        const name = user.name ?? '';
+        const lastname = user.lastname ?? '';
+        const id = name.trim().toLowerCase() + (lastname.trim()[0]?.toLowerCase() ?? '');
 
         adminAccounts.push({
           userId: user._id,
           name,
           lastname,
-          email: user.email ?? "",
+          email: user.email ?? '',
           role: role.label,
           id,
         });
@@ -108,7 +106,7 @@ export const me = query({
 
     return {
       ...user,
-      role: role?.name ?? "unknown",
+      role: role?.name ?? 'unknown',
       sessionId,
       organizationId: user.organizationId,
     };
@@ -116,7 +114,7 @@ export const me = query({
 });
 
 export const getEffectiveUser = query({
-  args: { impersonatedUserId: v.optional(v.id("users")) },
+  args: { impersonatedUserId: v.optional(v.id('users')) },
   handler: async (ctx, args) => {
     const authUserId = await getAuthUserId(ctx);
     if (!authUserId) return null;
@@ -128,7 +126,7 @@ export const getEffectiveUser = query({
       const me = await ctx.db.get(authUserId);
       if (me && me.roleId) {
         const myRole = await ctx.db.get(me.roleId);
-        if (myRole?.name === "admin") {
+        if (myRole?.name === 'admin') {
           targetUserId = args.impersonatedUserId;
         }
       }
@@ -142,7 +140,7 @@ export const getEffectiveUser = query({
 
     return {
       ...user,
-      role: role?.name ?? "unknown",
+      role: role?.name ?? 'unknown',
       sessionId,
       organizationId: user.organizationId,
     };

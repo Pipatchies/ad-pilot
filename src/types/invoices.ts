@@ -1,9 +1,9 @@
-import { Id } from "../../convex/_generated/dataModel";
+import { Id } from '../../convex/_generated/dataModel';
 
 export type Invoice = {
-  _id?: Id<"invoices">;
+  _id?: Id<'invoices'>;
   title: string;
-  invoiceType?: "agency" | "vendor";
+  invoiceType?: 'agency' | 'vendor';
   agencyInvoice?: string;
   vendorName?: string;
   htprice: number;
@@ -12,10 +12,10 @@ export type Invoice = {
   dueDate: string;
   url?: string;
   publicId?: string;
-  resourceType?: "raw";
-  status?: "paid" | "pending";
-  organizationId?: Id<"organizations">;
-  campaignId?: Id<"campaigns">;
+  resourceType?: 'raw';
+  status?: 'paid' | 'pending';
+  organizationId?: Id<'organizations'>;
+  campaignId?: Id<'campaigns'>;
   campaign?: string;
   organizationName?: string;
 };
