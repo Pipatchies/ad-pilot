@@ -26,6 +26,7 @@ export default function SpaceDocumentsTable({ globalFilter, dateSort }: Document
           showCampaign={true}
           showClient={true}
           readOnly={false}
+          dateSort={dateSort}
         />
       </div>
     </section>
