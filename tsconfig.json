@@ -20,7 +20,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["vite/client", "vitest/globals"]
   },
   "include": [
     "next-env.d.ts",

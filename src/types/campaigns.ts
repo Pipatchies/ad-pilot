@@ -31,7 +31,7 @@ export type CampaignReport = {
 
 export type Campaign = {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   mediaTypes: MediaType[];
   startDate: string;
   endDate: string;
