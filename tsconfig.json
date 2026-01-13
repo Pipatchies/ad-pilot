@@ -20,15 +20,14 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["node", "react", "react-dom", "vite/client", "vitest/globals"]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "convex/queries/invoices.ts",
-    "src/app/providers/ConvexClientProvider.tsx",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": ["node_modules"]

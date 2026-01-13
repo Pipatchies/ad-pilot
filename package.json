@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:convex": "vitest run convex"
   },
   "dependencies": {
     "@auth/core": "0.37.0",
@@ -60,6 +61,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.3.0",
     "@commitlint/config-conventional": "^20.3.0",
+    "@edge-runtime/vm": "^5.0.0",
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.57.0",
     "@svgr/webpack": "^8.1.0",
@@ -73,6 +75,7 @@
     "@types/react-dom": "^19",
     "@types/zxcvbn": "^4.4.5",
     "@vitejs/plugin-react": "^5.1.2",
+    "convex-test": "^0.0.41",
     "eslint": "^9.25.1",
     "eslint-config-next": "15.3.1",
     "jsdom": "^24.0.0",
@@ -80,7 +83,8 @@
     "prettier": "^3.7.4",
     "tailwindcss": "^4.1.4",
     "typescript": "^5",
-    "vitest": "^4.0.16"
+    "vite": "^7.3.1",
+    "vitest": "^4.0.17"
   },
   "pnpm": {
     "overrides": {
